@@ -242,33 +242,6 @@ button {
   margin-top: 14px;
 }
 
-.word {
-  margin: 0;
-  font-size: 1.9rem;
-  font-weight: 850;
-  letter-spacing: -0.04em;
-}
-
-.phonetic {
-  margin: 5px 0 0;
-  color: var(--muted);
-  font-size: 1.04rem;
-}
-
-.translation {
-  margin: 12px 0 0;
-  color: #111827;
-  font-size: 1.18rem;
-  font-weight: 760;
-}
-
-.phrase {
-  margin: 0;
-  font-size: 1.55rem;
-  font-weight: 850;
-  letter-spacing: -0.035em;
-}
-
 .detail-block {
   margin-top: 14px;
   padding: 13px;

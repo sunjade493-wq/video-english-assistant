@@ -7,16 +7,16 @@ const obstacles = [
     kind: 'word',
     word: 'lecture',
     phonetic: '/ˈlektʃər/',
-    translation: '讲座',
+    translation: '讲座；授课',
   },
   {
     id: 'understanding-lay-it-on-us',
     type: '理解',
     kind: 'understanding',
-    phrase: 'lay it on us',
     source: "If you enjoyed this lecture,\nI'm sure you're too busy\nto lay it on us.",
     literal: '把它放到我们身上',
-    actual: '直接告诉我们',
+    actual: '把想说的话直接告诉我们；别拐弯抹角。',
+    grammar: 'lay it on someone 是口语表达，常用于请求对方直接说出信息或要求。这里的 to lay it on us 是不定式短语，补充说明 too busy 后面省略语境中的动作。',
   },
 ];
 
@@ -79,31 +79,19 @@ function createCard(obstacle) {
   content.className = 'card-content';
 
   if (obstacle.kind === 'word') {
-    const word = document.createElement('p');
-    word.className = 'word';
-    word.textContent = obstacle.word;
-
-    const phonetic = document.createElement('p');
-    phonetic.className = 'phonetic';
-    phonetic.textContent = obstacle.phonetic;
-
-    const translation = document.createElement('p');
-    translation.className = 'translation';
-    translation.textContent = obstacle.translation;
-
-    content.append(word, phonetic, translation);
+    content.append(
+      createDetailBlock('生词', obstacle.word),
+      createDetailBlock('音标', obstacle.phonetic),
+      createDetailBlock('中文释义', obstacle.translation),
+    );
   }
 
   if (obstacle.kind === 'understanding') {
-    const phrase = document.createElement('p');
-    phrase.className = 'phrase';
-    phrase.textContent = obstacle.phrase;
-
     content.append(
-      phrase,
       createDetailBlock('出处', obstacle.source),
       createDetailBlock('字面意思', obstacle.literal),
       createDetailBlock('实际意思', obstacle.actual),
+      createDetailBlock('语法解释', obstacle.grammar),
     );
   }
 
