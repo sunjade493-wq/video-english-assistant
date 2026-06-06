@@ -314,7 +314,8 @@ button {
   margin-top: 14px;
 }
 
-.word-summary {
+.word-summary,
+.understanding-summary {
   margin: 0;
   padding: 10px 12px;
   border-radius: var(--radius-md);
