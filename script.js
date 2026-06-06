@@ -1,5 +1,12 @@
 const RESOLVED_OBSTACLES_STORAGE_KEY = 'video-english-assistant-resolved-obstacles-v2';
-const DEFAULT_SUBTITLE_TEXT = "If you enjoyed this lecture, I'm sure you're too busy to lay it on us.";
+const DEFAULT_SUBTITLE_TEXT = `If you enjoyed this lecture,
+I'm sure you're too busy to lay it on us.
+
+Can you give me a hand?
+
+I was pulled off the project.
+
+Let's call it a day.`;
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
 
 const vocabularyLevels = {
@@ -8,8 +15,8 @@ const vocabularyLevels = {
     words: [
       'a', 'about', 'after', 'all', 'an', 'and', 'are', 'be', 'busy', 'but', 'can', 'do', 'enjoy',
       'enjoyed', 'for', 'from', 'have', 'he', 'her', 'him', 'i', "i'm", 'if', 'in', 'is', 'it', 'lay',
-      'me', 'my', 'not', 'of', 'on', 'or', 'our', 'she', 'sure', 'that', 'the', 'this', 'to',
-      'too', 'us', 'we', 'you', "you're", 'your',
+      'me', 'my', 'not', 'let\'s', 'of', 'on', 'or', 'our', 'she', 'sure', 'that', 'the', 'this', 'to',
+      'too', 'us', 'was', 'we', 'you', "you're", 'your',
     ],
   },
   senior: {
@@ -61,11 +68,28 @@ const understandingPatterns = [
     grammar: 'lay it on someone 是口语表达，常用于请求对方直接说出信息或要求。这里的 to lay it on us 是不定式短语，补充说明 too busy 后面省略语境中的动作。',
   },
   {
-    id: 'understanding-pull-me-off-the-project',
-    phrase: 'pull me off the project',
-    literal: '把我从项目上拉下来',
-    actual: '让我退出这个项目；把我调离这个项目。',
-    grammar: 'pull someone off something 是短语动词，表示把某人从某项任务、岗位或项目中撤下。',
+    id: 'understanding-give-me-a-hand',
+    phrase: 'give me a hand',
+    literal: '给我一只手',
+    actual: '帮我一下；搭把手。',
+    grammar: 'give someone a hand 是口语表达，hand 在这里不是字面的一只手，而是表示帮助。',
+  },
+  {
+    id: 'understanding-pull-off-the-project',
+    phrase: 'pull off the project',
+    literal: '从项目上拉开',
+    actual: '让某人退出项目；把某人从项目中撤下。',
+    grammar: 'pull someone off something 是短语动词，表示把某人从某项任务、岗位或项目中撤下。字幕中的 pulled off the project 是被动形式。',
+    patterns: [
+      /\bpull(?:ed)?\s+(?:[a-z]+\s+)?off\s+the\s+project\b/,
+    ],
+  },
+  {
+    id: 'understanding-call-it-a-day',
+    phrase: 'call it a day',
+    literal: '把它叫作一天',
+    actual: '今天到此为止；收工。',
+    grammar: 'call it a day 是固定习语，常用于表示结束当天的工作或活动。',
   },
   {
     id: 'understanding-straight-up',
@@ -131,12 +155,74 @@ function createFallbackWordEntry(word) {
   };
 }
 
+function findNormalizedPhraseIndex(text, phrase) {
+  const phraseWords = tokenize(phrase).map(normalizeWord);
+
+  if (phraseWords.length === 0) {
+    return -1;
+  }
+
+  const textWords = [...text.matchAll(/[A-Za-z]+(?:'[A-Za-z]+)?/g)].map((match) => ({
+    word: normalizeWord(match[0]),
+    index: match.index,
+  }));
+
+  for (let index = 0; index <= textWords.length - phraseWords.length; index += 1) {
+    const isMatch = phraseWords.every((word, offset) => textWords[index + offset].word === word);
+
+    if (isMatch) {
+      return textWords[index].index;
+    }
+  }
+
+  return -1;
+}
+
+function findUnderstandingMatch(text, pattern) {
+  const matchers = pattern.patterns || [pattern.phrase];
+
+  return matchers.reduce((earliestMatch, matcher) => {
+    let match = null;
+
+    if (Object.prototype.toString.call(matcher) === '[object RegExp]') {
+      const flags = matcher.flags.includes('i') ? matcher.flags : `${matcher.flags}i`;
+      const regex = new RegExp(matcher.source, flags);
+      const regexMatch = regex.exec(text);
+
+      if (regexMatch) {
+        match = {
+          index: regexMatch.index,
+          source: regexMatch[0],
+          end: regexMatch.index + regexMatch[0].length,
+        };
+      }
+    } else {
+      const index = findNormalizedPhraseIndex(text, matcher);
+
+      if (index >= 0) {
+        match = {
+          index,
+          source: text.slice(index, index + matcher.length),
+          end: index + matcher.length,
+        };
+      }
+    }
+
+    if (!match || (earliestMatch && earliestMatch.index <= match.index)) {
+      return earliestMatch;
+    }
+
+    return match;
+  }, null);
+}
+
 function detectVocabularyObstacles(text, levelName = DEFAULT_VOCABULARY_LEVEL, customWords = []) {
   const knownWords = resolveVocabularyWords(levelName, customWords);
   const seenWords = new Set();
+  const wordMatches = text.matchAll(/[A-Za-z]+(?:'[A-Za-z]+)?/g);
 
-  return tokenize(text).reduce((result, rawWord) => {
-    const word = normalizeWord(rawWord);
+  return [...wordMatches].reduce((result, rawWordMatch) => {
+    const word = normalizeWord(rawWordMatch[0]);
 
     if (!word || seenWords.has(word) || knownWords.has(word)) {
       return result;
@@ -149,6 +235,7 @@ function detectVocabularyObstacles(text, levelName = DEFAULT_VOCABULARY_LEVEL, c
       id: dictionaryEntry.id,
       type: '生词',
       kind: 'word',
+      index: rawWordMatch.index,
       word,
       phonetic: dictionaryEntry.phonetic,
       translation: dictionaryEntry.translation,
@@ -159,19 +246,45 @@ function detectVocabularyObstacles(text, levelName = DEFAULT_VOCABULARY_LEVEL, c
 }
 
 function detectUnderstandingObstacles(text) {
-  const normalizedSubtitle = normalizeText(text);
+  return understandingPatterns.reduce((result, pattern) => {
+    const match = findUnderstandingMatch(text, pattern);
 
-  return understandingPatterns
-    .filter((pattern) => normalizedSubtitle.includes(normalizeText(pattern.phrase)))
-    .map((pattern) => ({
+    if (!match) {
+      return result;
+    }
+
+    result.push({
       id: pattern.id,
       type: '理解',
       kind: 'understanding',
-      source: text,
+      index: match.index,
+      phrase: pattern.phrase,
+      source: match.source,
+      end: match.end,
       literal: pattern.literal,
       actual: pattern.actual,
       grammar: pattern.grammar,
-    }));
+    });
+
+    return result;
+  }, []);
+}
+
+function isIndexWithinRanges(index, ranges) {
+  return ranges.some((range) => index >= range.start && index < range.end);
+}
+
+function dedupeObstaclesById(obstaclesToDedupe) {
+  const seenObstacleIds = new Set();
+
+  return obstaclesToDedupe.filter((obstacle) => {
+    if (seenObstacleIds.has(obstacle.id)) {
+      return false;
+    }
+
+    seenObstacleIds.add(obstacle.id);
+    return true;
+  });
 }
 
 function analyzeSubtitleText(text, options = {}) {
@@ -181,10 +294,22 @@ function analyzeSubtitleText(text, options = {}) {
     return [];
   }
 
-  return [
-    ...detectVocabularyObstacles(subtitleText, options.level, options.customWords),
-    ...detectUnderstandingObstacles(subtitleText),
-  ];
+  const understandingObstacles = detectUnderstandingObstacles(subtitleText);
+  const understandingRanges = understandingObstacles.map((obstacle) => ({
+    start: obstacle.index,
+    end: obstacle.end,
+  }));
+  const vocabularyObstacles = detectVocabularyObstacles(
+    subtitleText,
+    options.level,
+    options.customWords,
+  ).filter((obstacle) => !isIndexWithinRanges(obstacle.index, understandingRanges));
+  const detectedObstacles = [
+    ...vocabularyObstacles,
+    ...understandingObstacles,
+  ].sort((firstObstacle, secondObstacle) => firstObstacle.index - secondObstacle.index);
+
+  return dedupeObstaclesById(detectedObstacles);
 }
 
 let obstacles = analyzeSubtitleText(DEFAULT_SUBTITLE_TEXT, { level: DEFAULT_VOCABULARY_LEVEL });
@@ -255,6 +380,15 @@ function createWordSummary(obstacle) {
   return summary;
 }
 
+
+function createUnderstandingSummary(obstacle) {
+  const summary = document.createElement('p');
+  summary.className = 'understanding-summary';
+  summary.textContent = obstacle.phrase;
+
+  return summary;
+}
+
 function createCard(obstacle) {
   const card = document.createElement('article');
   card.className = 'obstacle-card';
@@ -275,6 +409,7 @@ function createCard(obstacle) {
 
   if (obstacle.kind === 'understanding') {
     content.append(
+      createUnderstandingSummary(obstacle),
       createDetailBlock('出处', obstacle.source),
       createDetailBlock('字面意思', obstacle.literal),
       createDetailBlock('实际意思', obstacle.actual),
