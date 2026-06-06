@@ -154,6 +154,78 @@ button {
   color: var(--muted);
 }
 
+.subtitle-input-panel {
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.subtitle-input-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.subtitle-input-header h2 {
+  margin: 5px 0 0;
+  font-size: 1.18rem;
+  letter-spacing: -0.03em;
+}
+
+.subtitle-textarea {
+  display: block;
+  width: 100%;
+  min-height: 104px;
+  resize: vertical;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 13px 14px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  line-height: 1.6;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.subtitle-textarea:focus {
+  border-color: rgba(37, 99, 235, 0.72);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+  outline: none;
+}
+
+.analyze-button {
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  padding: 10px 16px;
+  color: #fff;
+  background: var(--primary);
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.24);
+  font-weight: 750;
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.analyze-button:hover {
+  transform: translateY(-1px);
+  background: var(--primary-dark);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .obstacle-panel {
   display: flex;
   flex-direction: column;
@@ -323,8 +395,14 @@ button {
     flex-direction: column;
   }
 
-  .restore-button {
+  .restore-button,
+  .analyze-button {
     width: 100%;
+  }
+
+  .subtitle-input-header {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .card-stream {

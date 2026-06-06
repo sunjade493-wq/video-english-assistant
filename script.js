@@ -191,6 +191,8 @@ let obstacles = analyzeSubtitleText(DEFAULT_SUBTITLE_TEXT, { level: DEFAULT_VOCA
 
 const cardStream = document.querySelector('#cardStream');
 const restoreAllButton = document.querySelector('#restoreAllButton');
+const subtitleTextInput = document.querySelector('#subtitleTextInput');
+const analyzeButton = document.querySelector('#analyzeButton');
 
 function getHiddenCardIds() {
   try {
@@ -304,7 +306,17 @@ function analyzeAndRender(text, options = {}) {
   return obstacles;
 }
 
+function handleAnalyzeClick() {
+  obstacles = window.ObstacleDetectionEngine.analyzeSubtitleText(
+    subtitleTextInput.value,
+    { level: DEFAULT_VOCABULARY_LEVEL },
+  );
+
+  restoreAllCards();
+}
+
 restoreAllButton.addEventListener('click', restoreAllCards);
+analyzeButton.addEventListener('click', handleAnalyzeClick);
 renderCards();
 
 window.ObstacleDetectionEngine = {

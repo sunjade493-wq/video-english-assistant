@@ -2,16 +2,20 @@
 
 一个纯 HTML/CSS/Vanilla JavaScript 实现的 Video English Assistant。
 
-当前版本：V1.7 Obstacle Detection Engine。
+当前版本：V1.8 Analyze Workflow。
 
-V1.7 在保持 V1.5 页面 UI、布局与样式不变的前提下，加入第一个可工作的障碍识别引擎：
+V1.7 在保持 V1.5 页面 UI、布局与样式不变的前提下，加入第一个可工作的障碍识别引擎。
+
+V1.8 在左侧视频区域下方加入 Analyze 工作流入口：
 
 ```text
-英文字幕文本
+Subtitle Text
 ↓
-障碍识别
+Analyze
 ↓
-障碍流生成
+Obstacle Detection Engine
+↓
+Obstacle Stream
 ```
 
 ## 项目结构
@@ -38,6 +42,7 @@ video-english-assistant/
 - 右侧障碍流支持滚动。
 - 支持平板和手机响应式布局。
 - V1.7 新增障碍识别引擎，可从英文字幕文本自动生成障碍流。
+- V1.8 新增 Subtitle Input 多行文本框和 Analyze 按钮，点击后清空旧障碍流并渲染新障碍流。
 
 ## V1.7 障碍识别规则
 
@@ -86,17 +91,40 @@ If you enjoyed this lecture, I'm sure you're too busy to lay it on us.
 理解障碍：lay it on us
 ```
 
+## V1.8 Analyze Workflow
+
+```text
+Subtitle Text
+↓
+Analyze
+↓
+Obstacle Detection Engine
+↓
+Obstacle Stream
+```
+
+点击左侧视频区域下方的 `Analyze` 按钮后，页面会读取 `Subtitle Input` 多行文本框中的英文字幕文本，调用 `ObstacleDetectionEngine.analyzeSubtitleText()` 生成新的障碍流，并重新渲染右侧卡片。
+
+生词障碍优先输出，理解障碍第二优先输出。生词卡片固定显示：生词、音标、中文释义；理解卡片固定显示：出处、字面意思、实际意思、语法解释。隐藏卡片、`localStorage` 记忆隐藏状态、恢复全部按钮继续保留。
+
 ## 使用方式
 
 直接用浏览器打开 `index.html`，或使用任意静态文件服务器运行本项目。
 
-页面默认使用示例字幕生成障碍流：
+页面默认在 `Subtitle Input` 中填入示例字幕：
 
 ```text
 If you enjoyed this lecture, I'm sure you're too busy to lay it on us.
 ```
 
-也可以在浏览器控制台调用 V1.7 引擎，不需要修改页面结构：
+点击 `Analyze` 后会生成：
+
+```text
+生词障碍：lecture
+理解障碍：lay it on us
+```
+
+也可以在浏览器控制台调用引擎：
 
 ```js
 ObstacleDetectionEngine.analyze(
@@ -124,13 +152,21 @@ ObstacleDetectionEngine.analyze(
 );
 ```
 
-## V1.7 暂不包含
+## Testing
+
+```text
+✅ node --check script.js
+✅ Analyze 按钮测试
+✅ 默认文本测试
+```
+
+## V1.8 暂不包含
 
 - 暂不接视频。
 - 暂不接字幕文件。
 - 暂不接播放器。
-- 暂不修改 V1.5 UI、页面布局或样式。
+- 暂不修改 V1.5 左侧 70% / 右侧 30% 整体布局和整体视觉风格。
 
 ## 网页预览截图
 
-V1.7 没有修改 UI、页面布局或样式，因此网页预览截图保持 V1.5 页面外观：`preview-v1.7.svg`。
+V1.8 保持 V1.5 左侧 70% / 右侧 30% 页面布局与整体视觉风格，预览截图沿用 `preview-v1.7.svg`。
