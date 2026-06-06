@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'video-english-assistant-hidden-cards-v1';
+const RESOLVED_OBSTACLES_STORAGE_KEY = 'video-english-assistant-resolved-obstacles-v2';
 const DEFAULT_SUBTITLE_TEXT = "If you enjoyed this lecture, I'm sure you're too busy to lay it on us.";
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
 
@@ -190,32 +190,27 @@ function analyzeSubtitleText(text, options = {}) {
 let obstacles = analyzeSubtitleText(DEFAULT_SUBTITLE_TEXT, { level: DEFAULT_VOCABULARY_LEVEL });
 
 const cardStream = document.querySelector('#cardStream');
-const restoreAllButton = document.querySelector('#restoreAllButton');
 const subtitleTextInput = document.querySelector('#subtitleTextInput');
 const analyzeButton = document.querySelector('#analyzeButton');
 
-function getHiddenCardIds() {
+function getResolvedObstacleIds() {
   try {
-    const value = localStorage.getItem(STORAGE_KEY);
-    return value ? JSON.parse(value) : [];
+    const value = localStorage.getItem(RESOLVED_OBSTACLES_STORAGE_KEY);
+    const parsedValue = value ? JSON.parse(value) : [];
+    return Array.isArray(parsedValue) ? parsedValue : [];
   } catch {
     return [];
   }
 }
 
-function saveHiddenCardIds(ids) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
+function saveResolvedObstacleIds(ids) {
+  localStorage.setItem(RESOLVED_OBSTACLES_STORAGE_KEY, JSON.stringify(ids));
 }
 
-function hideCard(cardId) {
-  const hiddenIds = new Set(getHiddenCardIds());
-  hiddenIds.add(cardId);
-  saveHiddenCardIds([...hiddenIds]);
-  renderCards();
-}
-
-function restoreAllCards() {
-  localStorage.removeItem(STORAGE_KEY);
+function resolveObstacle(obstacleId) {
+  const resolvedIds = new Set(getResolvedObstacleIds());
+  resolvedIds.add(obstacleId);
+  saveResolvedObstacleIds([...resolvedIds]);
   renderCards();
 }
 
@@ -282,7 +277,7 @@ function createCard(obstacle) {
   dismissButton.className = 'dismiss-button';
   dismissButton.type = 'button';
   dismissButton.textContent = '✓ 不用管我了';
-  dismissButton.addEventListener('click', () => hideCard(obstacle.id));
+  dismissButton.addEventListener('click', () => resolveObstacle(obstacle.id));
 
   inner.append(label, content, dismissButton);
   card.append(inner);
@@ -292,42 +287,41 @@ function createCard(obstacle) {
 function renderEmptyState() {
   const emptyState = document.createElement('div');
   emptyState.className = 'empty-state';
-  emptyState.textContent = '全部障碍卡片都已隐藏。点击“恢复全部”重新显示。';
+  emptyState.textContent = '当前视频内容没有需要处理的障碍。继续观看，遇到新障碍再 Analyze。';
   cardStream.append(emptyState);
 }
 
+function getVisibleObstacles() {
+  const resolvedIds = new Set(getResolvedObstacleIds());
+  return obstacles.filter((obstacle) => !resolvedIds.has(obstacle.id));
+}
+
 function renderCards() {
-  const hiddenIds = new Set(getHiddenCardIds());
-  const visibleObstacles = obstacles.filter((obstacle) => !hiddenIds.has(obstacle.id));
+  const visibleObstacles = getVisibleObstacles();
 
   cardStream.innerHTML = '';
 
   if (visibleObstacles.length === 0) {
     renderEmptyState();
-    return;
+    return visibleObstacles;
   }
 
   visibleObstacles.forEach((obstacle) => {
     cardStream.append(createCard(obstacle));
   });
+
+  return visibleObstacles;
 }
 
 function analyzeAndRender(text, options = {}) {
   obstacles = analyzeSubtitleText(text, options);
-  restoreAllCards();
-  return obstacles;
+  return renderCards();
 }
 
 function handleAnalyzeClick() {
-  obstacles = window.ObstacleDetectionEngine.analyzeSubtitleText(
-    subtitleTextInput.value,
-    { level: DEFAULT_VOCABULARY_LEVEL },
-  );
-
-  restoreAllCards();
+  analyzeAndRender(subtitleTextInput.value, { level: DEFAULT_VOCABULARY_LEVEL });
 }
 
-restoreAllButton.addEventListener('click', restoreAllCards);
 analyzeButton.addEventListener('click', handleAnalyzeClick);
 renderCards();
 
