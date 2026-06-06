@@ -327,25 +327,28 @@ button {
 }
 
 .detail-block {
-  margin-top: 14px;
-  padding: 13px;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-top: 10px;
+  padding: 11px 12px;
   border-radius: var(--radius-md);
   background: var(--surface-muted);
   border: 1px solid #e7edf6;
 }
 
 .detail-title {
-  display: block;
-  margin-bottom: 7px;
+  flex: 0 0 auto;
   color: var(--muted);
   font-size: 0.82rem;
   font-weight: 850;
 }
 
 .detail-text {
+  flex: 1;
   margin: 0;
   color: #2b3542;
-  line-height: 1.65;
+  line-height: 1.55;
 }
 
 .dismiss-button {
