@@ -190,6 +190,7 @@ function analyzeSubtitleText(text, options = {}) {
 let obstacles = analyzeSubtitleText(DEFAULT_SUBTITLE_TEXT, { level: DEFAULT_VOCABULARY_LEVEL });
 
 const cardStream = document.querySelector('#cardStream');
+const restoreAllButton = document.querySelector('#restoreAllButton');
 const subtitleTextInput = document.querySelector('#subtitleTextInput');
 const analyzeButton = document.querySelector('#analyzeButton');
 
@@ -211,6 +212,14 @@ function resolveObstacle(obstacleId) {
   const resolvedIds = new Set(getResolvedObstacleIds());
   resolvedIds.add(obstacleId);
   saveResolvedObstacleIds([...resolvedIds]);
+  renderCards();
+}
+
+function restoreAllCurrentObstacles() {
+  const currentObstacleIds = new Set(obstacles.map((obstacle) => obstacle.id));
+  const unresolvedIds = getResolvedObstacleIds().filter((id) => !currentObstacleIds.has(id));
+
+  saveResolvedObstacleIds(unresolvedIds);
   renderCards();
 }
 
@@ -323,6 +332,7 @@ function handleAnalyzeClick() {
 }
 
 analyzeButton.addEventListener('click', handleAnalyzeClick);
+restoreAllButton.addEventListener('click', restoreAllCurrentObstacles);
 renderCards();
 
 window.ObstacleDetectionEngine = {
@@ -331,6 +341,7 @@ window.ObstacleDetectionEngine = {
   analyzeSubtitleText,
   detectVocabularyObstacles,
   detectUnderstandingObstacles,
+  restoreAllCurrentObstacles,
   levels: Object.fromEntries(
     Object.entries(vocabularyLevels).map(([name, level]) => [name, level.label]),
   ),
