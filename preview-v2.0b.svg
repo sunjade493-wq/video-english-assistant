@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1520" height="900" viewBox="0 0 1520 900">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#eef4ff" offset="0"/>
+      <stop stop-color="#f4f7fb" offset="0.5"/>
+      <stop stop-color="#f8fbff" offset="1"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.08" cy="0.05" r="0.65">
+      <stop stop-color="#d9e7ff" stop-opacity="0.95" offset="0"/>
+      <stop stop-color="#d9e7ff" stop-opacity="0" offset="1"/>
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="20" stdDeviation="24" flood-color="#1b2430" flood-opacity="0.13"/>
+    </filter>
+  </defs>
+  <rect width="1520" height="900" fill="url(#bg)"/>
+  <rect width="1520" height="900" fill="url(#glow)"/>
+
+  <g filter="url(#shadow)">
+    <rect x="24" y="24" width="1016" height="852" rx="28" fill="#ffffff" fill-opacity="0.78" stroke="#dbe3ef"/>
+    <rect x="48" y="48" width="968" height="560" rx="24" fill="#111827"/>
+    <circle cx="532" cy="328" r="190" fill="#60a5fa" opacity="0.16"/>
+    <circle cx="420" cy="328" r="38" fill="#ffffff" opacity="0.16" stroke="#ffffff" stroke-opacity="0.28"/>
+    <polygon points="410,307 410,349 444,328" fill="#ffffff"/>
+    <text x="476" y="313" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="800" letter-spacing="-2">Video English Assistant</text>
+    <text x="478" y="357" fill="#ffffff" fill-opacity="0.72" font-family="Inter, Arial, sans-serif" font-size="22">V2.0B Restore All Button</text>
+    <text x="52" y="656" fill="#2563eb" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="800" letter-spacing="2">TODAY'S LECTURE</text>
+    <text x="52" y="695" fill="#1b2430" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="800" letter-spacing="-1.5">Academic Listening Practice</text>
+    <text x="52" y="732" fill="#6b7685" font-family="Inter, Arial, Noto Sans CJK SC, sans-serif" font-size="20">在左侧观看视频，右侧按照出现顺序追踪生词与理解障碍。</text>
+    <rect x="48" y="760" width="968" height="92" rx="20" fill="#ffffff" fill-opacity="0.82" stroke="#dbe3ef"/>
+    <text x="70" y="793" fill="#2563eb" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="800" letter-spacing="1.8">SUBTITLE INPUT</text>
+    <text x="70" y="826" fill="#1b2430" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="800">Subtitle Input</text>
+    <rect x="878" y="781" width="112" height="40" rx="20" fill="#2563eb"/>
+    <text x="904" y="807" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="750">Analyze</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1064" y="24" width="432" height="852" rx="28" fill="#ffffff" fill-opacity="0.78" stroke="#dbe3ef"/>
+    <path d="M1064 52 Q1064 24 1092 24 H1468 Q1496 24 1496 52 V120 H1064 Z" fill="#ffffff" fill-opacity="0.9"/>
+    <line x1="1064" y1="120" x2="1496" y2="120" stroke="#dbe3ef"/>
+    <text x="1088" y="58" fill="#2563eb" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="800" letter-spacing="1.8">LEARNING TIPS</text>
+    <text x="1088" y="94" fill="#1b2430" font-family="Inter, Arial, Noto Sans CJK SC, sans-serif" font-size="28" font-weight="800">提示</text>
+    <rect x="1364" y="60" width="108" height="40" rx="20" fill="#2563eb"/>
+    <text x="1388" y="86" fill="#ffffff" font-family="Inter, Arial, Noto Sans CJK SC, sans-serif" font-size="15" font-weight="750">恢复全部</text>
+    <rect x="1088" y="146" width="384" height="132" rx="20" fill="#ffffff" stroke="#dbe3ef"/>
+    <rect x="1112" y="170" width="58" height="27" rx="13" fill="#e0ecff"/>
+    <text x="1123" y="189" fill="#1d4ed8" font-family="Inter, Arial, Noto Sans CJK SC, sans-serif" font-size="13" font-weight="800">[生词]</text>
+    <rect x="1112" y="211" width="336" height="42" rx="14" fill="#f7f9fc" stroke="#e7edf6"/>
+    <text x="1128" y="238" fill="#2b3542" font-family="Inter, Arial, Noto Sans CJK SC, sans-serif" font-size="18" font-weight="760">lecture /ˈlektʃər/ 讲座</text>
+    <rect x="1112" y="270" width="336" height="44" rx="22" fill="#16a34a"/>
+    <text x="1218" y="298" fill="#ffffff" font-family="Inter, Arial, Noto Sans CJK SC, sans-serif" font-size="16" font-weight="750">✓ 不用管我了</text>
+
+    <rect x="1088" y="302" width="384" height="528" rx="20" fill="#ffffff" stroke="#dbe3ef"/>
+    <rect x="1112" y="326" width="58" height="27" rx="13" fill="#e0ecff"/>
+    <text x="1123" y="345" fill="#1d4ed8" font-family="Inter, Arial, Noto Sans CJK SC, sans-serif" font-size="13" font-weight="800">[理解]</text>
+    <rect x="1112" y="374" width="336" height="78" rx="14" fill="#f7f9fc" stroke="#e7edf6"/>
+    <text x="1128" y="399" fill="#6b7685" font-family="Inter, Arial, Noto Sans CJK SC, sans-serif" font-size="14" font-weight="800">出处：</text>
+    <text x="1128" y="426" fill="#2b3542" font-family="Inter, Arial, sans-serif" font-size="15">If you enjoyed this lecture, I'm sure...</text>
+    <rect x="1112" y="464" width="336" height="58" rx="14" fill="#f7f9fc" stroke="#e7edf6"/>
+    <text x="1128" y="489" fill="#6b7685" font-family="Inter, Arial, Noto Sans CJK SC, sans-serif" font-size="14" font-weight="800">字面意思：</text><text x="1210" y="489" fill="#2b3542" font-family="Inter, Arial, Noto Sans CJK SC, sans-serif" font-size="15">把它放到我们身上</text>
+    <rect x="1112" y="534" width="336" height="74" rx="14" fill="#f7f9fc" stroke="#e7edf6"/>
+    <text x="1128" y="560" fill="#6b7685" font-family="Inter, Arial, Noto Sans CJK SC, sans-serif" font-size="14" font-weight="800">实际意思：</text>
+    <text x="1128" y="586" fill="#2b3542" font-family="Inter, Arial, Noto Sans CJK SC, sans-serif" font-size="15">把想说的话直接告诉我们；别拐弯抹角。</text>
+    <rect x="1112" y="620" width="336" height="124" rx="14" fill="#f7f9fc" stroke="#e7edf6"/>
+    <text x="1128" y="646" fill="#6b7685" font-family="Inter, Arial, Noto Sans CJK SC, sans-serif" font-size="14" font-weight="800">语法解释：</text>
+    <text x="1128" y="674" fill="#2b3542" font-family="Inter, Arial, Noto Sans CJK SC, sans-serif" font-size="15">lay it on someone 是口语表达，</text>
+    <text x="1128" y="699" fill="#2b3542" font-family="Inter, Arial, Noto Sans CJK SC, sans-serif" font-size="15">常用于请求对方直接说出信息或要求。</text>
+    <text x="1128" y="724" fill="#2b3542" font-family="Inter, Arial, Noto Sans CJK SC, sans-serif" font-size="15">to lay it on us 是不定式短语。</text>
+    <rect x="1112" y="764" width="336" height="44" rx="22" fill="#16a34a"/>
+    <text x="1218" y="792" fill="#ffffff" font-family="Inter, Arial, Noto Sans CJK SC, sans-serif" font-size="16" font-weight="750">✓ 不用管我了</text>
+  </g>
+</svg>

@@ -249,12 +249,30 @@ button {
   letter-spacing: -0.03em;
 }
 
+.restore-button,
 .dismiss-button {
   border: 0;
   border-radius: 999px;
   cursor: pointer;
   font-weight: 750;
   transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.restore-button {
+  flex: 0 0 auto;
+  padding: 10px 14px;
+  color: #fff;
+  background: var(--primary);
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.24);
+}
+
+.restore-button:hover,
+.dismiss-button:hover {
+  transform: translateY(-1px);
+}
+
+.restore-button:hover {
+  background: var(--primary-dark);
 }
 
 .card-stream {
@@ -392,7 +410,8 @@ button {
     flex-direction: column;
   }
 
-  .analyze-button {
+  .analyze-button,
+  .restore-button {
     width: 100%;
   }
 
