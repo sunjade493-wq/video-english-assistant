@@ -48,6 +48,10 @@ video-english-assistant/
 - 支持平板和手机响应式布局。
 - V2.0 删除「恢复全部」「恢复障碍」及相关 UI、逻辑和说明。
 
+## V2.0A UI Copy Adjustment
+
+右侧栏中文名称从「障碍流」调整为「提示」，英文小标题从 `OBSTACLE STREAM` 调整为 `LEARNING TIPS`，降低用户理解成本和学习压力。
+
 ## V2.0 Learning Flow Frozen
 
 ### 一、产品目标
@@ -330,6 +334,6 @@ ObstacleDetectionEngine.analyze(
 
 ## 网页预览截图
 
-V2.0 保持 V1.5 左侧 70% / 右侧 30% 页面布局与整体视觉风格，冻结学习流程逻辑，移除恢复入口，并让「✓ 不用管我了」成为 resolved 后跨 Analyze 隐藏的唯一完成动作。
+V2.0A 保持 V1.5 左侧 70% / 右侧 30% 页面布局与整体视觉风格，冻结学习流程逻辑，仅将右侧栏中文名称从「障碍流」调整为「提示」，英文小标题调整为 `LEARNING TIPS`。
 
-![V2.0 Learning Flow Frozen 网页预览截图](preview-v2.0.svg)
+![V2.0A UI Copy Adjustment 网页预览截图](preview-v2.0.svg)
