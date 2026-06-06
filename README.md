@@ -52,6 +52,50 @@ video-english-assistant/
 - 右侧提示流支持滚动。
 - 支持平板和手机响应式布局。
 
+## V2.2 Dynamic Obstacle Stream Frozen
+
+V2.2 将提示从“一次性全部显示”升级为“按照字幕出现顺序动态出现”。Analyze 仍然会先分析整段字幕并生成完整队列，但右侧提示区默认只展示当前需要处理的一条提示。
+
+动态队列规则：
+
+- Analyze 后生成生词提示与理解提示队列。
+- 队列按字幕中出现顺序排列，不按类型分组。
+- 默认只显示队列中的第一条未隐藏提示。
+- 点击「✓ 不用管我了」表示当前轮次该提示已经不再构成理解障碍，系统会隐藏当前提示并自动显示下一条提示。
+- 当最后一条提示处理完成后，右侧显示「当前视频内容没有需要处理的障碍。」
+- 「恢复全部」只恢复当前轮次已隐藏提示，不写入知识库，也不代表永久掌握。
+
+### V2.2 验证流程
+
+使用默认测试字幕：
+
+```text
+If you enjoyed this lecture,
+I'm sure you're too busy to lay it on us.
+
+Can you give me a hand?
+
+I was pulled off the project.
+
+Let's call it a day.
+```
+
+期望动态出现顺序：
+
+```text
+lecture
+↓
+lay it on us
+↓
+give me a hand
+↓
+pull off the project
+↓
+call it a day
+↓
+当前视频内容没有需要处理的障碍。
+```
+
 ## V2.1 Multi-line Subtitle Analysis
 
 V2.1 开始支持 10~50 句多行字幕输入。Analyze 会在同一段字幕文本中同时识别：
