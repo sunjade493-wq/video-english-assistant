@@ -1,4 +1,3 @@
-const RESOLVED_OBSTACLES_STORAGE_KEY = 'video-english-assistant-resolved-obstacles-v2';
 const DEFAULT_SUBTITLE_TEXT = `If you enjoyed this lecture,
 I'm sure you're too busy to lay it on us.
 
@@ -313,38 +312,29 @@ function analyzeSubtitleText(text, options = {}) {
 }
 
 let obstacles = analyzeSubtitleText(DEFAULT_SUBTITLE_TEXT, { level: DEFAULT_VOCABULARY_LEVEL });
+let hiddenObstacleIds = new Set();
+let streamMode = 'dynamic';
 
 const cardStream = document.querySelector('#cardStream');
 const restoreAllButton = document.querySelector('#restoreAllButton');
 const subtitleTextInput = document.querySelector('#subtitleTextInput');
 const analyzeButton = document.querySelector('#analyzeButton');
 
-function getResolvedObstacleIds() {
-  try {
-    const value = localStorage.getItem(RESOLVED_OBSTACLES_STORAGE_KEY);
-    const parsedValue = value ? JSON.parse(value) : [];
-    return Array.isArray(parsedValue) ? parsedValue : [];
-  } catch {
-    return [];
-  }
+function resetObstacleStream(nextObstacles) {
+  obstacles = nextObstacles;
+  hiddenObstacleIds = new Set();
+  streamMode = 'dynamic';
 }
 
-function saveResolvedObstacleIds(ids) {
-  localStorage.setItem(RESOLVED_OBSTACLES_STORAGE_KEY, JSON.stringify(ids));
-}
-
-function resolveObstacle(obstacleId) {
-  const resolvedIds = new Set(getResolvedObstacleIds());
-  resolvedIds.add(obstacleId);
-  saveResolvedObstacleIds([...resolvedIds]);
+function hideCurrentObstacle(obstacleId) {
+  hiddenObstacleIds.add(obstacleId);
+  streamMode = 'dynamic';
   renderCards();
 }
 
 function restoreAllCurrentObstacles() {
-  const currentObstacleIds = new Set(obstacles.map((obstacle) => obstacle.id));
-  const unresolvedIds = getResolvedObstacleIds().filter((id) => !currentObstacleIds.has(id));
-
-  saveResolvedObstacleIds(unresolvedIds);
+  hiddenObstacleIds = new Set();
+  streamMode = 'restored';
   renderCards();
 }
 
@@ -421,7 +411,7 @@ function createCard(obstacle) {
   dismissButton.className = 'dismiss-button';
   dismissButton.type = 'button';
   dismissButton.textContent = '✓ 不用管我了';
-  dismissButton.addEventListener('click', () => resolveObstacle(obstacle.id));
+  dismissButton.addEventListener('click', () => hideCurrentObstacle(obstacle.id));
 
   inner.append(label, content, dismissButton);
   card.append(inner);
@@ -431,21 +421,31 @@ function createCard(obstacle) {
 function renderEmptyState() {
   const emptyState = document.createElement('div');
   emptyState.className = 'empty-state';
-  emptyState.textContent = '当前视频内容没有需要处理的障碍。继续观看，遇到新障碍再 Analyze。';
+  emptyState.textContent = '当前视频内容没有需要处理的障碍。';
   cardStream.append(emptyState);
 }
 
+function getPendingObstacles() {
+  return obstacles.filter((obstacle) => !hiddenObstacleIds.has(obstacle.id));
+}
+
 function getVisibleObstacles() {
-  const resolvedIds = new Set(getResolvedObstacleIds());
-  return obstacles.filter((obstacle) => !resolvedIds.has(obstacle.id));
+  const pendingObstacles = getPendingObstacles();
+
+  if (streamMode === 'restored') {
+    return pendingObstacles;
+  }
+
+  return pendingObstacles.slice(0, 1);
 }
 
 function renderCards() {
+  const pendingObstacles = getPendingObstacles();
   const visibleObstacles = getVisibleObstacles();
 
   cardStream.innerHTML = '';
 
-  if (visibleObstacles.length === 0) {
+  if (pendingObstacles.length === 0) {
     renderEmptyState();
     return visibleObstacles;
   }
@@ -458,7 +458,7 @@ function renderCards() {
 }
 
 function analyzeAndRender(text, options = {}) {
-  obstacles = analyzeSubtitleText(text, options);
+  resetObstacleStream(analyzeSubtitleText(text, options));
   return renderCards();
 }
 
@@ -477,6 +477,7 @@ window.ObstacleDetectionEngine = {
   detectVocabularyObstacles,
   detectUnderstandingObstacles,
   restoreAllCurrentObstacles,
+  getVisibleObstacles,
   levels: Object.fromEntries(
     Object.entries(vocabularyLevels).map(([name, level]) => [name, level.label]),
   ),
