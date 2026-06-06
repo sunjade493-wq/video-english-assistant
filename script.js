@@ -235,6 +235,22 @@ function createDetailBlock(title, text) {
   return block;
 }
 
+function getCompactTranslation(translation) {
+  return String(translation || '').split(/[；;]/)[0].trim();
+}
+
+function createWordSummary(obstacle) {
+  const summary = document.createElement('p');
+  summary.className = 'word-summary';
+  summary.textContent = [
+    obstacle.word,
+    obstacle.phonetic,
+    getCompactTranslation(obstacle.translation),
+  ].filter(Boolean).join(' ');
+
+  return summary;
+}
+
 function createCard(obstacle) {
   const card = document.createElement('article');
   card.className = 'obstacle-card';
@@ -250,11 +266,7 @@ function createCard(obstacle) {
   content.className = 'card-content';
 
   if (obstacle.kind === 'word') {
-    content.append(
-      createDetailBlock('生词', obstacle.word),
-      createDetailBlock('音标', obstacle.phonetic),
-      createDetailBlock('中文释义', obstacle.translation),
-    );
+    content.append(createWordSummary(obstacle));
   }
 
   if (obstacle.kind === 'understanding') {
