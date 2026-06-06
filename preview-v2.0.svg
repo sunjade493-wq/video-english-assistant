@@ -38,8 +38,8 @@
     <rect x="1064" y="24" width="432" height="852" rx="28" fill="#ffffff" fill-opacity="0.78" stroke="#dbe3ef"/>
     <path d="M1064 52 Q1064 24 1092 24 H1468 Q1496 24 1496 52 V120 H1064 Z" fill="#ffffff" fill-opacity="0.9"/>
     <line x1="1064" y1="120" x2="1496" y2="120" stroke="#dbe3ef"/>
-    <text x="1088" y="58" fill="#2563eb" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="800" letter-spacing="1.8">OBSTACLE STREAM</text>
-    <text x="1088" y="94" fill="#1b2430" font-family="Inter, Arial, Noto Sans CJK SC, sans-serif" font-size="28" font-weight="800">障碍流</text>
+    <text x="1088" y="58" fill="#2563eb" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="800" letter-spacing="1.8">LEARNING TIPS</text>
+    <text x="1088" y="94" fill="#1b2430" font-family="Inter, Arial, Noto Sans CJK SC, sans-serif" font-size="28" font-weight="800">提示</text>
     <rect x="1088" y="146" width="384" height="132" rx="20" fill="#ffffff" stroke="#dbe3ef"/>
     <rect x="1112" y="170" width="58" height="27" rx="13" fill="#e0ecff"/>
     <text x="1123" y="189" fill="#1d4ed8" font-family="Inter, Arial, Noto Sans CJK SC, sans-serif" font-size="13" font-weight="800">[生词]</text>
