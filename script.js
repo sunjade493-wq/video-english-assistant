@@ -427,10 +427,6 @@ function getPrimaryDynamicObstacle() {
 }
 
 function getActiveSubtitleObstacle() {
-  if (streamMode === 'restored') {
-    return null;
-  }
-
   return getPrimaryDynamicObstacle();
 }
 
@@ -601,10 +597,18 @@ function hideCurrentObstacle(obstacleId) {
 
 function restoreAllCurrentObstacles() {
   hiddenObstacleIds = new Set();
-  selectedObstacleId = null;
   streamMode = 'restored';
+  selectedObstacleId = null;
+
+  const activeObstacle = getPrimaryDynamicObstacle();
+  selectedObstacleId = activeObstacle ? activeObstacle.id : null;
+
+  if (activeObstacle) {
+    syncSubtitleSegmentToObstacle(activeObstacle.id);
+  }
+
   renderCards();
-  renderSubtitleMarkers();
+  renderVideoState();
 }
 
 function createDetailBlock(title, text) {
