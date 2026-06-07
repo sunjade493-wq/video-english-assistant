@@ -682,7 +682,8 @@ function resetObstacleStream(nextObstacles, text = subtitleTextInput.value) {
   selectedObstacleId = null;
   currentSegmentIndex = 0;
   subtitleSegments = parseSubtitleSegments(text);
-  setVideoPlayback(true);
+  renderVideoState();
+  syncPlaybackClock();
 }
 
 function hideCurrentObstacle(obstacleId) {
@@ -693,7 +694,7 @@ function hideCurrentObstacle(obstacleId) {
   }
 
   streamMode = 'dynamic';
-  setVideoPlayback(true);
+  renderVideoState();
   renderCards();
 }
 
@@ -701,7 +702,7 @@ function restoreAllCurrentObstacles() {
   hiddenObstacleIds = new Set();
   streamMode = 'dynamic';
   selectedObstacleId = null;
-  setVideoPlayback(true);
+  renderVideoState();
   renderCards();
 }
 
@@ -861,6 +862,13 @@ window.ObstacleDetectionEngine = {
   detectVocabularyObstacles,
   detectUnderstandingObstacles,
   restoreAllCurrentObstacles,
+  hideCurrentObstacle,
+  toggleVideoPlayback,
+  getPlaybackState: () => ({
+    isVideoPlaying,
+    selectedObstacleId,
+    currentSegmentIndex,
+  }),
   getVisibleObstacles,
   learningTipsMode: LEARNING_TIPS_MODE,
   setLearningTipsMode,
