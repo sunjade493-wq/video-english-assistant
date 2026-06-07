@@ -14,8 +14,19 @@ class TestElement {
     this.type = '';
     this.eventHistory = [];
     this.classList = {
-      add: () => {},
-      remove: () => {},
+      add: (...classNames) => {
+        const existingClassNames = new Set(this.className.split(/\s+/).filter(Boolean));
+        classNames.forEach((className) => existingClassNames.add(className));
+        this.className = [...existingClassNames].join(' ');
+      },
+      remove: (...classNames) => {
+        const classNamesToRemove = new Set(classNames);
+        this.className = this.className
+          .split(/\s+/)
+          .filter((className) => className && !classNamesToRemove.has(className))
+          .join(' ');
+      },
+      contains: (className) => this.className.split(/\s+/).includes(className),
     };
     this.currentTextContent = '';
   }
@@ -263,7 +274,9 @@ if (getElement('#obstacleBottomSheet').hidden !== false || getElement('#bottomSh
 }
 console.log('PASS Test V2.4A clicking cluster opens Bottom Sheet');
 
-const bottomSheetLabels = getElement('#bottomSheetContent').children.map((child) => child.textContent);
+const bottomSheetGroups = getElement('#bottomSheetContent').children;
+const bottomSheetLabels = bottomSheetGroups.flatMap((group) => group.children[2].children.map((child) => child.textContent));
+const bottomSheetSubtitles = bottomSheetGroups.map((group) => group.children[1].textContent);
 const expectedBottomSheetLabels = [
   '○ lecture',
   '● lay it on us',
@@ -274,11 +287,35 @@ const expectedBottomSheetLabels = [
 if (JSON.stringify(bottomSheetLabels) !== JSON.stringify(expectedBottomSheetLabels)) {
   throw new Error(`Test V2.4A bottom sheet order: expected ${JSON.stringify(expectedBottomSheetLabels)}, got ${JSON.stringify(bottomSheetLabels)}`);
 }
-console.log('PASS Test V2.4A Bottom Sheet shows ○ words first and ● understanding second');
+if (bottomSheetGroups.length !== 4 || bottomSheetGroups[0].children[2].children.length !== 2) {
+  throw new Error('Test V2.4A bottom sheet grouping: expected subtitle-node groups with same-sentence obstacles bound together');
+}
+if (!bottomSheetSubtitles.includes("If you enjoyed this lecture, I'm sure you're too busy to lay it on us.")) {
+  throw new Error('Test V2.4A bottom sheet subtitle text: expected full first subtitle text');
+}
+console.log('PASS Test V2.4A Bottom Sheet groups by subtitle, keeps bound obstacles, and sorts ○ before ●');
 
+const renderedHeatClusters = api.renderTimelines();
+api.openBottomSheet(renderedHeatClusters[0]);
+const selectedHeatButton = getElement('#obstacleHeatAxis').children.find((child) => child.className.includes('heat-cluster-button is-selected'));
+const selectedHighlight = getElement('#obstacleHeatAxis').children.find((child) => child.className === 'heat-cluster-highlight');
+if (!selectedHeatButton || !selectedHighlight) {
+  throw new Error('Test V2.4A heat cluster highlight: expected selected cluster button and highlighted region');
+}
+console.log('PASS Test V2.4A selected heat cluster is highlighted');
+
+api.hideCurrentObstacle('word-lecture');
+const navigationItemsAfterHide = api.getObstacleNavigationItems();
+if (navigationItemsAfterHide.length !== navigationItems.length) {
+  throw new Error('Test V2.4A heat map immutable after hide: expected hidden Learning Tip not to change heat counts');
+}
+console.log('PASS Test V2.4A heat map counts do not change after hiding an obstacle');
+
+api.openBottomSheet({ items: navigationItems });
 api.toggleVideoPlayback();
 const wasPlayingBeforeBottomSheetJump = api.getPlaybackState().isVideoPlaying;
-const pullOffButton = getElement('#bottomSheetContent').children.find((child) => child.textContent === '● pull off the project');
+const pullOffGroup = getElement('#bottomSheetContent').children.find((group) => group.textContent.includes('pull off the project'));
+const pullOffButton = pullOffGroup.children[2].children.find((child) => child.textContent === '● pull off the project');
 pullOffButton.click();
 assertLabels('Test V2.4A Bottom Sheet item jumps and syncs Learning Tips', ['pull off the project']);
 if (getElement('#obstacleBottomSheet').hidden !== true) {
