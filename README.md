@@ -2,7 +2,7 @@
 
 一个纯 HTML/CSS/Vanilla JavaScript 实现的 Video English Assistant。
 
-当前版本：V2.3A Hot Fix – Restore Current Subtitle Learning Tips Behavior。
+当前版本：V2.3A Final Interaction Hot Fix – Decouple Learning Tips from Playback Control。
 
 V2.0 冻结学习流程逻辑：产品不追求让用户永久掌握所有单词、语法或考试能力，而是帮助用户扫除视频学习英语过程中的障碍，让用户越来越顺畅地听懂、看懂英语视频，并通过持续跨越障碍建立信心、提高效率、保持动力。
 
@@ -13,11 +13,11 @@ Analyze
 ↓
 Obstacle Detection Engine
 ↓
-Obstacle Stream
+Current Subtitle Learning Tips
 ↓
 ✓ 不用管我了
 ↓
-Resolved and hidden from future Analyze results
+Hide this one card only; playback state is unchanged
 ```
 
 ## 项目结构
@@ -47,12 +47,11 @@ video-english-assistant/
 - 生词卡片固定字段：生词、音标、中文释义。
 - 理解卡片固定字段：出处、字面意思、实际意思、语法解释。
 - 理解卡展示方式为「字段：内容」同一行展示，提高阅读密度。
-- 点击「✓ 不用管我了」表示该内容从现在开始不再是用户理解当前视频的障碍。
-- 点击「✓ 不用管我了」后，系统会将该障碍记录为 `resolved`，从障碍流隐藏，并保存到 `localStorage`。
-- 已 `resolved` 的提示会跨 Analyze 生效；以后再次 Analyze 出同一个内容时，不再进入提示流。
+- 点击「✓ 不用管我了」只隐藏当前这一个 Learning Tips 卡片，不控制播放、不自动跳转、不恢复视频。
+- 点击「恢复全部」只恢复当前轮次隐藏过的提示卡片，不控制播放，且 Learning Tips 仍然只显示当前字幕段中的障碍。
 - 支持在 `Subtitle Input` 中输入 10~50 句多行字幕，并按照字幕出现顺序生成提示流。
 - 同一障碍在同一次 Analyze 中只出现一次；理解短语内部的单词不再额外拆成生词提示。
-- 点击右侧栏顶部「恢复全部」后，当前轮次已隐藏的生词提示和理解提示会重新显示，但仍然只限于当前播放字幕。
+- 点击右侧栏顶部「恢复全部」后，当前轮次已隐藏的生词提示和理解提示会重新显示，但仍然只限于当前播放字幕，且不改变当前播放 / 暂停状态。
 - 右侧提示流支持滚动。
 - 支持平板和手机响应式布局。
 
@@ -95,6 +94,41 @@ Let's call it a day.
 - `screenshot-v2.3a-lecture-lay-it-on-us.svg`：当前字幕为 `lecture + lay it on us`。
 - `screenshot-v2.3a-give-me-a-hand.svg`：当前字幕为 `give me a hand`。
 - `screenshot-v2.3a-pull-off-the-project.svg`：当前字幕为 `pull off the project`。
+
+## V2.3A Final Interaction Rules
+
+V2.3A Final Interaction Hot Fix 将 Learning Tips 的卡片管理职责与视频播放控制职责彻底解耦，避免同一字幕中存在多个障碍时，用户只隐藏其中一个卡片却意外恢复播放。
+
+冻结规则：
+
+1. 点击视频区域：视频播放 / 暂停双向切换；Desktop mouse click 与 Mobile touch 都支持；点击视频任意非障碍区域都可以控制播放与暂停。
+2. 点击播放按钮：播放 / 暂停双向切换；行为与点击视频区域一致。
+3. 点击字幕障碍虚线：进入 Learning Pause，视频强制暂停，Learning Pause Hint 显示，Learning Tips 显示当前字幕全部障碍；点击虚线只作为学习暂停入口，不把 Learning Tips 过滤成单个障碍。
+4. Learning Tips：始终只显示当前字幕段中的障碍；如果当前字幕中有多个障碍则全部显示；显示顺序为生词障碍优先、理解障碍其次，同类内部按字幕出现顺序排序；不要显示整个视频的全部障碍。
+5. ✓ 不用管我了：只负责隐藏当前这一个障碍卡片；不要控制视频播放，不要恢复播放，不要暂停视频，不要跳到下一条；如果当前字幕还有其他障碍卡片，它们继续显示；如果当前字幕所有障碍都被隐藏，Learning Tips 可以显示空状态，但视频播放状态不变。
+6. 恢复全部：只负责恢复当前轮次隐藏过的障碍；不要控制视频播放，不要改变当前播放 / 暂停状态；恢复后仍然只显示当前字幕段中的障碍，不变成全视频障碍列表。
+7. Learning Pause Hint：点击虚线进入 Learning Pause 后显示；自动淡出时间保持约 5.5 秒；点击“知道了”后在本设备永久隐藏。
+8. 播放逻辑统一归视频播放器：只有点击视频区域、点击播放按钮、点击字幕虚线时强制进入 Learning Pause 可以控制播放；✓ 不用管我了、恢复全部、Learning Tips 卡片渲染、Learning Tips 自动同步、当前字幕障碍切换都不得控制播放状态。
+
+### V2.3A Final Acceptance Tests
+
+使用默认第一段字幕：
+
+```text
+If you enjoyed this lecture,
+I'm sure you're too busy to lay it on us.
+```
+
+期望：
+
+1. Learning Tips 同时显示 `lecture` 和 `lay it on us`。
+2. 点击 `lay it on us` 虚线后，视频暂停，Learning Pause Hint 显示，Learning Tips 仍然显示 `lecture` 与 `lay it on us`，不要只显示 `lay it on us`。
+3. Learning Pause 状态下点击 `lecture` 的「✓ 不用管我了」后，只隐藏 `lecture`，`lay it on us` 仍然显示，视频仍保持暂停，不自动播放。
+4. 继续点击 `lay it on us` 的「✓ 不用管我了」后，当前字幕障碍为空，视频仍保持暂停，不自动播放。
+5. 点击视频区域后视频恢复播放。
+6. 播放状态下点击视频区域后视频暂停。
+7. 暂停状态下点击视频区域后视频播放。
+8. 点击「恢复全部」后，隐藏障碍恢复，Learning Tips 仍只显示当前字幕障碍，不显示全视频障碍，不改变当前播放 / 暂停状态。
 
 ## V2.2 Dynamic Obstacle Stream Frozen
 
