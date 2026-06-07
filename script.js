@@ -326,7 +326,6 @@ let subtitleSegments = parseSubtitleSegments(DEFAULT_SUBTITLE_TEXT);
 let currentSegmentIndex = 0;
 let isVideoPlaying = true;
 let playbackTimer = null;
-let resumeTimer = null;
 let obstacles = analyzeSubtitleText(DEFAULT_SUBTITLE_TEXT, { level: DEFAULT_VOCABULARY_LEVEL });
 let hiddenObstacleIds = new Set();
 let streamMode = 'dynamic';
@@ -489,12 +488,6 @@ function createSubtitleLanguageLine(className) {
 }
 
 function renderSubtitleMarkers() {
-  const activeObstacle = getActiveSubtitleObstacle();
-
-  if (activeObstacle) {
-    syncSubtitleSegmentToObstacle(activeObstacle.id);
-  }
-
   const segment = getCurrentSubtitleSegment();
   currentSubtitleLine.innerHTML = '';
 
@@ -537,16 +530,8 @@ function moveToNextSubtitleSegment() {
   }
 
   currentSegmentIndex = (currentSegmentIndex + 1) % subtitleSegments.length;
-  selectedObstacleId = null;
   renderVideoState();
   renderCards();
-}
-
-function stopResumeTimer() {
-  if (resumeTimer) {
-    window.clearTimeout(resumeTimer);
-    resumeTimer = null;
-  }
 }
 
 function stopPlaybackTimer() {
@@ -554,33 +539,27 @@ function stopPlaybackTimer() {
     window.clearInterval(playbackTimer);
     playbackTimer = null;
   }
-
-  stopResumeTimer();
 }
 
-function startPlaybackTimer({ fastResume = false } = {}) {
+function startPlaybackTimer() {
   stopPlaybackTimer();
-
-  if (fastResume) {
-    resumeTimer = window.setTimeout(() => {
-      resumeTimer = null;
-      moveToNextSubtitleSegment();
-    }, 1200);
-  }
-
   playbackTimer = window.setInterval(moveToNextSubtitleSegment, SEGMENT_DURATION_MS);
 }
 
-function setVideoPlayback(nextIsPlaying) {
-  const wasPlaying = isVideoPlaying;
-  isVideoPlaying = nextIsPlaying;
-
+function syncPlaybackClock() {
   if (isVideoPlaying) {
-    startPlaybackTimer({ fastResume: !wasPlaying });
-  } else {
-    stopPlaybackTimer();
+    if (!playbackTimer) {
+      startPlaybackTimer();
+    }
+    return;
   }
 
+  stopPlaybackTimer();
+}
+
+function setVideoPlayback(nextIsPlaying) {
+  isVideoPlaying = Boolean(nextIsPlaying);
+  syncPlaybackClock();
   renderVideoState();
 }
 
@@ -755,10 +734,14 @@ function handleAnalyzeClick() {
 
 analyzeButton.addEventListener('click', handleAnalyzeClick);
 restoreAllButton.addEventListener('click', restoreAllCurrentObstacles);
-videoFrame.addEventListener('click', () => setVideoPlayback(!isVideoPlaying));
+videoFrame.addEventListener('click', () => {
+  if (!isVideoPlaying) {
+    setVideoPlayback(true);
+  }
+});
 renderVideoState();
 renderCards();
-startPlaybackTimer();
+syncPlaybackClock();
 
 window.ObstacleDetectionEngine = {
   Analyze: analyzeAndRender,
