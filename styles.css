@@ -430,7 +430,7 @@ button {
   position: absolute;
   z-index: 2;
   right: 28px;
-  bottom: 26px;
+  bottom: clamp(80px, 10vh, 120px);
   left: 28px;
   display: flex;
   justify-content: center;
@@ -439,21 +439,38 @@ button {
 
 .subtitle-line {
   display: inline-flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 0.08em;
-  max-width: min(92%, 920px);
+  gap: 0.2em;
+  max-width: min(92%, 960px);
   margin: 0;
-  padding: 12px 18px 16px;
-  border-radius: 16px;
-  background: rgba(15, 23, 42, 0.72);
-  color: #fff;
-  font-size: clamp(1.05rem, 2.2vw, 1.65rem);
-  font-weight: 760;
-  line-height: 1.55;
+  padding: 10px 18px 12px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.42), rgba(15, 23, 42, 0.24));
+  color: #ffd84d;
+  font-weight: 800;
+  line-height: 1.26;
   text-align: center;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(10px);
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.92),
+    0 0 10px rgba(0, 0, 0, 0.68);
+  backdrop-filter: blur(4px);
+}
+
+.subtitle-language-line {
+  display: block;
+  width: 100%;
+}
+
+.subtitle-english-line {
+  font-size: clamp(1.26rem, 2.5vw, 2.05rem);
+  letter-spacing: 0.01em;
+}
+
+.subtitle-chinese-line {
+  margin-top: 0.12em;
+  font-size: clamp(1rem, 1.85vw, 1.42rem);
 }
 
 .subtitle-text-part,
@@ -464,14 +481,14 @@ button {
 .subtitle-marker-button {
   appearance: none;
   border: 0;
-  border-bottom: 2px dashed rgba(147, 197, 253, 0.96);
+  border-bottom: 2px dashed rgba(255, 216, 77, 0.9);
   border-radius: 0;
   cursor: pointer;
-  padding: 0 0 3px;
+  padding: 0 0 4px;
   color: inherit;
   background: transparent;
   font: inherit;
-  font-weight: 850;
+  font-weight: 900;
   pointer-events: auto;
   text-shadow: inherit;
   transition: border-color 160ms ease, color 160ms ease;
@@ -479,12 +496,25 @@ button {
 
 .subtitle-marker-button:hover,
 .subtitle-marker-button:focus-visible {
-  border-bottom-color: #fff;
-  color: #bfdbfe;
+  border-bottom-color: #fff4ad;
+  color: #fff4ad;
   outline: none;
 }
 
 .subtitle-marker-button.is-selected {
-  border-bottom-color: #facc15;
-  color: #fef3c7;
+  border-bottom-color: #ffffff;
+  color: #fff7c2;
+}
+
+@media (max-width: 640px) {
+  .subtitle-overlay {
+    right: 14px;
+    bottom: clamp(84px, 18vh, 112px);
+    left: 14px;
+  }
+
+  .subtitle-line {
+    max-width: 96%;
+    padding: 8px 12px 10px;
+  }
 }

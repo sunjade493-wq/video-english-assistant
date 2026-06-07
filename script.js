@@ -8,6 +8,16 @@ I was pulled off the project.
 Let's call it a day.`;
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
 
+const subtitleTranslations = new Map([
+  [
+    "If you enjoyed this lecture, I'm sure you're too busy to lay it on us.",
+    '如果你喜欢这堂讲座，我相信你也很忙，但请直接告诉我们。',
+  ],
+  ['Can you give me a hand?', '你能帮我一下吗？'],
+  ['I was pulled off the project.', '我被调离了这个项目。'],
+  ["Let's call it a day.", '今天就到这里吧。'],
+]);
+
 const vocabularyLevels = {
   junior: {
     label: '初中',
@@ -316,6 +326,7 @@ let subtitleSegments = parseSubtitleSegments(DEFAULT_SUBTITLE_TEXT);
 let currentSegmentIndex = 0;
 let isVideoPlaying = true;
 let playbackTimer = null;
+let resumeTimer = null;
 let obstacles = analyzeSubtitleText(DEFAULT_SUBTITLE_TEXT, { level: DEFAULT_VOCABULARY_LEVEL });
 let hiddenObstacleIds = new Set();
 let streamMode = 'dynamic';
@@ -362,32 +373,86 @@ function getObstacleLabel(obstacle) {
   return obstacle.kind === 'word' ? obstacle.word : obstacle.source || obstacle.phrase;
 }
 
-function getCurrentSegmentObstacles() {
-  const segment = getCurrentSubtitleSegment();
+function getPendingObstacles() {
+  return obstacles.filter((obstacle) => !hiddenObstacleIds.has(obstacle.id));
+}
 
+function getSegmentObstacles(segment = getCurrentSubtitleSegment()) {
   if (!segment) {
     return [];
   }
 
-  return obstacles.filter((obstacle) => (
-    !hiddenObstacleIds.has(obstacle.id)
-    && obstacle.index >= segment.start
+  return getPendingObstacles().filter((obstacle) => (
+    obstacle.index >= segment.start
     && obstacle.index < segment.end
   ));
 }
 
-function getMarkerRangesForSegment(segment) {
-  return getCurrentSegmentObstacles()
-    .map((obstacle) => ({
-      obstacle,
-      start: Math.max(0, obstacle.index - segment.start),
-      end: Math.min(segment.text.length, (obstacle.end || obstacle.index + getObstacleLabel(obstacle).length) - segment.start),
-    }))
-    .filter((range) => range.end > range.start)
-    .sort((firstRange, secondRange) => firstRange.start - secondRange.start);
+function getCurrentSegmentObstacles() {
+  return getSegmentObstacles();
 }
 
-function appendSubtitleText(text) {
+function findSegmentIndexForObstacle(obstacleId) {
+  const obstacle = obstacles.find((item) => item.id === obstacleId);
+
+  if (!obstacle) {
+    return -1;
+  }
+
+  return subtitleSegments.findIndex((segment) => (
+    obstacle.index >= segment.start
+    && obstacle.index < segment.end
+  ));
+}
+
+function syncSubtitleSegmentToObstacle(obstacleId) {
+  const matchingSegmentIndex = findSegmentIndexForObstacle(obstacleId);
+
+  if (matchingSegmentIndex >= 0) {
+    currentSegmentIndex = matchingSegmentIndex;
+  }
+}
+
+function getPrimaryDynamicObstacle() {
+  const pendingObstacles = getPendingObstacles();
+
+  if (selectedObstacleId) {
+    const selectedObstacle = pendingObstacles.find((obstacle) => obstacle.id === selectedObstacleId);
+
+    if (selectedObstacle) {
+      return selectedObstacle;
+    }
+  }
+
+  return pendingObstacles[0] || null;
+}
+
+function getActiveSubtitleObstacle() {
+  if (streamMode === 'restored') {
+    return null;
+  }
+
+  return getPrimaryDynamicObstacle();
+}
+
+function getMarkerRangesForSegment(segment) {
+  const activeObstacle = getActiveSubtitleObstacle();
+
+  if (!activeObstacle) {
+    return [];
+  }
+
+  return [{
+    obstacle: activeObstacle,
+    start: Math.max(0, activeObstacle.index - segment.start),
+    end: Math.min(
+      segment.text.length,
+      (activeObstacle.end || activeObstacle.index + getObstacleLabel(activeObstacle).length) - segment.start,
+    ),
+  }].filter((range) => range.end > range.start);
+}
+
+function appendSubtitleText(text, targetLine = currentSubtitleLine) {
   if (!text) {
     return;
   }
@@ -395,7 +460,7 @@ function appendSubtitleText(text) {
   const textPart = document.createElement('span');
   textPart.className = 'subtitle-text-part';
   textPart.textContent = text;
-  currentSubtitleLine.append(textPart);
+  targetLine.append(textPart);
 }
 
 function createSubtitleMarker(text, obstacle) {
@@ -417,7 +482,19 @@ function createSubtitleMarker(text, obstacle) {
   return marker;
 }
 
+function createSubtitleLanguageLine(className) {
+  const line = document.createElement('span');
+  line.className = className;
+  return line;
+}
+
 function renderSubtitleMarkers() {
+  const activeObstacle = getActiveSubtitleObstacle();
+
+  if (activeObstacle) {
+    syncSubtitleSegmentToObstacle(activeObstacle.id);
+  }
+
   const segment = getCurrentSubtitleSegment();
   currentSubtitleLine.innerHTML = '';
 
@@ -426,6 +503,8 @@ function renderSubtitleMarkers() {
     return;
   }
 
+  const englishLine = createSubtitleLanguageLine('subtitle-language-line subtitle-english-line');
+  const chineseLine = createSubtitleLanguageLine('subtitle-language-line subtitle-chinese-line');
   const ranges = getMarkerRangesForSegment(segment);
   let cursor = 0;
 
@@ -434,12 +513,14 @@ function renderSubtitleMarkers() {
       return;
     }
 
-    appendSubtitleText(segment.text.slice(cursor, range.start));
-    currentSubtitleLine.append(createSubtitleMarker(segment.text.slice(range.start, range.end), range.obstacle));
+    appendSubtitleText(segment.text.slice(cursor, range.start), englishLine);
+    englishLine.append(createSubtitleMarker(segment.text.slice(range.start, range.end), range.obstacle));
     cursor = range.end;
   });
 
-  appendSubtitleText(segment.text.slice(cursor));
+  appendSubtitleText(segment.text.slice(cursor), englishLine);
+  chineseLine.textContent = subtitleTranslations.get(segment.text) || '（中文字幕待补充）';
+  currentSubtitleLine.append(englishLine, chineseLine);
 }
 
 function renderVideoState() {
@@ -458,6 +539,14 @@ function moveToNextSubtitleSegment() {
   currentSegmentIndex = (currentSegmentIndex + 1) % subtitleSegments.length;
   selectedObstacleId = null;
   renderVideoState();
+  renderCards();
+}
+
+function stopResumeTimer() {
+  if (resumeTimer) {
+    window.clearTimeout(resumeTimer);
+    resumeTimer = null;
+  }
 }
 
 function stopPlaybackTimer() {
@@ -465,18 +554,29 @@ function stopPlaybackTimer() {
     window.clearInterval(playbackTimer);
     playbackTimer = null;
   }
+
+  stopResumeTimer();
 }
 
-function startPlaybackTimer() {
+function startPlaybackTimer({ fastResume = false } = {}) {
   stopPlaybackTimer();
+
+  if (fastResume) {
+    resumeTimer = window.setTimeout(() => {
+      resumeTimer = null;
+      moveToNextSubtitleSegment();
+    }, 1200);
+  }
+
   playbackTimer = window.setInterval(moveToNextSubtitleSegment, SEGMENT_DURATION_MS);
 }
 
 function setVideoPlayback(nextIsPlaying) {
+  const wasPlaying = isVideoPlaying;
   isVideoPlaying = nextIsPlaying;
 
   if (isVideoPlaying) {
-    startPlaybackTimer();
+    startPlaybackTimer({ fastResume: !wasPlaying });
   } else {
     stopPlaybackTimer();
   }
@@ -509,6 +609,13 @@ function hideCurrentObstacle(obstacleId) {
   }
 
   streamMode = 'dynamic';
+
+  const nextObstacle = getPrimaryDynamicObstacle();
+
+  if (nextObstacle) {
+    syncSubtitleSegmentToObstacle(nextObstacle.id);
+  }
+
   renderCards();
   renderSubtitleMarkers();
 }
@@ -607,10 +714,6 @@ function renderEmptyState() {
   cardStream.append(emptyState);
 }
 
-function getPendingObstacles() {
-  return obstacles.filter((obstacle) => !hiddenObstacleIds.has(obstacle.id));
-}
-
 function getVisibleObstacles() {
   const pendingObstacles = getPendingObstacles();
 
@@ -618,15 +721,9 @@ function getVisibleObstacles() {
     return pendingObstacles;
   }
 
-  if (selectedObstacleId) {
-    const selectedObstacle = pendingObstacles.find((obstacle) => obstacle.id === selectedObstacleId);
+  const activeObstacle = getPrimaryDynamicObstacle();
 
-    if (selectedObstacle) {
-      return [selectedObstacle];
-    }
-  }
-
-  return pendingObstacles.slice(0, 1);
+  return activeObstacle ? [activeObstacle] : [];
 }
 
 function renderCards() {
