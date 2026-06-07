@@ -29,6 +29,18 @@
           <p class="subtitle-line" id="currentSubtitleLine"></p>
         </div>
       </div>
+      <section class="timeline-panel" aria-label="V2.4A 双时间轴">
+        <div class="video-timeline-row">
+          <button class="timeline-play-button" id="timelinePlayButton" type="button" aria-label="暂停视频">||</button>
+          <input class="video-timeline" id="videoTimeline" type="range" min="0" max="100" value="0" step="0.1" aria-label="视频时间轴">
+          <span class="timeline-time" id="timelineTimeText">00:00 / 00:14</span>
+        </div>
+        <div class="heat-axis-row">
+          <span class="heat-axis-label">障碍热力轴</span>
+          <div class="obstacle-heat-axis" id="obstacleHeatAxis" aria-label="障碍热力轴"></div>
+        </div>
+      </section>
+
       <div class="video-meta">
         <p class="eyebrow">Today's Lecture</p>
         <h2>Academic Listening Practice</h2>
@@ -67,6 +79,19 @@ Let's call it a day.</textarea>
       <div class="card-stream" id="cardStream" aria-live="polite"></div>
     </aside>
   </main>
+
+  <div class="bottom-sheet-backdrop" id="bottomSheetBackdrop" hidden></div>
+  <section class="bottom-sheet" id="obstacleBottomSheet" aria-labelledby="bottomSheetTitle" aria-modal="true" role="dialog" hidden>
+    <div class="bottom-sheet__handle" aria-hidden="true"></div>
+    <header class="bottom-sheet__header">
+      <div>
+        <p class="eyebrow">Obstacle Navigation</p>
+        <h2 id="bottomSheetTitle">当前区域障碍（0）</h2>
+      </div>
+      <button class="bottom-sheet__close" id="bottomSheetClose" type="button" aria-label="关闭障碍导航">×</button>
+    </header>
+    <div class="bottom-sheet__content" id="bottomSheetContent"></div>
+  </section>
 
   <script src="script.js"></script>
 </body>

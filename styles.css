@@ -589,3 +589,227 @@ button {
     max-width: calc(100% - 28px);
   }
 }
+
+.timeline-panel {
+  display: grid;
+  gap: 12px;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.video-timeline-row,
+.heat-axis-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.timeline-play-button {
+  display: grid;
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  color: #fff;
+  background: var(--primary);
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.24);
+  font-weight: 900;
+}
+
+.video-timeline {
+  flex: 1;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.timeline-time {
+  flex: 0 0 auto;
+  min-width: 92px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.heat-axis-label {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+.obstacle-heat-axis {
+  position: relative;
+  flex: 1;
+  height: 42px;
+}
+
+.obstacle-heat-axis::before {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0.2), rgba(37, 99, 235, 0.58), rgba(37, 99, 235, 0.2));
+  content: "";
+  transform: translateY(-50%);
+}
+
+.heat-cluster-button {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  cursor: pointer;
+  color: #fff;
+  background: var(--primary);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.26);
+  font-size: 0.9rem;
+  font-weight: 900;
+  transform: translate(-50%, -50%);
+}
+
+.heat-cluster-button:hover,
+.heat-cluster-button:focus-visible {
+  background: var(--primary-dark);
+  outline: none;
+}
+
+.bottom-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: rgba(15, 23, 42, 0.24);
+}
+
+.bottom-sheet {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 21;
+  display: flex;
+  max-height: 30vh;
+  min-height: 240px;
+  flex-direction: column;
+  border: 1px solid rgba(219, 227, 239, 0.9);
+  border-radius: 28px 28px 0 0;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 -24px 70px rgba(27, 36, 48, 0.16);
+  transform: translateY(100%);
+  transition: transform 220ms ease;
+  backdrop-filter: blur(18px);
+}
+
+.bottom-sheet.is-visible {
+  transform: translateY(0);
+}
+
+.bottom-sheet__handle {
+  width: 48px;
+  height: 5px;
+  margin: 10px auto 2px;
+  border-radius: 999px;
+  background: #cbd5e1;
+}
+
+.bottom-sheet__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 24px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.bottom-sheet__header h2 {
+  margin: 4px 0 0;
+  font-size: 1.18rem;
+}
+
+.bottom-sheet__close {
+  display: grid;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  color: var(--text);
+  background: var(--surface-muted);
+  font-size: 1.3rem;
+  font-weight: 850;
+}
+
+.bottom-sheet__content {
+  display: grid;
+  gap: 8px;
+  overflow-y: auto;
+  padding: 14px 24px 24px;
+}
+
+.bottom-sheet__item {
+  width: min(100%, 820px);
+  border: 1px solid #e7edf6;
+  border-radius: 14px;
+  cursor: pointer;
+  padding: 11px 14px;
+  color: #2b3542;
+  background: var(--surface-muted);
+  font-weight: 780;
+  text-align: left;
+}
+
+.bottom-sheet__item:hover,
+.bottom-sheet__item:focus-visible {
+  border-color: rgba(37, 99, 235, 0.42);
+  background: #eaf2ff;
+  outline: none;
+}
+
+@media (max-width: 640px) {
+  .timeline-panel {
+    padding: 14px;
+  }
+
+  .video-timeline-row {
+    flex-wrap: wrap;
+  }
+
+  .video-timeline {
+    min-width: calc(100% - 54px);
+  }
+
+  .timeline-time {
+    width: 100%;
+    text-align: left;
+  }
+
+  .heat-axis-row {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .bottom-sheet {
+    max-height: 34vh;
+    min-height: 220px;
+  }
+
+  .bottom-sheet__header,
+  .bottom-sheet__content {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+}

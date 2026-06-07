@@ -2,7 +2,7 @@
 
 一个纯 HTML/CSS/Vanilla JavaScript 实现的 Video English Assistant。
 
-当前版本：V2.3A Final Interaction Hot Fix – Decouple Learning Tips from Playback Control。
+当前版本：V2.4A Obstacle Timeline Static Prototype – 在 V2.3A 冻结交互基础上新增视频时间轴与障碍热力轴。
 
 V2.0 冻结学习流程逻辑：产品不追求让用户永久掌握所有单词、语法或考试能力，而是帮助用户扫除视频学习英语过程中的障碍，让用户越来越顺畅地听懂、看懂英语视频，并通过持续跨越障碍建立信心、提高效率、保持动力。
 
@@ -459,7 +459,7 @@ Analyze 不会清空已 `resolved` 的障碍。已点击「✓ 不用管我了�
 
 ## 使用方式
 
-直接用浏览器打开 `index.html`，或使用任意静态文件服务器运行本项目。
+直接用浏览器打开 `index.html`，或使用任意静态文件服务器运行本项目。V2.4A 在视频区域下方提供双时间轴：上方视频时间轴支持播放 / 暂停、点击与拖动跳转；下方障碍热力轴复用同一套时间坐标，并按像素距离智能聚合障碍点。点击聚合点会从底部打开障碍导航 Bottom Sheet，点击其中任一障碍会跳转到对应字幕并保持当前播放状态。
 
 页面默认在 `Subtitle Input` 中填入示例字幕：
 
@@ -528,9 +528,7 @@ ObstacleDetectionEngine.analyze(
 
 ```text
 ✅ node --check script.js
-✅ V2.1 expected multi-line output test
-✅ V2.1 resolved localStorage persistence and restore-all test
-✅ preview-v2.1.svg generated
+✅ node test-current-subtitle-sync.js
 ```
 
 ## V2.0 暂不包含
