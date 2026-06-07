@@ -425,3 +425,66 @@ button {
     padding: 14px;
   }
 }
+
+.subtitle-overlay {
+  position: absolute;
+  z-index: 2;
+  right: 28px;
+  bottom: 26px;
+  left: 28px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.subtitle-line {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.08em;
+  max-width: min(92%, 920px);
+  margin: 0;
+  padding: 12px 18px 16px;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.72);
+  color: #fff;
+  font-size: clamp(1.05rem, 2.2vw, 1.65rem);
+  font-weight: 760;
+  line-height: 1.55;
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+}
+
+.subtitle-text-part,
+.subtitle-marker-button {
+  white-space: pre-wrap;
+}
+
+.subtitle-marker-button {
+  appearance: none;
+  border: 0;
+  border-bottom: 2px dashed rgba(147, 197, 253, 0.96);
+  border-radius: 0;
+  cursor: pointer;
+  padding: 0 0 3px;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  font-weight: 850;
+  pointer-events: auto;
+  text-shadow: inherit;
+  transition: border-color 160ms ease, color 160ms ease;
+}
+
+.subtitle-marker-button:hover,
+.subtitle-marker-button:focus-visible {
+  border-bottom-color: #fff;
+  color: #bfdbfe;
+  outline: none;
+}
+
+.subtitle-marker-button.is-selected {
+  border-bottom-color: #facc15;
+  color: #fef3c7;
+}

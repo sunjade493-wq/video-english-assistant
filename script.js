@@ -235,6 +235,7 @@ function detectVocabularyObstacles(text, levelName = DEFAULT_VOCABULARY_LEVEL, c
       type: '生词',
       kind: 'word',
       index: rawWordMatch.index,
+      end: rawWordMatch.index + rawWordMatch[0].length,
       word,
       phonetic: dictionaryEntry.phonetic,
       translation: dictionaryEntry.translation,
@@ -311,31 +312,213 @@ function analyzeSubtitleText(text, options = {}) {
   return dedupeObstaclesById(detectedObstacles);
 }
 
+let subtitleSegments = parseSubtitleSegments(DEFAULT_SUBTITLE_TEXT);
+let currentSegmentIndex = 0;
+let isVideoPlaying = true;
+let playbackTimer = null;
 let obstacles = analyzeSubtitleText(DEFAULT_SUBTITLE_TEXT, { level: DEFAULT_VOCABULARY_LEVEL });
 let hiddenObstacleIds = new Set();
 let streamMode = 'dynamic';
+let selectedObstacleId = null;
 
+const SEGMENT_DURATION_MS = 3600;
 const cardStream = document.querySelector('#cardStream');
 const restoreAllButton = document.querySelector('#restoreAllButton');
 const subtitleTextInput = document.querySelector('#subtitleTextInput');
 const analyzeButton = document.querySelector('#analyzeButton');
+const currentSubtitleLine = document.querySelector('#currentSubtitleLine');
+const playIcon = document.querySelector('#playIcon');
+const videoStatusText = document.querySelector('#videoStatusText');
+const videoFrame = document.querySelector('.video-frame');
 
-function resetObstacleStream(nextObstacles) {
+function parseSubtitleSegments(text) {
+  const sourceText = String(text || '').trim();
+
+  if (!sourceText) {
+    return [];
+  }
+
+  const matches = [...sourceText.matchAll(/\S[\s\S]*?(?=\n\s*\n|$)/g)];
+
+  return matches.map((match) => {
+    const rawText = match[0];
+    const leadingWhitespaceLength = rawText.match(/^\s*/)[0].length;
+    const textStart = match.index + leadingWhitespaceLength;
+    const textContent = rawText.trim();
+
+    return {
+      text: textContent.replace(/\s*\n\s*/g, ' '),
+      start: textStart,
+      end: textStart + textContent.length,
+    };
+  });
+}
+
+function getCurrentSubtitleSegment() {
+  return subtitleSegments[currentSegmentIndex] || null;
+}
+
+function getObstacleLabel(obstacle) {
+  return obstacle.kind === 'word' ? obstacle.word : obstacle.source || obstacle.phrase;
+}
+
+function getCurrentSegmentObstacles() {
+  const segment = getCurrentSubtitleSegment();
+
+  if (!segment) {
+    return [];
+  }
+
+  return obstacles.filter((obstacle) => (
+    !hiddenObstacleIds.has(obstacle.id)
+    && obstacle.index >= segment.start
+    && obstacle.index < segment.end
+  ));
+}
+
+function getMarkerRangesForSegment(segment) {
+  return getCurrentSegmentObstacles()
+    .map((obstacle) => ({
+      obstacle,
+      start: Math.max(0, obstacle.index - segment.start),
+      end: Math.min(segment.text.length, (obstacle.end || obstacle.index + getObstacleLabel(obstacle).length) - segment.start),
+    }))
+    .filter((range) => range.end > range.start)
+    .sort((firstRange, secondRange) => firstRange.start - secondRange.start);
+}
+
+function appendSubtitleText(text) {
+  if (!text) {
+    return;
+  }
+
+  const textPart = document.createElement('span');
+  textPart.className = 'subtitle-text-part';
+  textPart.textContent = text;
+  currentSubtitleLine.append(textPart);
+}
+
+function createSubtitleMarker(text, obstacle) {
+  const marker = document.createElement('button');
+  marker.className = 'subtitle-marker-button';
+  marker.type = 'button';
+  marker.textContent = text;
+  marker.setAttribute('aria-label', `暂停并查看解释：${getObstacleLabel(obstacle)}`);
+
+  if (selectedObstacleId === obstacle.id) {
+    marker.classList.add('is-selected');
+  }
+
+  marker.addEventListener('click', (event) => {
+    event.stopPropagation();
+    pauseVideoForObstacle(obstacle.id);
+  });
+
+  return marker;
+}
+
+function renderSubtitleMarkers() {
+  const segment = getCurrentSubtitleSegment();
+  currentSubtitleLine.innerHTML = '';
+
+  if (!segment) {
+    appendSubtitleText('暂无字幕');
+    return;
+  }
+
+  const ranges = getMarkerRangesForSegment(segment);
+  let cursor = 0;
+
+  ranges.forEach((range) => {
+    if (range.start < cursor) {
+      return;
+    }
+
+    appendSubtitleText(segment.text.slice(cursor, range.start));
+    currentSubtitleLine.append(createSubtitleMarker(segment.text.slice(range.start, range.end), range.obstacle));
+    cursor = range.end;
+  });
+
+  appendSubtitleText(segment.text.slice(cursor));
+}
+
+function renderVideoState() {
+  playIcon.textContent = isVideoPlaying ? '▶' : '⏸';
+  videoStatusText.textContent = isVideoPlaying
+    ? 'V2.3 Obstacle Subtitle Marker · Playing'
+    : 'V2.3 Obstacle Subtitle Marker · Paused by you';
+  renderSubtitleMarkers();
+}
+
+function moveToNextSubtitleSegment() {
+  if (subtitleSegments.length === 0) {
+    return;
+  }
+
+  currentSegmentIndex = (currentSegmentIndex + 1) % subtitleSegments.length;
+  selectedObstacleId = null;
+  renderVideoState();
+}
+
+function stopPlaybackTimer() {
+  if (playbackTimer) {
+    window.clearInterval(playbackTimer);
+    playbackTimer = null;
+  }
+}
+
+function startPlaybackTimer() {
+  stopPlaybackTimer();
+  playbackTimer = window.setInterval(moveToNextSubtitleSegment, SEGMENT_DURATION_MS);
+}
+
+function setVideoPlayback(nextIsPlaying) {
+  isVideoPlaying = nextIsPlaying;
+
+  if (isVideoPlaying) {
+    startPlaybackTimer();
+  } else {
+    stopPlaybackTimer();
+  }
+
+  renderVideoState();
+}
+
+function pauseVideoForObstacle(obstacleId) {
+  selectedObstacleId = obstacleId;
+  streamMode = 'dynamic';
+  setVideoPlayback(false);
+  renderCards();
+}
+
+function resetObstacleStream(nextObstacles, text = subtitleTextInput.value) {
   obstacles = nextObstacles;
   hiddenObstacleIds = new Set();
   streamMode = 'dynamic';
+  selectedObstacleId = null;
+  currentSegmentIndex = 0;
+  subtitleSegments = parseSubtitleSegments(text);
+  setVideoPlayback(true);
 }
 
 function hideCurrentObstacle(obstacleId) {
   hiddenObstacleIds.add(obstacleId);
+
+  if (selectedObstacleId === obstacleId) {
+    selectedObstacleId = null;
+  }
+
   streamMode = 'dynamic';
   renderCards();
+  renderSubtitleMarkers();
 }
 
 function restoreAllCurrentObstacles() {
   hiddenObstacleIds = new Set();
+  selectedObstacleId = null;
   streamMode = 'restored';
   renderCards();
+  renderSubtitleMarkers();
 }
 
 function createDetailBlock(title, text) {
@@ -369,7 +552,6 @@ function createWordSummary(obstacle) {
 
   return summary;
 }
-
 
 function createUnderstandingSummary(obstacle) {
   const summary = document.createElement('p');
@@ -436,6 +618,14 @@ function getVisibleObstacles() {
     return pendingObstacles;
   }
 
+  if (selectedObstacleId) {
+    const selectedObstacle = pendingObstacles.find((obstacle) => obstacle.id === selectedObstacleId);
+
+    if (selectedObstacle) {
+      return [selectedObstacle];
+    }
+  }
+
   return pendingObstacles.slice(0, 1);
 }
 
@@ -458,7 +648,7 @@ function renderCards() {
 }
 
 function analyzeAndRender(text, options = {}) {
-  resetObstacleStream(analyzeSubtitleText(text, options));
+  resetObstacleStream(analyzeSubtitleText(text, options), text);
   return renderCards();
 }
 
@@ -468,7 +658,10 @@ function handleAnalyzeClick() {
 
 analyzeButton.addEventListener('click', handleAnalyzeClick);
 restoreAllButton.addEventListener('click', restoreAllCurrentObstacles);
+videoFrame.addEventListener('click', () => setVideoPlayback(!isVideoPlaying));
+renderVideoState();
 renderCards();
+startPlaybackTimer();
 
 window.ObstacleDetectionEngine = {
   Analyze: analyzeAndRender,
@@ -478,6 +671,8 @@ window.ObstacleDetectionEngine = {
   detectUnderstandingObstacles,
   restoreAllCurrentObstacles,
   getVisibleObstacles,
+  pauseVideoForObstacle,
+  getCurrentSegmentObstacles,
   levels: Object.fromEntries(
     Object.entries(vocabularyLevels).map(([name, level]) => [name, level.label]),
   ),

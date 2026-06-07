@@ -11,11 +11,14 @@
     <section class="video-panel" aria-label="视频学习区">
       <div class="video-frame">
         <div class="video-placeholder">
-          <span class="play-icon" aria-hidden="true">▶</span>
+          <span class="play-icon" aria-hidden="true" id="playIcon">▶</span>
           <div>
             <h1>Video English Assistant</h1>
-            <p>V2.2 Dynamic Obstacle Stream</p>
+            <p id="videoStatusText">V2.3 Obstacle Subtitle Marker · Playing</p>
           </div>
+        </div>
+        <div class="subtitle-overlay" aria-live="polite">
+          <p class="subtitle-line" id="currentSubtitleLine"></p>
         </div>
       </div>
       <div class="video-meta">
