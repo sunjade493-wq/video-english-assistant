@@ -336,7 +336,7 @@ let currentTimeMs = 0;
 let playbackStartedAt = 0;
 let playbackStartedTimeMs = 0;
 let timelineRenderTimer = null;
-let activeHeatCluster = null;
+let activeHeatClusterKey = null;
 
 const SEGMENT_DURATION_MS = 3600;
 const LEARNING_PAUSE_HINT_STORAGE_KEY = 'videoEnglishAssistant.learningPauseHintDismissed';
@@ -453,15 +453,19 @@ function getPendingObstacles() {
   return obstacles.filter((obstacle) => !hiddenObstacleIds.has(obstacle.id));
 }
 
-function getSegmentObstacles(segment = getCurrentSubtitleSegment()) {
+function getObstaclesInSegment(segment, sourceObstacles = obstacles) {
   if (!segment) {
     return [];
   }
 
-  return getPendingObstacles().filter((obstacle) => (
+  return sourceObstacles.filter((obstacle) => (
     obstacle.index >= segment.start
     && obstacle.index < segment.end
   ));
+}
+
+function getSegmentObstacles(segment = getCurrentSubtitleSegment()) {
+  return getObstaclesInSegment(segment, getPendingObstacles());
 }
 
 function getCurrentSegmentObstacles() {
@@ -733,11 +737,15 @@ function handleTimelineInput(event) {
 }
 
 function getObstacleNavigationItems() {
-  return sortObstaclesForLearningTips(getPendingObstacles()).map((obstacle) => ({
-    ...obstacle,
-    timeMs: getObstacleTimeMs(obstacle),
-    percent: getTimelinePercent(getObstacleTimeMs(obstacle)),
-  })).sort((firstObstacle, secondObstacle) => firstObstacle.timeMs - secondObstacle.timeMs);
+  return sortObstaclesForLearningTips(obstacles).map((obstacle) => {
+    const timeMs = getObstacleTimeMs(obstacle);
+
+    return {
+      ...obstacle,
+      timeMs,
+      percent: getTimelinePercent(timeMs),
+    };
+  }).sort((firstObstacle, secondObstacle) => firstObstacle.timeMs - secondObstacle.timeMs);
 }
 
 function clusterObstacleItems(items) {
@@ -752,12 +760,16 @@ function clusterObstacleItems(items) {
       lastCluster.items.push(item);
       lastCluster.lastPixel = pixel;
       lastCluster.centerPercent = lastCluster.items.reduce((sum, clusterItem) => sum + clusterItem.percent, 0) / lastCluster.items.length;
+      lastCluster.minPercent = Math.min(lastCluster.minPercent, item.percent);
+      lastCluster.maxPercent = Math.max(lastCluster.maxPercent, item.percent);
       return;
     }
 
     clusters.push({
       items: [item],
       centerPercent: item.percent,
+      minPercent: item.percent,
+      maxPercent: item.percent,
       lastPixel: pixel,
     });
   });
@@ -765,13 +777,39 @@ function clusterObstacleItems(items) {
   return clusters;
 }
 
+function getHeatClusterKey(cluster) {
+  return cluster.items.map((item) => item.id).join('|');
+}
+
+function createHeatClusterHighlight(cluster) {
+  const highlight = document.createElement('span');
+  highlight.className = 'heat-cluster-highlight';
+  const leftPercent = Math.max(0, Math.min(cluster.minPercent, cluster.centerPercent));
+  const rightPercent = Math.min(100, Math.max(cluster.maxPercent, cluster.centerPercent));
+
+  highlight.style.left = `${leftPercent}%`;
+  highlight.style.width = `${Math.max(3, rightPercent - leftPercent)}%`;
+  highlight.setAttribute('aria-hidden', 'true');
+  return highlight;
+}
+
 function createHeatClusterButton(cluster) {
   const button = document.createElement('button');
+  const clusterKey = getHeatClusterKey(cluster);
+
   button.className = 'heat-cluster-button';
   button.type = 'button';
   button.textContent = cluster.items.length;
   button.style.left = `${cluster.centerPercent}%`;
   button.setAttribute('aria-label', `打开当前区域障碍（${cluster.items.length}）`);
+
+  if (clusterKey === activeHeatClusterKey) {
+    button.classList.add('is-selected');
+    button.setAttribute('aria-pressed', 'true');
+  } else {
+    button.setAttribute('aria-pressed', 'false');
+  }
+
   button.addEventListener('click', (event) => {
     event.stopPropagation();
     openBottomSheet(cluster);
@@ -794,13 +832,20 @@ function renderTimelines() {
   }
 
   const clusters = clusterObstacleItems(getObstacleNavigationItems());
+  const activeCluster = clusters.find((cluster) => getHeatClusterKey(cluster) === activeHeatClusterKey);
+
   obstacleHeatAxis.innerHTML = '';
+
+  if (activeCluster) {
+    obstacleHeatAxis.append(createHeatClusterHighlight(activeCluster));
+  }
+
   clusters.forEach((cluster) => obstacleHeatAxis.append(createHeatClusterButton(cluster)));
   return clusters;
 }
 
 function closeBottomSheet() {
-  activeHeatCluster = null;
+  activeHeatClusterKey = null;
 
   if (bottomSheetBackdrop) {
     bottomSheetBackdrop.hidden = true;
@@ -811,21 +856,38 @@ function closeBottomSheet() {
     obstacleBottomSheet.hidden = true;
     obstacleBottomSheet.classList.remove('is-visible');
   }
+
+  renderTimelines();
 }
 
 function getSortedClusterItems(cluster) {
-  return sortObstaclesForLearningTips(cluster.items);
+  return [...cluster.items].sort((firstObstacle, secondObstacle) => firstObstacle.index - secondObstacle.index);
 }
 
-function createBottomSheetItem(obstacle) {
+function getSortedObstaclesForSubtitleUnit(obstaclesToSort) {
+  return sortObstaclesForLearningTips(obstaclesToSort);
+}
+
+function getClusterSubtitleGroups(clusterItems) {
+  return subtitleSegments.map((segment, segmentIndex) => ({
+    segment,
+    segmentIndex,
+    obstacles: getSortedObstaclesForSubtitleUnit(getObstaclesInSegment(segment, clusterItems)),
+  })).filter((group) => group.obstacles.length > 0);
+}
+
+function createBottomSheetObstacleButton(obstacle) {
   const button = document.createElement('button');
-  button.className = 'bottom-sheet__item';
+  button.className = 'bottom-sheet__obstacle';
   button.type = 'button';
   button.textContent = `${obstacle.kind === 'word' ? '○' : '●'} ${obstacle.kind === 'word' ? obstacle.word : obstacle.phrase}`;
   button.addEventListener('click', () => {
     const wasPlaying = isVideoPlaying;
+    selectedObstacleId = obstacle.id;
     seekToTime(obstacle.timeMs);
     isVideoPlaying = wasPlaying;
+    selectedObstacleId = obstacle.id;
+    streamMode = 'dynamic';
     syncPlaybackClock();
     closeBottomSheet();
     renderVideoState();
@@ -835,9 +897,30 @@ function createBottomSheetItem(obstacle) {
   return button;
 }
 
+function createBottomSheetSubtitleGroup(group) {
+  const groupElement = document.createElement('article');
+  groupElement.className = 'bottom-sheet__subtitle-group';
+
+  const time = document.createElement('div');
+  time.className = 'bottom-sheet__time';
+  time.textContent = formatTimelineTime(getTimeForSegmentIndex(group.segmentIndex));
+
+  const subtitle = document.createElement('p');
+  subtitle.className = 'bottom-sheet__subtitle';
+  subtitle.textContent = group.segment.text;
+
+  const obstacleList = document.createElement('div');
+  obstacleList.className = 'bottom-sheet__obstacles';
+  group.obstacles.forEach((obstacle) => obstacleList.append(createBottomSheetObstacleButton(obstacle)));
+
+  groupElement.append(time, subtitle, obstacleList);
+  return groupElement;
+}
+
 function openBottomSheet(cluster) {
-  activeHeatCluster = cluster;
+  activeHeatClusterKey = getHeatClusterKey(cluster);
   const clusterItems = getSortedClusterItems(cluster);
+  const subtitleGroups = getClusterSubtitleGroups(clusterItems);
 
   if (bottomSheetTitle) {
     bottomSheetTitle.textContent = `当前区域障碍（${clusterItems.length}）`;
@@ -845,7 +928,7 @@ function openBottomSheet(cluster) {
 
   if (bottomSheetContent) {
     bottomSheetContent.innerHTML = '';
-    clusterItems.forEach((obstacle) => bottomSheetContent.append(createBottomSheetItem(obstacle)));
+    subtitleGroups.forEach((group) => bottomSheetContent.append(createBottomSheetSubtitleGroup(group)));
   }
 
   if (bottomSheetBackdrop) {
@@ -857,6 +940,8 @@ function openBottomSheet(cluster) {
     obstacleBottomSheet.hidden = false;
     obstacleBottomSheet.classList.add('is-visible');
   }
+
+  renderTimelines();
 }
 
 let lastVideoActivationTime = 0;
