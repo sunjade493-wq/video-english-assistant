@@ -473,6 +473,15 @@ function appendSubtitleText(text, targetLine = currentSubtitleLine) {
   targetLine.append(textPart);
 }
 
+function stopMarkerEvent(event) {
+  event.stopPropagation();
+}
+
+function handleMarkerActivation(event, obstacleId) {
+  stopMarkerEvent(event);
+  pauseVideoForObstacle(obstacleId);
+}
+
 function createSubtitleMarker(text, obstacle) {
   const marker = document.createElement('button');
   marker.className = 'subtitle-marker-button';
@@ -484,10 +493,9 @@ function createSubtitleMarker(text, obstacle) {
     marker.classList.add('is-selected');
   }
 
-  marker.addEventListener('click', (event) => {
-    event.stopPropagation();
-    pauseVideoForObstacle(obstacle.id);
-  });
+  marker.addEventListener('pointerup', (event) => handleMarkerActivation(event, obstacle.id));
+  marker.addEventListener('touchend', (event) => handleMarkerActivation(event, obstacle.id));
+  marker.addEventListener('click', (event) => handleMarkerActivation(event, obstacle.id));
 
   return marker;
 }
@@ -566,6 +574,23 @@ function syncPlaybackClock() {
   }
 
   stopPlaybackTimer();
+}
+
+let lastVideoActivationTime = 0;
+
+function toggleVideoPlayback() {
+  setVideoPlayback(!isVideoPlaying);
+}
+
+function handleVideoFrameActivation() {
+  const activationTime = Date.now();
+
+  if (activationTime - lastVideoActivationTime < 350) {
+    return;
+  }
+
+  lastVideoActivationTime = activationTime;
+  toggleVideoPlayback();
 }
 
 function setVideoPlayback(nextIsPlaying) {
@@ -746,11 +771,9 @@ function handleAnalyzeClick() {
 
 analyzeButton.addEventListener('click', handleAnalyzeClick);
 restoreAllButton.addEventListener('click', restoreAllCurrentObstacles);
-videoFrame.addEventListener('click', () => {
-  if (!isVideoPlaying) {
-    setVideoPlayback(true);
-  }
-});
+videoFrame.addEventListener('pointerup', handleVideoFrameActivation);
+videoFrame.addEventListener('touchend', handleVideoFrameActivation);
+videoFrame.addEventListener('click', handleVideoFrameActivation);
 renderVideoState();
 renderCards();
 syncPlaybackClock();
