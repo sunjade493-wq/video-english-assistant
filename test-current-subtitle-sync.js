@@ -10,6 +10,9 @@ class TestElement {
     this.hidden = false;
     this.className = '';
     this.value = '';
+    this.style = {};
+    this.type = '';
+    this.eventHistory = [];
     this.classList = {
       add: () => {},
       remove: () => {},
@@ -23,6 +26,16 @@ class TestElement {
 
   addEventListener(type, listener) {
     this.listeners[type] = listener;
+  }
+
+  getBoundingClientRect() {
+    return { width: 720, height: 42 };
+  }
+
+  click() {
+    if (this.listeners.click) {
+      this.listeners.click({ stopPropagation: () => {} });
+    }
   }
 
   setAttribute(name, value) {
@@ -173,3 +186,68 @@ assertLabels('Restore All never expands beyond current subtitle', ['pull off the
 
 api.moveToNextSubtitleSegment();
 assertLabels('Test D subtitle progression', ['call it a day']);
+
+api.Analyze(demoText, { level: 'junior' });
+api.seekToTime(0);
+const initialTimelineValue = Number(getElement('#videoTimeline').value);
+api.moveToNextSubtitleSegment();
+const advancedState = api.getPlaybackState();
+const advancedTimelineValue = Number(getElement('#videoTimeline').value);
+if (!(advancedState.currentTimeMs >= 3600 && advancedTimelineValue > initialTimelineValue)) {
+  throw new Error('Test V2.4A timeline progress: expected simulated playback to advance timeline value');
+}
+console.log(`PASS Test V2.4A timeline progress: ${initialTimelineValue} -> ${advancedTimelineValue}`);
+
+api.seekToTime(7200);
+assertLabels('Test V2.4A clicking video timeline jumps to subtitle position', ['pull off the project']);
+
+getElement('#videoTimeline').value = '75';
+getElement('#videoTimeline').listeners.input({ target: getElement('#videoTimeline') });
+assertLabels('Test V2.4A dragging video timeline jumps to subtitle position', ['call it a day']);
+
+const navigationItems = api.getObstacleNavigationItems();
+const layItOnUs = navigationItems.find((obstacle) => obstacle.phrase === 'lay it on us');
+const expectedPercent = (layItOnUs.timeMs / api.getPlaybackState().totalDurationMs) * 100;
+if (Math.abs(layItOnUs.percent - expectedPercent) > 0.0001) {
+  throw new Error('Test V2.4A heat axis mapping: obstacle percent did not match video timeline time coordinate');
+}
+console.log('PASS Test V2.4A heat axis uses video timeline coordinates');
+
+const clustered = api.clusterObstacleItems([
+  { id: 'near-1', percent: 10 },
+  { id: 'near-2', percent: 12 },
+  { id: 'far-1', percent: 60 },
+]);
+if (clustered.length !== 2 || clustered[0].items.length !== 2 || clustered[1].items.length !== 1) {
+  throw new Error('Test V2.4A pixel density clustering: expected two nearby items to aggregate');
+}
+console.log('PASS Test V2.4A nearby obstacles aggregate by pixel density');
+
+api.openBottomSheet({ items: navigationItems });
+if (getElement('#obstacleBottomSheet').hidden !== false || getElement('#bottomSheetTitle').textContent !== '当前区域障碍（5）') {
+  throw new Error('Test V2.4A bottom sheet open: expected visible sheet with obstacle count');
+}
+console.log('PASS Test V2.4A clicking cluster opens Bottom Sheet');
+
+const bottomSheetLabels = getElement('#bottomSheetContent').children.map((child) => child.textContent);
+const expectedBottomSheetLabels = [
+  '○ lecture',
+  '● lay it on us',
+  '● give me a hand',
+  '● pull off the project',
+  '● call it a day',
+];
+if (JSON.stringify(bottomSheetLabels) !== JSON.stringify(expectedBottomSheetLabels)) {
+  throw new Error(`Test V2.4A bottom sheet order: expected ${JSON.stringify(expectedBottomSheetLabels)}, got ${JSON.stringify(bottomSheetLabels)}`);
+}
+console.log('PASS Test V2.4A Bottom Sheet shows ○ words first and ● understanding second');
+
+api.toggleVideoPlayback();
+const wasPlayingBeforeBottomSheetJump = api.getPlaybackState().isVideoPlaying;
+const pullOffButton = getElement('#bottomSheetContent').children.find((child) => child.textContent === '● pull off the project');
+pullOffButton.click();
+assertLabels('Test V2.4A Bottom Sheet item jumps and syncs Learning Tips', ['pull off the project']);
+if (getElement('#obstacleBottomSheet').hidden !== true) {
+  throw new Error('Test V2.4A Bottom Sheet item closes sheet: expected hidden sheet');
+}
+assertPlayback('Test V2.4A Bottom Sheet item keeps playback state', wasPlayingBeforeBottomSheetJump);

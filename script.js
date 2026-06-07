@@ -332,9 +332,15 @@ let streamMode = 'dynamic';
 const LEARNING_TIPS_MODE = 'auto';
 let selectedObstacleId = null;
 let learningPauseHintTimer = null;
+let currentTimeMs = 0;
+let playbackStartedAt = 0;
+let playbackStartedTimeMs = 0;
+let timelineRenderTimer = null;
+let activeHeatCluster = null;
 
 const SEGMENT_DURATION_MS = 3600;
 const LEARNING_PAUSE_HINT_STORAGE_KEY = 'videoEnglishAssistant.learningPauseHintDismissed';
+const HEAT_AXIS_CLUSTER_THRESHOLD_PX = 56;
 const cardStream = document.querySelector('#cardStream');
 const restoreAllButton = document.querySelector('#restoreAllButton');
 const subtitleTextInput = document.querySelector('#subtitleTextInput');
@@ -345,6 +351,15 @@ const videoStatusText = document.querySelector('#videoStatusText');
 const videoFrame = document.querySelector('.video-frame');
 const learningPauseHint = document.querySelector('#learningPauseHint');
 const learningPauseHintDismiss = document.querySelector('#learningPauseHintDismiss');
+const timelinePlayButton = document.querySelector('#timelinePlayButton');
+const videoTimeline = document.querySelector('#videoTimeline');
+const timelineTimeText = document.querySelector('#timelineTimeText');
+const obstacleHeatAxis = document.querySelector('#obstacleHeatAxis');
+const bottomSheetBackdrop = document.querySelector('#bottomSheetBackdrop');
+const obstacleBottomSheet = document.querySelector('#obstacleBottomSheet');
+const bottomSheetTitle = document.querySelector('#bottomSheetTitle');
+const bottomSheetContent = document.querySelector('#bottomSheetContent');
+const bottomSheetClose = document.querySelector('#bottomSheetClose');
 
 function parseSubtitleSegments(text) {
   const sourceText = String(text || '').trim();
@@ -371,6 +386,63 @@ function parseSubtitleSegments(text) {
 
 function getCurrentSubtitleSegment() {
   return subtitleSegments[currentSegmentIndex] || null;
+}
+
+function getTotalDurationMs() {
+  return Math.max(SEGMENT_DURATION_MS, subtitleSegments.length * SEGMENT_DURATION_MS);
+}
+
+function clampTime(timeMs) {
+  return Math.max(0, Math.min(timeMs, getTotalDurationMs()));
+}
+
+function getTimeForSegmentIndex(segmentIndex) {
+  return Math.max(0, segmentIndex) * SEGMENT_DURATION_MS;
+}
+
+function getSegmentIndexForTime(timeMs) {
+  if (subtitleSegments.length === 0) {
+    return 0;
+  }
+
+  return Math.min(
+    subtitleSegments.length - 1,
+    Math.max(0, Math.floor(clampTime(timeMs) / SEGMENT_DURATION_MS)),
+  );
+}
+
+function getObstacleTimeMs(obstacle) {
+  const segmentIndex = subtitleSegments.findIndex((segment) => isObstacleInSegment(obstacle, segment));
+
+  if (segmentIndex < 0) {
+    return 0;
+  }
+
+  const segment = subtitleSegments[segmentIndex];
+  const segmentLength = Math.max(1, segment.end - segment.start);
+  const relativeOffset = Math.max(0, Math.min(1, (obstacle.index - segment.start) / segmentLength));
+
+  return getTimeForSegmentIndex(segmentIndex) + (relativeOffset * SEGMENT_DURATION_MS);
+}
+
+function formatTimelineTime(timeMs) {
+  const totalSeconds = Math.floor(clampTime(timeMs) / 1000);
+  const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+  const seconds = String(totalSeconds % 60).padStart(2, '0');
+
+  return `${minutes}:${seconds}`;
+}
+
+function getTimelinePercent(timeMs) {
+  return (clampTime(timeMs) / getTotalDurationMs()) * 100;
+}
+
+function getAxisWidth() {
+  if (!obstacleHeatAxis || typeof obstacleHeatAxis.getBoundingClientRect !== 'function') {
+    return 720;
+  }
+
+  return Math.max(1, obstacleHeatAxis.getBoundingClientRect().width || 720);
 }
 
 function getObstacleLabel(obstacle) {
@@ -555,9 +627,16 @@ function getLearningStateLabel() {
 }
 
 function renderVideoState() {
-  playIcon.textContent = isVideoPlaying ? '▶' : '⏸';
-  videoStatusText.textContent = `V2.3 State Flow · ${getLearningStateLabel()}`;
+  playIcon.textContent = isVideoPlaying ? '⏸' : '▶';
+
+  if (timelinePlayButton) {
+    timelinePlayButton.textContent = isVideoPlaying ? '||' : '▶';
+    timelinePlayButton.setAttribute('aria-label', isVideoPlaying ? '暂停视频' : '播放视频');
+  }
+
+  videoStatusText.textContent = `V2.4A Obstacle Timeline · ${getLearningStateLabel()}`;
   renderSubtitleMarkers();
+  renderTimelines();
 }
 
 function moveToNextSubtitleSegment() {
@@ -565,9 +644,8 @@ function moveToNextSubtitleSegment() {
     return;
   }
 
-  currentSegmentIndex = (currentSegmentIndex + 1) % subtitleSegments.length;
-  renderVideoState();
-  renderCards();
+  const nextSegmentIndex = (currentSegmentIndex + 1) % subtitleSegments.length;
+  seekToTime(getTimeForSegmentIndex(nextSegmentIndex));
 }
 
 function stopPlaybackTimer() {
@@ -575,22 +653,210 @@ function stopPlaybackTimer() {
     window.clearInterval(playbackTimer);
     playbackTimer = null;
   }
+
+  if (timelineRenderTimer) {
+    window.clearInterval(timelineRenderTimer);
+    timelineRenderTimer = null;
+  }
+}
+
+function updatePlaybackProgress() {
+  if (!isVideoPlaying) {
+    return;
+  }
+
+  const totalDuration = getTotalDurationMs();
+  const elapsedMs = Date.now() - playbackStartedAt;
+  const nextTimeMs = (playbackStartedTimeMs + elapsedMs) % totalDuration;
+  const nextSegmentIndex = getSegmentIndexForTime(nextTimeMs);
+  const didSubtitleChange = nextSegmentIndex !== currentSegmentIndex;
+
+  currentTimeMs = nextTimeMs;
+  currentSegmentIndex = nextSegmentIndex;
+  renderVideoState();
+
+  if (didSubtitleChange) {
+    renderCards();
+  }
 }
 
 function startPlaybackTimer() {
   stopPlaybackTimer();
-  playbackTimer = window.setInterval(moveToNextSubtitleSegment, SEGMENT_DURATION_MS);
+  playbackStartedAt = Date.now();
+  playbackStartedTimeMs = currentTimeMs;
+  playbackTimer = window.setInterval(updatePlaybackProgress, 250);
+  timelineRenderTimer = window.setInterval(renderTimelines, 100);
 }
 
 function syncPlaybackClock() {
   if (isVideoPlaying) {
     if (!playbackTimer) {
       startPlaybackTimer();
+    } else {
+      playbackStartedAt = Date.now();
+      playbackStartedTimeMs = currentTimeMs;
     }
     return;
   }
 
   stopPlaybackTimer();
+}
+
+
+function seekToTime(timeMs) {
+  const wasPlaying = isVideoPlaying;
+  const nextTimeMs = clampTime(timeMs);
+  const nextSegmentIndex = getSegmentIndexForTime(nextTimeMs >= getTotalDurationMs() ? 0 : nextTimeMs);
+  const didSubtitleChange = nextSegmentIndex !== currentSegmentIndex;
+
+  currentTimeMs = nextTimeMs >= getTotalDurationMs() ? 0 : nextTimeMs;
+  currentSegmentIndex = nextSegmentIndex;
+
+  if (wasPlaying) {
+    playbackStartedAt = Date.now();
+    playbackStartedTimeMs = currentTimeMs;
+  }
+
+  selectedObstacleId = null;
+  renderVideoState();
+
+  if (didSubtitleChange) {
+    renderCards();
+  } else {
+    renderTimelines();
+  }
+}
+
+function handleTimelineInput(event) {
+  const percent = Number(event.target.value) || 0;
+  seekToTime((percent / 100) * getTotalDurationMs());
+}
+
+function getObstacleNavigationItems() {
+  return sortObstaclesForLearningTips(getPendingObstacles()).map((obstacle) => ({
+    ...obstacle,
+    timeMs: getObstacleTimeMs(obstacle),
+    percent: getTimelinePercent(getObstacleTimeMs(obstacle)),
+  })).sort((firstObstacle, secondObstacle) => firstObstacle.timeMs - secondObstacle.timeMs);
+}
+
+function clusterObstacleItems(items) {
+  const axisWidth = getAxisWidth();
+  const clusters = [];
+
+  items.forEach((item) => {
+    const pixel = (item.percent / 100) * axisWidth;
+    const lastCluster = clusters[clusters.length - 1];
+
+    if (lastCluster && pixel - lastCluster.lastPixel <= HEAT_AXIS_CLUSTER_THRESHOLD_PX) {
+      lastCluster.items.push(item);
+      lastCluster.lastPixel = pixel;
+      lastCluster.centerPercent = lastCluster.items.reduce((sum, clusterItem) => sum + clusterItem.percent, 0) / lastCluster.items.length;
+      return;
+    }
+
+    clusters.push({
+      items: [item],
+      centerPercent: item.percent,
+      lastPixel: pixel,
+    });
+  });
+
+  return clusters;
+}
+
+function createHeatClusterButton(cluster) {
+  const button = document.createElement('button');
+  button.className = 'heat-cluster-button';
+  button.type = 'button';
+  button.textContent = cluster.items.length;
+  button.style.left = `${cluster.centerPercent}%`;
+  button.setAttribute('aria-label', `打开当前区域障碍（${cluster.items.length}）`);
+  button.addEventListener('click', (event) => {
+    event.stopPropagation();
+    openBottomSheet(cluster);
+  });
+
+  return button;
+}
+
+function renderTimelines() {
+  if (videoTimeline) {
+    videoTimeline.value = String(getTimelinePercent(currentTimeMs));
+  }
+
+  if (timelineTimeText) {
+    timelineTimeText.textContent = `${formatTimelineTime(currentTimeMs)} / ${formatTimelineTime(getTotalDurationMs())}`;
+  }
+
+  if (!obstacleHeatAxis) {
+    return [];
+  }
+
+  const clusters = clusterObstacleItems(getObstacleNavigationItems());
+  obstacleHeatAxis.innerHTML = '';
+  clusters.forEach((cluster) => obstacleHeatAxis.append(createHeatClusterButton(cluster)));
+  return clusters;
+}
+
+function closeBottomSheet() {
+  activeHeatCluster = null;
+
+  if (bottomSheetBackdrop) {
+    bottomSheetBackdrop.hidden = true;
+    bottomSheetBackdrop.classList.remove('is-visible');
+  }
+
+  if (obstacleBottomSheet) {
+    obstacleBottomSheet.hidden = true;
+    obstacleBottomSheet.classList.remove('is-visible');
+  }
+}
+
+function getSortedClusterItems(cluster) {
+  return sortObstaclesForLearningTips(cluster.items);
+}
+
+function createBottomSheetItem(obstacle) {
+  const button = document.createElement('button');
+  button.className = 'bottom-sheet__item';
+  button.type = 'button';
+  button.textContent = `${obstacle.kind === 'word' ? '○' : '●'} ${obstacle.kind === 'word' ? obstacle.word : obstacle.phrase}`;
+  button.addEventListener('click', () => {
+    const wasPlaying = isVideoPlaying;
+    seekToTime(obstacle.timeMs);
+    isVideoPlaying = wasPlaying;
+    syncPlaybackClock();
+    closeBottomSheet();
+    renderVideoState();
+    renderCards();
+  });
+
+  return button;
+}
+
+function openBottomSheet(cluster) {
+  activeHeatCluster = cluster;
+  const clusterItems = getSortedClusterItems(cluster);
+
+  if (bottomSheetTitle) {
+    bottomSheetTitle.textContent = `当前区域障碍（${clusterItems.length}）`;
+  }
+
+  if (bottomSheetContent) {
+    bottomSheetContent.innerHTML = '';
+    clusterItems.forEach((obstacle) => bottomSheetContent.append(createBottomSheetItem(obstacle)));
+  }
+
+  if (bottomSheetBackdrop) {
+    bottomSheetBackdrop.hidden = false;
+    bottomSheetBackdrop.classList.add('is-visible');
+  }
+
+  if (obstacleBottomSheet) {
+    obstacleBottomSheet.hidden = false;
+    obstacleBottomSheet.classList.add('is-visible');
+  }
 }
 
 let lastVideoActivationTime = 0;
@@ -657,6 +923,11 @@ function dismissLearningPauseHint(event) {
 }
 
 function setVideoPlayback(nextIsPlaying) {
+  if (isVideoPlaying && !nextIsPlaying) {
+    currentTimeMs = (playbackStartedTimeMs + (Date.now() - playbackStartedAt)) % getTotalDurationMs();
+    currentSegmentIndex = getSegmentIndexForTime(currentTimeMs);
+  }
+
   isVideoPlaying = Boolean(nextIsPlaying);
 
   if (isVideoPlaying) {
@@ -665,6 +936,7 @@ function setVideoPlayback(nextIsPlaying) {
 
   syncPlaybackClock();
   renderVideoState();
+  renderCards();
 }
 
 function pauseVideoForObstacle(obstacleId) {
@@ -681,7 +953,9 @@ function resetObstacleStream(nextObstacles, text = subtitleTextInput.value) {
   streamMode = 'dynamic';
   selectedObstacleId = null;
   currentSegmentIndex = 0;
+  currentTimeMs = 0;
   subtitleSegments = parseSubtitleSegments(text);
+  closeBottomSheet();
   renderVideoState();
   syncPlaybackClock();
 }
@@ -851,6 +1125,27 @@ learningPauseHint.addEventListener('click', stopMarkerEvent);
 videoFrame.addEventListener('pointerup', handleVideoFrameActivation);
 videoFrame.addEventListener('touchend', handleVideoFrameActivation);
 videoFrame.addEventListener('click', handleVideoFrameActivation);
+if (timelinePlayButton) {
+  timelinePlayButton.addEventListener('click', (event) => {
+    event.stopPropagation();
+    toggleVideoPlayback();
+  });
+}
+if (videoTimeline) {
+  videoTimeline.addEventListener('input', handleTimelineInput);
+  videoTimeline.addEventListener('click', stopMarkerEvent);
+  videoTimeline.addEventListener('pointerup', stopMarkerEvent);
+}
+if (obstacleHeatAxis) {
+  obstacleHeatAxis.addEventListener('click', stopMarkerEvent);
+  obstacleHeatAxis.addEventListener('pointerup', stopMarkerEvent);
+}
+if (bottomSheetClose) {
+  bottomSheetClose.addEventListener('click', closeBottomSheet);
+}
+if (bottomSheetBackdrop) {
+  bottomSheetBackdrop.addEventListener('click', closeBottomSheet);
+}
 renderVideoState();
 renderCards();
 syncPlaybackClock();
@@ -868,7 +1163,15 @@ window.ObstacleDetectionEngine = {
     isVideoPlaying,
     selectedObstacleId,
     currentSegmentIndex,
+    currentTimeMs,
+    totalDurationMs: getTotalDurationMs(),
   }),
+  seekToTime,
+  getObstacleNavigationItems,
+  clusterObstacleItems,
+  renderTimelines,
+  openBottomSheet,
+  closeBottomSheet,
   getVisibleObstacles,
   learningTipsMode: LEARNING_TIPS_MODE,
   setLearningTipsMode,
