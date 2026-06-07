@@ -2,7 +2,7 @@
 
 一个纯 HTML/CSS/Vanilla JavaScript 实现的 Video English Assistant。
 
-当前版本：V2.1 Multi-line Subtitle Analysis。
+当前版本：V2.3A Hot Fix – Restore Current Subtitle Learning Tips Behavior。
 
 V2.0 冻结学习流程逻辑：产品不追求让用户永久掌握所有单词、语法或考试能力，而是帮助用户扫除视频学习英语过程中的障碍，让用户越来越顺畅地听懂、看懂英语视频，并通过持续跨越障碍建立信心、提高效率、保持动力。
 
@@ -27,19 +27,23 @@ video-english-assistant/
 ├── index.html
 ├── styles.css
 ├── script.js
+├── test-current-subtitle-sync.js
 ├── preview-v1.5.svg
 ├── preview-v1.7.svg
 ├── preview-v1.9.svg
 ├── preview-v2.0.svg
 ├── preview-v2.0b.svg
 ├── preview-v2.1.svg
+├── screenshot-v2.3a-lecture-lay-it-on-us.svg
+├── screenshot-v2.3a-give-me-a-hand.svg
+├── screenshot-v2.3a-pull-off-the-project.svg
 └── README.md
 ```
 
 ## 功能
 
-- 左侧 70% 视频学习区，右侧 30% 障碍流。
-- 障碍流按字幕出现顺序只显示「生词」和「理解」两种障碍卡片，不再按类型分组。
+- 左侧 70% 视频学习区，右侧 30% 提示面板。
+- Learning Tips 只显示当前播放字幕中的「生词」和「理解」障碍，不显示上一句、下一句或整段视频的全局障碍。
 - 生词卡片固定字段：生词、音标、中文释义。
 - 理解卡片固定字段：出处、字面意思、实际意思、语法解释。
 - 理解卡展示方式为「字段：内容」同一行展示，提高阅读密度。
@@ -48,9 +52,49 @@ video-english-assistant/
 - 已 `resolved` 的提示会跨 Analyze 生效；以后再次 Analyze 出同一个内容时，不再进入提示流。
 - 支持在 `Subtitle Input` 中输入 10~50 句多行字幕，并按照字幕出现顺序生成提示流。
 - 同一障碍在同一次 Analyze 中只出现一次；理解短语内部的单词不再额外拆成生词提示。
-- 点击右侧栏顶部「恢复全部」后，当前轮次已隐藏的生词提示和理解提示会重新显示。
+- 点击右侧栏顶部「恢复全部」后，当前轮次已隐藏的生词提示和理解提示会重新显示，但仍然只限于当前播放字幕。
 - 右侧提示流支持滚动。
 - 支持平板和手机响应式布局。
+
+## V2.3A Hot Fix – Current Subtitle Learning Tips
+
+V2.3A 修复 Learning Tips 回归为“全视频障碍列表”的问题，恢复与当前播放字幕同步的 Dynamic Obstacle Stream 行为。
+
+冻结规则：
+
+- Learning Tips 只显示当前播放字幕中的障碍；不预加载上一句、下一句或整段视频的障碍。
+- 如果当前字幕包含多个障碍，必须全部显示。
+- 显示顺序固定为：先显示 Vocabulary Obstacles（生词），再显示 Comprehension Obstacles（理解）。同类型内部按该障碍在当前字幕中的出现顺序排序。
+- 当前字幕变化时，Learning Tips 自动更新，旧字幕障碍消失，新字幕障碍出现。
+- Learning Tips 不是全局障碍导航器；V2.4 Timeline 和 V2.5 Obstacle Navigator 会另行实现全局导航能力。
+
+### V2.3A 验证流程
+
+使用默认测试字幕：
+
+```text
+If you enjoyed this lecture,
+I'm sure you're too busy to lay it on us.
+
+Can you give me a hand?
+
+I was pulled off the project.
+
+Let's call it a day.
+```
+
+期望：
+
+1. 当前字幕为 `If you enjoyed this lecture, I'm sure you're too busy to lay it on us.` 时，Learning Tips 只显示 `lecture` 和 `lay it on us`。
+2. 当前字幕为 `Can you give me a hand?` 时，Learning Tips 只显示 `give me a hand`。
+3. 当前字幕为 `I was pulled off the project.` 时，Learning Tips 只显示 `pull off the project`，不显示 `lay it on us`、`give me a hand` 或 `call it a day`。
+4. 播放完整 demo sequence 时，Learning Tips 随字幕推进自动变化，任何时刻都不显示全视频障碍列表。
+
+### V2.3A 截图
+
+- `screenshot-v2.3a-lecture-lay-it-on-us.svg`：当前字幕为 `lecture + lay it on us`。
+- `screenshot-v2.3a-give-me-a-hand.svg`：当前字幕为 `give me a hand`。
+- `screenshot-v2.3a-pull-off-the-project.svg`：当前字幕为 `pull off the project`。
 
 ## V2.2 Dynamic Obstacle Stream Frozen
 

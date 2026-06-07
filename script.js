@@ -699,7 +699,7 @@ function hideCurrentObstacle(obstacleId) {
 
 function restoreAllCurrentObstacles() {
   hiddenObstacleIds = new Set();
-  streamMode = 'restored';
+  streamMode = 'dynamic';
   selectedObstacleId = null;
   setVideoPlayback(true);
   renderCards();
@@ -792,12 +792,6 @@ function renderEmptyState() {
 }
 
 function getVisibleObstacles() {
-  const pendingObstacles = getPendingObstacles();
-
-  if (streamMode === 'restored') {
-    return sortObstaclesForLearningTips(pendingObstacles);
-  }
-
   return getAutoSyncObstacles();
 }
 
@@ -872,6 +866,7 @@ window.ObstacleDetectionEngine = {
   setLearningTipsMode,
   pauseVideoForObstacle,
   getCurrentSegmentObstacles,
+  moveToNextSubtitleSegment,
   levels: Object.fromEntries(
     Object.entries(vocabularyLevels).map(([name, level]) => [name, level.label]),
   ),

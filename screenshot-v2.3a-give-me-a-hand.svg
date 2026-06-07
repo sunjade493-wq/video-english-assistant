@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="760" viewBox="0 0 1240 760">
+  <rect width="1240" height="760" fill="#eef3fb"/>
+  <rect x="32" y="32" width="808" height="704" rx="28" fill="#f8fbff" stroke="#d7e2f4"/>
+  <rect x="62" y="62" width="748" height="422" rx="24" fill="#17213d"/>
+  <circle cx="110" cy="112" r="26" fill="#6d8cff"/>
+  <polygon points="103,99 103,125 124,112" fill="white"/>
+  <text x="150" y="107" font-size="28" font-weight="700" fill="#ffffff">Video English Assistant</text>
+  <text x="150" y="137" font-size="15" fill="#b9c7e6">V2.3A Current Subtitle Learning Tips · Playing</text>
+  <rect x="86" y="335" width="700" height="118" rx="18" fill="#050913" opacity="0.78"/>
+  <text x="436" y="385" text-anchor="middle" font-size="27" font-weight="700" fill="#ffffff">Can you give me a hand?</text>
+  <text x="436" y="426" text-anchor="middle" font-size="22" fill="#f4d479">你能帮我一下吗？</text>
+  <text x="62" y="545" font-size="14" font-weight="700" letter-spacing="2" fill="#5f75a5">TODAY'S LECTURE</text>
+  <text x="62" y="585" font-size="32" font-weight="700" fill="#17233f">Academic Listening Practice</text>
+  <text x="62" y="623" font-size="20" fill="#526179">当前字幕高亮：give me a hand</text>
+  <rect x="860" y="32" width="380" height="704" rx="28" fill="#f8fbff" stroke="#d7e2f4"/>
+  <text x="890" y="76" font-size="14" font-weight="700" letter-spacing="2" fill="#5f75a5">LEARNING TIPS</text>
+  <text x="890" y="114" font-size="32" font-weight="700" fill="#17233f">提示</text>
+  <rect x="1100" y="70" width="110" height="42" rx="21" fill="#edf3ff" stroke="#b9c8ec"/>
+  <text x="1155" y="97" text-anchor="middle" font-size="16" font-weight="700" fill="#3157b7">恢复全部</text>
+  <rect x="875" y="150" width="325" height="168" rx="18" fill="#ffffff" stroke="#d8e1f3"/>
+<text x="900" y="184" font-size="18" font-weight="700" fill="#3157b7">[理解]</text>
+<text x="900" y="216" font-size="24" font-weight="700" fill="#17233f">give me a hand</text>
+<text x="900" y="248" font-size="15" fill="#526179"><tspan font-weight="700">出处：</tspan>give me a hand</text>
+<text x="900" y="276" font-size="15" fill="#526179"><tspan font-weight="700">实际意思：</tspan>帮我一下；搭把手</text>
+  <text x="890" y="704" font-size="14" fill="#78859d">Only current subtitle obstacles are shown.</text>
+</svg>
