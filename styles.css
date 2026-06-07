@@ -249,6 +249,54 @@ button {
   letter-spacing: -0.03em;
 }
 
+.learning-mode-controls {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  min-width: 220px;
+}
+
+.learning-mode-label {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.learning-mode-toggle {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid rgba(148, 163, 184, 0.34);
+  border-radius: 999px;
+  background: rgba(241, 245, 249, 0.86);
+}
+
+.learning-mode-button {
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  padding: 7px 10px;
+  color: var(--muted);
+  background: transparent;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 800;
+  transition: color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+
+.learning-mode-button.is-active {
+  color: var(--primary-dark);
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.1);
+}
+
+.learning-mode-button:hover {
+  color: var(--primary-dark);
+}
+
 .restore-button,
 .dismiss-button {
   border: 0;
