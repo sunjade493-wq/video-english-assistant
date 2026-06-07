@@ -1041,7 +1041,6 @@ function createCard(obstacle) {
   if (obstacle.kind === 'understanding') {
     content.append(
       createUnderstandingSummary(obstacle),
-      createDetailBlock('出处', obstacle.source),
       createDetailBlock('字面意思', obstacle.literal),
       createDetailBlock('实际意思', obstacle.actual),
       createDetailBlock('语法解释', obstacle.grammar),
