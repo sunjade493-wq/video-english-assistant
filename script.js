@@ -736,16 +736,46 @@ function handleTimelineInput(event) {
   seekToTime((percent / 100) * getTotalDurationMs());
 }
 
-function getObstacleNavigationItems() {
-  return sortObstaclesForLearningTips(obstacles).map((obstacle) => {
-    const timeMs = getObstacleTimeMs(obstacle);
+function createTimedObstacleForSegment(obstacle, segmentIndex) {
+  const timeMs = getTimeForSegmentIndex(segmentIndex);
 
-    return {
-      ...obstacle,
-      timeMs,
-      percent: getTimelinePercent(timeMs),
-    };
-  }).sort((firstObstacle, secondObstacle) => firstObstacle.timeMs - secondObstacle.timeMs);
+  return {
+    ...obstacle,
+    timeMs,
+    percent: getTimelinePercent(timeMs),
+  };
+}
+
+function createObstacleNavigationGroup(segment, segmentIndex) {
+  const timeMs = getTimeForSegmentIndex(segmentIndex);
+  const segmentObstacles = sortObstaclesForLearningTips(
+    getObstaclesInSegment(segment, obstacles),
+  ).map((obstacle) => createTimedObstacleForSegment(obstacle, segmentIndex));
+
+  return {
+    id: `segment-${segmentIndex}`,
+    kind: 'subtitle-segment',
+    segment,
+    segmentIndex,
+    obstacles: segmentObstacles,
+    timeMs,
+    percent: getTimelinePercent(timeMs),
+  };
+}
+
+function getObstacleNavigationItems() {
+  return subtitleSegments
+    .map((segment, segmentIndex) => createObstacleNavigationGroup(segment, segmentIndex))
+    .filter((group) => group.obstacles.length > 0)
+    .sort((firstGroup, secondGroup) => firstGroup.timeMs - secondGroup.timeMs);
+}
+
+function getNavigationItemObstacleCount(item) {
+  return Array.isArray(item.obstacles) ? item.obstacles.length : 1;
+}
+
+function getClusterObstacleCount(cluster) {
+  return cluster.items.reduce((count, item) => count + getNavigationItemObstacleCount(item), 0);
 }
 
 function clusterObstacleItems(items) {
@@ -778,7 +808,13 @@ function clusterObstacleItems(items) {
 }
 
 function getHeatClusterKey(cluster) {
-  return cluster.items.map((item) => item.id).join('|');
+  return cluster.items.map((item) => {
+    if (item.kind === 'subtitle-segment') {
+      return item.id;
+    }
+
+    return item.id;
+  }).join('|');
 }
 
 function createHeatClusterHighlight(cluster) {
@@ -799,9 +835,11 @@ function createHeatClusterButton(cluster) {
 
   button.className = 'heat-cluster-button';
   button.type = 'button';
-  button.textContent = cluster.items.length;
+  const obstacleCount = getClusterObstacleCount(cluster);
+
+  button.textContent = obstacleCount;
   button.style.left = `${cluster.centerPercent}%`;
-  button.setAttribute('aria-label', `打开当前区域障碍（${cluster.items.length}）`);
+  button.setAttribute('aria-label', `打开当前区域障碍（${obstacleCount}）`);
 
   if (clusterKey === activeHeatClusterKey) {
     button.classList.add('is-selected');
@@ -861,14 +899,37 @@ function closeBottomSheet() {
 }
 
 function getSortedClusterItems(cluster) {
-  return [...cluster.items].sort((firstObstacle, secondObstacle) => firstObstacle.index - secondObstacle.index);
+  return [...cluster.items].sort((firstItem, secondItem) => {
+    const firstTime = firstItem.timeMs ?? getObstacleTimeMs(firstItem);
+    const secondTime = secondItem.timeMs ?? getObstacleTimeMs(secondItem);
+
+    if (firstTime !== secondTime) {
+      return firstTime - secondTime;
+    }
+
+    return (firstItem.index ?? 0) - (secondItem.index ?? 0);
+  });
 }
 
 function getSortedObstaclesForSubtitleUnit(obstaclesToSort) {
   return sortObstaclesForLearningTips(obstaclesToSort);
 }
 
+function isSubtitleNavigationGroup(item) {
+  return item && item.kind === 'subtitle-segment' && Array.isArray(item.obstacles);
+}
+
 function getClusterSubtitleGroups(clusterItems) {
+  const groupedItems = clusterItems.filter(isSubtitleNavigationGroup);
+
+  if (groupedItems.length > 0) {
+    return groupedItems.map((group) => ({
+      segment: group.segment,
+      segmentIndex: group.segmentIndex,
+      obstacles: getSortedObstaclesForSubtitleUnit(group.obstacles),
+    })).filter((group) => group.obstacles.length > 0);
+  }
+
   return subtitleSegments.map((segment, segmentIndex) => ({
     segment,
     segmentIndex,
@@ -921,9 +982,10 @@ function openBottomSheet(cluster) {
   activeHeatClusterKey = getHeatClusterKey(cluster);
   const clusterItems = getSortedClusterItems(cluster);
   const subtitleGroups = getClusterSubtitleGroups(clusterItems);
+  const obstacleCount = getClusterObstacleCount(cluster);
 
   if (bottomSheetTitle) {
-    bottomSheetTitle.textContent = `当前区域障碍（${clusterItems.length}）`;
+    bottomSheetTitle.textContent = `当前区域障碍（${obstacleCount}）`;
   }
 
   if (bottomSheetContent) {

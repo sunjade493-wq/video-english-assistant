@@ -251,12 +251,16 @@ getElement('#videoTimeline').listeners.input({ target: getElement('#videoTimelin
 assertLabels('Test V2.4A dragging video timeline jumps to subtitle position', ['call it a day']);
 
 const navigationItems = api.getObstacleNavigationItems();
-const layItOnUs = navigationItems.find((obstacle) => obstacle.phrase === 'lay it on us');
-const expectedPercent = (layItOnUs.timeMs / api.getPlaybackState().totalDurationMs) * 100;
-if (Math.abs(layItOnUs.percent - expectedPercent) > 0.0001) {
-  throw new Error('Test V2.4A heat axis mapping: obstacle percent did not match video timeline time coordinate');
+const firstSubtitleGroup = navigationItems.find((item) => item.segmentIndex === 0);
+const layItOnUs = firstSubtitleGroup.obstacles.find((obstacle) => obstacle.phrase === 'lay it on us');
+const expectedPercent = (firstSubtitleGroup.timeMs / api.getPlaybackState().totalDurationMs) * 100;
+if (firstSubtitleGroup.obstacles.length !== 2) {
+  throw new Error('Test V2.4 Phase 2 heat source: expected first subtitle to stay one navigation group with two obstacles');
 }
-console.log('PASS Test V2.4A heat axis uses video timeline coordinates');
+if (Math.abs(firstSubtitleGroup.percent - expectedPercent) > 0.0001 || Math.abs(layItOnUs.percent - expectedPercent) > 0.0001) {
+  throw new Error('Test V2.4 Phase 2 heat axis mapping: subtitle group percent did not match video timeline segment coordinate');
+}
+console.log('PASS Test V2.4 Phase 2 heat axis source groups obstacles by subtitle segment');
 
 const clustered = api.clusterObstacleItems([
   { id: 'near-1', percent: 10 },
@@ -296,13 +300,47 @@ if (!bottomSheetSubtitles.includes("If you enjoyed this lecture, I'm sure you're
 console.log('PASS Test V2.4A Bottom Sheet groups by subtitle, keeps bound obstacles, and sorts ○ before ●');
 
 const renderedHeatClusters = api.renderTimelines();
+if (renderedHeatClusters[0].items.length !== 1 || renderedHeatClusters[0].items[0].obstacles.length !== 2) {
+  throw new Error('Test V2.4 Phase 2 heat cluster: expected first cluster to contain one subtitle group with two obstacles');
+}
+const firstHeatButton = getElement('#obstacleHeatAxis').children.find((child) => child.className.includes('heat-cluster-button') && child.textContent === '2');
+if (!firstHeatButton) {
+  throw new Error('Test V2.4 Phase 2 heat cluster count: expected first heat button to show total obstacle count 2');
+}
 api.openBottomSheet(renderedHeatClusters[0]);
+if (getElement('#bottomSheetTitle').textContent !== '当前区域障碍（2）') {
+  throw new Error('Test V2.4 Phase 2 bottom sheet title: expected first cluster title to count two obstacles');
+}
+const firstClusterGroups = getElement('#bottomSheetContent').children;
+if (firstClusterGroups.length !== 1 || firstClusterGroups[0].children[2].children.length !== 2) {
+  throw new Error('Test V2.4 Phase 2 bottom sheet grouping: expected lecture and lay it on us under one subtitle group');
+}
 const selectedHeatButton = getElement('#obstacleHeatAxis').children.find((child) => child.className.includes('heat-cluster-button is-selected'));
 const selectedHighlight = getElement('#obstacleHeatAxis').children.find((child) => child.className === 'heat-cluster-highlight');
 if (!selectedHeatButton || !selectedHighlight) {
   throw new Error('Test V2.4A heat cluster highlight: expected selected cluster button and highlighted region');
 }
 console.log('PASS Test V2.4A selected heat cluster is highlighted');
+
+api.openBottomSheet(renderedHeatClusters[0]);
+const wasPlayingBeforeLectureJump = api.getPlaybackState().isVideoPlaying;
+const lectureButton = getElement('#bottomSheetContent').children[0].children[2].children.find((child) => child.textContent === '○ lecture');
+lectureButton.click();
+assertLabels('Test V2.4 Phase 2 Bottom Sheet lecture chip syncs current subtitle Learning Tips', ['lecture', 'lay it on us']);
+if (getElement('#obstacleBottomSheet').hidden !== true) {
+  throw new Error('Test V2.4 Phase 2 Bottom Sheet lecture chip closes sheet: expected hidden sheet');
+}
+assertPlayback('Test V2.4 Phase 2 Bottom Sheet lecture chip keeps playback state', wasPlayingBeforeLectureJump);
+
+api.openBottomSheet(renderedHeatClusters[0]);
+const wasPlayingBeforeLayItOnUsJump = api.getPlaybackState().isVideoPlaying;
+const layItOnUsButton = getElement('#bottomSheetContent').children[0].children[2].children.find((child) => child.textContent === '● lay it on us');
+layItOnUsButton.click();
+assertLabels('Test V2.4 Phase 2 Bottom Sheet lay it on us chip syncs current subtitle Learning Tips', ['lecture', 'lay it on us']);
+if (getElement('#obstacleBottomSheet').hidden !== true) {
+  throw new Error('Test V2.4 Phase 2 Bottom Sheet lay it on us chip closes sheet: expected hidden sheet');
+}
+assertPlayback('Test V2.4 Phase 2 Bottom Sheet lay it on us chip keeps playback state', wasPlayingBeforeLayItOnUsJump);
 
 api.hideCurrentObstacle('word-lecture');
 const navigationItemsAfterHide = api.getObstacleNavigationItems();
