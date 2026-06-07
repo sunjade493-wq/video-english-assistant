@@ -124,6 +124,31 @@ function assertLabels(name, expectedLabels) {
   console.log(`PASS ${name}: ${actualLabels.join(', ')}`);
 }
 
+
+function getCardStreamText() {
+  return getElement('#cardStream').textContent;
+}
+
+function assertCardStreamIncludes(name, expectedText) {
+  const cardText = getCardStreamText();
+
+  if (!cardText.includes(expectedText)) {
+    throw new Error(`${name}: expected Learning Tips to include ${JSON.stringify(expectedText)}, got ${JSON.stringify(cardText)}`);
+  }
+
+  console.log(`PASS ${name}: includes ${expectedText}`);
+}
+
+function assertCardStreamExcludes(name, unexpectedText) {
+  const cardText = getCardStreamText();
+
+  if (cardText.includes(unexpectedText)) {
+    throw new Error(`${name}: expected Learning Tips to exclude ${JSON.stringify(unexpectedText)}, got ${JSON.stringify(cardText)}`);
+  }
+
+  console.log(`PASS ${name}: excludes ${unexpectedText}`);
+}
+
 function assertPlayback(name, expectedIsPlaying) {
   const { isVideoPlaying } = api.getPlaybackState();
 
@@ -136,6 +161,13 @@ function assertPlayback(name, expectedIsPlaying) {
 
 api.Analyze(demoText, { level: 'junior' });
 assertLabels('Test 1 first subtitle shows all current obstacles', ['lecture', 'lay it on us']);
+assertCardStreamIncludes('Test V2.4A UI Cleanup word obstacle keeps phonetic', '/ˈlektʃər/');
+assertCardStreamIncludes('Test V2.4A UI Cleanup word obstacle keeps translation', '讲座');
+assertCardStreamIncludes('Test V2.4A UI Cleanup understanding keeps literal field', '字面意思');
+assertCardStreamIncludes('Test V2.4A UI Cleanup understanding keeps actual field', '实际意思');
+assertCardStreamIncludes('Test V2.4A UI Cleanup understanding keeps grammar field', '语法解释');
+assertCardStreamExcludes('Test V2.4A UI Cleanup first subtitle hides source label', '出处');
+assertCardStreamExcludes('Test V2.4A UI Cleanup first subtitle hides source text', '出处lay it on us');
 
 api.pauseVideoForObstacle('understanding-lay-it-on-us');
 assertPlayback('Test 2 dotted marker enters Learning Pause', false);
@@ -180,6 +212,8 @@ assertLabels('Test B second subtitle only', ['give me a hand']);
 
 api.moveToNextSubtitleSegment();
 assertLabels('Test C third subtitle only', ['pull off the project']);
+assertCardStreamExcludes('Test V2.4A UI Cleanup pulled off card hides source label', '出处');
+assertCardStreamExcludes('Test V2.4A UI Cleanup pulled off card hides matched source text', '出处pulled off the project');
 
 api.restoreAllCurrentObstacles();
 assertLabels('Restore All never expands beyond current subtitle', ['pull off the project']);
