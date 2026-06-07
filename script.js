@@ -426,25 +426,40 @@ function getPrimaryDynamicObstacle() {
   return pendingObstacles[0] || null;
 }
 
-function getActiveSubtitleObstacle() {
-  return getPrimaryDynamicObstacle();
+function isObstacleInSegment(obstacle, segment) {
+  return Boolean(segment) && obstacle.index >= segment.start && obstacle.index < segment.end;
 }
 
-function getMarkerRangesForSegment(segment) {
-  const activeObstacle = getActiveSubtitleObstacle();
-
-  if (!activeObstacle) {
+function getActiveSubtitleObstacles(segment = getCurrentSubtitleSegment()) {
+  if (!segment) {
     return [];
   }
 
-  return [{
-    obstacle: activeObstacle,
-    start: Math.max(0, activeObstacle.index - segment.start),
+  if (streamMode === 'restored') {
+    return getSegmentObstacles(segment);
+  }
+
+  const activeObstacle = getPrimaryDynamicObstacle();
+
+  return activeObstacle && isObstacleInSegment(activeObstacle, segment) ? [activeObstacle] : [];
+}
+
+function getMarkerRangeForObstacle(segment, obstacle) {
+  return {
+    obstacle,
+    start: Math.max(0, obstacle.index - segment.start),
     end: Math.min(
       segment.text.length,
-      (activeObstacle.end || activeObstacle.index + getObstacleLabel(activeObstacle).length) - segment.start,
+      (obstacle.end || obstacle.index + getObstacleLabel(obstacle).length) - segment.start,
     ),
-  }].filter((range) => range.end > range.start);
+  };
+}
+
+function getMarkerRangesForSegment(segment) {
+  return getActiveSubtitleObstacles(segment)
+    .map((obstacle) => getMarkerRangeForObstacle(segment, obstacle))
+    .filter((range) => range.end > range.start)
+    .sort((firstRange, secondRange) => firstRange.start - secondRange.start);
 }
 
 function appendSubtitleText(text, targetLine = currentSubtitleLine) {
@@ -599,13 +614,6 @@ function restoreAllCurrentObstacles() {
   hiddenObstacleIds = new Set();
   streamMode = 'restored';
   selectedObstacleId = null;
-
-  const activeObstacle = getPrimaryDynamicObstacle();
-  selectedObstacleId = activeObstacle ? activeObstacle.id : null;
-
-  if (activeObstacle) {
-    syncSubtitleSegmentToObstacle(activeObstacle.id);
-  }
 
   renderCards();
   renderVideoState();
