@@ -442,20 +442,19 @@ button {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.2em;
+  gap: 0.04em;
   max-width: min(92%, 960px);
   margin: 0;
-  padding: 10px 18px 12px;
-  border-radius: 14px;
-  background: linear-gradient(180deg, rgba(15, 23, 42, 0.42), rgba(15, 23, 42, 0.24));
+  padding: 0 12px;
   color: #ffd84d;
   font-weight: 800;
-  line-height: 1.26;
+  line-height: 1.18;
   text-align: center;
   text-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.92),
-    0 0 10px rgba(0, 0, 0, 0.68);
-  backdrop-filter: blur(4px);
+    -1px -1px 0 rgba(0, 0, 0, 0.7),
+    1px -1px 0 rgba(0, 0, 0, 0.7),
+    -1px 1px 0 rgba(0, 0, 0, 0.7),
+    1px 1px 0 rgba(0, 0, 0, 0.7);
 }
 
 .subtitle-language-line {
@@ -464,13 +463,13 @@ button {
 }
 
 .subtitle-english-line {
-  font-size: clamp(1.26rem, 2.5vw, 2.05rem);
+  font-size: clamp(1.1rem, 2.18vw, 1.8rem);
   letter-spacing: 0.01em;
 }
 
 .subtitle-chinese-line {
-  margin-top: 0.12em;
-  font-size: clamp(1rem, 1.85vw, 1.42rem);
+  margin-top: 0.02em;
+  font-size: clamp(0.88rem, 1.62vw, 1.25rem);
 }
 
 .subtitle-text-part,
@@ -481,29 +480,33 @@ button {
 .subtitle-marker-button {
   appearance: none;
   border: 0;
-  border-bottom: 2px dashed rgba(255, 216, 77, 0.9);
   border-radius: 0;
   cursor: pointer;
-  padding: 0 0 4px;
+  padding: 0 0 0.08em;
   color: inherit;
   background: transparent;
   font: inherit;
   font-weight: 900;
   pointer-events: auto;
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-color: rgba(255, 216, 77, 0.95);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.18em;
   text-shadow: inherit;
-  transition: border-color 160ms ease, color 160ms ease;
+  transition: color 160ms ease, text-decoration-color 160ms ease;
 }
 
 .subtitle-marker-button:hover,
 .subtitle-marker-button:focus-visible {
-  border-bottom-color: #fff4ad;
   color: #fff4ad;
   outline: none;
+  text-decoration-color: #fff4ad;
 }
 
 .subtitle-marker-button.is-selected {
-  border-bottom-color: #ffffff;
   color: #fff7c2;
+  text-decoration-color: #ffffff;
 }
 
 @media (max-width: 640px) {
@@ -515,6 +518,6 @@ button {
 
   .subtitle-line {
     max-width: 96%;
-    padding: 8px 12px 10px;
+    padding: 0 8px;
   }
 }
