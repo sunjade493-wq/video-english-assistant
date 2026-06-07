@@ -329,7 +329,7 @@ let playbackTimer = null;
 let obstacles = analyzeSubtitleText(DEFAULT_SUBTITLE_TEXT, { level: DEFAULT_VOCABULARY_LEVEL });
 let hiddenObstacleIds = new Set();
 let streamMode = 'dynamic';
-let learningTipsMode = 'click';
+const LEARNING_TIPS_MODE = 'auto';
 let selectedObstacleId = null;
 let learningPauseHintTimer = null;
 
@@ -345,7 +345,6 @@ const videoStatusText = document.querySelector('#videoStatusText');
 const videoFrame = document.querySelector('.video-frame');
 const learningPauseHint = document.querySelector('#learningPauseHint');
 const learningPauseHintDismiss = document.querySelector('#learningPauseHintDismiss');
-const learningModeButtons = document.querySelectorAll('[data-learning-mode]');
 
 function parseSubtitleSegments(text) {
   const sourceText = String(text || '').trim();
@@ -426,24 +425,26 @@ function getSelectedPendingObstacle() {
   return getPendingObstacles().find((obstacle) => obstacle.id === selectedObstacleId) || null;
 }
 
-function getPrimaryAutoSyncObstacle() {
-  const currentSegmentObstacles = getCurrentSegmentObstacles();
+function sortObstaclesForLearningTips(obstaclesToSort) {
+  const kindOrder = {
+    word: 0,
+    understanding: 1,
+  };
 
-  return currentSegmentObstacles[0] || null;
+  return [...obstaclesToSort].sort((firstObstacle, secondObstacle) => {
+    const firstKindOrder = kindOrder[firstObstacle.kind] ?? 99;
+    const secondKindOrder = kindOrder[secondObstacle.kind] ?? 99;
+
+    if (firstKindOrder !== secondKindOrder) {
+      return firstKindOrder - secondKindOrder;
+    }
+
+    return firstObstacle.index - secondObstacle.index;
+  });
 }
 
-function getPrimaryDynamicObstacle() {
-  const selectedObstacle = getSelectedPendingObstacle();
-
-  if (selectedObstacle && (learningTipsMode === 'click' || !isVideoPlaying)) {
-    return selectedObstacle;
-  }
-
-  if (learningTipsMode === 'auto') {
-    return getPrimaryAutoSyncObstacle();
-  }
-
-  return null;
+function getAutoSyncObstacles() {
+  return sortObstaclesForLearningTips(getCurrentSegmentObstacles());
 }
 
 function isObstacleInSegment(obstacle, segment) {
@@ -643,7 +644,7 @@ function showLearningPauseHint() {
   learningPauseHintTimer = window.setTimeout(() => {
     learningPauseHint.classList.remove('is-visible');
     learningPauseHintTimer = null;
-  }, 2800);
+  }, 5500);
 }
 
 function dismissLearningPauseHint(event) {
@@ -794,20 +795,16 @@ function getVisibleObstacles() {
   const pendingObstacles = getPendingObstacles();
 
   if (streamMode === 'restored') {
-    return pendingObstacles;
+    return sortObstaclesForLearningTips(pendingObstacles);
   }
 
-  const activeObstacle = getPrimaryDynamicObstacle();
-
-  return activeObstacle ? [activeObstacle] : [];
+  return getAutoSyncObstacles();
 }
 
 function renderModePrompt() {
   const prompt = document.createElement('div');
   prompt.className = 'empty-state';
-  prompt.textContent = learningTipsMode === 'click'
-    ? 'Click to Learn 模式：点击字幕中的虚线障碍后，这里会显示对应解释。'
-    : '当前字幕没有需要同步显示的障碍。';
+  prompt.textContent = '当前字幕没有需要同步显示的障碍。';
   cardStream.append(prompt);
 }
 
@@ -834,29 +831,11 @@ function renderCards() {
   return visibleObstacles;
 }
 
-function updateLearningModeControls() {
-  learningModeButtons.forEach((button) => {
-    const isActiveMode = button.dataset.learningMode === learningTipsMode;
-    button.classList.toggle('is-active', isActiveMode);
-    button.setAttribute('aria-pressed', String(isActiveMode));
-  });
-}
-
-function setLearningTipsMode(nextMode) {
-  if (!['auto', 'click'].includes(nextMode) || learningTipsMode === nextMode) {
-    return;
-  }
-
-  learningTipsMode = nextMode;
+function setLearningTipsMode() {
   selectedObstacleId = null;
   streamMode = 'dynamic';
-  updateLearningModeControls();
   renderVideoState();
-  renderCards();
-}
-
-function handleLearningModeClick(event) {
-  setLearningTipsMode(event.currentTarget.dataset.learningMode);
+  return renderCards();
 }
 
 function analyzeAndRender(text, options = {}) {
@@ -871,14 +850,12 @@ function handleAnalyzeClick() {
 analyzeButton.addEventListener('click', handleAnalyzeClick);
 restoreAllButton.addEventListener('click', restoreAllCurrentObstacles);
 learningPauseHintDismiss.addEventListener('click', dismissLearningPauseHint);
-learningModeButtons.forEach((button) => button.addEventListener('click', handleLearningModeClick));
 learningPauseHint.addEventListener('pointerup', stopMarkerEvent);
 learningPauseHint.addEventListener('touchend', stopMarkerEvent);
 learningPauseHint.addEventListener('click', stopMarkerEvent);
 videoFrame.addEventListener('pointerup', handleVideoFrameActivation);
 videoFrame.addEventListener('touchend', handleVideoFrameActivation);
 videoFrame.addEventListener('click', handleVideoFrameActivation);
-updateLearningModeControls();
 renderVideoState();
 renderCards();
 syncPlaybackClock();
@@ -891,6 +868,7 @@ window.ObstacleDetectionEngine = {
   detectUnderstandingObstacles,
   restoreAllCurrentObstacles,
   getVisibleObstacles,
+  learningTipsMode: LEARNING_TIPS_MODE,
   setLearningTipsMode,
   pauseVideoForObstacle,
   getCurrentSegmentObstacles,
