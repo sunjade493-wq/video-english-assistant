@@ -330,8 +330,10 @@ let obstacles = analyzeSubtitleText(DEFAULT_SUBTITLE_TEXT, { level: DEFAULT_VOCA
 let hiddenObstacleIds = new Set();
 let streamMode = 'dynamic';
 let selectedObstacleId = null;
+let learningPauseHintTimer = null;
 
 const SEGMENT_DURATION_MS = 3600;
+const LEARNING_PAUSE_HINT_STORAGE_KEY = 'videoEnglishAssistant.learningPauseHintDismissed';
 const cardStream = document.querySelector('#cardStream');
 const restoreAllButton = document.querySelector('#restoreAllButton');
 const subtitleTextInput = document.querySelector('#subtitleTextInput');
@@ -340,6 +342,8 @@ const currentSubtitleLine = document.querySelector('#currentSubtitleLine');
 const playIcon = document.querySelector('#playIcon');
 const videoStatusText = document.querySelector('#videoStatusText');
 const videoFrame = document.querySelector('.video-frame');
+const learningPauseHint = document.querySelector('#learningPauseHint');
+const learningPauseHintDismiss = document.querySelector('#learningPauseHintDismiss');
 
 function parseSubtitleSegments(text) {
   const sourceText = String(text || '').trim();
@@ -431,17 +435,7 @@ function isObstacleInSegment(obstacle, segment) {
 }
 
 function getActiveSubtitleObstacles(segment = getCurrentSubtitleSegment()) {
-  if (!segment) {
-    return [];
-  }
-
-  if (streamMode === 'restored') {
-    return getSegmentObstacles(segment);
-  }
-
-  const activeObstacle = getPrimaryDynamicObstacle();
-
-  return activeObstacle && isObstacleInSegment(activeObstacle, segment) ? [activeObstacle] : [];
+  return getSegmentObstacles(segment);
 }
 
 function getMarkerRangeForObstacle(segment, obstacle) {
@@ -535,11 +529,17 @@ function renderSubtitleMarkers() {
   currentSubtitleLine.append(englishLine, chineseLine);
 }
 
+function getLearningStateLabel() {
+  if (isVideoPlaying) {
+    return 'Playing';
+  }
+
+  return selectedObstacleId ? 'Learning Pause' : 'Paused by you';
+}
+
 function renderVideoState() {
   playIcon.textContent = isVideoPlaying ? '▶' : '⏸';
-  videoStatusText.textContent = isVideoPlaying
-    ? 'V2.3 Obstacle Subtitle Marker · Playing'
-    : 'V2.3 Obstacle Subtitle Marker · Paused by you';
+  videoStatusText.textContent = `V2.3 State Flow · ${getLearningStateLabel()}`;
   renderSubtitleMarkers();
 }
 
@@ -593,8 +593,59 @@ function handleVideoFrameActivation() {
   toggleVideoPlayback();
 }
 
+function hideLearningPauseHint() {
+  if (!learningPauseHint) {
+    return;
+  }
+
+  if (learningPauseHintTimer) {
+    window.clearTimeout(learningPauseHintTimer);
+    learningPauseHintTimer = null;
+  }
+
+  learningPauseHint.classList.remove('is-visible');
+  learningPauseHint.hidden = true;
+}
+
+function isLearningPauseHintDismissed() {
+  return window.localStorage.getItem(LEARNING_PAUSE_HINT_STORAGE_KEY) === 'true';
+}
+
+function showLearningPauseHint() {
+  if (!learningPauseHint || isLearningPauseHintDismissed()) {
+    return;
+  }
+
+  if (learningPauseHintTimer) {
+    window.clearTimeout(learningPauseHintTimer);
+  }
+
+  learningPauseHint.hidden = false;
+  window.requestAnimationFrame(() => {
+    learningPauseHint.classList.add('is-visible');
+  });
+  learningPauseHintTimer = window.setTimeout(() => {
+    learningPauseHint.classList.remove('is-visible');
+    learningPauseHintTimer = null;
+  }, 2800);
+}
+
+function dismissLearningPauseHint(event) {
+  if (event) {
+    event.stopPropagation();
+  }
+
+  window.localStorage.setItem(LEARNING_PAUSE_HINT_STORAGE_KEY, 'true');
+  hideLearningPauseHint();
+}
+
 function setVideoPlayback(nextIsPlaying) {
   isVideoPlaying = Boolean(nextIsPlaying);
+
+  if (isVideoPlaying) {
+    hideLearningPauseHint();
+  }
+
   syncPlaybackClock();
   renderVideoState();
 }
@@ -603,6 +654,7 @@ function pauseVideoForObstacle(obstacleId) {
   selectedObstacleId = obstacleId;
   streamMode = 'dynamic';
   setVideoPlayback(false);
+  showLearningPauseHint();
   renderCards();
 }
 
@@ -624,24 +676,16 @@ function hideCurrentObstacle(obstacleId) {
   }
 
   streamMode = 'dynamic';
-
-  const nextObstacle = getPrimaryDynamicObstacle();
-
-  if (nextObstacle) {
-    syncSubtitleSegmentToObstacle(nextObstacle.id);
-  }
-
+  setVideoPlayback(true);
   renderCards();
-  renderSubtitleMarkers();
 }
 
 function restoreAllCurrentObstacles() {
   hiddenObstacleIds = new Set();
   streamMode = 'restored';
   selectedObstacleId = null;
-
+  setVideoPlayback(true);
   renderCards();
-  renderVideoState();
 }
 
 function createDetailBlock(title, text) {
@@ -771,6 +815,10 @@ function handleAnalyzeClick() {
 
 analyzeButton.addEventListener('click', handleAnalyzeClick);
 restoreAllButton.addEventListener('click', restoreAllCurrentObstacles);
+learningPauseHintDismiss.addEventListener('click', dismissLearningPauseHint);
+learningPauseHint.addEventListener('pointerup', stopMarkerEvent);
+learningPauseHint.addEventListener('touchend', stopMarkerEvent);
+learningPauseHint.addEventListener('click', stopMarkerEvent);
 videoFrame.addEventListener('pointerup', handleVideoFrameActivation);
 videoFrame.addEventListener('touchend', handleVideoFrameActivation);
 videoFrame.addEventListener('click', handleVideoFrameActivation);
