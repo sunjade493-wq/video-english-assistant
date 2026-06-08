@@ -2,7 +2,7 @@
 
 一个纯 HTML/CSS/Vanilla JavaScript 实现的 Video English Assistant。
 
-当前版本：V2.4A Obstacle Timeline Static Prototype – 在 V2.3A 冻结交互基础上新增视频时间轴与障碍热力轴。
+当前版本：V2.4A Obstacle Timeline Frozen ✅ – 双时间轴、障碍热力轴、Google Maps 式视觉密度聚合、Bottom Sheet 与 Learning Tips 同步已验收冻结。V2.4B Learning Heatmap Polish 已进入 Backlog（暂缓开发）。
 
 V2.0 冻结学习流程逻辑：产品不追求让用户永久掌握所有单词、语法或考试能力，而是帮助用户扫除视频学习英语过程中的障碍，让用户越来越顺畅地听懂、看懂英语视频，并通过持续跨越障碍建立信心、提高效率、保持动力。
 
@@ -28,6 +28,7 @@ video-english-assistant/
 ├── styles.css
 ├── script.js
 ├── test-current-subtitle-sync.js
+├── CHANGELOG.md
 ├── preview-v1.5.svg
 ├── preview-v1.7.svg
 ├── preview-v1.9.svg
@@ -54,6 +55,57 @@ video-english-assistant/
 - 点击右侧栏顶部「恢复全部」后，当前轮次已隐藏的生词提示和理解提示会重新显示，但仍然只限于当前播放字幕，且不改变当前播放 / 暂停状态。
 - 右侧提示流支持滚动。
 - 支持平板和手机响应式布局。
+
+## V2.4A Obstacle Timeline Frozen ✅
+
+V2.4A Obstacle Timeline 已验收完成，并标记为 Frozen。该版本在 V2.3A 已冻结的当前字幕 Learning Tips 交互基础上，完成视频进度与学习障碍分布的时间轴表达。
+
+Frozen Scope：
+
+- 双时间轴：上方视频时间轴负责播放进度、点击跳转与拖动跳转；下方障碍热力轴负责展示学习障碍分布。
+- 障碍热力轴：按同一套视频时间坐标呈现障碍位置。
+- Google Maps 式视觉密度聚合：相近障碍点按像素距离智能聚合，避免短时间内多个障碍造成视觉重叠。
+- 聚合点数字显示：聚合点显示当前聚合区域内的障碍数量。
+- Bottom Sheet：点击障碍聚合点后，从底部打开当前区域障碍列表。
+- 当前区域高亮：选中聚合点后，高亮当前聚合点与对应时间区域。
+- 按字幕节点分组：Bottom Sheet 按字幕段落 / 字幕节点展示，不把同一句字幕拆散。
+- 同句多障碍绑定：同一句字幕中的多个障碍保持绑定显示。
+- 点击障碍跳转：点击 Bottom Sheet 中任一障碍会跳转到对应字幕时间点。
+- Learning Tips 同步：障碍跳转后右侧 Learning Tips 同步切换到该字幕节点的当前障碍。
+- 播放状态保持：点击障碍跳转、打开 / 关闭 Bottom Sheet、Learning Tips 卡片隐藏等行为不改变当前播放 / 暂停状态。
+
+冻结说明：
+
+- V2.4A 的职责是完成可验收的 Obstacle Timeline 静态 / 交互原型，不继续扩展视觉动画、长视频优化或高级分析能力。
+- `✓ 不用管我了` 仍只影响 Learning Tips 当前轮次显示，不改变热力图聚合数字，也不改变播放状态。
+- V2.4A 与 V2.3A Final Interaction Rules 兼容：视频播放控制仍只归视频区域、播放按钮与 Learning Pause 入口负责。
+
+## V2.4B Learning Heatmap Polish
+
+状态：Backlog（暂缓开发）。
+
+V2.4B 已完成设计讨论，但暂不进入开发；待 V2.5 Learning Progress System 全部完成后，再评估是否实施。以下内容仅记录，不在当前版本实现。
+
+### UI Polish
+
+- 聚合点尺寸渐变
+- 聚合点颜色渐变
+- 聚合动画
+- Bottom Sheet 动画
+- 当前区域高亮动画优化
+
+### Advanced Heatmap
+
+- 二级聚合
+- 缩放级别
+- 长视频支持
+- 100+ 障碍优化
+
+### Visual Analytics
+
+- 热力图颜色强度
+- 难度等级可视化
+- 集级难度评分
 
 
 ## V2.4A UI Cleanup – Learning Tips Source Removal
