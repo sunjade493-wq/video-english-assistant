@@ -363,6 +363,39 @@ if (getElement('#obstacleBottomSheet').hidden !== true) {
 assertPlayback('Test V2.4A Bottom Sheet item keeps playback state', wasPlayingBeforeBottomSheetJump);
 
 
+function getCssRuleBody(selector) {
+  const styles = fs.readFileSync('styles.css', 'utf8');
+  const selectorIndex = styles.indexOf(selector);
+
+  if (selectorIndex === -1) {
+    return '';
+  }
+
+  const openingBraceIndex = styles.indexOf('{', selectorIndex);
+  const closingBraceIndex = styles.indexOf('}', openingBraceIndex);
+
+  return styles.slice(openingBraceIndex + 1, closingBraceIndex);
+}
+
+
+function assertEpisodeUndoLightweightStyle(name) {
+  const ruleBody = getCssRuleBody('.episode-progress-summary__undo');
+
+  [
+    'display: inline-flex',
+    'width: auto',
+    'padding: 0',
+    'background: transparent',
+    'box-shadow: none',
+  ].forEach((expectedDeclaration) => {
+    if (!ruleBody.includes(expectedDeclaration)) {
+      throw new Error(`${name}: expected undo link style declaration ${expectedDeclaration}`);
+    }
+  });
+
+  console.log(`PASS ${name}: ↶ 撤回上一步 uses lightweight link styling`);
+}
+
 function assertEpisodeUndoPlacement(name, expectedEnabled) {
   const episodeUndoButton = getElement('#episodeUndoButton');
   const cardStreamText = getElement('#cardStream').textContent;
@@ -405,6 +438,7 @@ api.Analyze(demoText, { level: 'junior' });
 api.resetCurrentEpisodeProgress();
 assertEpisodeProgress('V2.5A Test A first Analyze initializes episode progress', 0, 5);
 assertEpisodeUndoPlacement('V2.5A Hot Fix Test A initial undo placement', false);
+assertEpisodeUndoLightweightStyle('V2.5A Hot Fix #2 Test B undo is not a full-width primary button');
 
 api.hideCurrentObstacle('word-lecture');
 assertEpisodeProgress('V2.5A Test B dismiss increments conquered count', 1, 4);
