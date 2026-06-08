@@ -61,9 +61,126 @@ video-english-assistant/
 
 状态：Frozen ✅。
 
-V2.6A Analyze Engine Mock Layer Frozen.
+Project Status: V2.6A Analyze Engine Mock Layer
 
-V2.6A 新增独立的 Analyze Engine Mock Layer，用来把字幕片段与用户词汇等级转换为统一 obstacle object。该层只负责 mock 分析结果，不改变 V2.4A Obstacle Timeline 的时间轴 / Bottom Sheet / 当前字幕同步行为，也不改变 V2.5A Comprehension Progress 保留的 `✓ 不用管我了`、撤回、localStorage 进度逻辑与 Analyze 恢复行为。
+Status: Frozen ✅
+
+V2.6A Analyze Engine Mock Layer 已验收并冻结。
+
+Freeze Date: 2026-06-09
+
+Implementation Commit: `9f2660d`
+
+Review Fix Commit: `0f6708a9f5634364553758acdae3837895cebd7a`
+
+### Frozen Scope
+
+#### 1. Analyze Engine 独立模块
+
+Input:
+
+- subtitle items
+- user vocab level
+
+Output:
+
+- vocab obstacles
+- comprehension obstacles
+
+V2.6A 新增独立 Analyze Engine Mock Layer，用来把字幕片段与用户词汇等级转换为统一 obstacle object。该层只负责 mock 分析结果，不改变 V2.4A Obstacle Timeline 的时间轴 / Bottom Sheet / 当前字幕同步行为，也不改变 V2.5A Comprehension Progress 保留的 `✓ 不用管我了`、撤回、localStorage 进度逻辑与 Analyze 恢复行为。
+
+#### 2. 生词障碍
+
+生词障碍必须显示：
+
+```text
+word + phonetic + part of speech
+句中含义
+```
+
+示例：
+
+```text
+lecture /ˈlektʃər/ n./v.
+句中含义：讲座
+```
+
+#### 3. 理解障碍
+
+理解障碍必须使用原型结构显示。
+
+示例：
+
+```text
+lay something on somebody
+pull somebody off something
+give somebody a hand
+```
+
+显示结构：
+
+- 原型结构（标题）
+- 字面意思
+- 实际意思
+- 语法解释
+
+#### 4. Principle #7 Frozen
+
+理解障碍必须显示原型结构。
+
+禁止显示剧中具体变体作为知识点标题。
+
+例如：
+
+```text
+✓ pull somebody off something
+✗ pull me off the project
+
+✓ lay something on somebody
+✗ lay it on us
+```
+
+#### 5. Grammar Explanation Frozen
+
+语法解释必须解释：为什么这个表达会产生这个意思。
+
+不能仅说明：
+
+```text
+“这是一个习语”
+“这是固定搭配”
+```
+
+#### 6. Multiple Obstacles Frozen
+
+允许：
+
+- 多个生词
+- 多个理解障碍
+- 生词 + 理解障碍
+
+同一句全部保留。
+
+#### 7. Removed
+
+已删除：
+
+```text
+重置本集学习进度
+```
+
+Reason:
+
+不符合产品目标：攻克视频，而不是管理学习记录。
+
+Future:
+
+```text
+剧集管理系统
+→ 重新学习本集
+```
+
+该能力为未来功能，暂不开发。
 
 ### Engine Input
 
@@ -99,47 +216,29 @@ end
 
 当前 UI 仍保留 `kind`、`index`、`phrase`、`word` 等兼容字段，以保证 V2.4A / V2.5A 已冻结交互继续工作。
 
-### Obstacle Rules
+### Mock Coverage
 
-- Vocabulary obstacles 依赖 user vocab level。
-- Comprehension obstacles 不依赖 user vocab level。
-- 同一个 subtitle 可以包含多个 obstacles。
-- 同一句内多个 obstacles 不做跨句去重，也不因为同句已有 comprehension obstacle 而删除其它同句 obstacle。
-- 当前 mock 层支持：
-  - `lecture`
-  - `lay it on us`
-  - `pull me off the project` / `pulled off the project`
-  - `give me a hand`
-  - `call it a day`
+当前 mock 层支持：
 
-### Learning Tips Card Formats
-
-Vocabulary card 使用：
-
-```text
-lecture /ˈlektʃər/ n./v.
-句中含义：讲座
-```
-
-Comprehension card 使用 prototype structure 作为标题，不再显示 `Prototype expression` 标签：
-
-```text
-give somebody a hand
-字面意思：
-实际意思：
-语法解释：
-```
-
-Prototype structure 用于帮助用户迁移到未来语境，例如：
-
-- `lay something on somebody`
-- `pull somebody off something`
-- `give somebody a hand`
+- `lecture`
+- `lay it on us` → `lay something on somebody`
+- `pull me off the project` / `pulled off the project` → `pull somebody off something`
+- `give me a hand` → `give somebody a hand`
 - `call it a day`
 
-语法解释必须说明“为什么这个表达会有这个意思”，而不是仅重复实际含义。
+### Regression Verification
 
-Learning Tips 会按 `vocab` 与 `comprehension` 渲染不同卡片结构，同时继续保留 `✓ 不用管我了` 的单卡隐藏行为。
+已通过回归验证：
+
+- ✓ V2.4A Obstacle Timeline
+- ✓ V2.5A Progress
+- ✓ Obstacle Navigation
+- ✓ Bottom Sheet
+- ✓ Progress Persistence
+- ✓ Undo
+- ✓ Analyze Recovery
+
+V2.6A Frozen ✅
 
 ## V2.5C Learning Tips Layout Polish — Backlog（暂缓开发）
 
