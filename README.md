@@ -2,7 +2,7 @@
 
 一个纯 HTML/CSS/Vanilla JavaScript 实现的 Video English Assistant。
 
-当前版本：V2.5A Comprehension Progress Frozen ✅ – 本集理解进度已验收冻结，覆盖 `✓ 已攻克 N`、`○ 剩余 N`、`↶ 撤回上一步`、`重置本集学习进度`、本集进度 localStorage 持久化、Analyze 同一字幕恢复进度、浏览器刷新恢复进度，以及 Learning Tips 顶部进度模块。V2.5C Learning Tips Layout Polish 与 V2.4B Learning Heatmap Polish 仍保持 Backlog（暂缓开发）。
+当前版本：V2.6A Analyze Engine Mock Layer Frozen ✅ – Analyze Engine Mock Layer 已验收冻结，输入 subtitle items 与 user vocab level，输出 `vocab` / `comprehension` 两类 obstacle object，并保持 V2.4A Obstacle Timeline 与 V2.5A Comprehension Progress 冻结行为不变。V2.5C Learning Tips Layout Polish 与 V2.4B Learning Heatmap Polish 仍保持 Backlog（暂缓开发）。
 
 V2.0 冻结学习流程逻辑：产品不追求让用户永久掌握所有单词、语法或考试能力，而是帮助用户扫除视频学习英语过程中的障碍，让用户越来越顺畅地听懂、看懂英语视频，并通过持续跨越障碍建立信心、提高效率、保持动力。
 
@@ -26,6 +26,7 @@ Hide this one card only; playback state is unchanged
 video-english-assistant/
 ├── index.html
 ├── styles.css
+├── analyze-engine.js
 ├── script.js
 ├── test-current-subtitle-sync.js
 ├── CHANGELOG.md
@@ -55,6 +56,81 @@ video-english-assistant/
 - 点击右侧栏顶部「恢复全部」后，当前轮次已隐藏的生词提示和理解提示会重新显示，但仍然只限于当前播放字幕，且不改变当前播放 / 暂停状态。
 - 右侧提示流支持滚动。
 - 支持平板和手机响应式布局。
+
+## V2.6A Analyze Engine Mock Layer — Frozen ✅
+
+状态：Frozen ✅。
+
+V2.6A Analyze Engine Mock Layer Frozen.
+
+V2.6A 新增独立的 Analyze Engine Mock Layer，用来把字幕片段与用户词汇等级转换为统一 obstacle object。该层只负责 mock 分析结果，不改变 V2.4A Obstacle Timeline 的时间轴 / Bottom Sheet / 当前字幕同步行为，也不改变 V2.5A Comprehension Progress 的 `✓ 不用管我了`、撤回、重置和 localStorage 进度逻辑。
+
+### Engine Input
+
+Analyze Engine 输入为：
+
+```text
+subtitle items + user vocab level
+```
+
+每个 subtitle item 至少包含：
+
+```text
+id
+text
+start
+end
+```
+
+### Engine Output
+
+Analyze Engine 输出 obstacle objects，字段固定为：
+
+```text
+id
+subtitleId
+type: "vocab" or "comprehension"
+surfaceText
+baseForm
+explanation
+start
+end
+```
+
+当前 UI 仍保留 `kind`、`index`、`phrase`、`word` 等兼容字段，以保证 V2.4A / V2.5A 已冻结交互继续工作。
+
+### Obstacle Rules
+
+- Vocabulary obstacles 依赖 user vocab level。
+- Comprehension obstacles 不依赖 user vocab level。
+- 同一个 subtitle 可以包含多个 obstacles。
+- 同一句内多个 obstacles 不做跨句去重，也不因为同句已有 comprehension obstacle 而删除其它同句 obstacle。
+- 当前 mock 层支持：
+  - `lecture`
+  - `lay it on us`
+  - `pull me off the project` / `pulled off the project`
+  - `give me a hand`
+  - `call it a day`
+
+### Learning Tips Card Formats
+
+Vocabulary card 使用：
+
+```text
+lecture /ˈlektʃər/ n./v.
+句中含义：讲座
+```
+
+Comprehension card 使用：
+
+```text
+Prototype expression
+字面意思：
+实际意思：
+语法解释：
+```
+
+Learning Tips 会按 `vocab` 与 `comprehension` 渲染不同卡片结构，同时继续保留 `✓ 不用管我了` 的单卡隐藏行为。
 
 ## V2.5C Learning Tips Layout Polish — Backlog（暂缓开发）
 

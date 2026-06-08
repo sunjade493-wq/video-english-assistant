@@ -226,59 +226,43 @@ function findUnderstandingMatch(text, pattern) {
   }, null);
 }
 
+function getAnalyzeEngine() {
+  return window.AnalyzeEngine || globalThis.AnalyzeEngine;
+}
+
+function createSubtitleItemsFromText(text) {
+  return parseSubtitleSegments(text).map((segment, index) => ({
+    id: `subtitle-${index + 1}`,
+    text: segment.text,
+    start: segment.start,
+    end: segment.end,
+  }));
+}
+
 function detectVocabularyObstacles(text, levelName = DEFAULT_VOCABULARY_LEVEL, customWords = []) {
-  const knownWords = resolveVocabularyWords(levelName, customWords);
-  const seenWords = new Set();
-  const wordMatches = text.matchAll(/[A-Za-z]+(?:'[A-Za-z]+)?/g);
+  const engine = getAnalyzeEngine();
 
-  return [...wordMatches].reduce((result, rawWordMatch) => {
-    const word = normalizeWord(rawWordMatch[0]);
+  if (engine) {
+    return engine.analyzeSubtitleItems(
+      [{ id: 'subtitle-1', text: String(text || ''), start: 0, end: String(text || '').length }],
+      { level: levelName, customWords },
+    ).filter((obstacle) => obstacle.type === 'vocab');
+  }
 
-    if (!word || seenWords.has(word) || knownWords.has(word)) {
-      return result;
-    }
-
-    seenWords.add(word);
-    const dictionaryEntry = wordDictionary[word] || createFallbackWordEntry(word);
-
-    result.push({
-      id: dictionaryEntry.id,
-      type: '生词',
-      kind: 'word',
-      index: rawWordMatch.index,
-      end: rawWordMatch.index + rawWordMatch[0].length,
-      word,
-      phonetic: dictionaryEntry.phonetic,
-      translation: dictionaryEntry.translation,
-    });
-
-    return result;
-  }, []);
+  return [];
 }
 
 function detectUnderstandingObstacles(text) {
-  return understandingPatterns.reduce((result, pattern) => {
-    const match = findUnderstandingMatch(text, pattern);
+  const engine = getAnalyzeEngine();
 
-    if (!match) {
-      return result;
-    }
+  if (engine) {
+    return engine.analyzeSubtitleItems(
+      [{ id: 'subtitle-1', text: String(text || ''), start: 0, end: String(text || '').length }],
+      { level: 'custom', customWords: tokenize(text) },
+    ).filter((obstacle) => obstacle.type === 'comprehension');
+  }
 
-    result.push({
-      id: pattern.id,
-      type: '理解',
-      kind: 'understanding',
-      index: match.index,
-      phrase: pattern.phrase,
-      source: match.source,
-      end: match.end,
-      literal: pattern.literal,
-      actual: pattern.actual,
-      grammar: pattern.grammar,
-    });
-
-    return result;
-  }, []);
+  return [];
 }
 
 function isIndexWithinRanges(index, ranges) {
@@ -286,41 +270,18 @@ function isIndexWithinRanges(index, ranges) {
 }
 
 function dedupeObstaclesById(obstaclesToDedupe) {
-  const seenObstacleIds = new Set();
-
-  return obstaclesToDedupe.filter((obstacle) => {
-    if (seenObstacleIds.has(obstacle.id)) {
-      return false;
-    }
-
-    seenObstacleIds.add(obstacle.id);
-    return true;
-  });
+  return obstaclesToDedupe;
 }
 
 function analyzeSubtitleText(text, options = {}) {
   const subtitleText = String(text || '').trim();
+  const engine = getAnalyzeEngine();
 
-  if (!subtitleText) {
+  if (!subtitleText || !engine) {
     return [];
   }
 
-  const understandingObstacles = detectUnderstandingObstacles(subtitleText);
-  const understandingRanges = understandingObstacles.map((obstacle) => ({
-    start: obstacle.index,
-    end: obstacle.end,
-  }));
-  const vocabularyObstacles = detectVocabularyObstacles(
-    subtitleText,
-    options.level,
-    options.customWords,
-  ).filter((obstacle) => !isIndexWithinRanges(obstacle.index, understandingRanges));
-  const detectedObstacles = [
-    ...vocabularyObstacles,
-    ...understandingObstacles,
-  ].sort((firstObstacle, secondObstacle) => firstObstacle.index - secondObstacle.index);
-
-  return dedupeObstaclesById(detectedObstacles);
+  return engine.analyzeSubtitleItems(createSubtitleItemsFromText(subtitleText), options);
 }
 
 let subtitleSegments = parseSubtitleSegments(DEFAULT_SUBTITLE_TEXT);
@@ -458,7 +419,7 @@ function getAxisWidth() {
 }
 
 function getObstacleLabel(obstacle) {
-  return obstacle.kind === 'word' ? obstacle.word : obstacle.source || obstacle.phrase;
+  return obstacle.kind === 'word' ? obstacle.surfaceText || obstacle.word : obstacle.surfaceText || obstacle.source || obstacle.phrase;
 }
 
 function getPendingObstacles() {
@@ -516,7 +477,9 @@ function getSelectedPendingObstacle() {
 function sortObstaclesForLearningTips(obstaclesToSort) {
   const kindOrder = {
     word: 0,
+    vocab: 0,
     understanding: 1,
+    comprehension: 1,
   };
 
   return [...obstaclesToSort].sort((firstObstacle, secondObstacle) => {
@@ -953,7 +916,7 @@ function createBottomSheetObstacleButton(obstacle) {
   const button = document.createElement('button');
   button.className = 'bottom-sheet__obstacle';
   button.type = 'button';
-  button.textContent = `${obstacle.kind === 'word' ? '○' : '●'} ${obstacle.kind === 'word' ? obstacle.word : obstacle.phrase}`;
+  button.textContent = `${obstacle.kind === 'word' ? '○' : '●'} ${obstacle.kind === 'word' ? obstacle.surfaceText || obstacle.word : obstacle.phrase}`;
   button.addEventListener('click', () => {
     const wasPlaying = isVideoPlaying;
     selectedObstacleId = obstacle.id;
@@ -1329,11 +1292,9 @@ function getCompactTranslation(translation) {
 function createWordSummary(obstacle) {
   const summary = document.createElement('p');
   summary.className = 'word-summary';
-  summary.textContent = [
-    obstacle.word,
-    obstacle.phonetic,
-    getCompactTranslation(obstacle.translation),
-  ].filter(Boolean).join(' ');
+  const sentenceMeaning = obstacle.sentenceMeaning || getCompactTranslation(obstacle.translation);
+  summary.textContent = `${obstacle.baseForm || obstacle.word} ${obstacle.phonetic || ''} ${obstacle.partOfSpeech || ''}`.trim()
+    + `\n句中含义：${sentenceMeaning}`;
 
   return summary;
 }
@@ -1341,7 +1302,7 @@ function createWordSummary(obstacle) {
 function createUnderstandingSummary(obstacle) {
   const summary = document.createElement('p');
   summary.className = 'understanding-summary';
-  summary.textContent = obstacle.phrase;
+  summary.textContent = `${obstacle.prototype || 'Prototype expression'}\n${obstacle.baseForm || obstacle.phrase}`;
 
   return summary;
 }
@@ -1355,7 +1316,7 @@ function createCard(obstacle) {
 
   const label = document.createElement('span');
   label.className = 'type-label';
-  label.textContent = `[${obstacle.type}]`;
+  label.textContent = obstacle.type === 'vocab' ? '[vocab]' : '[comprehension]';
 
   const content = document.createElement('div');
   content.className = 'card-content';
