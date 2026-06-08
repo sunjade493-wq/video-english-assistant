@@ -73,12 +73,32 @@ Let's call it a day.</textarea>
           <p class="eyebrow">Learning Tips</p>
           <h2>提示</h2>
         </div>
-        <button class="restore-button" id="restoreAllButton" type="button">恢复全部</button>
+        <div class="tips-menu" id="tipsMenu">
+          <button class="tips-menu-button" id="tipsMenuButton" type="button" aria-label="打开学习进度菜单" aria-expanded="false">⋯</button>
+          <div class="tips-menu-popover" id="tipsMenuPopover" hidden>
+            <button class="tips-menu-item" id="resetProgressMenuItem" type="button">重置本集学习进度</button>
+          </div>
+        </div>
       </header>
+
+      <section class="episode-progress-summary" aria-labelledby="episodeProgressTitle">
+        <h3 id="episodeProgressTitle">本集障碍</h3>
+        <p class="episode-progress-summary__item episode-progress-summary__item--conquered">✓ 已攻克 <span id="conqueredObstacleCount">0</span></p>
+        <p class="episode-progress-summary__item">○ 剩余 <span id="remainingObstacleCount">0</span></p>
+      </section>
 
       <div class="card-stream" id="cardStream" aria-live="polite"></div>
     </aside>
   </main>
+
+  <div class="reset-dialog-backdrop" id="resetDialogBackdrop" hidden></div>
+  <section class="reset-dialog" id="resetProgressDialog" aria-labelledby="resetProgressDialogTitle" aria-modal="true" role="dialog" hidden>
+    <h2 id="resetProgressDialogTitle">确定重置本集学习进度？</h2>
+    <div class="reset-dialog__actions">
+      <button class="reset-dialog__button reset-dialog__button--cancel" id="cancelResetProgressButton" type="button">取消</button>
+      <button class="reset-dialog__button reset-dialog__button--confirm" id="confirmResetProgressButton" type="button">确认重置</button>
+    </div>
+  </section>
 
   <div class="bottom-sheet-backdrop" id="bottomSheetBackdrop" hidden></div>
   <section class="bottom-sheet" id="obstacleBottomSheet" aria-labelledby="bottomSheetTitle" aria-modal="true" role="dialog" hidden>

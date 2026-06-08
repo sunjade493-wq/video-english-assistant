@@ -82,6 +82,7 @@ I was pulled off the project.
 Let's call it a day.`;
 
 const elements = new Map();
+const localStorageEntries = new Map();
 
 function getElement(selector) {
   if (!elements.has(selector)) {
@@ -102,8 +103,8 @@ const context = {
   },
   window: {
     localStorage: {
-      getItem: () => null,
-      setItem: () => {},
+      getItem: (key) => localStorageEntries.has(key) ? localStorageEntries.get(key) : null,
+      setItem: (key, value) => localStorageEntries.set(key, String(value)),
     },
     requestAnimationFrame: (callback) => callback(),
     setTimeout: () => 0,
@@ -360,3 +361,48 @@ if (getElement('#obstacleBottomSheet').hidden !== true) {
   throw new Error('Test V2.4A Bottom Sheet item closes sheet: expected hidden sheet');
 }
 assertPlayback('Test V2.4A Bottom Sheet item keeps playback state', wasPlayingBeforeBottomSheetJump);
+
+function assertEpisodeProgress(name, expectedConquered, expectedRemaining) {
+  const { conquered, remaining, total } = api.getEpisodeProgressCounts();
+
+  if (conquered !== expectedConquered || remaining !== expectedRemaining) {
+    throw new Error(`${name}: expected conquered=${expectedConquered}, remaining=${expectedRemaining}, got conquered=${conquered}, remaining=${remaining}, total=${total}`);
+  }
+
+  const conqueredText = getElement('#conqueredObstacleCount').textContent;
+  const remainingText = getElement('#remainingObstacleCount').textContent;
+
+  if (conqueredText !== String(expectedConquered) || remainingText !== String(expectedRemaining)) {
+    throw new Error(`${name}: expected rendered conquered=${expectedConquered}, remaining=${expectedRemaining}, got conquered=${conqueredText}, remaining=${remainingText}`);
+  }
+
+  console.log(`PASS ${name}: ✓ 已攻克 ${conquered}, ○ 剩余 ${remaining}`);
+}
+
+api.Analyze(demoText, { level: 'junior' });
+api.resetCurrentEpisodeProgress();
+assertEpisodeProgress('V2.5A Test A first Analyze initializes episode progress', 0, 5);
+
+api.hideCurrentObstacle('word-lecture');
+assertEpisodeProgress('V2.5A Test B dismiss increments conquered count', 1, 4);
+assertLabels('V2.5A Test B dismissed obstacle leaves current subtitle tips', ['lay it on us']);
+
+api.undoLastDismissedObstacle();
+assertEpisodeProgress('V2.5A Test C undo decrements conquered count', 0, 5);
+assertLabels('V2.5A Test C undo restores obstacle', ['lecture', 'lay it on us']);
+
+[
+  'word-lecture',
+  'understanding-lay-it-on-us',
+  'understanding-give-me-a-hand',
+  'understanding-pull-off-the-project',
+  'understanding-call-it-a-day',
+].forEach((obstacleId) => api.hideCurrentObstacle(obstacleId));
+assertEpisodeProgress('V2.5A Test D consecutive dismissals accumulate progress', 5, 0);
+
+api.Analyze(demoText, { level: 'junior' });
+assertEpisodeProgress('V2.5A Test E re-Analyze keeps persisted progress', 5, 0);
+
+api.resetCurrentEpisodeProgress();
+assertEpisodeProgress('V2.5A Test F reset returns all episode obstacles', 0, 5);
+assertLabels('V2.5A Test F reset restores current subtitle obstacles', ['lecture', 'lay it on us']);
