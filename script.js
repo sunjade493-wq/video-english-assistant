@@ -350,6 +350,7 @@ const tipsMenuPopover = document.querySelector('#tipsMenuPopover');
 const resetProgressMenuItem = document.querySelector('#resetProgressMenuItem');
 const conqueredObstacleCount = document.querySelector('#conqueredObstacleCount');
 const remainingObstacleCount = document.querySelector('#remainingObstacleCount');
+const episodeUndoButton = document.querySelector('#episodeUndoButton');
 const resetDialogBackdrop = document.querySelector('#resetDialogBackdrop');
 const resetProgressDialog = document.querySelector('#resetProgressDialog');
 const cancelResetProgressButton = document.querySelector('#cancelResetProgressButton');
@@ -1194,6 +1195,11 @@ function renderEpisodeProgress() {
   if (remainingObstacleCount) {
     remainingObstacleCount.textContent = remaining;
   }
+
+  if (episodeUndoButton) {
+    episodeUndoButton.textContent = '↶ 撤回上一步';
+    episodeUndoButton.disabled = dismissedObstacleHistory.length === 0;
+  }
 }
 
 function setTipsMenuOpen(isOpen) {
@@ -1376,14 +1382,7 @@ function createCard(obstacle) {
   dismissButton.textContent = '✓ 不用管我了';
   dismissButton.addEventListener('click', () => hideCurrentObstacle(obstacle.id));
 
-  const undoButton = document.createElement('button');
-  undoButton.className = 'undo-button';
-  undoButton.type = 'button';
-  undoButton.textContent = '↶ 撤回上一步';
-  undoButton.disabled = dismissedObstacleHistory.length === 0;
-  undoButton.addEventListener('click', undoLastDismissedObstacle);
-
-  actions.append(dismissButton, undoButton);
+  actions.append(dismissButton);
   inner.append(label, content, actions);
   card.append(inner);
   return card;
@@ -1465,6 +1464,9 @@ if (resetDialogBackdrop) {
 }
 if (confirmResetProgressButton) {
   confirmResetProgressButton.addEventListener('click', resetCurrentEpisodeProgress);
+}
+if (episodeUndoButton) {
+  episodeUndoButton.addEventListener('click', undoLastDismissedObstacle);
 }
 learningPauseHintDismiss.addEventListener('click', dismissLearningPauseHint);
 learningPauseHint.addEventListener('pointerup', stopMarkerEvent);

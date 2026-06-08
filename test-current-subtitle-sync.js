@@ -362,6 +362,28 @@ if (getElement('#obstacleBottomSheet').hidden !== true) {
 }
 assertPlayback('Test V2.4A Bottom Sheet item keeps playback state', wasPlayingBeforeBottomSheetJump);
 
+
+function assertEpisodeUndoPlacement(name, expectedEnabled) {
+  const episodeUndoButton = getElement('#episodeUndoButton');
+  const cardStreamText = getElement('#cardStream').textContent;
+
+  if (episodeUndoButton.textContent !== '↶ 撤回上一步') {
+    throw new Error(`${name}: expected undo button in episode progress summary, got ${JSON.stringify(episodeUndoButton.textContent)}`);
+  }
+
+  const expectedDisabled = !expectedEnabled;
+
+  if (episodeUndoButton.disabled !== expectedDisabled) {
+    throw new Error(`${name}: expected episode undo disabled=${expectedDisabled}, got disabled=${episodeUndoButton.disabled}`);
+  }
+
+  if (cardStreamText.includes('↶ 撤回上一步')) {
+    throw new Error(`${name}: expected Learning Tips cards to exclude undo action, got ${JSON.stringify(cardStreamText)}`);
+  }
+
+  console.log(`PASS ${name}: ↶ 撤回上一步 is in 本集障碍 and enabled=${expectedEnabled}`);
+}
+
 function assertEpisodeProgress(name, expectedConquered, expectedRemaining) {
   const { conquered, remaining, total } = api.getEpisodeProgressCounts();
 
@@ -382,14 +404,28 @@ function assertEpisodeProgress(name, expectedConquered, expectedRemaining) {
 api.Analyze(demoText, { level: 'junior' });
 api.resetCurrentEpisodeProgress();
 assertEpisodeProgress('V2.5A Test A first Analyze initializes episode progress', 0, 5);
+assertEpisodeUndoPlacement('V2.5A Hot Fix Test A initial undo placement', false);
 
 api.hideCurrentObstacle('word-lecture');
 assertEpisodeProgress('V2.5A Test B dismiss increments conquered count', 1, 4);
 assertLabels('V2.5A Test B dismissed obstacle leaves current subtitle tips', ['lay it on us']);
+assertEpisodeUndoPlacement('V2.5A Hot Fix Test B undo remains outside Learning Tips after dismiss', true);
 
-api.undoLastDismissedObstacle();
+getElement('#episodeUndoButton').click();
 assertEpisodeProgress('V2.5A Test C undo decrements conquered count', 0, 5);
 assertLabels('V2.5A Test C undo restores obstacle', ['lecture', 'lay it on us']);
+assertEpisodeUndoPlacement('V2.5A Hot Fix Test C undo placement after restore', false);
+
+api.seekToTime(3600);
+api.hideCurrentObstacle('understanding-give-me-a-hand');
+assertEpisodeProgress('V2.5A Hot Fix Test D final current subtitle obstacle updates counts', 1, 4);
+assertLabels('V2.5A Hot Fix Test D Learning Tips card disappears after final current subtitle obstacle hidden', []);
+assertEpisodeUndoPlacement('V2.5A Hot Fix Test D undo remains visible after card disappears', true);
+getElement('#episodeUndoButton').click();
+assertEpisodeProgress('V2.5A Hot Fix Test E undo restores final current subtitle obstacle counts', 0, 5);
+assertLabels('V2.5A Hot Fix Test E final current subtitle obstacle reappears', ['give me a hand']);
+assertEpisodeUndoPlacement('V2.5A Hot Fix Test E undo placement after final obstacle restore', false);
+api.seekToTime(0);
 
 [
   'word-lecture',
