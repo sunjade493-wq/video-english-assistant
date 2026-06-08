@@ -1,5 +1,58 @@
 # Changelog
 
+## V2.6A Analyze Engine Mock Layer – Frozen ✅
+
+V2.6A Analyze Engine Mock Layer 已验收并冻结。
+
+项目状态：V2.6A Analyze Engine Mock Layer，Status: Frozen ✅。
+
+Freeze Date: 2026-06-09
+
+Implementation Commit: `9f2660d`
+
+Review Fix Commit: `0f6708a9f5634364553758acdae3837895cebd7a`
+
+Frozen Scope：
+
+1. Analyze Engine 独立模块
+   - Input: subtitle items + user vocab level
+   - Output: vocab obstacles + comprehension obstacles
+2. 生词障碍
+   - 显示 `word + phonetic + part of speech`
+   - 显示句中含义
+   - 示例：`lecture /ˈlektʃər/ n./v.` / `句中含义：讲座`
+3. 理解障碍
+   - 使用原型结构显示
+   - 示例：`lay something on somebody`、`pull somebody off something`、`give somebody a hand`
+   - 显示结构：原型结构（标题）、字面意思、实际意思、语法解释
+4. Principle #7 Frozen
+   - 理解障碍必须显示原型结构。
+   - 禁止显示剧中具体变体作为知识点标题。
+   - 正确：`pull somebody off something`、`lay something on somebody`
+   - 错误：`pull me off the project`、`lay it on us`
+5. Grammar Explanation Frozen
+   - 语法解释必须解释为什么这个表达会产生这个意思。
+   - 不能仅说明“这是一个习语”或“这是固定搭配”。
+6. Multiple Obstacles Frozen
+   - 允许多个生词、多个理解障碍，以及生词 + 理解障碍。
+   - 同一句全部保留。
+7. Removed
+   - 删除 `重置本集学习进度`。
+   - 原因：不符合“攻克视频”这一产品目标，而是偏向管理学习记录。
+   - Future：未来由剧集管理系统提供 `重新学习本集`，暂不开发。
+
+Regression Verification：
+
+- ✓ V2.4A Obstacle Timeline
+- ✓ V2.5A Progress
+- ✓ Obstacle Navigation
+- ✓ Bottom Sheet
+- ✓ Progress Persistence
+- ✓ Undo
+- ✓ Analyze Recovery
+
+V2.6A Frozen ✅
+
 ## V2.5C Learning Tips Layout Polish – Backlog（暂缓开发）
 
 V2.5C Learning Tips Layout Polish 已记录为 Backlog，暂缓开发。
