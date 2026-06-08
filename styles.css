@@ -339,10 +339,12 @@ button {
 }
 
 .episode-progress-summary__undo {
-  display: inline-flex;
+  display: inline;
   width: auto;
   margin-top: 12px;
   padding: 0;
+  border: 0;
+  border-radius: 0;
   color: var(--muted);
   background: transparent;
   box-shadow: none;
@@ -460,10 +462,22 @@ button {
   background: #cfe0ff;
 }
 
+.episode-progress-summary__undo,
+.episode-progress-summary__undo:hover:not(:disabled),
+.episode-progress-summary__undo:focus-visible,
+.episode-progress-summary__undo:disabled {
+  display: inline;
+  width: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
 .episode-progress-summary__undo:hover:not(:disabled),
 .episode-progress-summary__undo:focus-visible {
   color: var(--primary-dark);
-  background: transparent;
   text-decoration: underline;
   transform: none;
   outline: none;

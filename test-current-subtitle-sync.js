@@ -382,9 +382,11 @@ function assertEpisodeUndoLightweightStyle(name) {
   const ruleBody = getCssRuleBody('.episode-progress-summary__undo');
 
   [
-    'display: inline-flex',
+    'display: inline',
     'width: auto',
     'padding: 0',
+    'border: 0',
+    'border-radius: 0',
     'background: transparent',
     'box-shadow: none',
   ].forEach((expectedDeclaration) => {
@@ -438,7 +440,7 @@ api.Analyze(demoText, { level: 'junior' });
 api.resetCurrentEpisodeProgress();
 assertEpisodeProgress('V2.5A Test A first Analyze initializes episode progress', 0, 5);
 assertEpisodeUndoPlacement('V2.5A Hot Fix Test A initial undo placement', false);
-assertEpisodeUndoLightweightStyle('V2.5A Hot Fix #2 Test B undo is not a full-width primary button');
+assertEpisodeUndoLightweightStyle('V2.5A Hot Fix #3 Test B undo has no residual container styling');
 
 api.hideCurrentObstacle('word-lecture');
 assertEpisodeProgress('V2.5A Test B dismiss increments conquered count', 1, 4);
