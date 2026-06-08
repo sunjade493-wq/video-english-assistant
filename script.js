@@ -7,6 +7,7 @@ I was pulled off the project.
 
 Let's call it a day.`;
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
+const EPISODE_PROGRESS_STORAGE_PREFIX = 'videoEnglishAssistant.episodeProgress.';
 
 const subtitleTranslations = new Map([
   [
@@ -328,6 +329,8 @@ let isVideoPlaying = true;
 let playbackTimer = null;
 let obstacles = analyzeSubtitleText(DEFAULT_SUBTITLE_TEXT, { level: DEFAULT_VOCABULARY_LEVEL });
 let hiddenObstacleIds = new Set();
+let dismissedObstacleHistory = [];
+let currentEpisodeProgressKey = '';
 let streamMode = 'dynamic';
 const LEARNING_TIPS_MODE = 'auto';
 let selectedObstacleId = null;
@@ -342,7 +345,15 @@ const SEGMENT_DURATION_MS = 3600;
 const LEARNING_PAUSE_HINT_STORAGE_KEY = 'videoEnglishAssistant.learningPauseHintDismissed';
 const HEAT_AXIS_CLUSTER_THRESHOLD_PX = 56;
 const cardStream = document.querySelector('#cardStream');
-const restoreAllButton = document.querySelector('#restoreAllButton');
+const tipsMenuButton = document.querySelector('#tipsMenuButton');
+const tipsMenuPopover = document.querySelector('#tipsMenuPopover');
+const resetProgressMenuItem = document.querySelector('#resetProgressMenuItem');
+const conqueredObstacleCount = document.querySelector('#conqueredObstacleCount');
+const remainingObstacleCount = document.querySelector('#remainingObstacleCount');
+const resetDialogBackdrop = document.querySelector('#resetDialogBackdrop');
+const resetProgressDialog = document.querySelector('#resetProgressDialog');
+const cancelResetProgressButton = document.querySelector('#cancelResetProgressButton');
+const confirmResetProgressButton = document.querySelector('#confirmResetProgressButton');
 const subtitleTextInput = document.querySelector('#subtitleTextInput');
 const analyzeButton = document.querySelector('#analyzeButton');
 const currentSubtitleLine = document.querySelector('#currentSubtitleLine');
@@ -1094,37 +1105,199 @@ function pauseVideoForObstacle(obstacleId) {
   renderCards();
 }
 
+
+function getEpisodeTextFingerprint(text) {
+  return normalizeText(String(text || '')).replace(/'/g, '');
+}
+
+function hashEpisodeText(text) {
+  const source = getEpisodeTextFingerprint(text) || 'empty';
+  let hash = 0;
+
+  for (let index = 0; index < source.length; index += 1) {
+    hash = ((hash << 5) - hash) + source.charCodeAt(index);
+    hash |= 0;
+  }
+
+  return Math.abs(hash).toString(36);
+}
+
+function getEpisodeProgressKey(text) {
+  return `${EPISODE_PROGRESS_STORAGE_PREFIX}${hashEpisodeText(text)}`;
+}
+
+function getCurrentObstacleIdSet() {
+  return new Set(obstacles.map((obstacle) => obstacle.id));
+}
+
+function filterObstacleIdsForCurrentEpisode(obstacleIds) {
+  const currentObstacleIds = getCurrentObstacleIdSet();
+
+  return [...new Set(obstacleIds || [])].filter((obstacleId) => currentObstacleIds.has(obstacleId));
+}
+
+function readStoredEpisodeProgress(progressKey) {
+  const storedProgress = window.localStorage.getItem(progressKey);
+
+  if (!storedProgress) {
+    return null;
+  }
+
+  return JSON.parse(storedProgress);
+}
+
+function saveEpisodeProgress() {
+  if (!currentEpisodeProgressKey) {
+    return;
+  }
+
+  const hiddenIds = filterObstacleIdsForCurrentEpisode([...hiddenObstacleIds]);
+  const historyIds = (dismissedObstacleHistory || []).filter((obstacleId) => hiddenIds.includes(obstacleId));
+
+  window.localStorage.setItem(currentEpisodeProgressKey, JSON.stringify({
+    version: 1,
+    totalObstacleIds: obstacles.map((obstacle) => obstacle.id),
+    hiddenObstacleIds: hiddenIds,
+    dismissedObstacleHistory: historyIds,
+    updatedAt: new Date().toISOString(),
+  }));
+}
+
+function applyStoredEpisodeProgress(progressKey) {
+  const storedProgress = readStoredEpisodeProgress(progressKey);
+  const hiddenIds = filterObstacleIdsForCurrentEpisode(storedProgress?.hiddenObstacleIds || []);
+
+  hiddenObstacleIds = new Set(hiddenIds);
+  dismissedObstacleHistory = filterObstacleIdsForCurrentEpisode(
+    storedProgress?.dismissedObstacleHistory || hiddenIds,
+  ).filter((obstacleId) => hiddenObstacleIds.has(obstacleId));
+}
+
+function getEpisodeProgressCounts() {
+  const total = obstacles.length;
+  const conquered = filterObstacleIdsForCurrentEpisode([...hiddenObstacleIds]).length;
+
+  return {
+    total,
+    conquered,
+    remaining: Math.max(0, total - conquered),
+  };
+}
+
+function renderEpisodeProgress() {
+  const { conquered, remaining } = getEpisodeProgressCounts();
+
+  if (conqueredObstacleCount) {
+    conqueredObstacleCount.textContent = conquered;
+  }
+
+  if (remainingObstacleCount) {
+    remainingObstacleCount.textContent = remaining;
+  }
+}
+
+function setTipsMenuOpen(isOpen) {
+  if (!tipsMenuPopover || !tipsMenuButton) {
+    return;
+  }
+
+  tipsMenuPopover.hidden = !isOpen;
+  tipsMenuButton.setAttribute('aria-expanded', String(isOpen));
+}
+
+function showResetProgressDialog() {
+  setTipsMenuOpen(false);
+
+  if (resetDialogBackdrop) {
+    resetDialogBackdrop.hidden = false;
+  }
+
+  if (resetProgressDialog) {
+    resetProgressDialog.hidden = false;
+  }
+}
+
+function hideResetProgressDialog() {
+  if (resetDialogBackdrop) {
+    resetDialogBackdrop.hidden = true;
+  }
+
+  if (resetProgressDialog) {
+    resetProgressDialog.hidden = true;
+  }
+}
+
+function resetCurrentEpisodeProgress() {
+  hiddenObstacleIds = new Set();
+  dismissedObstacleHistory = [];
+  streamMode = 'dynamic';
+  selectedObstacleId = null;
+  saveEpisodeProgress();
+  hideResetProgressDialog();
+  renderVideoState();
+  renderCards();
+}
+
+function undoLastDismissedObstacle() {
+  while (dismissedObstacleHistory.length > 0) {
+    const obstacleId = dismissedObstacleHistory.pop();
+
+    if (hiddenObstacleIds.has(obstacleId)) {
+      hiddenObstacleIds.delete(obstacleId);
+      const restoredObstacle = obstacles.find((obstacle) => obstacle.id === obstacleId);
+
+      if (restoredObstacle) {
+        selectedObstacleId = obstacleId;
+        syncSubtitleSegmentToObstacle(obstacleId);
+        currentTimeMs = getTimeForSegmentIndex(currentSegmentIndex);
+      }
+
+      streamMode = 'dynamic';
+      saveEpisodeProgress();
+      renderVideoState();
+      renderCards();
+      return restoredObstacle || null;
+    }
+  }
+
+  saveEpisodeProgress();
+  renderCards();
+  return null;
+}
+
 function resetObstacleStream(nextObstacles, text = subtitleTextInput.value) {
   obstacles = nextObstacles;
-  hiddenObstacleIds = new Set();
+  currentEpisodeProgressKey = getEpisodeProgressKey(text);
+  applyStoredEpisodeProgress(currentEpisodeProgressKey);
   streamMode = 'dynamic';
   selectedObstacleId = null;
   currentSegmentIndex = 0;
   currentTimeMs = 0;
   subtitleSegments = parseSubtitleSegments(text);
+  saveEpisodeProgress();
   closeBottomSheet();
   renderVideoState();
   syncPlaybackClock();
 }
 
 function hideCurrentObstacle(obstacleId) {
-  hiddenObstacleIds.add(obstacleId);
+  if (!hiddenObstacleIds.has(obstacleId)) {
+    hiddenObstacleIds.add(obstacleId);
+    dismissedObstacleHistory.push(obstacleId);
+  }
 
   if (selectedObstacleId === obstacleId) {
     selectedObstacleId = null;
   }
 
   streamMode = 'dynamic';
+  saveEpisodeProgress();
   renderVideoState();
   renderCards();
 }
 
 function restoreAllCurrentObstacles() {
-  hiddenObstacleIds = new Set();
-  streamMode = 'dynamic';
-  selectedObstacleId = null;
-  renderVideoState();
-  renderCards();
+  resetCurrentEpisodeProgress();
 }
 
 function createDetailBlock(title, text) {
@@ -1194,13 +1367,24 @@ function createCard(obstacle) {
     );
   }
 
+  const actions = document.createElement('div');
+  actions.className = 'card-actions';
+
   const dismissButton = document.createElement('button');
   dismissButton.className = 'dismiss-button';
   dismissButton.type = 'button';
   dismissButton.textContent = '✓ 不用管我了';
   dismissButton.addEventListener('click', () => hideCurrentObstacle(obstacle.id));
 
-  inner.append(label, content, dismissButton);
+  const undoButton = document.createElement('button');
+  undoButton.className = 'undo-button';
+  undoButton.type = 'button';
+  undoButton.textContent = '↶ 撤回上一步';
+  undoButton.disabled = dismissedObstacleHistory.length === 0;
+  undoButton.addEventListener('click', undoLastDismissedObstacle);
+
+  actions.append(dismissButton, undoButton);
+  inner.append(label, content, actions);
   card.append(inner);
   return card;
 }
@@ -1224,6 +1408,7 @@ function renderModePrompt() {
 }
 
 function renderCards() {
+  renderEpisodeProgress();
   const pendingObstacles = getPendingObstacles();
   const visibleObstacles = getVisibleObstacles();
 
@@ -1263,7 +1448,24 @@ function handleAnalyzeClick() {
 }
 
 analyzeButton.addEventListener('click', handleAnalyzeClick);
-restoreAllButton.addEventListener('click', restoreAllCurrentObstacles);
+if (tipsMenuButton) {
+  tipsMenuButton.addEventListener('click', (event) => {
+    event.stopPropagation();
+    setTipsMenuOpen(tipsMenuPopover?.hidden ?? true);
+  });
+}
+if (resetProgressMenuItem) {
+  resetProgressMenuItem.addEventListener('click', showResetProgressDialog);
+}
+if (cancelResetProgressButton) {
+  cancelResetProgressButton.addEventListener('click', hideResetProgressDialog);
+}
+if (resetDialogBackdrop) {
+  resetDialogBackdrop.addEventListener('click', hideResetProgressDialog);
+}
+if (confirmResetProgressButton) {
+  confirmResetProgressButton.addEventListener('click', resetCurrentEpisodeProgress);
+}
 learningPauseHintDismiss.addEventListener('click', dismissLearningPauseHint);
 learningPauseHint.addEventListener('pointerup', stopMarkerEvent);
 learningPauseHint.addEventListener('touchend', stopMarkerEvent);
@@ -1292,6 +1494,9 @@ if (bottomSheetClose) {
 if (bottomSheetBackdrop) {
   bottomSheetBackdrop.addEventListener('click', closeBottomSheet);
 }
+currentEpisodeProgressKey = getEpisodeProgressKey(DEFAULT_SUBTITLE_TEXT);
+applyStoredEpisodeProgress(currentEpisodeProgressKey);
+saveEpisodeProgress();
 renderVideoState();
 renderCards();
 syncPlaybackClock();
@@ -1303,6 +1508,9 @@ window.ObstacleDetectionEngine = {
   detectVocabularyObstacles,
   detectUnderstandingObstacles,
   restoreAllCurrentObstacles,
+  resetCurrentEpisodeProgress,
+  undoLastDismissedObstacle,
+  getEpisodeProgressCounts,
   hideCurrentObstacle,
   toggleVideoPlayback,
   getPlaybackState: () => ({
