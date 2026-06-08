@@ -2,7 +2,7 @@
 
 一个纯 HTML/CSS/Vanilla JavaScript 实现的 Video English Assistant。
 
-当前版本：V2.4A Obstacle Timeline Frozen ✅ – 双时间轴、障碍热力轴、Google Maps 式视觉密度聚合、Bottom Sheet 与 Learning Tips 同步已验收冻结。下一阶段 V2.5A Comprehension Progress 处于 Design Freeze Candidate 状态，仅记录候选设计方向，尚未实现 / 冻结 / 发布。V2.4B Learning Heatmap Polish 仍保持 Backlog（暂缓开发）。
+当前版本：V2.4A Obstacle Timeline Frozen ✅ – 双时间轴、障碍热力轴、Google Maps 式视觉密度聚合、Bottom Sheet 与 Learning Tips 同步已验收冻结。下一阶段 V2.5A Comprehension Progress 处于 Design Freeze Candidate 状态，仅记录候选设计方向，尚未实现 / 冻结 / 发布。V2.5C Learning Tips Layout Polish 与 V2.4B Learning Heatmap Polish 仍保持 Backlog（暂缓开发）。
 
 V2.0 冻结学习流程逻辑：产品不追求让用户永久掌握所有单词、语法或考试能力，而是帮助用户扫除视频学习英语过程中的障碍，让用户越来越顺畅地听懂、看懂英语视频，并通过持续跨越障碍建立信心、提高效率、保持动力。
 
@@ -55,6 +55,75 @@ video-english-assistant/
 - 点击右侧栏顶部「恢复全部」后，当前轮次已隐藏的生词提示和理解提示会重新显示，但仍然只限于当前播放字幕，且不改变当前播放 / 暂停状态。
 - 右侧提示流支持滚动。
 - 支持平板和手机响应式布局。
+
+## V2.5C Learning Tips Layout Polish — Backlog（暂缓开发）
+
+状态：Backlog（暂缓开发）。
+
+V2.5C 只记录 Learning Tips 布局精修方向，当前暂缓开发。原因是现阶段优先完成核心学习流程与理解障碍系统；当前布局可用，但存在信息密度不足问题，待主要功能完成后再统一进行 UI 精修。
+
+### Layout Compactness
+
+当前理解卡片仍以完整字段呈现：
+
+```text
+字面意思：
+......
+
+实际意思：
+......
+
+语法解释：
+......
+```
+
+未来优化方向是在保留短语标题的前提下压缩字段排布，例如：
+
+```text
+call it a day
+
+字面意思：把它叫作一天
+实际意思：今天到此为止；收工
+语法解释：......
+```
+
+目标：
+
+- 减少 40%~60% 卡片高度。
+- 提高单屏可见信息量。
+- 保持移动端可读性。
+
+### Explanation Quality
+
+不允许为了压缩高度而牺牲解释质量。错误方向是把语法解释压缩成 `固定习语` 这类词典式标签。正确方向是继续解释表达形成过程，例如：
+
+```text
+语法：call A B
+表示：把 A 称为 B
+这里：it = 当前工作；day = 一天的工作
+所以：call it a day 引申为今天就做到这里
+```
+
+原则：
+
+- 解释要详细。
+- 用词要简练。
+- 不说废话。
+- 必须帮助用户真正理解表达形成过程。
+
+### Frozen Principle
+
+- 详细 ≠ 长篇大论；详细 = 解释到位。
+- 简练 ≠ 信息减少；简练 = 不说废话。
+- Learning Tips 的目标是帮助用户听懂视频内容，不是展示词典式定义。
+
+### Future Acceptance Criteria
+
+- 卡片高度明显降低。
+- 信息密度提升。
+- 字面意思 / 实际意思 / 语法解释仍完整保留。
+- 理解障碍解释质量不得下降。
+- 优先保证理解效果，再考虑视觉紧凑度。
 
 ## V2.5A Comprehension Progress — Design Freeze Candidate
 
@@ -142,7 +211,7 @@ V2.5A 不走传统生词本 / 复习系统路线，明确不做：
 
 ### V2.4B 状态
 
-V2.4B Learning Heatmap Polish 仍保持 Backlog（暂缓开发），不随 V2.5A Design Freeze Candidate 进入开发。
+V2.5C Learning Tips Layout Polish 与 V2.4B Learning Heatmap Polish 仍保持 Backlog（暂缓开发），不随 V2.5A Design Freeze Candidate 进入开发。
 
 ## V2.4A Obstacle Timeline Frozen ✅
 

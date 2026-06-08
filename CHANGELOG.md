@@ -1,5 +1,37 @@
 # Changelog
 
+## V2.5C Learning Tips Layout Polish – Backlog（暂缓开发）
+
+V2.5C Learning Tips Layout Polish 已记录为 Backlog，暂缓开发。
+
+暂缓原因：
+
+- 当前优先完成核心学习流程与理解障碍系统。
+- 当前 Learning Tips 布局可用，但存在信息密度不足问题。
+- 待主要功能完成后，再统一进行 UI 精修。
+
+布局紧凑度目标：
+
+- 在保留短语标题、字面意思、实际意思与语法解释的前提下，减少 40%~60% 卡片高度。
+- 提高单屏可见信息量。
+- 保持移动端可读性。
+
+解释质量原则：
+
+- 不允许为了压缩高度而牺牲解释质量。
+- 不把语法解释退化成 `固定习语` 这类词典式标签。
+- 理解障碍需要解释表达形成过程，例如 `call A B` 表示“把 A 称为 B”，进而说明 `it` 与 `day` 在 `call it a day` 中如何引申出“今天就做到这里”。
+- 详细不等于长篇大论，详细是解释到位。
+- 简练不等于信息减少，简练是不说废话。
+
+未来验收标准：
+
+- 卡片高度明显降低。
+- 信息密度提升。
+- 字面意思 / 实际意思 / 语法解释仍完整保留。
+- 理解障碍解释质量不得下降。
+- 优先保证理解效果，再考虑视觉紧凑度。
+
 ## V2.5A Comprehension Progress – Design Freeze Candidate
 
 V2.5A Comprehension Progress 进入 Design Freeze Candidate 状态。本条目只记录候选设计方向，不表示 Implemented、Frozen 或 Released。
@@ -40,7 +72,7 @@ V2.5A Comprehension Progress 进入 Design Freeze Candidate 状态。本条目�
 - `重置本集学习进度` 不放主界面，移入 `⋯` 菜单。
 - 点击 `重置本集学习进度` 后必须弹确认：`确定重置本集学习进度？`；说明重置后本集所有障碍会重新出现；选项为 `取消` 与 `确认重置`。
 
-V2.4B Learning Heatmap Polish 仍保持 Backlog（暂缓开发），不随 V2.5A Design Freeze Candidate 进入开发。
+V2.5C Learning Tips Layout Polish 与 V2.4B Learning Heatmap Polish 仍保持 Backlog（暂缓开发），不随 V2.5A Design Freeze Candidate 进入开发。
 
 ## V2.4B Learning Heatmap Polish – Backlog（暂缓开发）
 
