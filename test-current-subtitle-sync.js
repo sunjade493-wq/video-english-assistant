@@ -116,9 +116,46 @@ const context = {
 
 context.globalThis = context;
 vm.createContext(context);
+vm.runInContext(fs.readFileSync('analyze-engine.js', 'utf8'), context);
 vm.runInContext(fs.readFileSync('script.js', 'utf8'), context);
 
 const api = context.window.ObstacleDetectionEngine;
+const analyzeEngine = context.window.AnalyzeEngine;
+
+function assertAnalyzeEngineV26A() {
+  const subtitleItems = [{
+    id: 'mock-subtitle-1',
+    text: 'This lecture can lecture us, then lay it on us and call it a day.',
+    start: 100,
+    end: 166,
+  }];
+  const juniorObstacles = analyzeEngine.analyzeSubtitleItems(subtitleItems, { level: 'junior' });
+  const seniorObstacles = analyzeEngine.analyzeSubtitleItems(subtitleItems, { level: 'senior' });
+  const lectureObstacles = juniorObstacles.filter((obstacle) => obstacle.type === 'vocab' && obstacle.baseForm === 'lecture');
+  const comprehensionObstacles = juniorObstacles.filter((obstacle) => obstacle.type === 'comprehension');
+
+  if (lectureObstacles.length !== 2) {
+    throw new Error(`V2.6A Analyze Engine: expected duplicate lecture vocab obstacles to remain, got ${lectureObstacles.length}`);
+  }
+
+  if (seniorObstacles.some((obstacle) => obstacle.type === 'vocab' && obstacle.baseForm === 'lecture')) {
+    throw new Error('V2.6A Analyze Engine: expected senior level to suppress lecture vocab obstacles');
+  }
+
+  if (comprehensionObstacles.length !== 2 || !comprehensionObstacles.every((obstacle) => obstacle.explanation.includes('Prototype expression'))) {
+    throw new Error('V2.6A Analyze Engine: expected comprehension obstacles with Prototype expression explanations');
+  }
+
+  ['id', 'subtitleId', 'type', 'surfaceText', 'baseForm', 'explanation', 'start', 'end'].forEach((fieldName) => {
+    if (!(fieldName in juniorObstacles[0])) {
+      throw new Error(`V2.6A Analyze Engine: missing obstacle field ${fieldName}`);
+    }
+  });
+
+  console.log('PASS V2.6A Analyze Engine outputs vocab/comprehension obstacles, keeps same-sentence multiples, and honors vocab level');
+}
+
+assertAnalyzeEngineV26A();
 
 function getLabels() {
   return api.getVisibleObstacles().map((obstacle) => (
