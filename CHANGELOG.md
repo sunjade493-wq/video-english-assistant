@@ -41,7 +41,6 @@ V2.5A Comprehension Progress 已从 Design Freeze Candidate 更新为 Frozen ✅
 - `✓ 已攻克 N`
 - `○ 剩余 N`
 - `↶ 撤回上一步`
-- `重置本集学习进度`
 - 本集进度持久化（localStorage）
 - Analyze 同一字幕恢复进度
 - 浏览器刷新恢复进度
@@ -65,7 +64,7 @@ V2.5A Comprehension Progress 已从 Design Freeze Candidate 更新为 Frozen ✅
 - `✓ 不用管我了` 表示该障碍在本集中已处理，不表示永久掌握，不加入生词本，不加入复习计划。
 - 同一字幕再次 Analyze 时恢复本集学习进度。
 - 浏览器刷新后恢复本集学习进度。
-- `重置本集学习进度` 用于清空本集已攻克记录，并让本集所有障碍重新出现。
+- Review Fix：`重置本集学习进度` 已移除；未来由 Episode Management System 提供 `重新学习本集`。
 
 V2.5C Learning Tips Layout Polish 与 V2.4B Learning Heatmap Polish 仍保持 Backlog（暂缓开发），不随 V2.5A Frozen 追加开发。
 
