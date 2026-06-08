@@ -249,8 +249,6 @@ button {
   letter-spacing: -0.03em;
 }
 
-.tips-menu-button,
-.tips-menu-item,
 .dismiss-button,
 .undo-button {
   border: 0;
@@ -260,61 +258,10 @@ button {
   transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
 }
 
-.tips-menu {
-  position: relative;
-  flex: 0 0 auto;
-}
-
-.tips-menu-button {
-  display: grid;
-  width: 42px;
-  height: 42px;
-  place-items: center;
-  color: var(--text);
-  background: var(--surface-muted);
-  border: 1px solid var(--border);
-  font-size: 1.5rem;
-  line-height: 1;
-}
-
-.tips-menu-button:hover,
-.tips-menu-button:focus-visible {
-  background: #eaf1fb;
-  outline: none;
-}
-
-.tips-menu-popover {
-  position: absolute;
-  z-index: 5;
-  top: calc(100% + 8px);
-  right: 0;
-  min-width: 190px;
-  padding: 8px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  box-shadow: 0 18px 42px rgba(27, 36, 48, 0.16);
-}
-
-.tips-menu-item {
-  width: 100%;
-  padding: 10px 12px;
-  color: #b91c1c;
-  background: #fff7f7;
-  text-align: left;
-}
-
-.tips-menu-item:hover,
-.tips-menu-item:focus-visible {
-  background: #fee2e2;
-  outline: none;
-}
-
 .dismiss-button:hover,
 .undo-button:hover:not(:disabled) {
   transform: translateY(-1px);
 }
-
 
 .episode-progress-summary {
   padding: 18px 22px;
@@ -536,9 +483,7 @@ button {
     flex-direction: column;
   }
 
-  .analyze-button,
-  .tips-menu,
-  .tips-menu-button {
+  .analyze-button {
     width: 100%;
   }
 
@@ -831,59 +776,6 @@ button {
   color: var(--primary-dark);
   background: #fff;
   box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.16), 0 12px 24px rgba(37, 99, 235, 0.28);
-}
-
-.reset-dialog-backdrop {
-  position: fixed;
-  z-index: 20;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.38);
-  backdrop-filter: blur(4px);
-}
-
-.reset-dialog {
-  position: fixed;
-  z-index: 21;
-  top: 50%;
-  left: 50%;
-  width: min(92vw, 420px);
-  padding: 22px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow);
-  transform: translate(-50%, -50%);
-}
-
-.reset-dialog h2 {
-  margin: 0;
-  font-size: 1.18rem;
-  letter-spacing: -0.03em;
-}
-
-.reset-dialog__actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 22px;
-}
-
-.reset-dialog__button {
-  border: 0;
-  border-radius: 999px;
-  cursor: pointer;
-  padding: 10px 14px;
-  font-weight: 800;
-}
-
-.reset-dialog__button--cancel {
-  color: var(--text);
-  background: var(--surface-muted);
-}
-
-.reset-dialog__button--confirm {
-  color: #fff;
-  background: #dc2626;
 }
 
 .bottom-sheet-backdrop {

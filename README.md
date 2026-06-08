@@ -63,7 +63,7 @@ video-english-assistant/
 
 V2.6A Analyze Engine Mock Layer Frozen.
 
-V2.6A 新增独立的 Analyze Engine Mock Layer，用来把字幕片段与用户词汇等级转换为统一 obstacle object。该层只负责 mock 分析结果，不改变 V2.4A Obstacle Timeline 的时间轴 / Bottom Sheet / 当前字幕同步行为，也不改变 V2.5A Comprehension Progress 的 `✓ 不用管我了`、撤回、重置和 localStorage 进度逻辑。
+V2.6A 新增独立的 Analyze Engine Mock Layer，用来把字幕片段与用户词汇等级转换为统一 obstacle object。该层只负责 mock 分析结果，不改变 V2.4A Obstacle Timeline 的时间轴 / Bottom Sheet / 当前字幕同步行为，也不改变 V2.5A Comprehension Progress 保留的 `✓ 不用管我了`、撤回、localStorage 进度逻辑与 Analyze 恢复行为。
 
 ### Engine Input
 
@@ -121,14 +121,23 @@ lecture /ˈlektʃər/ n./v.
 句中含义：讲座
 ```
 
-Comprehension card 使用：
+Comprehension card 使用 prototype structure 作为标题，不再显示 `Prototype expression` 标签：
 
 ```text
-Prototype expression
+give somebody a hand
 字面意思：
 实际意思：
 语法解释：
 ```
+
+Prototype structure 用于帮助用户迁移到未来语境，例如：
+
+- `lay something on somebody`
+- `pull somebody off something`
+- `give somebody a hand`
+- `call it a day`
+
+语法解释必须说明“为什么这个表达会有这个意思”，而不是仅重复实际含义。
 
 Learning Tips 会按 `vocab` 与 `comprehension` 渲染不同卡片结构，同时继续保留 `✓ 不用管我了` 的单卡隐藏行为。
 
@@ -227,7 +236,6 @@ V2.5A 已验收通过并冻结以下范围：
 - `✓ 已攻克 N`
 - `○ 剩余 N`
 - `↶ 撤回上一步`
-- `重置本集学习进度`
 - 本集进度持久化（localStorage）
 - Analyze 同一字幕恢复进度
 - 浏览器刷新恢复进度
@@ -288,26 +296,27 @@ V2.5A 不包含以下传统学习系统、复习系统或统计型学习功能�
    - 撤回后恢复上一条被处理的障碍，并同步更新 `✓ 已攻克 N` 与 `○ 剩余 N`。
    - 示例：`lecture` → `✓ 不用管我了` → `↶ 撤回上一步` → `lecture` 恢复。
 
-原 `恢复全部` 重命名为 `重置本集学习进度`。原因是该操作的实际含义是清空本集学习记录，让本集所有障碍重新出现。它不是高频操作，因此不放在主界面。
-
-`重置本集学习进度` 放入 `⋯` 菜单。点击后必须弹出确认：
+Review Fix：`重置本集学习进度` 已从 V2.5A obstacle-level interaction 中移除。原因是当前产品目标是：
 
 ```text
-确定重置本集学习进度？
-
-重置后：
-本集所有障碍会重新出现。
-
-取消
-确认重置
+Discover obstacle
+↓
+Understand obstacle
+↓
+Remove obstacle
+↓
+Continue watching
 ```
+
+用户在主动观看视频时不应管理学习记录，因此 obstacle-level UI 不再提供整集重置入口、确认弹窗或相关处理逻辑。保留的交互只有 `✓ 不用管我了`、`↶ 撤回上一步`、进度展示、localStorage 持久化与 Analyze 恢复行为。
+
+Future replacement（Documentation Only，暂不实现）：未来 Episode Management System 将在 episode-level management 中提供 `重新学习本集`（Re-learn This Episode）。该能力不属于 obstacle-level interaction。
 
 ### 持久化与恢复
 
 - 本集学习进度使用 localStorage 持久化。
 - Analyze 同一字幕内容时恢复该字幕对应的本集学习进度。
 - 浏览器刷新后恢复本集学习进度。
-- 重置本集学习进度后，清空本集已攻克记录，并让本集所有障碍重新出现。
 
 ### V2.4B 状态
 
@@ -715,7 +724,7 @@ V2.0B 保持真实学习流程：
 未来可能增加：
 
 - 本集学习完成
-- 重新学习本集
+- Episode Management System → 重新学习本集
 - 下一集
 
 但 V2.0 不实现这些功能。等待视频播放流程成熟后再设计。

@@ -73,23 +73,26 @@ const understandingPatterns = [
   {
     id: 'understanding-lay-it-on-us',
     phrase: 'lay it on us',
-    literal: '把它放到我们身上',
-    actual: '把想说的话直接告诉我们；别拐弯抹角。',
-    grammar: 'lay it on someone 是口语表达，常用于请求对方直接说出信息或要求。这里的 to lay it on us 是不定式短语，补充说明 too busy 后面省略语境中的动作。',
+    prototype: 'lay something on somebody',
+    literal: '把某件事放到某人身上',
+    actual: '把想说的话直接告诉对方；别拐弯抹角。',
+    grammar: 'lay + something + on + somebody 的核心动作是“把某物放到某人身上”。当 something 是信息、要求或想法时，on somebody 表示把这些内容直接交给对方承接，所以口语里可以引申为“直接说给某人听”。字幕里的 it 指代要说的内容，us 是接收信息的人。',
   },
   {
     id: 'understanding-give-me-a-hand',
     phrase: 'give me a hand',
-    literal: '给我一只手',
-    actual: '帮我一下；搭把手。',
-    grammar: 'give someone a hand 是口语表达，hand 在这里不是字面的一只手，而是表示帮助。',
+    prototype: 'give somebody a hand',
+    literal: '给某人一只手',
+    actual: '帮某人一下；搭把手。',
+    grammar: 'give + somebody + a hand 的字面画面是“把一只手给某人”。hand 在动作场景里代表可用的劳力或协助，因此给某人一只手就自然引申为“提供帮助”。字幕里的 me 只是具体对象，结构可以替换成其他人。',
   },
   {
     id: 'understanding-pull-off-the-project',
     phrase: 'pull off the project',
-    literal: '从项目上拉开',
-    actual: '让某人退出项目；把某人从项目中撤下。',
-    grammar: 'pull someone off something 是短语动词，表示把某人从某项任务、岗位或项目中撤下。字幕中的 pulled off the project 是被动形式。',
+    prototype: 'pull somebody off something',
+    literal: '把某人从某事物上拉开',
+    actual: '让某人退出某项任务；把某人从某事中撤下。',
+    grammar: 'pull + somebody + off + something 的核心动作是“把某人拉离某个位置”。off 表示离开原来的接触点或参与位置，所以放到 project、task、case 等工作语境中，就表示把某人从该任务中调离或撤下。',
     patterns: [
       /\bpull(?:ed)?\s+(?:[a-z]+\s+)?off\s+the\s+project\b/,
     ],
@@ -97,23 +100,26 @@ const understandingPatterns = [
   {
     id: 'understanding-call-it-a-day',
     phrase: 'call it a day',
-    literal: '把它叫作一天',
+    prototype: 'call it a day',
+    literal: '把某事称为一天的结束',
     actual: '今天到此为止；收工。',
-    grammar: 'call it a day 是固定习语，常用于表示结束当天的工作或活动。',
+    grammar: 'call + it + a day 的结构里，call 表示“把某事认定为……”，it 指当前正在做的工作或活动，a day 指“一天的工作量/一天的阶段”。把当前活动认定为 a day，就表示这个阶段已经够了，可以停止并结束今天的工作。',
   },
   {
     id: 'understanding-straight-up',
     phrase: 'straight up',
+    prototype: 'straight up',
     literal: '笔直向上',
     actual: '坦率地说；真的；不夸张地。',
-    grammar: 'straight up 是口语/俚语副词短语，常用于强调说话内容真实、直接。',
+    grammar: 'straight + up 的空间画面是“笔直向上、没有偏斜”。这种“不歪、不绕”的方向感转到说话方式上，就表示内容直接、坦率、不加掩饰，也可用来强调“真的”。',
   },
   {
     id: 'understanding-come-on',
     phrase: 'come on',
-    literal: '过来；来到上面',
+    prototype: 'come on',
+    literal: '过来；继续向前',
     actual: '得了吧；拜托；加油；快点。',
-    grammar: 'come on 是高频非字面义表达，具体含义取决于语气和上下文，可表示催促、鼓励或不相信。',
+    grammar: 'come + on 原本表示“继续往前/靠近”。说话人用它推动对方进入下一步动作或状态，所以会根据语气引申为催促“快点”、鼓励“加油”、请求“拜托”，或反驳对方继续相信不合理内容的“得了吧”。',
   },
 ];
 
@@ -306,16 +312,9 @@ const SEGMENT_DURATION_MS = 3600;
 const LEARNING_PAUSE_HINT_STORAGE_KEY = 'videoEnglishAssistant.learningPauseHintDismissed';
 const HEAT_AXIS_CLUSTER_THRESHOLD_PX = 56;
 const cardStream = document.querySelector('#cardStream');
-const tipsMenuButton = document.querySelector('#tipsMenuButton');
-const tipsMenuPopover = document.querySelector('#tipsMenuPopover');
-const resetProgressMenuItem = document.querySelector('#resetProgressMenuItem');
 const conqueredObstacleCount = document.querySelector('#conqueredObstacleCount');
 const remainingObstacleCount = document.querySelector('#remainingObstacleCount');
 const episodeUndoButton = document.querySelector('#episodeUndoButton');
-const resetDialogBackdrop = document.querySelector('#resetDialogBackdrop');
-const resetProgressDialog = document.querySelector('#resetProgressDialog');
-const cancelResetProgressButton = document.querySelector('#cancelResetProgressButton');
-const confirmResetProgressButton = document.querySelector('#confirmResetProgressButton');
 const subtitleTextInput = document.querySelector('#subtitleTextInput');
 const analyzeButton = document.querySelector('#analyzeButton');
 const currentSubtitleLine = document.querySelector('#currentSubtitleLine');
@@ -1165,48 +1164,6 @@ function renderEpisodeProgress() {
   }
 }
 
-function setTipsMenuOpen(isOpen) {
-  if (!tipsMenuPopover || !tipsMenuButton) {
-    return;
-  }
-
-  tipsMenuPopover.hidden = !isOpen;
-  tipsMenuButton.setAttribute('aria-expanded', String(isOpen));
-}
-
-function showResetProgressDialog() {
-  setTipsMenuOpen(false);
-
-  if (resetDialogBackdrop) {
-    resetDialogBackdrop.hidden = false;
-  }
-
-  if (resetProgressDialog) {
-    resetProgressDialog.hidden = false;
-  }
-}
-
-function hideResetProgressDialog() {
-  if (resetDialogBackdrop) {
-    resetDialogBackdrop.hidden = true;
-  }
-
-  if (resetProgressDialog) {
-    resetProgressDialog.hidden = true;
-  }
-}
-
-function resetCurrentEpisodeProgress() {
-  hiddenObstacleIds = new Set();
-  dismissedObstacleHistory = [];
-  streamMode = 'dynamic';
-  selectedObstacleId = null;
-  saveEpisodeProgress();
-  hideResetProgressDialog();
-  renderVideoState();
-  renderCards();
-}
-
 function undoLastDismissedObstacle() {
   while (dismissedObstacleHistory.length > 0) {
     const obstacleId = dismissedObstacleHistory.pop();
@@ -1234,7 +1191,7 @@ function undoLastDismissedObstacle() {
   return null;
 }
 
-function resetObstacleStream(nextObstacles, text = subtitleTextInput.value) {
+function replaceObstacleStream(nextObstacles, text = subtitleTextInput.value) {
   obstacles = nextObstacles;
   currentEpisodeProgressKey = getEpisodeProgressKey(text);
   applyStoredEpisodeProgress(currentEpisodeProgressKey);
@@ -1266,7 +1223,15 @@ function hideCurrentObstacle(obstacleId) {
 }
 
 function restoreAllCurrentObstacles() {
-  resetCurrentEpisodeProgress();
+  const currentSegment = getCurrentSubtitleSegment();
+  const currentObstacleIds = new Set(getObstaclesInSegment(currentSegment).map((obstacle) => obstacle.id));
+
+  currentObstacleIds.forEach((obstacleId) => hiddenObstacleIds.delete(obstacleId));
+  dismissedObstacleHistory = dismissedObstacleHistory.filter((obstacleId) => !currentObstacleIds.has(obstacleId));
+  streamMode = 'dynamic';
+  saveEpisodeProgress();
+  renderVideoState();
+  renderCards();
 }
 
 function createDetailBlock(title, text) {
@@ -1302,7 +1267,7 @@ function createWordSummary(obstacle) {
 function createUnderstandingSummary(obstacle) {
   const summary = document.createElement('p');
   summary.className = 'understanding-summary';
-  summary.textContent = `${obstacle.prototype || 'Prototype expression'}\n${obstacle.baseForm || obstacle.phrase}`;
+  summary.textContent = obstacle.prototype || obstacle.baseForm || obstacle.phrase;
 
   return summary;
 }
@@ -1399,7 +1364,7 @@ function setLearningTipsMode() {
 }
 
 function analyzeAndRender(text, options = {}) {
-  resetObstacleStream(analyzeSubtitleText(text, options), text);
+  replaceObstacleStream(analyzeSubtitleText(text, options), text);
   return renderCards();
 }
 
@@ -1408,24 +1373,6 @@ function handleAnalyzeClick() {
 }
 
 analyzeButton.addEventListener('click', handleAnalyzeClick);
-if (tipsMenuButton) {
-  tipsMenuButton.addEventListener('click', (event) => {
-    event.stopPropagation();
-    setTipsMenuOpen(tipsMenuPopover?.hidden ?? true);
-  });
-}
-if (resetProgressMenuItem) {
-  resetProgressMenuItem.addEventListener('click', showResetProgressDialog);
-}
-if (cancelResetProgressButton) {
-  cancelResetProgressButton.addEventListener('click', hideResetProgressDialog);
-}
-if (resetDialogBackdrop) {
-  resetDialogBackdrop.addEventListener('click', hideResetProgressDialog);
-}
-if (confirmResetProgressButton) {
-  confirmResetProgressButton.addEventListener('click', resetCurrentEpisodeProgress);
-}
 if (episodeUndoButton) {
   episodeUndoButton.addEventListener('click', undoLastDismissedObstacle);
 }
@@ -1471,7 +1418,6 @@ window.ObstacleDetectionEngine = {
   detectVocabularyObstacles,
   detectUnderstandingObstacles,
   restoreAllCurrentObstacles,
-  resetCurrentEpisodeProgress,
   undoLastDismissedObstacle,
   getEpisodeProgressCounts,
   hideCurrentObstacle,

@@ -142,8 +142,12 @@ function assertAnalyzeEngineV26A() {
     throw new Error('V2.6A Analyze Engine: expected senior level to suppress lecture vocab obstacles');
   }
 
-  if (comprehensionObstacles.length !== 2 || !comprehensionObstacles.every((obstacle) => obstacle.explanation.includes('Prototype expression'))) {
-    throw new Error('V2.6A Analyze Engine: expected comprehension obstacles with Prototype expression explanations');
+  const comprehensionPrototypes = comprehensionObstacles.map((obstacle) => obstacle.prototype);
+  if (comprehensionObstacles.length !== 2
+    || !comprehensionPrototypes.includes('lay something on somebody')
+    || !comprehensionPrototypes.includes('call it a day')
+    || comprehensionObstacles.some((obstacle) => obstacle.explanation.includes('Prototype expression'))) {
+    throw new Error(`V2.6A Analyze Engine: expected prototype structures without Prototype expression label, got ${JSON.stringify(comprehensionPrototypes)}`);
   }
 
   ['id', 'subtitleId', 'type', 'surfaceText', 'baseForm', 'explanation', 'start', 'end'].forEach((fieldName) => {
@@ -152,7 +156,7 @@ function assertAnalyzeEngineV26A() {
     }
   });
 
-  console.log('PASS V2.6A Analyze Engine outputs vocab/comprehension obstacles, keeps same-sentence multiples, and honors vocab level');
+  console.log('PASS V2.6A Analyze Engine outputs vocab/comprehension obstacles, prototype structures, same-sentence multiples, and vocab level');
 }
 
 assertAnalyzeEngineV26A();
@@ -215,6 +219,8 @@ assertCardStreamIncludes('Test V2.4A UI Cleanup word obstacle keeps translation'
 assertCardStreamIncludes('Test V2.4A UI Cleanup understanding keeps literal field', '字面意思');
 assertCardStreamIncludes('Test V2.4A UI Cleanup understanding keeps actual field', '实际意思');
 assertCardStreamIncludes('Test V2.4A UI Cleanup understanding keeps grammar field', '语法解释');
+assertCardStreamIncludes('V2.6A Review Fix title uses prototype structure', 'lay something on somebody');
+assertCardStreamExcludes('V2.6A Review Fix removes Prototype expression label', 'Prototype expression');
 assertCardStreamExcludes('Test V2.4A UI Cleanup first subtitle hides source label', '出处');
 assertCardStreamExcludes('Test V2.4A UI Cleanup first subtitle hides source text', '出处lay it on us');
 
@@ -474,7 +480,14 @@ function assertEpisodeProgress(name, expectedConquered, expectedRemaining) {
 }
 
 api.Analyze(demoText, { level: 'junior' });
-api.resetCurrentEpisodeProgress();
+while (api.getEpisodeProgressCounts().conquered > 0) {
+  const restoredObstacle = api.undoLastDismissedObstacle();
+
+  if (!restoredObstacle) {
+    throw new Error('V2.5A setup: expected undo to restore persisted obstacle progress');
+  }
+}
+api.seekToTime(0);
 assertEpisodeProgress('V2.5A Test A first Analyze initializes episode progress', 0, 5);
 assertEpisodeUndoPlacement('V2.5A Hot Fix Test A initial undo placement', false);
 assertEpisodeUndoLightweightStyle('V2.5A Hot Fix #3 Test B undo has no residual container styling');
@@ -512,6 +525,11 @@ assertEpisodeProgress('V2.5A Test D consecutive dismissals accumulate progress',
 api.Analyze(demoText, { level: 'junior' });
 assertEpisodeProgress('V2.5A Test E re-Analyze keeps persisted progress', 5, 0);
 
-api.resetCurrentEpisodeProgress();
-assertEpisodeProgress('V2.5A Test F reset returns all episode obstacles', 0, 5);
-assertLabels('V2.5A Test F reset restores current subtitle obstacles', ['lecture', 'lay it on us']);
+if ('resetCurrentEpisodeProgress' in api) {
+  throw new Error('V2.6A Review Fix: resetCurrentEpisodeProgress API should be removed');
+}
+const htmlSource = fs.readFileSync('index.html', 'utf8');
+if (htmlSource.includes('resetProgressMenuItem') || htmlSource.includes('重置本集学习进度')) {
+  throw new Error('V2.6A Review Fix: reset progress menu item should be removed from UI');
+}
+console.log('PASS V2.6A Review Fix removes episode reset API and UI entry');
