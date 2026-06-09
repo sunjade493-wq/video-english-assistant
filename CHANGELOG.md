@@ -1,5 +1,9 @@
 # Changelog
 
+## V2.6E Quality Validation Round 1
+
+Human review dataset generated.
+
 ## V2.6A Analyze Engine Mock Layer – Frozen ✅
 
 V2.6A Analyze Engine Mock Layer 已验收并冻结。
