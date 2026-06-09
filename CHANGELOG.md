@@ -171,3 +171,12 @@ Frozen Scope：
 - V2.4A 锁定 Obstacle Timeline 的已验收范围，不继续追加视觉动画、二级聚合、缩放级别、长视频优化或 Visual Analytics。
 - `✓ 不用管我了` 仍只隐藏 Learning Tips 当前卡片，不改变热力图聚合数字，也不改变播放 / 暂停状态。
 - V2.4B 仅作为设计记录进入 Backlog，暂不实现。
+
+## V2.6C Real AI Analyze Engine v1
+
+- Added `content-production-ai-analyze.js`, a content-production-only AI analysis module/CLI that accepts subtitle data and emits frozen episode obstacle data.
+- Added frozen schema `v2.6c-real-ai-analyze-engine-v1` for runtime-readable obstacle data.
+- Added runtime frozen-data reader in `analyze-engine.js`; runtime uses matching frozen obstacle data and falls back to V2.6A mock data only when frozen data is unavailable or mismatched.
+- Preserved existing Learning Tips, Obstacle Timeline, Bottom Sheet, click-to-jump, `✓ 不用管我了`, `↶ 撤回上一步`, and localStorage progress behavior.
+- Added sample frozen episode data at `data/frozen-sample-episode-obstacles.json`.
+- Added V2.6C tests for AI output shape, vocab/comprehension card formats, subtitle order preservation, multiple obstacles in the same subtitle, and runtime reading frozen obstacle data.

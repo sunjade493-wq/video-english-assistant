@@ -1,0 +1,152 @@
+{
+  "schemaVersion": "v2.6c-real-ai-analyze-engine-v1",
+  "engineVersion": "V2.6C Real AI Analyze Engine v1",
+  "generatedAt": "2026-06-09T00:00:00.000Z",
+  "source": "content-production-ai",
+  "vocabularyLevel": "junior",
+  "vocabularySource": "Oxford 3000 / 5000 + CEFR mapping",
+  "cefrBridge": {
+    "label": "Junior High (1500)",
+    "cefr": [
+      "A1",
+      "A2"
+    ],
+    "oxfordBands": [
+      "A1",
+      "A2"
+    ]
+  },
+  "subtitleItems": [
+    {
+      "id": "subtitle-1",
+      "text": "If you enjoyed this lecture, I'm sure you're too busy to lay it on us.",
+      "start": 0,
+      "end": 67
+    },
+    {
+      "id": "subtitle-2",
+      "text": "Can you give me a hand?",
+      "start": 69,
+      "end": 92
+    },
+    {
+      "id": "subtitle-3",
+      "text": "I was pulled off the project.",
+      "start": 94,
+      "end": 123
+    },
+    {
+      "id": "subtitle-4",
+      "text": "Let's call it a day.",
+      "start": 125,
+      "end": 145
+    }
+  ],
+  "obstacles": [
+    {
+      "id": "word-lecture-subtitle-1-1",
+      "engineId": "vocab-subtitle-1-lecture-20-0",
+      "subtitleId": "subtitle-1",
+      "type": "vocab",
+      "kind": "word",
+      "label": "生词",
+      "surfaceText": "lecture",
+      "baseForm": "lecture",
+      "word": "lecture",
+      "phonetic": "/ˈlektʃər/",
+      "partOfSpeech": "n./v.",
+      "sentenceMeaning": "讲座",
+      "translation": "讲座",
+      "cefr": "B1",
+      "oxfordSource": "Oxford 3000/5000 + CEFR mapping",
+      "start": 20,
+      "end": 27,
+      "index": 20,
+      "explanation": "lecture /ˈlektʃər/ n./v.\nSentence meaning: 讲座"
+    },
+    {
+      "id": "understanding-lay-it-on-us-subtitle-1-1",
+      "engineId": "comprehension-subtitle-1-lay-something-on-somebody-57-0",
+      "subtitleId": "subtitle-1",
+      "type": "comprehension",
+      "kind": "understanding",
+      "label": "理解",
+      "surfaceText": "lay it on us",
+      "source": "lay it on us",
+      "baseForm": "lay it on us",
+      "phrase": "lay it on us",
+      "prototype": "lay something on somebody",
+      "literal": "把某件事放到某人身上",
+      "actual": "把想说的话直接告诉对方；别拐弯抹角。",
+      "grammar": "lay 表示“放置”，on somebody 表示把内容交到某人这边承接；当 something 是 it 指代的信息时，整体就表示把信息直接交给对方听。",
+      "category": "fixed expression",
+      "start": 57,
+      "end": 69,
+      "index": 57,
+      "explanation": "lay something on somebody\nLiteral meaning: 把某件事放到某人身上\nActual meaning: 把想说的话直接告诉对方；别拐弯抹角。\nGrammar explanation: lay 表示“放置”，on somebody 表示把内容交到某人这边承接；当 something 是 it 指代的信息时，整体就表示把信息直接交给对方听。"
+    },
+    {
+      "id": "understanding-give-me-a-hand-subtitle-2-1",
+      "engineId": "comprehension-subtitle-2-give-somebody-a-hand-77-0",
+      "subtitleId": "subtitle-2",
+      "type": "comprehension",
+      "kind": "understanding",
+      "label": "理解",
+      "surfaceText": "give me a hand",
+      "source": "give me a hand",
+      "baseForm": "give me a hand",
+      "phrase": "give me a hand",
+      "prototype": "give somebody a hand",
+      "literal": "给某人一只手",
+      "actual": "帮某人一下；搭把手。",
+      "grammar": "hand 在动作场景里代表可用劳力；give somebody a hand 的结构把“一只手”转为“可用的协助”，所以表示帮助某人。",
+      "category": "high-frequency TV expression",
+      "start": 77,
+      "end": 91,
+      "index": 77,
+      "explanation": "give somebody a hand\nLiteral meaning: 给某人一只手\nActual meaning: 帮某人一下；搭把手。\nGrammar explanation: hand 在动作场景里代表可用劳力；give somebody a hand 的结构把“一只手”转为“可用的协助”，所以表示帮助某人。"
+    },
+    {
+      "id": "understanding-pull-off-the-project-subtitle-3-1",
+      "engineId": "comprehension-subtitle-3-pull-somebody-off-something-100-0",
+      "subtitleId": "subtitle-3",
+      "type": "comprehension",
+      "kind": "understanding",
+      "label": "理解",
+      "surfaceText": "pulled off the project",
+      "source": "pulled off the project",
+      "baseForm": "pull off the project",
+      "phrase": "pull off the project",
+      "prototype": "pull somebody off something",
+      "literal": "把某人从某事物上拉开",
+      "actual": "把某人从任务中撤下。",
+      "grammar": "pull 表示拉动，off 表示离开原来的接触点或参与位置；用于 project 时，就表示让某人离开该项目。被动式 was pulled off 强调“我被撤下”。",
+      "category": "phrasal verb",
+      "start": 100,
+      "end": 122,
+      "index": 100,
+      "explanation": "pull somebody off something\nLiteral meaning: 把某人从某事物上拉开\nActual meaning: 把某人从任务中撤下。\nGrammar explanation: pull 表示拉动，off 表示离开原来的接触点或参与位置；用于 project 时，就表示让某人离开该项目。被动式 was pulled off 强调“我被撤下”。"
+    },
+    {
+      "id": "understanding-call-it-a-day-subtitle-4-1",
+      "engineId": "comprehension-subtitle-4-call-it-a-day-131-0",
+      "subtitleId": "subtitle-4",
+      "type": "comprehension",
+      "kind": "understanding",
+      "label": "理解",
+      "surfaceText": "call it a day",
+      "source": "call it a day",
+      "baseForm": "call it a day",
+      "phrase": "call it a day",
+      "prototype": "call it a day",
+      "literal": "把它称为一天",
+      "actual": "今天到此为止；收工。",
+      "grammar": "call 表示认定，it 指当前活动，a day 指一天的工作阶段；把当前活动认定为一天的工作量，就表示可以停止并结束。",
+      "category": "idiom",
+      "start": 131,
+      "end": 144,
+      "index": 131,
+      "explanation": "call it a day\nLiteral meaning: 把它称为一天\nActual meaning: 今天到此为止；收工。\nGrammar explanation: call 表示认定，it 指当前活动，a day 指一天的工作阶段；把当前活动认定为一天的工作量，就表示可以停止并结束。"
+    }
+  ]
+}

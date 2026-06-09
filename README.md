@@ -2,7 +2,7 @@
 
 一个纯 HTML/CSS/Vanilla JavaScript 实现的 Video English Assistant。
 
-当前版本：V2.6A Analyze Engine Mock Layer Frozen ✅ – Analyze Engine Mock Layer 已验收冻结，输入 subtitle items 与 user vocab level，输出 `vocab` / `comprehension` 两类 obstacle object，并保持 V2.4A Obstacle Timeline 与 V2.5A Comprehension Progress 冻结行为不变。V2.5C Learning Tips Layout Polish 与 V2.4B Learning Heatmap Polish 仍保持 Backlog（暂缓开发）。
+当前版本：V2.6C Real AI Analyze Engine v1 ✅ – AI 只在内容生产阶段分析字幕并生成 frozen episode obstacle data；运行时只读取 frozen obstacle data，不调用 AI。V2.6A mock data 保留为 demo / fallback，并保持 V2.4A Obstacle Timeline、V2.5A Comprehension Progress 与 V2.6B frozen rules 不变。
 
 V2.0 冻结学习流程逻辑：产品不追求让用户永久掌握所有单词、语法或考试能力，而是帮助用户扫除视频学习英语过程中的障碍，让用户越来越顺畅地听懂、看懂英语视频，并通过持续跨越障碍建立信心、提高效率、保持动力。
 
@@ -27,6 +27,8 @@ video-english-assistant/
 ├── index.html
 ├── styles.css
 ├── analyze-engine.js
+├── content-production-ai-analyze.js
+├── data/frozen-sample-episode-obstacles.json
 ├── script.js
 ├── test-current-subtitle-sync.js
 ├── CHANGELOG.md
@@ -979,3 +981,53 @@ ObstacleDetectionEngine.analyze(
 V2.0A 保持 V1.5 左侧 70% / 右侧 30% 页面布局与整体视觉风格，冻结学习流程逻辑，仅将右侧栏中文名称从「障碍流」调整为「提示」，英文小标题调整为 `LEARNING TIPS`。
 
 ![V2.1 Multi-line Subtitle Analysis 网页预览截图](preview-v2.1.svg)
+
+## V2.6C Real AI Analyze Engine v1 — Content Production Flow
+
+状态：Implemented ✅。
+
+V2.6C 将 Analyze Engine 的真实 AI 分析放在内容生产阶段，而不是用户运行时阶段：
+
+```text
+Subtitles
+↓
+content-production-ai-analyze.js（可调用 AI）
+↓
+生成 vocab + comprehension obstacles
+↓
+保存 frozen episode obstacle data
+↓
+Runtime 只读取 frozen obstacle data
+```
+
+### Runtime no-AI rule
+
+- 运行时不会调用 AI。
+- `analyze-engine.js` 只会读取匹配当前字幕 fingerprint 的 frozen obstacle data。
+- 如果没有匹配的 frozen data，保留 V2.6A mock data 作为本地 demo / fallback，不删除既有 mock 行为。
+
+### Content-production script
+
+新增内容生产脚本：
+
+```bash
+node content-production-ai-analyze.js --input subtitles.json --output frozen-obstacles.json --level junior
+```
+
+输入可以是 subtitle item 数组，或包含 `subtitleItems` / `subtitles` 字段的 JSON。输出 frozen data schema：
+
+- `schemaVersion: v2.6c-real-ai-analyze-engine-v1`
+- `engineVersion: V2.6C Real AI Analyze Engine v1`
+- `subtitleItems`
+- `obstacles`
+
+脚本提示 AI 严格遵守 V2.6B frozen rules：
+
+- 只生成 `vocab` 与 `comprehension` 两类 obstacle。
+- vocab 使用 Oxford 3000 / 5000 + CEFR mapping 作为词汇来源。
+- vocab 使用 lemma-based detection、用户等级过滤与固定卡片字段：`word /phonetic/ partOfSpeech` + `Sentence meaning`。
+- comprehension 覆盖 fixed expressions、phrasal verbs、idioms、slang、spoken contractions、cultural expressions、elliptical expressions、high-frequency TV expressions，以及“单词都认识但组合意义困难”的表达。
+- comprehension 继承 V2.6A 卡片结构：prototype title、literal meaning、actual meaning、grammar explanation；grammar 必须解释为什么表达会形成该含义。
+- 保持字幕顺序，同一句字幕允许多个 vocab、多个 comprehension，或两类同时出现。
+
+示例 frozen data 位于：`data/frozen-sample-episode-obstacles.json`。

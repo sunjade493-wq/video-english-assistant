@@ -26,6 +26,21 @@
       extends: 'cet4',
       words: ['idiom', 'metaphor', 'nonliteral'],
     },
+    tem4: {
+      label: 'TEM-4',
+      extends: 'cet6',
+      words: [],
+    },
+    tem8: {
+      label: 'TEM-8',
+      extends: 'tem4',
+      words: [],
+    },
+    gre: {
+      label: 'GRE',
+      extends: 'tem8',
+      words: [],
+    },
     custom: {
       label: '自定义词汇量',
       extends: 'cet4',
@@ -306,10 +321,55 @@
     }));
   }
 
+  function normalizeText(text) {
+    return String(text || '').toLowerCase().replace(/[^a-z0-9']+/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
+  function getSubtitleFingerprint(subtitleItems) {
+    return normalizeSubtitleItems(subtitleItems).map((item) => normalizeText(item.text)).join(' || ');
+  }
+
+  function isFrozenEpisodeObstacleData(data) {
+    return Boolean(data
+      && data.schemaVersion === 'v2.6c-real-ai-analyze-engine-v1'
+      && Array.isArray(data.subtitleItems)
+      && Array.isArray(data.obstacles));
+  }
+
+  function cloneObstacle(obstacle) {
+    return { ...obstacle };
+  }
+
+  function readFrozenObstacleData(subtitleItems, frozenObstacleData) {
+    if (!isFrozenEpisodeObstacleData(frozenObstacleData)) {
+      return null;
+    }
+
+    if (getSubtitleFingerprint(subtitleItems) !== getSubtitleFingerprint(frozenObstacleData.subtitleItems)) {
+      return null;
+    }
+
+    return frozenObstacleData.obstacles
+      .map(cloneObstacle)
+      .sort((firstObstacle, secondObstacle) => {
+        if (firstObstacle.start !== secondObstacle.start) {
+          return firstObstacle.start - secondObstacle.start;
+        }
+
+        return (firstObstacle.index || 0) - (secondObstacle.index || 0);
+      });
+  }
+
   function analyzeSubtitleItems(subtitleItems, options = {}) {
     const occurrenceCounts = new Map();
     const levelName = options.level || DEFAULT_VOCABULARY_LEVEL;
     const customWords = options.customWords || [];
+
+    const frozenObstacles = readFrozenObstacleData(subtitleItems, options.frozenObstacleData);
+
+    if (frozenObstacles) {
+      return frozenObstacles;
+    }
 
     return normalizeSubtitleItems(subtitleItems).flatMap((subtitleItem) => [
       ...buildVocabObstacles(subtitleItem, levelName, customWords, occurrenceCounts),
@@ -322,5 +382,9 @@
     levels: vocabularyLevels,
     vocabularyMockEntries,
     comprehensionMockEntries,
+    normalizeSubtitleItems,
+    getSubtitleFingerprint,
+    isFrozenEpisodeObstacleData,
+    readFrozenObstacleData,
   };
 }(typeof window !== 'undefined' ? window : globalThis));

@@ -44,6 +44,21 @@ const vocabularyLevels = {
     extends: 'cet4',
     words: ['idiom', 'metaphor', 'nonliteral'],
   },
+  tem4: {
+    label: 'TEM-4',
+    extends: 'cet6',
+    words: [],
+  },
+  tem8: {
+    label: 'TEM-8',
+    extends: 'tem4',
+    words: [],
+  },
+  gre: {
+    label: 'GRE',
+    extends: 'tem8',
+    words: [],
+  },
   custom: {
     label: '自定义词汇量',
     extends: 'cet4',
@@ -287,7 +302,10 @@ function analyzeSubtitleText(text, options = {}) {
     return [];
   }
 
-  return engine.analyzeSubtitleItems(createSubtitleItemsFromText(subtitleText), options);
+  return engine.analyzeSubtitleItems(createSubtitleItemsFromText(subtitleText), {
+    ...options,
+    frozenObstacleData: options.frozenObstacleData || window.FrozenEpisodeObstacleData,
+  });
 }
 
 let subtitleSegments = parseSubtitleSegments(DEFAULT_SUBTITLE_TEXT);
