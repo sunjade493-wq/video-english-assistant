@@ -1,5 +1,10 @@
 # Changelog
 
+## V2.6F Multi-Meaning Stress Test
+
+Validation dataset for context-dependent and multi-meaning comprehension obstacles.
+
+
 ## V2.6E Quality Validation Round 1
 
 Human review dataset generated.
