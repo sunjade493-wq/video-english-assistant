@@ -1,5 +1,9 @@
 # Changelog
 
+## V2.6E Quality Validation Round 2
+
+Second-pass rewrite dataset generated from `V2.6E_Quality_Validation_Round_1.md`.
+
 ## V2.6E Quality Validation Round 1
 
 Human review dataset generated.
