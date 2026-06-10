@@ -1,5 +1,42 @@
 # Changelog
 
+## V2.6D Real AI Obstacle Generation Verification ✅
+
+V2.6D adds a real AI verification path for the Analyze Engine without changing frozen UI/product rules.
+
+Scope:
+
+1. Added `AnalyzeEngine.analyzeSubtitleItemsWithAI` as the real AI path.
+   - Builds a V2.6D prompt from subtitle items and selected vocabulary level.
+   - Requires an injected `aiClient.analyzeObstacles(prompt)` so the obstacle payload comes from an actual AI model.
+   - Normalizes AI output into existing frozen obstacle object fields.
+   - Marks normalized output with `generatedByAI: true`.
+2. Added V2.6D verification sample that is not part of the V2.6A mock set:
+   - `I'm in.`
+   - `You got me.`
+   - `That figures.`
+   - `Works for me.`
+   - `We need a contingency plan.`
+3. Added generated AI obstacle artifact:
+   - `verification/v2.6d-real-ai-obstacles.json`
+   - Includes input sample, AI call metadata, AI raw obstacle payload, normalized obstacle output, and verification notes.
+4. Added live OpenAI-compatible verification script:
+   - `tools/v2.6d-real-ai-verification.js`
+5. Added verification test:
+   - Confirms the new sample does not reuse V2.6A mock examples.
+   - Confirms vocab and comprehension obstacles exist.
+   - Confirms the real AI path calls the injected AI client and normalizes AI-generated output.
+   - Confirms generated obstacles do not come from `vocabularyMockEntries` or `comprehensionMockEntries`.
+
+Frozen rules unchanged:
+
+- Learning Tips unchanged.
+- Timeline unchanged.
+- Progress unchanged.
+- Bottom Sheet unchanged.
+- V2.6B frozen Analyze Engine rules remain in force.
+
+
 ## V2.6A Analyze Engine Mock Layer – Frozen ✅
 
 V2.6A Analyze Engine Mock Layer 已验收并冻结。

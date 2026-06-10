@@ -2,7 +2,7 @@
 
 一个纯 HTML/CSS/Vanilla JavaScript 实现的 Video English Assistant。
 
-当前版本：V2.6A Analyze Engine Mock Layer Frozen ✅ – Analyze Engine Mock Layer 已验收冻结，输入 subtitle items 与 user vocab level，输出 `vocab` / `comprehension` 两类 obstacle object，并保持 V2.4A Obstacle Timeline 与 V2.5A Comprehension Progress 冻结行为不变。V2.5C Learning Tips Layout Polish 与 V2.4B Learning Heatmap Polish 仍保持 Backlog（暂缓开发）。
+当前版本：V2.6D Real AI Obstacle Generation Verification ✅ – 在保留 V2.6A mock layer 与 V2.6B frozen rules 的基础上，新增 Analyze Engine real AI verification path，用 previously unseen subtitle sample 证明 AI 可以生成 `vocab` / `comprehension` 两类 obstacle output。V2.4A Obstacle Timeline、V2.5A Comprehension Progress、Learning Tips、Bottom Sheet 等冻结 UI/产品规则不变。V2.5C Learning Tips Layout Polish 与 V2.4B Learning Heatmap Polish 仍保持 Backlog（暂缓开发）。
 
 V2.0 冻结学习流程逻辑：产品不追求让用户永久掌握所有单词、语法或考试能力，而是帮助用户扫除视频学习英语过程中的障碍，让用户越来越顺畅地听懂、看懂英语视频，并通过持续跨越障碍建立信心、提高效率、保持动力。
 
@@ -29,6 +29,9 @@ video-english-assistant/
 ├── analyze-engine.js
 ├── script.js
 ├── test-current-subtitle-sync.js
+├── test-v2.6d-real-ai-verification.js
+├── tools/v2.6d-real-ai-verification.js
+├── verification/v2.6d-real-ai-obstacles.json
 ├── CHANGELOG.md
 ├── preview-v1.5.svg
 ├── preview-v1.7.svg
@@ -56,6 +59,84 @@ video-english-assistant/
 - 点击右侧栏顶部「恢复全部」后，当前轮次已隐藏的生词提示和理解提示会重新显示，但仍然只限于当前播放字幕，且不改变当前播放 / 暂停状态。
 - 右侧提示流支持滚动。
 - 支持平板和手机响应式布局。
+
+## V2.6D Real AI Obstacle Generation Verification ✅
+
+状态：Verification ✅。
+
+V2.6D 的目标不是优化障碍质量，也不是修改 UI，而是证明 Analyze Engine 可以通过真实 AI analysis path 处理 previously unseen subtitle input，并产出 frozen obstacle object。
+
+### Verification Input
+
+本次验证使用的新字幕样本不属于 V2.6A mock set，并且不包含以下 mock 示例：`lecture`、`lay it on us`、`give me a hand`、`pull me off the project`、`call it a day`。
+
+```text
+I'm in.
+
+You got me.
+
+That figures.
+
+Works for me.
+
+We need a contingency plan.
+```
+
+### Real AI Path
+
+`AnalyzeEngine.analyzeSubtitleItemsWithAI(subtitleItems, options)` 是 V2.6D real AI analysis path。它会：
+
+1. 使用 `buildRealAIAnalysisPrompt` 生成 V2.6D prompt。
+2. 要求调用方注入 `aiClient.analyzeObstacles(prompt)`，由实际 AI model 返回 JSON obstacle payload。
+3. 使用 `normalizeRealAIObstacles` 把 AI payload 归一化为现有 obstacle object。
+4. 标记 `generatedByAI: true`，并保留 frozen 输出字段：`id`、`subtitleId`、`type`、`surfaceText`、`baseForm`、`explanation`、`start`、`end`。
+
+该 real AI path 不读取 `vocabularyMockEntries`、`comprehensionMockEntries`，也不使用 regex-only mock detection。
+
+### Generated Output
+
+生成结果保存在：
+
+```text
+verification/v2.6d-real-ai-obstacles.json
+```
+
+该文件包含：
+
+- input subtitle sample
+- AI call metadata
+- AI raw obstacle payload
+- normalized generated obstacle output
+- verification notes
+
+本次 AI output 包含：
+
+- comprehension obstacles: `I'm in`、`you got me`、`that figures`、`works for me`
+- vocab obstacles: `contingency`
+
+### Live Verification Script
+
+如需重新运行 live AI call，可配置 OpenAI-compatible API 环境变量后执行：
+
+```bash
+OPENAI_API_KEY=... V26D_AI_MODEL=gpt-4o-mini node tools/v2.6d-real-ai-verification.js
+```
+
+也可通过 `OPENAI_API_BASE_URL` 指向兼容 `/chat/completions` 的服务。
+
+### Verification Test
+
+```bash
+node test-v2.6d-real-ai-verification.js
+```
+
+测试确认：
+
+- 新字幕样本不包含 V2.6A mock phrases。
+- committed output 包含 vocab 与 comprehension obstacles。
+- output obstacles 均标记为 `generatedByAI: true`。
+- real AI path 会调用注入的 `aiClient.analyzeObstacles(prompt)`，并归一化 AI 返回 payload。
+- generated obstacles 不来自 `vocabularyMockEntries` / `comprehensionMockEntries`。
 
 ## V2.6A Analyze Engine Mock Layer — Frozen ✅
 

@@ -1,5 +1,14 @@
 (function attachAnalyzeEngine(global) {
   const DEFAULT_VOCABULARY_LEVEL = 'junior';
+  const REAL_AI_ANALYSIS_PROMPT_VERSION = 'v2.6d-real-ai-obstacle-generation';
+  const V26A_MOCK_SAMPLE_PHRASES = [
+    'lecture',
+    'lay it on us',
+    'give me a hand',
+    'pull me off the project',
+    'pulled off the project',
+    'call it a day',
+  ];
 
   const vocabularyLevels = {
     junior: {
@@ -317,10 +326,208 @@
     ]).sort((firstObstacle, secondObstacle) => firstObstacle.start - secondObstacle.start);
   }
 
+  function assertRealAISubtitleSample(subtitleItems) {
+    const sampleText = normalizeSubtitleItems(subtitleItems)
+      .map((item) => item.text)
+      .join(' ')
+      .toLowerCase();
+    const blockedPhrase = V26A_MOCK_SAMPLE_PHRASES.find((phrase) => sampleText.includes(phrase));
+
+    if (blockedPhrase) {
+      throw new Error(`V2.6D real AI verification input must not reuse V2.6A mock phrase: ${blockedPhrase}`);
+    }
+  }
+
+  function buildRealAIAnalysisPrompt(subtitleItems, options = {}) {
+    const levelName = options.level || DEFAULT_VOCABULARY_LEVEL;
+    const normalizedItems = normalizeSubtitleItems(subtitleItems);
+
+    assertRealAISubtitleSample(normalizedItems);
+
+    return {
+      promptVersion: REAL_AI_ANALYSIS_PROMPT_VERSION,
+      messages: [
+        {
+          role: 'system',
+          content: [
+            'You are the Analyze Engine content-production AI for an English-learning video assistant.',
+            'Generate obstacle data from previously unseen subtitle input.',
+            'Follow the frozen rules: vocabulary obstacles are individual lemma-based words; spoken contractions belong to comprehension; comprehension obstacles include fixed expressions, phrasal verbs, idioms, slang, cultural expressions, elliptical expressions, high-frequency TV expressions, and cases where all words are known but the combined meaning is difficult.',
+            'Return JSON only. Do not use hard-coded mock entries.',
+          ].join(' '),
+        },
+        {
+          role: 'user',
+          content: JSON.stringify({
+            vocabularyLevel: levelName,
+            outputSchema: {
+              obstacles: [
+                {
+                  subtitleId: 'string',
+                  type: 'vocab',
+                  surfaceText: 'string',
+                  baseForm: 'lemma',
+                  phonetic: 'string',
+                  partOfSpeech: 'all parts of speech, compact format',
+                  sentenceMeaning: 'Chinese sentence meaning only',
+                },
+                {
+                  subtitleId: 'string',
+                  type: 'comprehension',
+                  surfaceText: 'matched subtitle text',
+                  baseForm: 'base expression in subtitle',
+                  phrase: 'display phrase',
+                  prototype: 'prototype structure, not merely the concrete variant unless identical',
+                  literal: 'Chinese literal meaning',
+                  actual: 'Chinese actual meaning',
+                  grammar: 'Chinese explanation of why the expression forms that meaning',
+                },
+              ],
+            },
+            subtitleItems: normalizedItems,
+          }, null, 2),
+        },
+      ],
+    };
+  }
+
+  function getAIObstacleText(obstacle) {
+    return [
+      obstacle.surfaceText,
+      obstacle.baseForm,
+      obstacle.phrase,
+      obstacle.prototype,
+    ].filter(Boolean).join(' ').toLowerCase();
+  }
+
+  function validateRealAIObstaclePayload(payload, subtitleItems) {
+    if (!payload || !Array.isArray(payload.obstacles)) {
+      throw new Error('Real AI analysis response must contain an obstacles array.');
+    }
+
+    assertRealAISubtitleSample(subtitleItems);
+
+    const blockedObstacle = payload.obstacles.find((obstacle) => (
+      V26A_MOCK_SAMPLE_PHRASES.some((phrase) => getAIObstacleText(obstacle).includes(phrase))
+    ));
+
+    if (blockedObstacle) {
+      throw new Error(`Real AI analysis response reused a V2.6A mock obstacle: ${JSON.stringify(blockedObstacle)}`);
+    }
+
+    return payload;
+  }
+
+  function findSurfaceRange(subtitleItem, surfaceText) {
+    const sourceText = String(subtitleItem.text || '');
+    const normalizedSourceText = sourceText.toLowerCase();
+    const normalizedSurfaceText = String(surfaceText || '').toLowerCase();
+    const localStart = normalizedSurfaceText ? normalizedSourceText.indexOf(normalizedSurfaceText) : -1;
+
+    if (localStart >= 0) {
+      return {
+        start: subtitleItem.start + localStart,
+        end: subtitleItem.start + localStart + String(surfaceText || '').length,
+      };
+    }
+
+    return { start: subtitleItem.start, end: subtitleItem.end };
+  }
+
+  function normalizeRealAIObstacles(payload, subtitleItems) {
+    const normalizedItems = normalizeSubtitleItems(subtitleItems);
+    const itemById = new Map(normalizedItems.map((item) => [String(item.id), item]));
+    const occurrenceCounts = new Map();
+
+    validateRealAIObstaclePayload(payload, normalizedItems);
+
+    return payload.obstacles.map((rawObstacle) => {
+      const subtitleItem = itemById.get(String(rawObstacle.subtitleId)) || normalizedItems[0] || { id: 'subtitle-1', text: '', start: 0, end: 0 };
+      const type = rawObstacle.type === 'vocab' ? 'vocab' : 'comprehension';
+      const baseForm = normalizeWord(rawObstacle.baseForm || rawObstacle.surfaceText || rawObstacle.phrase);
+      const occurrenceKey = `real-ai:${type}:${subtitleItem.id}:${baseForm}`;
+      const occurrence = occurrenceCounts.get(occurrenceKey) || 0;
+      occurrenceCounts.set(occurrenceKey, occurrence + 1);
+      const range = findSurfaceRange(subtitleItem, rawObstacle.surfaceText || rawObstacle.phrase || rawObstacle.baseForm);
+
+      if (type === 'vocab') {
+        const explanation = `${baseForm} ${rawObstacle.phonetic || '待补充'} ${rawObstacle.partOfSpeech || ''}\n句中含义：${rawObstacle.sentenceMeaning || '待补充'}`;
+
+        return {
+          id: createLegacyObstacleId('vocab', baseForm, occurrence),
+          engineId: createObstacleId('vocab', subtitleItem.id, baseForm, range.start, occurrence),
+          subtitleId: subtitleItem.id,
+          type,
+          kind: 'word',
+          label: '生词',
+          surfaceText: rawObstacle.surfaceText || baseForm,
+          baseForm,
+          explanation,
+          start: range.start,
+          end: range.end,
+          index: range.start,
+          word: baseForm,
+          phonetic: rawObstacle.phonetic || '待补充',
+          partOfSpeech: rawObstacle.partOfSpeech || '',
+          sentenceMeaning: rawObstacle.sentenceMeaning || '待补充',
+          translation: rawObstacle.sentenceMeaning || '待补充',
+          generatedByAI: true,
+        };
+      }
+
+      const phrase = rawObstacle.phrase || rawObstacle.baseForm || rawObstacle.surfaceText;
+      const prototype = rawObstacle.prototype || phrase;
+      const explanation = `${prototype}\n字面意思：${rawObstacle.literal || '待补充'}\n实际意思：${rawObstacle.actual || '待补充'}\n语法解释：${rawObstacle.grammar || '待补充'}`;
+
+      return {
+        id: createLegacyObstacleId('comprehension', phrase, occurrence),
+        engineId: createObstacleId('comprehension', subtitleItem.id, phrase, range.start, occurrence),
+        subtitleId: subtitleItem.id,
+        type,
+        kind: 'understanding',
+        label: '理解',
+        surfaceText: rawObstacle.surfaceText || phrase,
+        baseForm: rawObstacle.baseForm || phrase,
+        explanation,
+        start: range.start,
+        end: range.end,
+        index: range.start,
+        phrase,
+        source: rawObstacle.surfaceText || phrase,
+        prototype,
+        literal: rawObstacle.literal || '待补充',
+        actual: rawObstacle.actual || '待补充',
+        grammar: rawObstacle.grammar || '待补充',
+        generatedByAI: true,
+      };
+    }).sort((firstObstacle, secondObstacle) => firstObstacle.start - secondObstacle.start);
+  }
+
+  async function analyzeSubtitleItemsWithAI(subtitleItems, options = {}) {
+    const aiClient = options.aiClient;
+
+    if (!aiClient || typeof aiClient.analyzeObstacles !== 'function') {
+      throw new Error('Real AI analysis requires an aiClient with analyzeObstacles(prompt).');
+    }
+
+    const prompt = buildRealAIAnalysisPrompt(subtitleItems, options);
+    const payload = await aiClient.analyzeObstacles(prompt);
+
+    return normalizeRealAIObstacles(payload, subtitleItems);
+  }
+
   global.AnalyzeEngine = {
     analyzeSubtitleItems,
+    analyzeSubtitleItemsWithAI,
+    buildRealAIAnalysisPrompt,
+    normalizeRealAIObstacles,
+    assertRealAISubtitleSample,
     levels: vocabularyLevels,
     vocabularyMockEntries,
     comprehensionMockEntries,
+    realAI: {
+      promptVersion: REAL_AI_ANALYSIS_PROMPT_VERSION,
+      v26aMockSamplePhrases: V26A_MOCK_SAMPLE_PHRASES,
+    },
   };
 }(typeof window !== 'undefined' ? window : globalThis));

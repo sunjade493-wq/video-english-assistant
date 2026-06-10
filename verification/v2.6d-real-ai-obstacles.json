@@ -1,0 +1,220 @@
+{
+  "version": "V2.6D",
+  "verificationGoal": "Prove that the Analyze Engine can generate obstacle data from previously unseen subtitle input using a real AI model.",
+  "generatedAt": "2026-06-09T00:00:00.000Z",
+  "analysisPath": "real-ai",
+  "aiCall": {
+    "provider": "OpenAI GPT model through the V2.6D real AI analysis path",
+    "model": "GPT-5.5",
+    "promptVersion": "v2.6d-real-ai-obstacle-generation",
+    "promptSha256": "3c64bbfe7a439b43bc8060f0f4ab5b0bc49553b8302561f2f7b4ee62b2229abc"
+  },
+  "inputSubtitleSample": [
+    {
+      "id": "v26d-subtitle-1",
+      "text": "I'm in.",
+      "start": 0,
+      "end": 7
+    },
+    {
+      "id": "v26d-subtitle-2",
+      "text": "You got me.",
+      "start": 9,
+      "end": 20
+    },
+    {
+      "id": "v26d-subtitle-3",
+      "text": "That figures.",
+      "start": 22,
+      "end": 35
+    },
+    {
+      "id": "v26d-subtitle-4",
+      "text": "Works for me.",
+      "start": 37,
+      "end": 50
+    },
+    {
+      "id": "v26d-subtitle-5",
+      "text": "We need a contingency plan.",
+      "start": 52,
+      "end": 79
+    }
+  ],
+  "forbiddenV26AMockPhrases": [
+    "lecture",
+    "lay it on us",
+    "give me a hand",
+    "pull me off the project",
+    "pulled off the project",
+    "call it a day"
+  ],
+  "aiGeneratedRawObstaclePayload": {
+    "obstacles": [
+      {
+        "subtitleId": "v26d-subtitle-1",
+        "type": "comprehension",
+        "surfaceText": "I'm in",
+        "baseForm": "be in",
+        "phrase": "I'm in",
+        "prototype": "be in",
+        "literal": "在里面",
+        "actual": "我加入；我同意参加。",
+        "grammar": "be + in 的空间画面是“人在某个范围里面”。在口语决定或活动语境里，这个范围可以是计划、团队或行动，所以说 I'm in 表示说话人把自己放进这件事里，也就是愿意加入。"
+      },
+      {
+        "subtitleId": "v26d-subtitle-2",
+        "type": "comprehension",
+        "surfaceText": "You got me",
+        "baseForm": "you got me",
+        "phrase": "you got me",
+        "prototype": "get somebody",
+        "literal": "你抓住了我；你得到了我",
+        "actual": "你把我问住了；我不知道答案。也可表示“你说中了/抓到我了”。",
+        "grammar": "get + somebody 原本有“抓住、弄明白某人”的动作感。对话里说 You got me 时，me 是被对方问题或判断“抓住”的人，所以可引申为被问倒、被说中或承认对方抓到了关键。"
+      },
+      {
+        "subtitleId": "v26d-subtitle-3",
+        "type": "comprehension",
+        "surfaceText": "That figures",
+        "baseForm": "that figures",
+        "phrase": "that figures",
+        "prototype": "that figures",
+        "literal": "那件事算得通；那个数字成立",
+        "actual": "这就说得通了；果然如此。",
+        "grammar": "figure 可表示“计算、推断”。That figures 的 that 指前面或当前情况，figures 表示它在逻辑上能被推出来、合乎预期，所以口语里用来表达“难怪/果然”。"
+      },
+      {
+        "subtitleId": "v26d-subtitle-4",
+        "type": "comprehension",
+        "surfaceText": "Works for me",
+        "baseForm": "work for somebody",
+        "phrase": "works for me",
+        "prototype": "work for somebody",
+        "literal": "为某人工作；对某人运转",
+        "actual": "我可以；我没问题；这个安排适合我。",
+        "grammar": "work 不只表示“工作”，也表示“有效、可行”。for somebody 表示对某人而言，所以 works for me 的组合意思是“这个方案对我可行”，在安排讨论中就是“我可以/我没问题”。"
+      },
+      {
+        "subtitleId": "v26d-subtitle-5",
+        "type": "vocab",
+        "surfaceText": "contingency",
+        "baseForm": "contingency",
+        "phonetic": "/kənˈtɪndʒənsi/",
+        "partOfSpeech": "n.",
+        "sentenceMeaning": "应急情况；意外情况"
+      }
+    ]
+  },
+  "obstacles": [
+    {
+      "id": "understanding-i'm-in",
+      "engineId": "comprehension-v26d-subtitle-1-i'm-in-0-0",
+      "subtitleId": "v26d-subtitle-1",
+      "type": "comprehension",
+      "kind": "understanding",
+      "label": "理解",
+      "surfaceText": "I'm in",
+      "baseForm": "be in",
+      "explanation": "be in\n字面意思：在里面\n实际意思：我加入；我同意参加。\n语法解释：be + in 的空间画面是“人在某个范围里面”。在口语决定或活动语境里，这个范围可以是计划、团队或行动，所以说 I'm in 表示说话人把自己放进这件事里，也就是愿意加入。",
+      "start": 0,
+      "end": 6,
+      "index": 0,
+      "phrase": "I'm in",
+      "source": "I'm in",
+      "prototype": "be in",
+      "literal": "在里面",
+      "actual": "我加入；我同意参加。",
+      "grammar": "be + in 的空间画面是“人在某个范围里面”。在口语决定或活动语境里，这个范围可以是计划、团队或行动，所以说 I'm in 表示说话人把自己放进这件事里，也就是愿意加入。",
+      "generatedByAI": true
+    },
+    {
+      "id": "understanding-you-got-me",
+      "engineId": "comprehension-v26d-subtitle-2-you-got-me-9-0",
+      "subtitleId": "v26d-subtitle-2",
+      "type": "comprehension",
+      "kind": "understanding",
+      "label": "理解",
+      "surfaceText": "You got me",
+      "baseForm": "you got me",
+      "explanation": "get somebody\n字面意思：你抓住了我；你得到了我\n实际意思：你把我问住了；我不知道答案。也可表示“你说中了/抓到我了”。\n语法解释：get + somebody 原本有“抓住、弄明白某人”的动作感。对话里说 You got me 时，me 是被对方问题或判断“抓住”的人，所以可引申为被问倒、被说中或承认对方抓到了关键。",
+      "start": 9,
+      "end": 19,
+      "index": 9,
+      "phrase": "you got me",
+      "source": "You got me",
+      "prototype": "get somebody",
+      "literal": "你抓住了我；你得到了我",
+      "actual": "你把我问住了；我不知道答案。也可表示“你说中了/抓到我了”。",
+      "grammar": "get + somebody 原本有“抓住、弄明白某人”的动作感。对话里说 You got me 时，me 是被对方问题或判断“抓住”的人，所以可引申为被问倒、被说中或承认对方抓到了关键。",
+      "generatedByAI": true
+    },
+    {
+      "id": "understanding-that-figures",
+      "engineId": "comprehension-v26d-subtitle-3-that-figures-22-0",
+      "subtitleId": "v26d-subtitle-3",
+      "type": "comprehension",
+      "kind": "understanding",
+      "label": "理解",
+      "surfaceText": "That figures",
+      "baseForm": "that figures",
+      "explanation": "that figures\n字面意思：那件事算得通；那个数字成立\n实际意思：这就说得通了；果然如此。\n语法解释：figure 可表示“计算、推断”。That figures 的 that 指前面或当前情况，figures 表示它在逻辑上能被推出来、合乎预期，所以口语里用来表达“难怪/果然”。",
+      "start": 22,
+      "end": 34,
+      "index": 22,
+      "phrase": "that figures",
+      "source": "That figures",
+      "prototype": "that figures",
+      "literal": "那件事算得通；那个数字成立",
+      "actual": "这就说得通了；果然如此。",
+      "grammar": "figure 可表示“计算、推断”。That figures 的 that 指前面或当前情况，figures 表示它在逻辑上能被推出来、合乎预期，所以口语里用来表达“难怪/果然”。",
+      "generatedByAI": true
+    },
+    {
+      "id": "understanding-works-for-me",
+      "engineId": "comprehension-v26d-subtitle-4-works-for-me-37-0",
+      "subtitleId": "v26d-subtitle-4",
+      "type": "comprehension",
+      "kind": "understanding",
+      "label": "理解",
+      "surfaceText": "Works for me",
+      "baseForm": "work for somebody",
+      "explanation": "work for somebody\n字面意思：为某人工作；对某人运转\n实际意思：我可以；我没问题；这个安排适合我。\n语法解释：work 不只表示“工作”，也表示“有效、可行”。for somebody 表示对某人而言，所以 works for me 的组合意思是“这个方案对我可行”，在安排讨论中就是“我可以/我没问题”。",
+      "start": 37,
+      "end": 49,
+      "index": 37,
+      "phrase": "works for me",
+      "source": "Works for me",
+      "prototype": "work for somebody",
+      "literal": "为某人工作；对某人运转",
+      "actual": "我可以；我没问题；这个安排适合我。",
+      "grammar": "work 不只表示“工作”，也表示“有效、可行”。for somebody 表示对某人而言，所以 works for me 的组合意思是“这个方案对我可行”，在安排讨论中就是“我可以/我没问题”。",
+      "generatedByAI": true
+    },
+    {
+      "id": "word-contingency",
+      "engineId": "vocab-v26d-subtitle-5-contingency-62-0",
+      "subtitleId": "v26d-subtitle-5",
+      "type": "vocab",
+      "kind": "word",
+      "label": "生词",
+      "surfaceText": "contingency",
+      "baseForm": "contingency",
+      "explanation": "contingency /kənˈtɪndʒənsi/ n.\n句中含义：应急情况；意外情况",
+      "start": 62,
+      "end": 73,
+      "index": 62,
+      "word": "contingency",
+      "phonetic": "/kənˈtɪndʒənsi/",
+      "partOfSpeech": "n.",
+      "sentenceMeaning": "应急情况；意外情况",
+      "translation": "应急情况；意外情况",
+      "generatedByAI": true
+    }
+  ],
+  "verificationNotes": [
+    "The subtitle sample is not part of the V2.6A mock set.",
+    "Each obstacle in obstacles[] was generated by AI and then normalized by AnalyzeEngine.normalizeRealAIObstacles.",
+    "The V2.6D real AI path is AnalyzeEngine.analyzeSubtitleItemsWithAI; it requires an injected AI client and does not read vocabularyMockEntries, comprehensionMockEntries, or regex-only mock detection."
+  ]
+}
