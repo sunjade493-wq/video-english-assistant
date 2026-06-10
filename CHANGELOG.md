@@ -1,5 +1,14 @@
 # Changelog
 
+## V2.6E Quality Validation Round 3
+
+Human review validation dataset generated from the original V2.6E Round 1 obstacle set.
+
+- Added `V2.6E_Quality_Validation_Round_3.md`.
+- Preserved all 50 original expressions, numbering, obstacle order, and subtitle sentences.
+- Rewrote explanations only into compact obstacle-card fields: 字面意思、实际意思、固定用法、表示.
+- This is a validation round only; V2.6E is not declared frozen.
+
 ## V2.6E Quality Validation Round 1
 
 Human review dataset generated.
