@@ -1,0 +1,67 @@
+{
+  "version": "V2.7C",
+  "source": "V2.7B recall fixture reviewed for learner-value candidates",
+  "runtime": "Runtime reads this frozen JSON and never calls AI.",
+  "obstacles": [
+    {
+      "subtitleIndex": 1,
+      "expression": "saved me a seat",
+      "surfaceText": "saved me a seat",
+      "candidateType": "conversational chunk",
+      "literalMeaningZh": "字面意思：为我保留了一个座位。",
+      "actualMeaningZh": "实际意思：帮我占了一个座位，让我到场后可以坐下。",
+      "fixedUsageZh": "固定用法：save somebody a seat。",
+      "indicatesZh": "表示：提前替某人留座、占座。"
+    },
+    {
+      "subtitleIndex": 2,
+      "expression": "No worries",
+      "surfaceText": "No worries",
+      "candidateType": "fixed expression",
+      "literalMeaningZh": "字面意思：没有担心。",
+      "actualMeaningZh": "实际意思：没关系；不用担心。",
+      "fixedUsageZh": "固定用法：No worries. 用来安慰对方或表示事情没问题。",
+      "indicatesZh": "表示：让对方放心，语气轻松。"
+    },
+    {
+      "subtitleIndex": 2,
+      "expression": "grab coffee",
+      "surfaceText": "grab coffee",
+      "candidateType": "conversational chunk",
+      "literalMeaningZh": "字面意思：抓住咖啡。",
+      "actualMeaningZh": "实际意思：去买杯咖啡或顺便喝杯咖啡。",
+      "fixedUsageZh": "固定用法：grab + food/drink 表示快速买、拿或吃喝一点东西。",
+      "indicatesZh": "表示：时间不长、顺便完成的喝咖啡行为。"
+    },
+    {
+      "subtitleIndex": 3,
+      "expression": "clear my head",
+      "surfaceText": "clear my head",
+      "candidateType": "idiom",
+      "literalMeaningZh": "字面意思：清理我的头脑。",
+      "actualMeaningZh": "实际意思：让脑子清醒一下，理清思绪。",
+      "fixedUsageZh": "固定用法：clear somebody's head。",
+      "indicatesZh": "表示：短暂离开压力或混乱，让自己冷静下来。"
+    },
+    {
+      "subtitleIndex": 4,
+      "expression": "bottle it up",
+      "surfaceText": "bottle it up",
+      "candidateType": "phrasal verb",
+      "literalMeaningZh": "字面意思：把它装进瓶子里。",
+      "actualMeaningZh": "实际意思：把情绪或烦恼憋在心里不说。",
+      "fixedUsageZh": "固定用法：bottle something up。",
+      "indicatesZh": "表示：压抑情绪、不表达困扰。"
+    },
+    {
+      "subtitleIndex": 5,
+      "expression": "threw me off",
+      "surfaceText": "threw me off",
+      "candidateType": "phrasal verb",
+      "literalMeaningZh": "字面意思：把我扔开。",
+      "actualMeaningZh": "实际意思：让我分心、困惑或状态被打乱。",
+      "fixedUsageZh": "固定用法：throw somebody off。",
+      "indicatesZh": "表示：某事打乱了人的情绪、判断或节奏。"
+    }
+  ]
+}
