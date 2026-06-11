@@ -1,0 +1,19 @@
+1
+00:00:01,000 --> 00:00:04,000
+I almost missed the train this morning, but Maya saved me a seat.
+
+2
+00:00:04,500 --> 00:00:07,400
+No worries, we still have time to grab coffee before the meeting.
+
+3
+00:00:08,000 --> 00:00:11,000
+Actually, can we skip it? I need to clear my head for a minute.
+
+4
+00:00:11,600 --> 00:00:14,800
+Sure, but don't bottle it up if something is bothering you.
+
+5
+00:00:15,300 --> 00:00:18,900
+Thanks. I just got a weird message from the landlord, and it threw me off.

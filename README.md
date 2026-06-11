@@ -20,6 +20,38 @@ Current Subtitle Learning Tips
 Hide this one card only; playback state is unchanged
 ```
 
+## V2.7B Actual OpenAI-Compatible Episode Pipeline — Human Review Required
+
+V2.7B adds the first real AI episode production pipeline while keeping runtime playback AI-free. The generation path reads a real `.srt` file, calls the provider-neutral OpenAI-compatible client, validates AI JSON, normalizes vocabulary and V2.6E comprehension obstacles, and writes `sample-obstacles.json`.
+
+```text
+sample-subtitle.srt
+↓
+ai-provider.js
+↓
+generate-obstacles.js
+↓
+sample-obstacles.json
+↓
+runtime reads generated JSON during playback
+```
+
+Required generation secrets / environment variables:
+
+```bash
+export AI_BASE_URL="https://dashscope.aliyuncs.com/compatible-mode/v1"
+export AI_API_KEY="<provider-api-key>"
+export AI_MODEL="qwen-plus"
+```
+
+Run the pipeline:
+
+```bash
+node generate-obstacles.js --input sample-subtitle.srt --output sample-obstacles.json
+```
+
+Runtime rule: `script.js` reads `sample-obstacles.json`; it does not read AI secrets and does not call `/chat/completions` during playback. V2.7B is implemented for human review only and is not declared frozen. See `V2.7B_Actual_Qwen_AI_Episode_Pipeline.md` for details.
+
 ## 项目结构
 
 ```text
@@ -27,8 +59,13 @@ video-english-assistant/
 ├── index.html
 ├── styles.css
 ├── analyze-engine.js
+├── ai-provider.js
+├── generate-obstacles.js
+├── sample-subtitle.srt
+├── sample-obstacles.json
 ├── script.js
 ├── test-current-subtitle-sync.js
+├── test-v2.7b-ai-pipeline.js
 ├── CHANGELOG.md
 ├── preview-v1.5.svg
 ├── preview-v1.7.svg

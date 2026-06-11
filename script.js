@@ -1206,6 +1206,100 @@ function replaceObstacleStream(nextObstacles, text = subtitleTextInput.value) {
   syncPlaybackClock();
 }
 
+
+function getSubtitlePlainTextFromRecords(records) {
+  return (records || []).map((record) => String(record.text || '').trim()).filter(Boolean).join('\n\n');
+}
+
+function createRuntimeEpisodeFromFrozenData(data) {
+  const records = Array.isArray(data?.subtitleRecords) ? data.subtitleRecords : [];
+  const episodeText = getSubtitlePlainTextFromRecords(records);
+  let cursor = 0;
+  const runtimeSegments = records.map((record, index) => {
+    const text = String(record.text || '').trim();
+    const start = cursor;
+    const end = start + text.length;
+    cursor = end + 2;
+
+    return {
+      id: record.id || `subtitle-${index + 1}`,
+      text,
+      start,
+      end,
+      startMs: Number.isFinite(record.startMs) ? record.startMs : 0,
+      endMs: Number.isFinite(record.endMs) ? record.endMs : 0,
+    };
+  });
+  const runtimeSegmentsById = new Map(runtimeSegments.map((segment) => [segment.id, segment]));
+  const runtimeObstacles = (data?.normalizedObstacles || []).map((obstacle) => {
+    const segment = runtimeSegmentsById.get(obstacle.subtitleId) || runtimeSegments[0];
+    const surfaceText = obstacle.surfaceText || obstacle.source || obstacle.word || obstacle.phrase || '';
+    const localOffset = segment ? Math.max(0, segment.text.toLowerCase().indexOf(String(surfaceText).toLowerCase())) : 0;
+    const index = segment ? segment.start + localOffset : 0;
+
+    return {
+      ...obstacle,
+      index,
+      start: index,
+      end: index + String(surfaceText).length,
+      generatedByAI: true,
+    };
+  });
+
+  return {
+    episodeText,
+    subtitleSegments: runtimeSegments,
+    obstacles: runtimeObstacles,
+  };
+}
+
+function applyFrozenEpisodeData(data) {
+  if (!data?.generatedByAI || !Array.isArray(data.normalizedObstacles)) {
+    return false;
+  }
+
+  const runtimeEpisode = createRuntimeEpisodeFromFrozenData(data);
+
+  if (runtimeEpisode.subtitleSegments.length === 0) {
+    return false;
+  }
+
+  runtimeEpisode.subtitleSegments.forEach((segment) => {
+    if (segment.text && data.subtitleTranslations?.[segment.id]) {
+      subtitleTranslations.set(segment.text, data.subtitleTranslations[segment.id]);
+    }
+  });
+
+  if (subtitleTextInput) {
+    subtitleTextInput.value = runtimeEpisode.episodeText;
+  }
+
+  subtitleSegments = runtimeEpisode.subtitleSegments;
+  obstacles = runtimeEpisode.obstacles;
+  currentEpisodeProgressKey = getEpisodeProgressKey(runtimeEpisode.episodeText);
+  applyStoredEpisodeProgress(currentEpisodeProgressKey);
+  streamMode = 'dynamic';
+  selectedObstacleId = null;
+  currentSegmentIndex = 0;
+  currentTimeMs = 0;
+  saveEpisodeProgress();
+  renderVideoState();
+  renderCards();
+  syncPlaybackClock();
+  return true;
+}
+
+function loadFrozenEpisodeObstacles() {
+  if (typeof window.fetch !== 'function') {
+    return Promise.resolve(false);
+  }
+
+  return window.fetch('sample-obstacles.json', { cache: 'no-store' })
+    .then((response) => (response.ok ? response.json() : null))
+    .then((data) => (data ? applyFrozenEpisodeData(data) : false))
+    .catch(() => false);
+}
+
 function hideCurrentObstacle(obstacleId) {
   if (!hiddenObstacleIds.has(obstacleId)) {
     hiddenObstacleIds.add(obstacleId);
@@ -1291,11 +1385,24 @@ function createCard(obstacle) {
   }
 
   if (obstacle.kind === 'understanding') {
+    const detailBlocks = [
+      createDetailBlock('字面意思', obstacle.literal || obstacle['字面意思']),
+      createDetailBlock('实际意思', obstacle.actual || obstacle['实际意思']),
+    ];
+
+    if (obstacle.fixedUsage || obstacle['固定用法']) {
+      detailBlocks.push(createDetailBlock('固定用法', obstacle.fixedUsage || obstacle['固定用法']));
+    }
+
+    if (obstacle.means || obstacle['表示']) {
+      detailBlocks.push(createDetailBlock('表示', obstacle.means || obstacle['表示']));
+    } else if (obstacle.grammar) {
+      detailBlocks.push(createDetailBlock('语法解释', obstacle.grammar));
+    }
+
     content.append(
       createUnderstandingSummary(obstacle),
-      createDetailBlock('字面意思', obstacle.literal),
-      createDetailBlock('实际意思', obstacle.actual),
-      createDetailBlock('语法解释', obstacle.grammar),
+      ...detailBlocks,
     );
   }
 
@@ -1410,6 +1517,7 @@ saveEpisodeProgress();
 renderVideoState();
 renderCards();
 syncPlaybackClock();
+loadFrozenEpisodeObstacles();
 
 window.ObstacleDetectionEngine = {
   Analyze: analyzeAndRender,

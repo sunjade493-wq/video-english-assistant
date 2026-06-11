@@ -1,0 +1,231 @@
+{
+  "schema": "v2.7b-episode-obstacles",
+  "schemaVersion": "1.0.0",
+  "generatedByAI": true,
+  "metadata": {
+    "pipeline": "V2.7B Actual OpenAI-Compatible Episode Pipeline",
+    "inputSubtitlePath": "sample-subtitle.srt",
+    "outputObstaclePath": "sample-obstacles.json",
+    "aiProvider": "openai-compatible",
+    "model": "qwen-plus",
+    "generatedAt": "2026-06-10T00:00:00.000Z",
+    "status": "human-review-required",
+    "frozen": false
+  },
+  "subtitleRecords": [
+    {
+      "id": "subtitle-1",
+      "sequence": 1,
+      "startTime": "00:00:01,000",
+      "endTime": "00:00:04,000",
+      "startMs": 1000,
+      "endMs": 4000,
+      "text": "I almost missed the train this morning, but Maya saved me a seat."
+    },
+    {
+      "id": "subtitle-2",
+      "sequence": 2,
+      "startTime": "00:00:04,500",
+      "endTime": "00:00:07,400",
+      "startMs": 4500,
+      "endMs": 7400,
+      "text": "No worries, we still have time to grab coffee before the meeting."
+    },
+    {
+      "id": "subtitle-3",
+      "sequence": 3,
+      "startTime": "00:00:08,000",
+      "endTime": "00:00:11,000",
+      "startMs": 8000,
+      "endMs": 11000,
+      "text": "Actually, can we skip it? I need to clear my head for a minute."
+    },
+    {
+      "id": "subtitle-4",
+      "sequence": 4,
+      "startTime": "00:00:11,600",
+      "endTime": "00:00:14,800",
+      "startMs": 11600,
+      "endMs": 14800,
+      "text": "Sure, but don't bottle it up if something is bothering you."
+    },
+    {
+      "id": "subtitle-5",
+      "sequence": 5,
+      "startTime": "00:00:15,300",
+      "endTime": "00:00:18,900",
+      "startMs": 15300,
+      "endMs": 18900,
+      "text": "Thanks. I just got a weird message from the landlord, and it threw me off."
+    }
+  ],
+  "rawAIObstaclePayload": {
+    "vocabularyObstacles": [
+      {
+        "subtitleId": "subtitle-1",
+        "surfaceText": "missed",
+        "word": "miss",
+        "phonetic": "/mɪs/",
+        "partOfSpeech": "v.",
+        "sentenceMeaning": "错过"
+      },
+      {
+        "subtitleId": "subtitle-5",
+        "surfaceText": "landlord",
+        "word": "landlord",
+        "phonetic": "/ˈlændlɔːrd/",
+        "partOfSpeech": "n.",
+        "sentenceMeaning": "房东"
+      }
+    ],
+    "comprehensionObstacles": [
+      {
+        "subtitleId": "subtitle-2",
+        "surfaceText": "No worries",
+        "Expression": "No worries",
+        "字面意思": "没有担心",
+        "实际意思": "没关系；不用担心。",
+        "固定用法": "No worries",
+        "表示": "告诉对方不用道歉或不用紧张。"
+      },
+      {
+        "subtitleId": "subtitle-3",
+        "surfaceText": "clear my head",
+        "Expression": "clear my head",
+        "字面意思": "清理我的头脑",
+        "实际意思": "让自己冷静一下；理清思路。",
+        "固定用法": "clear somebody's head",
+        "表示": "让某人头脑清醒、重新集中。"
+      },
+      {
+        "subtitleId": "subtitle-4",
+        "surfaceText": "bottle it up",
+        "Expression": "bottle it up",
+        "字面意思": "把它装进瓶子里",
+        "实际意思": "把情绪憋在心里不说。",
+        "固定用法": "bottle something up",
+        "表示": "压住情绪或问题，不表达出来。"
+      }
+    ]
+  },
+  "normalizedObstacles": [
+    {
+      "id": "ai-vocab-subtitle-1-miss-1",
+      "subtitleId": "subtitle-1",
+      "type": "vocab",
+      "kind": "word",
+      "label": "生词",
+      "surfaceText": "missed",
+      "baseForm": "miss",
+      "word": "miss",
+      "phonetic": "/mɪs/",
+      "partOfSpeech": "v.",
+      "sentenceMeaning": "错过",
+      "explanation": "miss /mɪs/ v.\n句中含义：错过",
+      "start": 1009,
+      "end": 1015,
+      "index": 1009,
+      "generatedByAI": true
+    },
+    {
+      "id": "ai-comprehension-subtitle-2-no-worries-1",
+      "subtitleId": "subtitle-2",
+      "type": "comprehension",
+      "kind": "understanding",
+      "label": "理解",
+      "surfaceText": "No worries",
+      "baseForm": "No worries",
+      "phrase": "No worries",
+      "source": "No worries",
+      "Expression": "No worries",
+      "literal": "没有担心",
+      "actual": "没关系；不用担心。",
+      "fixedUsage": "No worries",
+      "means": "告诉对方不用道歉或不用紧张。",
+      "字面意思": "没有担心",
+      "实际意思": "没关系；不用担心。",
+      "固定用法": "No worries",
+      "表示": "告诉对方不用道歉或不用紧张。",
+      "explanation": "No worries\n字面意思：没有担心\n实际意思：没关系；不用担心。\n固定用法：No worries\n表示：告诉对方不用道歉或不用紧张。",
+      "start": 4500,
+      "end": 4510,
+      "index": 4500,
+      "generatedByAI": true
+    },
+    {
+      "id": "ai-comprehension-subtitle-3-clear-my-head-2",
+      "subtitleId": "subtitle-3",
+      "type": "comprehension",
+      "kind": "understanding",
+      "label": "理解",
+      "surfaceText": "clear my head",
+      "baseForm": "clear my head",
+      "phrase": "clear my head",
+      "source": "clear my head",
+      "Expression": "clear my head",
+      "literal": "清理我的头脑",
+      "actual": "让自己冷静一下；理清思路。",
+      "fixedUsage": "clear somebody's head",
+      "means": "让某人头脑清醒、重新集中。",
+      "字面意思": "清理我的头脑",
+      "实际意思": "让自己冷静一下；理清思路。",
+      "固定用法": "clear somebody's head",
+      "表示": "让某人头脑清醒、重新集中。",
+      "explanation": "clear my head\n字面意思：清理我的头脑\n实际意思：让自己冷静一下；理清思路。\n固定用法：clear somebody's head\n表示：让某人头脑清醒、重新集中。",
+      "start": 8036,
+      "end": 8049,
+      "index": 8036,
+      "generatedByAI": true
+    },
+    {
+      "id": "ai-comprehension-subtitle-4-bottle-it-up-3",
+      "subtitleId": "subtitle-4",
+      "type": "comprehension",
+      "kind": "understanding",
+      "label": "理解",
+      "surfaceText": "bottle it up",
+      "baseForm": "bottle it up",
+      "phrase": "bottle it up",
+      "source": "bottle it up",
+      "Expression": "bottle it up",
+      "literal": "把它装进瓶子里",
+      "actual": "把情绪憋在心里不说。",
+      "fixedUsage": "bottle something up",
+      "means": "压住情绪或问题，不表达出来。",
+      "字面意思": "把它装进瓶子里",
+      "实际意思": "把情绪憋在心里不说。",
+      "固定用法": "bottle something up",
+      "表示": "压住情绪或问题，不表达出来。",
+      "explanation": "bottle it up\n字面意思：把它装进瓶子里\n实际意思：把情绪憋在心里不说。\n固定用法：bottle something up\n表示：压住情绪或问题，不表达出来。",
+      "start": 11616,
+      "end": 11628,
+      "index": 11616,
+      "generatedByAI": true
+    },
+    {
+      "id": "ai-vocab-subtitle-5-landlord-2",
+      "subtitleId": "subtitle-5",
+      "type": "vocab",
+      "kind": "word",
+      "label": "生词",
+      "surfaceText": "landlord",
+      "baseForm": "landlord",
+      "word": "landlord",
+      "phonetic": "/ˈlændlɔːrd/",
+      "partOfSpeech": "n.",
+      "sentenceMeaning": "房东",
+      "explanation": "landlord /ˈlændlɔːrd/ n.\n句中含义：房东",
+      "start": 15344,
+      "end": 15352,
+      "index": 15344,
+      "generatedByAI": true
+    }
+  ],
+  "verificationNotes": [
+    "Provider is configured only through AI_BASE_URL, AI_API_KEY, and AI_MODEL.",
+    "AI call is made during generation only; runtime reads this frozen JSON file and does not call AI.",
+    "Vocabulary obstacles contain word, phonetic, partOfSpeech, and sentenceMeaning.",
+    "Comprehension obstacles follow V2.6E fields: Expression, 字面意思, 实际意思, 固定用法, 表示.",
+    "Human review is required before declaring any V2.7B freeze."
+  ]
+}
