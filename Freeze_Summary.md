@@ -1,5 +1,12 @@
 # Freeze Summary
 
+## V2.7B Actual OpenAI-Compatible Episode Pipeline
+
+Status: Implemented for human review. Not frozen.
+
+V2.7B introduces a real episode obstacle generation path from `.srt` subtitles through an OpenAI-compatible provider and into generated frozen JSON. Runtime playback reads `sample-obstacles.json` only and must not call AI. Human review is still required before any V2.7B freeze declaration.
+
+
 ## V2.6B Analyze Engine Detection Pipeline
 
 Status: Frozen ✅

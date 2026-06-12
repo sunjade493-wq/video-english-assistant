@@ -1,5 +1,16 @@
 # Changelog
 
+## V2.7B Actual OpenAI-Compatible Episode Pipeline
+
+Implemented the first real AI episode production pipeline for human review. V2.7B is not frozen.
+
+- Added provider-neutral `ai-provider.js` using `AI_BASE_URL`, `AI_API_KEY`, and `AI_MODEL`.
+- Added `generate-obstacles.js` to parse `.srt`, call `/chat/completions`, validate JSON, normalize obstacles, and write `sample-obstacles.json`.
+- Added `sample-subtitle.srt` and generated `sample-obstacles.json`.
+- Runtime now reads generated frozen obstacle JSON and does not call AI during playback.
+- Added V2.7B documentation and regression checks for provider config, generated output, V2.6E comprehension fields, secret protection, and runtime AI isolation.
+
+
 ## V2.6E Quality Validation Round 3
 
 Human review validation dataset generated from the original V2.6E Round 1 obstacle set.
