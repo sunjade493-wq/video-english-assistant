@@ -1,3 +1,6 @@
+const OBSTACLE_DATA_URL = 'output_text/v29a_obstacles.json';
+const LOCAL_SERVER_HINT = 'py -3.11 -m http.server 8000';
+const LOCAL_SERVER_URL = 'http://localhost:8000';
 const DEFAULT_SUBTITLE_TEXT = `If you enjoyed this lecture,
 I'm sure you're too busy to lay it on us.
 
@@ -7,7 +10,11 @@ I was pulled off the project.
 
 Let's call it a day.`;
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
-const EPISODE_PROGRESS_STORAGE_PREFIX = 'videoEnglishAssistant.episodeProgress.';
+const EPISODE_PROGRESS_STORAGE_PREFIX = 'videoEnglishAssistant.episodeProgress.v29b.';
+const SEGMENT_DURATION_MS = 3600;
+const LEARNING_PAUSE_HINT_STORAGE_KEY = 'videoEnglishAssistant.learningPauseHintDismissed';
+const HEAT_AXIS_CLUSTER_THRESHOLD_PX = 56;
+const REAL_DATA_FAILURE_MESSAGE = `真实障碍数据加载失败，当前显示 Demo 数据。请使用本地服务器运行：${LOCAL_SERVER_HINT}`;
 
 const subtitleTranslations = new Map([
   [
@@ -19,302 +26,30 @@ const subtitleTranslations = new Map([
   ["Let's call it a day.", '今天就到这里吧。'],
 ]);
 
-const vocabularyLevels = {
-  junior: {
-    label: '初中',
-    words: [
-      'a', 'about', 'after', 'all', 'an', 'and', 'are', 'be', 'busy', 'but', 'can', 'do', 'enjoy',
-      'enjoyed', 'for', 'from', 'have', 'he', 'her', 'him', 'i', "i'm", 'if', 'in', 'is', 'it', 'lay',
-      'me', 'my', 'not', 'let\'s', 'of', 'on', 'or', 'our', 'she', 'sure', 'that', 'the', 'this', 'to',
-      'too', 'us', 'was', 'we', 'you', "you're", 'your',
-    ],
-  },
-  senior: {
-    label: '高中',
-    extends: 'junior',
-    words: ['academic', 'lecture', 'project', 'straight'],
-  },
-  cet4: {
-    label: 'CET4',
-    extends: 'senior',
-    words: ['context', 'literal', 'phrase', 'subtitle'],
-  },
-  cet6: {
-    label: 'CET6',
-    extends: 'cet4',
-    words: ['idiom', 'metaphor', 'nonliteral'],
-  },
-  custom: {
-    label: '自定义词汇量',
-    extends: 'cet4',
-    words: [],
-  },
-};
-
-const wordDictionary = {
-  lecture: {
-    id: 'word-lecture',
-    phonetic: '/ˈlektʃər/',
-    translation: '讲座；授课',
-  },
-  academic: {
-    id: 'word-academic',
-    phonetic: '/ˌækəˈdemɪk/',
-    translation: '学术的；学院的',
-  },
-  project: {
-    id: 'word-project',
-    phonetic: '/ˈprɑːdʒekt/',
-    translation: '项目；工程',
-  },
-};
-
-const understandingPatterns = [
-  {
-    id: 'understanding-lay-it-on-us',
-    phrase: 'lay it on us',
-    prototype: 'lay something on somebody',
-    literal: '把某件事放到某人身上',
-    actual: '把想说的话直接告诉对方；别拐弯抹角。',
-    grammar: 'lay + something + on + somebody 的核心动作是“把某物放到某人身上”。当 something 是信息、要求或想法时，on somebody 表示把这些内容直接交给对方承接，所以口语里可以引申为“直接说给某人听”。字幕里的 it 指代要说的内容，us 是接收信息的人。',
-  },
-  {
-    id: 'understanding-give-me-a-hand',
-    phrase: 'give me a hand',
-    prototype: 'give somebody a hand',
-    literal: '给某人一只手',
-    actual: '帮某人一下；搭把手。',
-    grammar: 'give + somebody + a hand 的字面画面是“把一只手给某人”。hand 在动作场景里代表可用的劳力或协助，因此给某人一只手就自然引申为“提供帮助”。字幕里的 me 只是具体对象，结构可以替换成其他人。',
-  },
-  {
-    id: 'understanding-pull-off-the-project',
-    phrase: 'pull off the project',
-    prototype: 'pull somebody off something',
-    literal: '把某人从某事物上拉开',
-    actual: '让某人退出某项任务；把某人从某事中撤下。',
-    grammar: 'pull + somebody + off + something 的核心动作是“把某人拉离某个位置”。off 表示离开原来的接触点或参与位置，所以放到 project、task、case 等工作语境中，就表示把某人从该任务中调离或撤下。',
-    patterns: [
-      /\bpull(?:ed)?\s+(?:[a-z]+\s+)?off\s+the\s+project\b/,
-    ],
-  },
-  {
-    id: 'understanding-call-it-a-day',
-    phrase: 'call it a day',
-    prototype: 'call it a day',
-    literal: '把某事称为一天的结束',
-    actual: '今天到此为止；收工。',
-    grammar: 'call + it + a day 的结构里，call 表示“把某事认定为……”，it 指当前正在做的工作或活动，a day 指“一天的工作量/一天的阶段”。把当前活动认定为 a day，就表示这个阶段已经够了，可以停止并结束今天的工作。',
-  },
-  {
-    id: 'understanding-straight-up',
-    phrase: 'straight up',
-    prototype: 'straight up',
-    literal: '笔直向上',
-    actual: '坦率地说；真的；不夸张地。',
-    grammar: 'straight + up 的空间画面是“笔直向上、没有偏斜”。这种“不歪、不绕”的方向感转到说话方式上，就表示内容直接、坦率、不加掩饰，也可用来强调“真的”。',
-  },
-  {
-    id: 'understanding-come-on',
-    phrase: 'come on',
-    prototype: 'come on',
-    literal: '过来；继续向前',
-    actual: '得了吧；拜托；加油；快点。',
-    grammar: 'come + on 原本表示“继续往前/靠近”。说话人用它推动对方进入下一步动作或状态，所以会根据语气引申为催促“快点”、鼓励“加油”、请求“拜托”，或反驳对方继续相信不合理内容的“得了吧”。',
-  },
-];
-
-function normalizeWord(word) {
-  return word.toLowerCase().replace(/^'+|'+$/g, '');
-}
-
-function tokenize(text) {
-  return text.match(/[A-Za-z]+(?:'[A-Za-z]+)?/g) || [];
-}
-
-function normalizeText(text) {
-  return text.toLowerCase().replace(/[^a-z0-9']+/g, ' ').replace(/\s+/g, ' ').trim();
-}
-
-function resolveVocabularyWords(levelName, customWords = []) {
-  const level = vocabularyLevels[levelName] ? levelName : DEFAULT_VOCABULARY_LEVEL;
-  const words = new Set(customWords.map(normalizeWord));
-  const visitedLevels = new Set();
-
-  function collect(currentLevelName) {
-    if (visitedLevels.has(currentLevelName)) {
-      return;
-    }
-
-    const currentLevel = vocabularyLevels[currentLevelName];
-    if (!currentLevel) {
-      return;
-    }
-
-    visitedLevels.add(currentLevelName);
-
-    if (currentLevel.extends) {
-      collect(currentLevel.extends);
-    }
-
-    currentLevel.words.forEach((word) => words.add(normalizeWord(word)));
-  }
-
-  collect(level);
-  return words;
-}
-
-function createFallbackWordEntry(word) {
-  return {
-    id: `word-${word}`,
-    phonetic: '待补充',
-    translation: '待补充',
-  };
-}
-
-function findNormalizedPhraseIndex(text, phrase) {
-  const phraseWords = tokenize(phrase).map(normalizeWord);
-
-  if (phraseWords.length === 0) {
-    return -1;
-  }
-
-  const textWords = [...text.matchAll(/[A-Za-z]+(?:'[A-Za-z]+)?/g)].map((match) => ({
-    word: normalizeWord(match[0]),
-    index: match.index,
-  }));
-
-  for (let index = 0; index <= textWords.length - phraseWords.length; index += 1) {
-    const isMatch = phraseWords.every((word, offset) => textWords[index + offset].word === word);
-
-    if (isMatch) {
-      return textWords[index].index;
-    }
-  }
-
-  return -1;
-}
-
-function findUnderstandingMatch(text, pattern) {
-  const matchers = pattern.patterns || [pattern.phrase];
-
-  return matchers.reduce((earliestMatch, matcher) => {
-    let match = null;
-
-    if (Object.prototype.toString.call(matcher) === '[object RegExp]') {
-      const flags = matcher.flags.includes('i') ? matcher.flags : `${matcher.flags}i`;
-      const regex = new RegExp(matcher.source, flags);
-      const regexMatch = regex.exec(text);
-
-      if (regexMatch) {
-        match = {
-          index: regexMatch.index,
-          source: regexMatch[0],
-          end: regexMatch.index + regexMatch[0].length,
-        };
-      }
-    } else {
-      const index = findNormalizedPhraseIndex(text, matcher);
-
-      if (index >= 0) {
-        match = {
-          index,
-          source: text.slice(index, index + matcher.length),
-          end: index + matcher.length,
-        };
-      }
-    }
-
-    if (!match || (earliestMatch && earliestMatch.index <= match.index)) {
-      return earliestMatch;
-    }
-
-    return match;
-  }, null);
-}
-
-function getAnalyzeEngine() {
-  return window.AnalyzeEngine || globalThis.AnalyzeEngine;
-}
-
-function createSubtitleItemsFromText(text) {
-  return parseSubtitleSegments(text).map((segment, index) => ({
-    id: `subtitle-${index + 1}`,
-    text: segment.text,
-    start: segment.start,
-    end: segment.end,
-  }));
-}
-
-function detectVocabularyObstacles(text, levelName = DEFAULT_VOCABULARY_LEVEL, customWords = []) {
-  const engine = getAnalyzeEngine();
-
-  if (engine) {
-    return engine.analyzeSubtitleItems(
-      [{ id: 'subtitle-1', text: String(text || ''), start: 0, end: String(text || '').length }],
-      { level: levelName, customWords },
-    ).filter((obstacle) => obstacle.type === 'vocab');
-  }
-
-  return [];
-}
-
-function detectUnderstandingObstacles(text) {
-  const engine = getAnalyzeEngine();
-
-  if (engine) {
-    return engine.analyzeSubtitleItems(
-      [{ id: 'subtitle-1', text: String(text || ''), start: 0, end: String(text || '').length }],
-      { level: 'custom', customWords: tokenize(text) },
-    ).filter((obstacle) => obstacle.type === 'comprehension');
-  }
-
-  return [];
-}
-
-function isIndexWithinRanges(index, ranges) {
-  return ranges.some((range) => index >= range.start && index < range.end);
-}
-
-function dedupeObstaclesById(obstaclesToDedupe) {
-  return obstaclesToDedupe;
-}
-
-function analyzeSubtitleText(text, options = {}) {
-  const subtitleText = String(text || '').trim();
-  const engine = getAnalyzeEngine();
-
-  if (!subtitleText || !engine) {
-    return [];
-  }
-
-  return engine.analyzeSubtitleItems(createSubtitleItemsFromText(subtitleText), options);
-}
-
 let subtitleSegments = parseSubtitleSegments(DEFAULT_SUBTITLE_TEXT);
 let currentSegmentIndex = 0;
 let isVideoPlaying = true;
 let playbackTimer = null;
-let obstacles = analyzeSubtitleText(DEFAULT_SUBTITLE_TEXT, { level: DEFAULT_VOCABULARY_LEVEL });
+let timelineRenderTimer = null;
+let obstacles = [];
 let hiddenObstacleIds = new Set();
 let dismissedObstacleHistory = [];
 let currentEpisodeProgressKey = '';
-let streamMode = 'dynamic';
-const LEARNING_TIPS_MODE = 'auto';
 let selectedObstacleId = null;
-let learningPauseHintTimer = null;
 let currentTimeMs = 0;
 let playbackStartedAt = 0;
 let playbackStartedTimeMs = 0;
-let timelineRenderTimer = null;
 let activeHeatClusterKey = null;
+let learningPauseHintTimer = null;
+let obstacleDataSource = 'demo';
+let obstacleDataVersion = 'demo';
+let latestObstacleSourceText = DEFAULT_SUBTITLE_TEXT;
 
-const SEGMENT_DURATION_MS = 3600;
-const LEARNING_PAUSE_HINT_STORAGE_KEY = 'videoEnglishAssistant.learningPauseHintDismissed';
-const HEAT_AXIS_CLUSTER_THRESHOLD_PX = 56;
 const cardStream = document.querySelector('#cardStream');
 const conqueredObstacleCount = document.querySelector('#conqueredObstacleCount');
 const remainingObstacleCount = document.querySelector('#remainingObstacleCount');
 const episodeUndoButton = document.querySelector('#episodeUndoButton');
+const restoreAllButton = document.querySelector('#restoreAllButton');
 const subtitleTextInput = document.querySelector('#subtitleTextInput');
 const analyzeButton = document.querySelector('#analyzeButton');
 const currentSubtitleLine = document.querySelector('#currentSubtitleLine');
@@ -332,6 +67,15 @@ const obstacleBottomSheet = document.querySelector('#obstacleBottomSheet');
 const bottomSheetTitle = document.querySelector('#bottomSheetTitle');
 const bottomSheetContent = document.querySelector('#bottomSheetContent');
 const bottomSheetClose = document.querySelector('#bottomSheetClose');
+const dataLoadWarning = document.querySelector('#dataLoadWarning');
+
+function getAnalyzeEngine() {
+  return window.AnalyzeEngine || globalThis.AnalyzeEngine;
+}
+
+function normalizeText(text) {
+  return String(text || '').toLowerCase().replace(/[^a-z0-9']+/g, ' ').replace(/\s+/g, ' ').trim();
+}
 
 function parseSubtitleSegments(text) {
   const sourceText = String(text || '').trim();
@@ -349,11 +93,183 @@ function parseSubtitleSegments(text) {
     const textContent = rawText.trim();
 
     return {
+      id: `subtitle-${textStart}`,
       text: textContent.replace(/\s*\n\s*/g, ' '),
+      translation: subtitleTranslations.get(textContent.replace(/\s*\n\s*/g, ' ')) || '（中文字幕待补充）',
       start: textStart,
       end: textStart + textContent.length,
+      startTime: (matches.indexOf(match) * SEGMENT_DURATION_MS) / 1000,
+      endTime: ((matches.indexOf(match) + 1) * SEGMENT_DURATION_MS) / 1000,
     };
   });
+}
+
+function getObstacleText(obstacle) {
+  if (obstacle.type === 'vocabulary') {
+    return obstacle.word || obstacle.surfaceText || obstacle.baseForm || '';
+  }
+
+  return obstacle.text || obstacle.surfaceText || obstacle.source || obstacle.phrase || '';
+}
+
+function findMarkerOffset(sourceText, needle) {
+  const text = String(sourceText || '');
+  const target = String(needle || '').trim();
+
+  if (!text || !target) {
+    return -1;
+  }
+
+  const directIndex = text.toLowerCase().indexOf(target.toLowerCase());
+
+  if (directIndex >= 0) {
+    return directIndex;
+  }
+
+  const normalizedNeedle = normalizeText(target);
+  const words = [...text.matchAll(/[A-Za-z]+(?:'[A-Za-z]+)?/g)];
+
+  for (let index = 0; index < words.length; index += 1) {
+    const phrase = words.slice(index, index + normalizedNeedle.split(' ').length).map((match) => match[0]).join(' ');
+
+    if (normalizeText(phrase) === normalizedNeedle) {
+      return words[index].index;
+    }
+  }
+
+  return -1;
+}
+
+function buildSubtitleSegmentsFromObstacles(sourceObstacles) {
+  const segments = [];
+  const segmentByKey = new Map();
+  let cursor = 0;
+
+  sourceObstacles
+    .filter((obstacle) => obstacle.source_en)
+    .sort((first, second) => (first.start ?? 0) - (second.start ?? 0))
+    .forEach((obstacle) => {
+      const text = String(obstacle.source_en || '').trim();
+      const translation = String(obstacle.source_zh || '').trim() || '（中文字幕待补充）';
+      const key = `${text}\n${translation}`;
+
+      if (segmentByKey.has(key)) {
+        return;
+      }
+
+      const segment = {
+        id: `real-subtitle-${segments.length + 1}`,
+        text,
+        translation,
+        start: cursor,
+        end: cursor + text.length,
+        startTime: Number.isFinite(Number(obstacle.start)) ? Number(obstacle.start) : segments.length * (SEGMENT_DURATION_MS / 1000),
+        endTime: Number.isFinite(Number(obstacle.end)) ? Number(obstacle.end) : (segments.length + 1) * (SEGMENT_DURATION_MS / 1000),
+      };
+
+      segments.push(segment);
+      segmentByKey.set(key, segment);
+      cursor += text.length + 2;
+    });
+
+  return segments.length > 0 ? segments : parseSubtitleSegments(DEFAULT_SUBTITLE_TEXT);
+}
+
+function normalizeObstacle(rawObstacle, index, segments) {
+  const type = rawObstacle.type === 'vocabulary' || rawObstacle.type === 'vocab' ? 'vocabulary' : 'comprehension';
+  const priority = type === 'vocabulary' ? 1 : 2;
+  const start = Number.isFinite(Number(rawObstacle.start)) ? Number(rawObstacle.start) : index;
+  const end = Number.isFinite(Number(rawObstacle.end)) ? Number(rawObstacle.end) : start;
+  const sourceEn = String(rawObstacle.source_en || rawObstacle.source || rawObstacle.subtitleText || '').trim();
+  const sourceZh = String(rawObstacle.source_zh || '').trim();
+  const markerText = type === 'vocabulary'
+    ? String(rawObstacle.word || rawObstacle.surfaceText || rawObstacle.baseForm || '').trim()
+    : String(rawObstacle.text || rawObstacle.surfaceText || rawObstacle.source || rawObstacle.phrase || rawObstacle.baseForm || '').trim();
+  const rawSubtitleIndex = Number(String(rawObstacle.subtitleId || '').replace(/[^0-9]/g, '')) - 1;
+  const matchingSegment = (Number.isInteger(rawSubtitleIndex) && rawSubtitleIndex >= 0 ? segments[rawSubtitleIndex] : null)
+    || segments.find((segment) => segment.text === sourceEn)
+    || segments.find((segment) => start >= segment.startTime && start <= segment.endTime)
+    || segments[index % Math.max(segments.length, 1)];
+  const markerOffset = matchingSegment ? findMarkerOffset(matchingSegment.text, markerText) : -1;
+  const markerStart = matchingSegment && markerOffset >= 0 ? matchingSegment.start + markerOffset : index;
+  const markerEnd = markerStart + Math.max(1, markerText.length);
+
+  return {
+    ...rawObstacle,
+    id: rawObstacle.id || `${type}-${index + 1}-${String(markerText || start).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')}`,
+    type,
+    kind: type === 'vocabulary' ? 'word' : 'understanding',
+    priority,
+    start,
+    end,
+    source_en: sourceEn,
+    source_zh: sourceZh,
+    index: markerStart,
+    markerEnd,
+    segmentId: matchingSegment?.id || '',
+    word: type === 'vocabulary' ? String(rawObstacle.word || rawObstacle.surfaceText || rawObstacle.baseForm || markerText || '').trim() : undefined,
+    phonetic: type === 'vocabulary' ? String(rawObstacle.phonetic || '') : undefined,
+    translation: type === 'vocabulary' ? String(rawObstacle.translation || rawObstacle.sentenceMeaning || '') : undefined,
+    text: type === 'comprehension' ? String(rawObstacle.text || rawObstacle.surfaceText || rawObstacle.source || rawObstacle.phrase || markerText || '').trim() : undefined,
+    literal: type === 'comprehension' ? String(rawObstacle.literal || '') : undefined,
+    actual: type === 'comprehension' ? String(rawObstacle.actual || '') : undefined,
+    grammar: type === 'comprehension' ? String(rawObstacle.grammar || '') : undefined,
+  };
+}
+
+function sortObstaclesForLearningTips(obstaclesToSort) {
+  return [...obstaclesToSort].sort((firstObstacle, secondObstacle) => {
+    const firstPriority = Number.isFinite(Number(firstObstacle.priority)) ? Number(firstObstacle.priority) : 99;
+    const secondPriority = Number.isFinite(Number(secondObstacle.priority)) ? Number(secondObstacle.priority) : 99;
+
+    if (firstPriority !== secondPriority) {
+      return firstPriority - secondPriority;
+    }
+
+    return (Number(firstObstacle.start) || 0) - (Number(secondObstacle.start) || 0);
+  });
+}
+
+function normalizeObstacleList(rawObstacles, segments = subtitleSegments) {
+  return sortObstaclesForLearningTips(
+    (rawObstacles || [])
+      .filter((obstacle) => obstacle && (obstacle.type === 'vocabulary' || obstacle.type === 'vocab' || obstacle.type === 'comprehension'))
+      .map((obstacle, index) => normalizeObstacle(obstacle, index, segments)),
+  );
+}
+
+function createSubtitleItemsFromText(text) {
+  return parseSubtitleSegments(text).map((segment, index) => ({
+    id: `subtitle-${index + 1}`,
+    text: segment.text,
+    start: segment.start,
+    end: segment.end,
+  }));
+}
+
+function analyzeSubtitleText(text, options = {}) {
+  const engine = getAnalyzeEngine();
+
+  if (!engine) {
+    return [];
+  }
+
+  const analyzedObstacles = engine.analyzeSubtitleItems(createSubtitleItemsFromText(text), options);
+  const segments = parseSubtitleSegments(text);
+  return normalizeObstacleList(analyzedObstacles, segments);
+}
+
+function detectVocabularyObstacles(text, levelName = DEFAULT_VOCABULARY_LEVEL, customWords = []) {
+  return analyzeSubtitleText(text, { level: levelName, customWords }).filter((obstacle) => obstacle.type === 'vocabulary');
+}
+
+function detectUnderstandingObstacles(text) {
+  return analyzeSubtitleText(text, { level: 'custom', customWords: String(text || '').match(/[A-Za-z]+(?:'[A-Za-z]+)?/g) || [] })
+    .filter((obstacle) => obstacle.type === 'comprehension');
+}
+
+function getDemoObstacles() {
+  return analyzeSubtitleText(DEFAULT_SUBTITLE_TEXT, { level: DEFAULT_VOCABULARY_LEVEL });
 }
 
 function getCurrentSubtitleSegment() {
@@ -361,7 +277,8 @@ function getCurrentSubtitleSegment() {
 }
 
 function getTotalDurationMs() {
-  return Math.max(SEGMENT_DURATION_MS, subtitleSegments.length * SEGMENT_DURATION_MS);
+  const timedEnd = subtitleSegments.reduce((maxEnd, segment) => Math.max(maxEnd, Number(segment.endTime || 0) * 1000), 0);
+  return Math.max(SEGMENT_DURATION_MS, timedEnd || subtitleSegments.length * SEGMENT_DURATION_MS);
 }
 
 function clampTime(timeMs) {
@@ -369,7 +286,8 @@ function clampTime(timeMs) {
 }
 
 function getTimeForSegmentIndex(segmentIndex) {
-  return Math.max(0, segmentIndex) * SEGMENT_DURATION_MS;
+  const segment = subtitleSegments[Math.max(0, segmentIndex)] || subtitleSegments[0];
+  return segment ? Number(segment.startTime || 0) * 1000 : 0;
 }
 
 function getSegmentIndexForTime(timeMs) {
@@ -377,31 +295,24 @@ function getSegmentIndexForTime(timeMs) {
     return 0;
   }
 
-  return Math.min(
-    subtitleSegments.length - 1,
-    Math.max(0, Math.floor(clampTime(timeMs) / SEGMENT_DURATION_MS)),
-  );
+  const timeSeconds = clampTime(timeMs) / 1000;
+  const timedIndex = subtitleSegments.findIndex((segment) => timeSeconds >= Number(segment.startTime || 0) && timeSeconds < Number(segment.endTime || 0));
+
+  if (timedIndex >= 0) {
+    return timedIndex;
+  }
+
+  return Math.min(subtitleSegments.length - 1, Math.max(0, Math.floor(clampTime(timeMs) / SEGMENT_DURATION_MS)));
 }
 
 function getObstacleTimeMs(obstacle) {
-  const segmentIndex = subtitleSegments.findIndex((segment) => isObstacleInSegment(obstacle, segment));
-
-  if (segmentIndex < 0) {
-    return 0;
-  }
-
-  const segment = subtitleSegments[segmentIndex];
-  const segmentLength = Math.max(1, segment.end - segment.start);
-  const relativeOffset = Math.max(0, Math.min(1, (obstacle.index - segment.start) / segmentLength));
-
-  return getTimeForSegmentIndex(segmentIndex) + (relativeOffset * SEGMENT_DURATION_MS);
+  return Math.max(0, Number(obstacle.start || 0) * 1000);
 }
 
 function formatTimelineTime(timeMs) {
   const totalSeconds = Math.floor(clampTime(timeMs) / 1000);
   const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
   const seconds = String(totalSeconds % 60).padStart(2, '0');
-
   return `${minutes}:${seconds}`;
 }
 
@@ -418,11 +329,25 @@ function getAxisWidth() {
 }
 
 function getObstacleLabel(obstacle) {
-  return obstacle.kind === 'word' ? obstacle.surfaceText || obstacle.word : obstacle.surfaceText || obstacle.source || obstacle.phrase;
+  return getObstacleText(obstacle);
 }
 
 function getPendingObstacles() {
   return obstacles.filter((obstacle) => !hiddenObstacleIds.has(obstacle.id));
+}
+
+function getVisibleObstacles() {
+  const pendingObstacles = getPendingObstacles();
+
+  if (selectedObstacleId) {
+    const selectedObstacle = pendingObstacles.find((obstacle) => obstacle.id === selectedObstacleId);
+
+    if (selectedObstacle) {
+      return [selectedObstacle];
+    }
+  }
+
+  return pendingObstacles.length > 0 ? [sortObstaclesForLearningTips(pendingObstacles)[0]] : [];
 }
 
 function getObstaclesInSegment(segment, sourceObstacles = obstacles) {
@@ -430,18 +355,7 @@ function getObstaclesInSegment(segment, sourceObstacles = obstacles) {
     return [];
   }
 
-  return sourceObstacles.filter((obstacle) => (
-    obstacle.index >= segment.start
-    && obstacle.index < segment.end
-  ));
-}
-
-function getSegmentObstacles(segment = getCurrentSubtitleSegment()) {
-  return getObstaclesInSegment(segment, getPendingObstacles());
-}
-
-function getCurrentSegmentObstacles() {
-  return getSegmentObstacles();
+  return sourceObstacles.filter((obstacle) => obstacle.segmentId === segment.id || (obstacle.index >= segment.start && obstacle.index < segment.end));
 }
 
 function findSegmentIndexForObstacle(obstacleId) {
@@ -451,10 +365,13 @@ function findSegmentIndexForObstacle(obstacleId) {
     return -1;
   }
 
-  return subtitleSegments.findIndex((segment) => (
-    obstacle.index >= segment.start
-    && obstacle.index < segment.end
-  ));
+  const segmentIdIndex = subtitleSegments.findIndex((segment) => segment.id === obstacle.segmentId);
+
+  if (segmentIdIndex >= 0) {
+    return segmentIdIndex;
+  }
+
+  return subtitleSegments.findIndex((segment) => obstacle.index >= segment.start && obstacle.index < segment.end);
 }
 
 function syncSubtitleSegmentToObstacle(obstacleId) {
@@ -462,62 +379,24 @@ function syncSubtitleSegmentToObstacle(obstacleId) {
 
   if (matchingSegmentIndex >= 0) {
     currentSegmentIndex = matchingSegmentIndex;
+    currentTimeMs = getTimeForSegmentIndex(matchingSegmentIndex);
   }
-}
-
-function getSelectedPendingObstacle() {
-  if (!selectedObstacleId) {
-    return null;
-  }
-
-  return getPendingObstacles().find((obstacle) => obstacle.id === selectedObstacleId) || null;
-}
-
-function sortObstaclesForLearningTips(obstaclesToSort) {
-  const kindOrder = {
-    word: 0,
-    vocab: 0,
-    understanding: 1,
-    comprehension: 1,
-  };
-
-  return [...obstaclesToSort].sort((firstObstacle, secondObstacle) => {
-    const firstKindOrder = kindOrder[firstObstacle.kind] ?? 99;
-    const secondKindOrder = kindOrder[secondObstacle.kind] ?? 99;
-
-    if (firstKindOrder !== secondKindOrder) {
-      return firstKindOrder - secondKindOrder;
-    }
-
-    return firstObstacle.index - secondObstacle.index;
-  });
-}
-
-function getAutoSyncObstacles() {
-  return sortObstaclesForLearningTips(getCurrentSegmentObstacles());
 }
 
 function isObstacleInSegment(obstacle, segment) {
-  return Boolean(segment) && obstacle.index >= segment.start && obstacle.index < segment.end;
-}
-
-function getActiveSubtitleObstacles(segment = getCurrentSubtitleSegment()) {
-  return getSegmentObstacles(segment);
+  return Boolean(segment) && (obstacle.segmentId === segment.id || (obstacle.index >= segment.start && obstacle.index < segment.end));
 }
 
 function getMarkerRangeForObstacle(segment, obstacle) {
   return {
     obstacle,
     start: Math.max(0, obstacle.index - segment.start),
-    end: Math.min(
-      segment.text.length,
-      (obstacle.end || obstacle.index + getObstacleLabel(obstacle).length) - segment.start,
-    ),
+    end: Math.min(segment.text.length, (obstacle.markerEnd || obstacle.end || obstacle.index + getObstacleLabel(obstacle).length) - segment.start),
   };
 }
 
 function getMarkerRangesForSegment(segment) {
-  return getActiveSubtitleObstacles(segment)
+  return getObstaclesInSegment(segment, getPendingObstacles())
     .map((obstacle) => getMarkerRangeForObstacle(segment, obstacle))
     .filter((range) => range.end > range.start)
     .sort((firstRange, secondRange) => firstRange.start - secondRange.start);
@@ -538,9 +417,12 @@ function stopMarkerEvent(event) {
   event.stopPropagation();
 }
 
-function handleMarkerActivation(event, obstacleId) {
-  stopMarkerEvent(event);
-  pauseVideoForObstacle(obstacleId);
+function pauseVideoForObstacle(obstacleId) {
+  selectedObstacleId = obstacleId;
+  syncSubtitleSegmentToObstacle(obstacleId);
+  setVideoPlayback(false);
+  showLearningPauseHint();
+  renderCards();
 }
 
 function createSubtitleMarker(text, obstacle) {
@@ -554,9 +436,18 @@ function createSubtitleMarker(text, obstacle) {
     marker.classList.add('is-selected');
   }
 
-  marker.addEventListener('pointerup', (event) => handleMarkerActivation(event, obstacle.id));
-  marker.addEventListener('touchend', (event) => handleMarkerActivation(event, obstacle.id));
-  marker.addEventListener('click', (event) => handleMarkerActivation(event, obstacle.id));
+  marker.addEventListener('pointerup', (event) => {
+    stopMarkerEvent(event);
+    pauseVideoForObstacle(obstacle.id);
+  });
+  marker.addEventListener('touchend', (event) => {
+    stopMarkerEvent(event);
+    pauseVideoForObstacle(obstacle.id);
+  });
+  marker.addEventListener('click', (event) => {
+    stopMarkerEvent(event);
+    pauseVideoForObstacle(obstacle.id);
+  });
 
   return marker;
 }
@@ -592,7 +483,7 @@ function renderSubtitleMarkers() {
   });
 
   appendSubtitleText(segment.text.slice(cursor), englishLine);
-  chineseLine.textContent = subtitleTranslations.get(segment.text) || '（中文字幕待补充）';
+  chineseLine.textContent = segment.translation || subtitleTranslations.get(segment.text) || '（中文字幕待补充）';
   currentSubtitleLine.append(englishLine, chineseLine);
 }
 
@@ -605,25 +496,21 @@ function getLearningStateLabel() {
 }
 
 function renderVideoState() {
-  playIcon.textContent = isVideoPlaying ? '⏸' : '▶';
+  if (playIcon) {
+    playIcon.textContent = isVideoPlaying ? '⏸' : '▶';
+  }
 
   if (timelinePlayButton) {
     timelinePlayButton.textContent = isVideoPlaying ? '||' : '▶';
     timelinePlayButton.setAttribute('aria-label', isVideoPlaying ? '暂停视频' : '播放视频');
   }
 
-  videoStatusText.textContent = `V2.4A Obstacle Timeline · ${getLearningStateLabel()}`;
-  renderSubtitleMarkers();
-  renderTimelines();
-}
-
-function moveToNextSubtitleSegment() {
-  if (subtitleSegments.length === 0) {
-    return;
+  if (videoStatusText) {
+    videoStatusText.textContent = `V29B Obstacle Stream · ${getLearningStateLabel()}`;
   }
 
-  const nextSegmentIndex = (currentSegmentIndex + 1) % subtitleSegments.length;
-  seekToTime(getTimeForSegmentIndex(nextSegmentIndex));
+  renderSubtitleMarkers();
+  renderTimelines();
 }
 
 function stopPlaybackTimer() {
@@ -647,15 +534,10 @@ function updatePlaybackProgress() {
   const elapsedMs = Date.now() - playbackStartedAt;
   const nextTimeMs = (playbackStartedTimeMs + elapsedMs) % totalDuration;
   const nextSegmentIndex = getSegmentIndexForTime(nextTimeMs);
-  const didSubtitleChange = nextSegmentIndex !== currentSegmentIndex;
 
   currentTimeMs = nextTimeMs;
   currentSegmentIndex = nextSegmentIndex;
   renderVideoState();
-
-  if (didSubtitleChange) {
-    renderCards();
-  }
 }
 
 function startPlaybackTimer() {
@@ -680,15 +562,11 @@ function syncPlaybackClock() {
   stopPlaybackTimer();
 }
 
-
 function seekToTime(timeMs) {
   const wasPlaying = isVideoPlaying;
   const nextTimeMs = clampTime(timeMs);
-  const nextSegmentIndex = getSegmentIndexForTime(nextTimeMs >= getTotalDurationMs() ? 0 : nextTimeMs);
-  const didSubtitleChange = nextSegmentIndex !== currentSegmentIndex;
-
   currentTimeMs = nextTimeMs >= getTotalDurationMs() ? 0 : nextTimeMs;
-  currentSegmentIndex = nextSegmentIndex;
+  currentSegmentIndex = getSegmentIndexForTime(currentTimeMs);
 
   if (wasPlaying) {
     playbackStartedAt = Date.now();
@@ -697,12 +575,7 @@ function seekToTime(timeMs) {
 
   selectedObstacleId = null;
   renderVideoState();
-
-  if (didSubtitleChange) {
-    renderCards();
-  } else {
-    renderTimelines();
-  }
+  renderCards();
 }
 
 function handleTimelineInput(event) {
@@ -710,21 +583,13 @@ function handleTimelineInput(event) {
   seekToTime((percent / 100) * getTotalDurationMs());
 }
 
-function createTimedObstacleForSegment(obstacle, segmentIndex) {
-  const timeMs = getTimeForSegmentIndex(segmentIndex);
-
-  return {
-    ...obstacle,
-    timeMs,
-    percent: getTimelinePercent(timeMs),
-  };
-}
-
 function createObstacleNavigationGroup(segment, segmentIndex) {
   const timeMs = getTimeForSegmentIndex(segmentIndex);
-  const segmentObstacles = sortObstaclesForLearningTips(
-    getObstaclesInSegment(segment, obstacles),
-  ).map((obstacle) => createTimedObstacleForSegment(obstacle, segmentIndex));
+  const segmentObstacles = sortObstaclesForLearningTips(getObstaclesInSegment(segment, obstacles)).map((obstacle) => ({
+    ...obstacle,
+    timeMs: getObstacleTimeMs(obstacle),
+    percent: getTimelinePercent(getObstacleTimeMs(obstacle)),
+  }));
 
   return {
     id: `segment-${segmentIndex}`,
@@ -782,13 +647,7 @@ function clusterObstacleItems(items) {
 }
 
 function getHeatClusterKey(cluster) {
-  return cluster.items.map((item) => {
-    if (item.kind === 'subtitle-segment') {
-      return item.id;
-    }
-
-    return item.id;
-  }).join('|');
+  return cluster.items.map((item) => item.id).join('|');
 }
 
 function createHeatClusterHighlight(cluster) {
@@ -806,20 +665,17 @@ function createHeatClusterHighlight(cluster) {
 function createHeatClusterButton(cluster) {
   const button = document.createElement('button');
   const clusterKey = getHeatClusterKey(cluster);
+  const obstacleCount = getClusterObstacleCount(cluster);
 
   button.className = 'heat-cluster-button';
   button.type = 'button';
-  const obstacleCount = getClusterObstacleCount(cluster);
-
   button.textContent = obstacleCount;
   button.style.left = `${cluster.centerPercent}%`;
   button.setAttribute('aria-label', `打开当前区域障碍（${obstacleCount}）`);
+  button.setAttribute('aria-pressed', clusterKey === activeHeatClusterKey ? 'true' : 'false');
 
   if (clusterKey === activeHeatClusterKey) {
     button.classList.add('is-selected');
-    button.setAttribute('aria-pressed', 'true');
-  } else {
-    button.setAttribute('aria-pressed', 'false');
   }
 
   button.addEventListener('click', (event) => {
@@ -872,57 +728,17 @@ function closeBottomSheet() {
   renderTimelines();
 }
 
-function getSortedClusterItems(cluster) {
-  return [...cluster.items].sort((firstItem, secondItem) => {
-    const firstTime = firstItem.timeMs ?? getObstacleTimeMs(firstItem);
-    const secondTime = secondItem.timeMs ?? getObstacleTimeMs(secondItem);
-
-    if (firstTime !== secondTime) {
-      return firstTime - secondTime;
-    }
-
-    return (firstItem.index ?? 0) - (secondItem.index ?? 0);
-  });
-}
-
-function getSortedObstaclesForSubtitleUnit(obstaclesToSort) {
-  return sortObstaclesForLearningTips(obstaclesToSort);
-}
-
-function isSubtitleNavigationGroup(item) {
-  return item && item.kind === 'subtitle-segment' && Array.isArray(item.obstacles);
-}
-
-function getClusterSubtitleGroups(clusterItems) {
-  const groupedItems = clusterItems.filter(isSubtitleNavigationGroup);
-
-  if (groupedItems.length > 0) {
-    return groupedItems.map((group) => ({
-      segment: group.segment,
-      segmentIndex: group.segmentIndex,
-      obstacles: getSortedObstaclesForSubtitleUnit(group.obstacles),
-    })).filter((group) => group.obstacles.length > 0);
-  }
-
-  return subtitleSegments.map((segment, segmentIndex) => ({
-    segment,
-    segmentIndex,
-    obstacles: getSortedObstaclesForSubtitleUnit(getObstaclesInSegment(segment, clusterItems)),
-  })).filter((group) => group.obstacles.length > 0);
-}
-
 function createBottomSheetObstacleButton(obstacle) {
   const button = document.createElement('button');
   button.className = 'bottom-sheet__obstacle';
   button.type = 'button';
-  button.textContent = `${obstacle.kind === 'word' ? '○' : '●'} ${obstacle.kind === 'word' ? obstacle.surfaceText || obstacle.word : obstacle.phrase}`;
+  button.textContent = `${obstacle.type === 'vocabulary' ? '○' : '●'} ${getObstacleLabel(obstacle)}`;
   button.addEventListener('click', () => {
     const wasPlaying = isVideoPlaying;
     selectedObstacleId = obstacle.id;
-    seekToTime(obstacle.timeMs);
+    seekToTime(getObstacleTimeMs(obstacle));
     isVideoPlaying = wasPlaying;
     selectedObstacleId = obstacle.id;
-    streamMode = 'dynamic';
     syncPlaybackClock();
     closeBottomSheet();
     renderVideoState();
@@ -932,30 +748,9 @@ function createBottomSheetObstacleButton(obstacle) {
   return button;
 }
 
-function createBottomSheetSubtitleGroup(group) {
-  const groupElement = document.createElement('article');
-  groupElement.className = 'bottom-sheet__subtitle-group';
-
-  const time = document.createElement('div');
-  time.className = 'bottom-sheet__time';
-  time.textContent = formatTimelineTime(getTimeForSegmentIndex(group.segmentIndex));
-
-  const subtitle = document.createElement('p');
-  subtitle.className = 'bottom-sheet__subtitle';
-  subtitle.textContent = group.segment.text;
-
-  const obstacleList = document.createElement('div');
-  obstacleList.className = 'bottom-sheet__obstacles';
-  group.obstacles.forEach((obstacle) => obstacleList.append(createBottomSheetObstacleButton(obstacle)));
-
-  groupElement.append(time, subtitle, obstacleList);
-  return groupElement;
-}
-
 function openBottomSheet(cluster) {
   activeHeatClusterKey = getHeatClusterKey(cluster);
-  const clusterItems = getSortedClusterItems(cluster);
-  const subtitleGroups = getClusterSubtitleGroups(clusterItems);
+  const groups = cluster.items.filter((item) => Array.isArray(item.obstacles));
   const obstacleCount = getClusterObstacleCount(cluster);
 
   if (bottomSheetTitle) {
@@ -964,7 +759,25 @@ function openBottomSheet(cluster) {
 
   if (bottomSheetContent) {
     bottomSheetContent.innerHTML = '';
-    subtitleGroups.forEach((group) => bottomSheetContent.append(createBottomSheetSubtitleGroup(group)));
+    groups.forEach((group) => {
+      const groupElement = document.createElement('article');
+      groupElement.className = 'bottom-sheet__subtitle-group';
+
+      const time = document.createElement('div');
+      time.className = 'bottom-sheet__time';
+      time.textContent = formatTimelineTime(group.timeMs);
+
+      const subtitle = document.createElement('p');
+      subtitle.className = 'bottom-sheet__subtitle';
+      subtitle.textContent = group.segment.text;
+
+      const obstacleList = document.createElement('div');
+      obstacleList.className = 'bottom-sheet__obstacles';
+      group.obstacles.forEach((obstacle) => obstacleList.append(createBottomSheetObstacleButton(obstacle)));
+
+      groupElement.append(time, subtitle, obstacleList);
+      bottomSheetContent.append(groupElement);
+    });
   }
 
   if (bottomSheetBackdrop) {
@@ -1060,21 +873,8 @@ function setVideoPlayback(nextIsPlaying) {
   renderCards();
 }
 
-function pauseVideoForObstacle(obstacleId) {
-  selectedObstacleId = obstacleId;
-  streamMode = 'dynamic';
-  setVideoPlayback(false);
-  showLearningPauseHint();
-  renderCards();
-}
-
-
-function getEpisodeTextFingerprint(text) {
-  return normalizeText(String(text || '')).replace(/'/g, '');
-}
-
 function hashEpisodeText(text) {
-  const source = getEpisodeTextFingerprint(text) || 'empty';
+  const source = normalizeText(String(text || '')).replace(/'/g, '') || 'empty';
   let hash = 0;
 
   for (let index = 0; index < source.length; index += 1) {
@@ -1086,7 +886,7 @@ function hashEpisodeText(text) {
 }
 
 function getEpisodeProgressKey(text) {
-  return `${EPISODE_PROGRESS_STORAGE_PREFIX}${hashEpisodeText(text)}`;
+  return `${EPISODE_PROGRESS_STORAGE_PREFIX}${obstacleDataSource}.${obstacleDataVersion}.${hashEpisodeText(text)}`;
 }
 
 function getCurrentObstacleIdSet() {
@@ -1095,18 +895,16 @@ function getCurrentObstacleIdSet() {
 
 function filterObstacleIdsForCurrentEpisode(obstacleIds) {
   const currentObstacleIds = getCurrentObstacleIdSet();
-
   return [...new Set(obstacleIds || [])].filter((obstacleId) => currentObstacleIds.has(obstacleId));
 }
 
 function readStoredEpisodeProgress(progressKey) {
-  const storedProgress = window.localStorage.getItem(progressKey);
-
-  if (!storedProgress) {
+  try {
+    const storedProgress = window.localStorage.getItem(progressKey);
+    return storedProgress ? JSON.parse(storedProgress) : null;
+  } catch (error) {
     return null;
   }
-
-  return JSON.parse(storedProgress);
 }
 
 function saveEpisodeProgress() {
@@ -1115,10 +913,11 @@ function saveEpisodeProgress() {
   }
 
   const hiddenIds = filterObstacleIdsForCurrentEpisode([...hiddenObstacleIds]);
-  const historyIds = (dismissedObstacleHistory || []).filter((obstacleId) => hiddenIds.includes(obstacleId));
+  const historyIds = dismissedObstacleHistory.filter((obstacleId) => hiddenIds.includes(obstacleId));
 
   window.localStorage.setItem(currentEpisodeProgressKey, JSON.stringify({
-    version: 1,
+    version: 2,
+    dataSource: obstacleDataSource,
     totalObstacleIds: obstacles.map((obstacle) => obstacle.id),
     hiddenObstacleIds: hiddenIds,
     dismissedObstacleHistory: historyIds,
@@ -1131,9 +930,8 @@ function applyStoredEpisodeProgress(progressKey) {
   const hiddenIds = filterObstacleIdsForCurrentEpisode(storedProgress?.hiddenObstacleIds || []);
 
   hiddenObstacleIds = new Set(hiddenIds);
-  dismissedObstacleHistory = filterObstacleIdsForCurrentEpisode(
-    storedProgress?.dismissedObstacleHistory || hiddenIds,
-  ).filter((obstacleId) => hiddenObstacleIds.has(obstacleId));
+  dismissedObstacleHistory = filterObstacleIdsForCurrentEpisode(storedProgress?.dismissedObstacleHistory || hiddenIds)
+    .filter((obstacleId) => hiddenObstacleIds.has(obstacleId));
 }
 
 function getEpisodeProgressCounts() {
@@ -1162,6 +960,10 @@ function renderEpisodeProgress() {
     episodeUndoButton.textContent = '↶ 撤回上一步';
     episodeUndoButton.disabled = dismissedObstacleHistory.length === 0;
   }
+
+  if (restoreAllButton) {
+    restoreAllButton.disabled = conquered === 0;
+  }
 }
 
 function undoLastDismissedObstacle() {
@@ -1170,19 +972,12 @@ function undoLastDismissedObstacle() {
 
     if (hiddenObstacleIds.has(obstacleId)) {
       hiddenObstacleIds.delete(obstacleId);
-      const restoredObstacle = obstacles.find((obstacle) => obstacle.id === obstacleId);
-
-      if (restoredObstacle) {
-        selectedObstacleId = obstacleId;
-        syncSubtitleSegmentToObstacle(obstacleId);
-        currentTimeMs = getTimeForSegmentIndex(currentSegmentIndex);
-      }
-
-      streamMode = 'dynamic';
+      selectedObstacleId = obstacleId;
+      syncSubtitleSegmentToObstacle(obstacleId);
       saveEpisodeProgress();
       renderVideoState();
       renderCards();
-      return restoredObstacle || null;
+      return obstacles.find((obstacle) => obstacle.id === obstacleId) || null;
     }
   }
 
@@ -1191,19 +986,21 @@ function undoLastDismissedObstacle() {
   return null;
 }
 
-function replaceObstacleStream(nextObstacles, text = subtitleTextInput.value) {
-  obstacles = nextObstacles;
-  currentEpisodeProgressKey = getEpisodeProgressKey(text);
+function replaceObstacleStream(nextObstacles, text = latestObstacleSourceText, source = obstacleDataSource, version = obstacleDataVersion) {
+  obstacles = sortObstaclesForLearningTips(nextObstacles);
+  latestObstacleSourceText = text;
+  obstacleDataSource = source;
+  obstacleDataVersion = version;
+  currentEpisodeProgressKey = getEpisodeProgressKey(`${text}\n${obstacles.map((obstacle) => obstacle.id).join('|')}`);
   applyStoredEpisodeProgress(currentEpisodeProgressKey);
-  streamMode = 'dynamic';
   selectedObstacleId = null;
   currentSegmentIndex = 0;
   currentTimeMs = 0;
-  subtitleSegments = parseSubtitleSegments(text);
   saveEpisodeProgress();
   closeBottomSheet();
   renderVideoState();
   syncPlaybackClock();
+  renderCards();
 }
 
 function hideCurrentObstacle(obstacleId) {
@@ -1216,19 +1013,17 @@ function hideCurrentObstacle(obstacleId) {
     selectedObstacleId = null;
   }
 
-  streamMode = 'dynamic';
   saveEpisodeProgress();
   renderVideoState();
   renderCards();
 }
 
 function restoreAllCurrentObstacles() {
-  const currentSegment = getCurrentSubtitleSegment();
-  const currentObstacleIds = new Set(getObstaclesInSegment(currentSegment).map((obstacle) => obstacle.id));
-
-  currentObstacleIds.forEach((obstacleId) => hiddenObstacleIds.delete(obstacleId));
-  dismissedObstacleHistory = dismissedObstacleHistory.filter((obstacleId) => !currentObstacleIds.has(obstacleId));
-  streamMode = 'dynamic';
+  hiddenObstacleIds = new Set();
+  dismissedObstacleHistory = [];
+  selectedObstacleId = null;
+  currentSegmentIndex = 0;
+  currentTimeMs = 0;
   saveEpisodeProgress();
   renderVideoState();
   renderCards();
@@ -1244,31 +1039,36 @@ function createDetailBlock(title, text) {
 
   const content = document.createElement('p');
   content.className = 'detail-text';
-  content.textContent = text;
+  content.textContent = String(text || '');
 
   block.append(label, content);
   return block;
 }
 
-function getCompactTranslation(translation) {
-  return String(translation || '').split(/[；;]/)[0].trim();
-}
-
 function createWordSummary(obstacle) {
-  const summary = document.createElement('p');
-  summary.className = 'word-summary';
-  const sentenceMeaning = obstacle.sentenceMeaning || getCompactTranslation(obstacle.translation);
-  summary.textContent = `${obstacle.baseForm || obstacle.word} ${obstacle.phonetic || ''} ${obstacle.partOfSpeech || ''}`.trim()
-    + `\n句中含义：${sentenceMeaning}`;
+  const wrapper = document.createElement('div');
+  wrapper.className = 'word-summary';
 
-  return summary;
+  const word = document.createElement('p');
+  word.className = 'word-summary__word';
+  word.textContent = obstacle.word || '';
+
+  const phonetic = document.createElement('p');
+  phonetic.className = 'word-summary__phonetic';
+  phonetic.textContent = obstacle.phonetic || '';
+
+  const translation = document.createElement('p');
+  translation.className = 'word-summary__translation';
+  translation.textContent = obstacle.translation || '';
+
+  wrapper.append(word, phonetic, translation);
+  return wrapper;
 }
 
-function createUnderstandingSummary(obstacle) {
+function createComprehensionSummary(obstacle) {
   const summary = document.createElement('p');
   summary.className = 'understanding-summary';
-  summary.textContent = obstacle.prototype || obstacle.baseForm || obstacle.phrase;
-
+  summary.textContent = obstacle.text || '';
   return summary;
 }
 
@@ -1281,18 +1081,16 @@ function createCard(obstacle) {
 
   const label = document.createElement('span');
   label.className = 'type-label';
-  label.textContent = obstacle.type === 'vocab' ? '[vocab]' : '[comprehension]';
+  label.textContent = obstacle.type === 'vocabulary' ? '生词障碍' : '理解障碍';
 
   const content = document.createElement('div');
   content.className = 'card-content';
 
-  if (obstacle.kind === 'word') {
+  if (obstacle.type === 'vocabulary') {
     content.append(createWordSummary(obstacle));
-  }
-
-  if (obstacle.kind === 'understanding') {
+  } else {
     content.append(
-      createUnderstandingSummary(obstacle),
+      createComprehensionSummary(obstacle),
       createDetailBlock('字面意思', obstacle.literal),
       createDetailBlock('实际意思', obstacle.actual),
       createDetailBlock('语法解释', obstacle.grammar),
@@ -1321,17 +1119,6 @@ function renderEmptyState() {
   cardStream.append(emptyState);
 }
 
-function getVisibleObstacles() {
-  return getAutoSyncObstacles();
-}
-
-function renderModePrompt() {
-  const prompt = document.createElement('div');
-  prompt.className = 'empty-state';
-  prompt.textContent = '当前字幕没有需要同步显示的障碍。';
-  cardStream.append(prompt);
-}
-
 function renderCards() {
   renderEpisodeProgress();
   const pendingObstacles = getPendingObstacles();
@@ -1344,11 +1131,6 @@ function renderCards() {
     return visibleObstacles;
   }
 
-  if (visibleObstacles.length === 0) {
-    renderModePrompt();
-    return visibleObstacles;
-  }
-
   visibleObstacles.forEach((obstacle) => {
     cardStream.append(createCard(obstacle));
   });
@@ -1356,15 +1138,83 @@ function renderCards() {
   return visibleObstacles;
 }
 
-function setLearningTipsMode() {
-  selectedObstacleId = null;
-  streamMode = 'dynamic';
-  renderVideoState();
-  return renderCards();
+function showDataWarning(message) {
+  if (!dataLoadWarning) {
+    return;
+  }
+
+  dataLoadWarning.hidden = false;
+  dataLoadWarning.textContent = `${message}。如果你正在用 file:// 打开页面，浏览器可能因 CORS 阻止读取 JSON；请运行：${LOCAL_SERVER_HINT}，然后访问：${LOCAL_SERVER_URL}`;
+}
+
+function hideDataWarning() {
+  if (!dataLoadWarning) {
+    return;
+  }
+
+  dataLoadWarning.hidden = true;
+  dataLoadWarning.textContent = '';
+}
+
+async function loadRealObstacleData() {
+  const response = await fetch(OBSTACLE_DATA_URL, { cache: 'no-store' });
+
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+
+  const payload = await response.json();
+
+  if (!payload || !Array.isArray(payload.obstacles)) {
+    throw new Error('Invalid v29a obstacle payload');
+  }
+
+  const realSegments = buildSubtitleSegmentsFromObstacles(payload.obstacles);
+  const realObstacles = normalizeObstacleList(payload.obstacles, realSegments);
+
+  if (realObstacles.length === 0) {
+    throw new Error('No supported vocabulary/comprehension obstacles');
+  }
+
+  subtitleSegments = realSegments;
+  latestObstacleSourceText = realSegments.map((segment) => segment.text).join('\n\n');
+
+  if (subtitleTextInput) {
+    subtitleTextInput.value = latestObstacleSourceText;
+  }
+
+  hideDataWarning();
+  replaceObstacleStream(realObstacles, latestObstacleSourceText, 'v29a-json', payload.version || 'v29a');
+}
+
+function loadDemoObstacleData() {
+  subtitleSegments = parseSubtitleSegments(DEFAULT_SUBTITLE_TEXT);
+  latestObstacleSourceText = DEFAULT_SUBTITLE_TEXT;
+
+  if (subtitleTextInput) {
+    subtitleTextInput.value = DEFAULT_SUBTITLE_TEXT;
+  }
+
+  replaceObstacleStream(getDemoObstacles(), DEFAULT_SUBTITLE_TEXT, 'demo', 'demo');
+}
+
+async function initializeObstacleStream() {
+  loadDemoObstacleData();
+
+  try {
+    await loadRealObstacleData();
+  } catch (error) {
+    console.warn('Failed to load real obstacle data; using demo fallback.', error);
+    showDataWarning(REAL_DATA_FAILURE_MESSAGE);
+    loadDemoObstacleData();
+  }
 }
 
 function analyzeAndRender(text, options = {}) {
-  replaceObstacleStream(analyzeSubtitleText(text, options), text);
+  subtitleSegments = parseSubtitleSegments(text);
+  latestObstacleSourceText = text;
+  hideDataWarning();
+  replaceObstacleStream(analyzeSubtitleText(text, options), text, 'manual-demo', 'analyze');
   return renderCards();
 }
 
@@ -1372,17 +1222,28 @@ function handleAnalyzeClick() {
   analyzeAndRender(subtitleTextInput.value, { level: DEFAULT_VOCABULARY_LEVEL });
 }
 
-analyzeButton.addEventListener('click', handleAnalyzeClick);
+if (analyzeButton) {
+  analyzeButton.addEventListener('click', handleAnalyzeClick);
+}
 if (episodeUndoButton) {
   episodeUndoButton.addEventListener('click', undoLastDismissedObstacle);
 }
-learningPauseHintDismiss.addEventListener('click', dismissLearningPauseHint);
-learningPauseHint.addEventListener('pointerup', stopMarkerEvent);
-learningPauseHint.addEventListener('touchend', stopMarkerEvent);
-learningPauseHint.addEventListener('click', stopMarkerEvent);
-videoFrame.addEventListener('pointerup', handleVideoFrameActivation);
-videoFrame.addEventListener('touchend', handleVideoFrameActivation);
-videoFrame.addEventListener('click', handleVideoFrameActivation);
+if (restoreAllButton) {
+  restoreAllButton.addEventListener('click', restoreAllCurrentObstacles);
+}
+if (learningPauseHintDismiss) {
+  learningPauseHintDismiss.addEventListener('click', dismissLearningPauseHint);
+}
+if (learningPauseHint) {
+  learningPauseHint.addEventListener('pointerup', stopMarkerEvent);
+  learningPauseHint.addEventListener('touchend', stopMarkerEvent);
+  learningPauseHint.addEventListener('click', stopMarkerEvent);
+}
+if (videoFrame) {
+  videoFrame.addEventListener('pointerup', handleVideoFrameActivation);
+  videoFrame.addEventListener('touchend', handleVideoFrameActivation);
+  videoFrame.addEventListener('click', handleVideoFrameActivation);
+}
 if (timelinePlayButton) {
   timelinePlayButton.addEventListener('click', (event) => {
     event.stopPropagation();
@@ -1404,12 +1265,8 @@ if (bottomSheetClose) {
 if (bottomSheetBackdrop) {
   bottomSheetBackdrop.addEventListener('click', closeBottomSheet);
 }
-currentEpisodeProgressKey = getEpisodeProgressKey(DEFAULT_SUBTITLE_TEXT);
-applyStoredEpisodeProgress(currentEpisodeProgressKey);
-saveEpisodeProgress();
-renderVideoState();
-renderCards();
-syncPlaybackClock();
+
+initializeObstacleStream();
 
 window.ObstacleDetectionEngine = {
   Analyze: analyzeAndRender,
@@ -1428,6 +1285,7 @@ window.ObstacleDetectionEngine = {
     currentSegmentIndex,
     currentTimeMs,
     totalDurationMs: getTotalDurationMs(),
+    obstacleDataSource,
   }),
   seekToTime,
   getObstacleNavigationItems,
@@ -1436,12 +1294,7 @@ window.ObstacleDetectionEngine = {
   openBottomSheet,
   closeBottomSheet,
   getVisibleObstacles,
-  learningTipsMode: LEARNING_TIPS_MODE,
-  setLearningTipsMode,
   pauseVideoForObstacle,
-  getCurrentSegmentObstacles,
-  moveToNextSubtitleSegment,
-  levels: Object.fromEntries(
-    Object.entries(vocabularyLevels).map(([name, level]) => [name, level.label]),
-  ),
+  getCurrentSegmentObstacles: () => getObstaclesInSegment(getCurrentSubtitleSegment(), getPendingObstacles()),
+  moveToNextSubtitleSegment: () => seekToTime(getTimeForSegmentIndex((currentSegmentIndex + 1) % Math.max(1, subtitleSegments.length))),
 };
