@@ -935,3 +935,72 @@ button {
     padding-left: 16px;
   }
 }
+
+.data-load-warning {
+  margin: 14px 18px 0;
+  padding: 12px 14px;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-md);
+  color: #991b1b;
+  background: #fef2f2;
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.episode-progress-summary__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.episode-progress-summary__actions .episode-progress-summary__undo,
+.episode-progress-summary__actions .episode-progress-summary__restore {
+  margin-top: 0;
+}
+
+.episode-progress-summary__restore,
+.episode-progress-summary__restore:hover:not(:disabled),
+.episode-progress-summary__restore:focus-visible,
+.episode-progress-summary__restore:disabled {
+  display: inline-flex;
+  width: auto;
+  padding: 7px 12px;
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+  background: #e0ecff;
+  box-shadow: none;
+  color: var(--primary-dark);
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.episode-progress-summary__restore:hover:not(:disabled),
+.episode-progress-summary__restore:focus-visible {
+  background: #cfe0ff;
+  transform: none;
+  outline: none;
+}
+
+.word-summary__word,
+.word-summary__phonetic,
+.word-summary__translation {
+  margin: 0;
+}
+
+.word-summary__word {
+  font-size: 1.22rem;
+}
+
+.word-summary__phonetic {
+  min-height: 1.35em;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.word-summary__translation {
+  color: #2b3542;
+}
