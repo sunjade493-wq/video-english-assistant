@@ -40,7 +40,7 @@ class OcrSample:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Sample subtitle regions from a video and run PaddleOCR."
+        description="Sample subtitle regions from a video and run EasyOCR."
     )
     parser.add_argument("--video", required=True, help="Input video path")
     parser.add_argument("--out", required=True, help="Output JSON subtitle path")
@@ -55,29 +55,15 @@ def parse_args() -> argparse.Namespace:
 
 
 def make_ocr() -> Any:
-    """Create a PaddleOCR reader lazily so --help stays lightweight."""
+    """Create an EasyOCR reader lazily so --help stays lightweight."""
     try:
-        from paddleocr import PaddleOCR
+        import easyocr
     except ImportError as exc:
         raise RuntimeError(
-            "PaddleOCR is required. Install paddleocr before running this script."
+            "EasyOCR is required. Install easyocr before running this script."
         ) from exc
 
-    init_attempts = (
-        # PaddleOCR 2.x style. Chinese model also recognizes English text well
-        # enough for this bilingual-subtitle validation pass.
-        {"use_angle_cls": True, "lang": "ch", "show_log": False},
-        # PaddleOCR 3.x removed/renamed some keyword arguments.
-        {"use_angle_cls": True, "lang": "ch"},
-        {"lang": "ch"},
-    )
-    last_error: Exception | None = None
-    for kwargs in init_attempts:
-        try:
-            return PaddleOCR(**kwargs)
-        except Exception as exc:  # pragma: no cover - depends on installed version
-            last_error = exc
-    raise RuntimeError(f"Unable to initialize PaddleOCR: {last_error}")
+    return easyocr.Reader(["ch_sim", "en"], gpu=False)
 
 
 def clamp_crop(frame: Any, x1: int, y1: int, x2: int, y2: int) -> Any:
@@ -101,74 +87,24 @@ def normalize_for_dedupe(text: str) -> str:
 
 
 def collect_ocr_texts(result: Any) -> list[str]:
-    """Extract recognized strings from common PaddleOCR 2.x/3.x result shapes."""
+    """Extract recognized strings from EasyOCR readtext() results."""
     texts: list[str] = []
 
-    def visit(node: Any) -> None:
-        if node is None:
-            return
+    for item in result or []:
+        if isinstance(item, str):
+            texts.append(item)
+        elif isinstance(item, (list, tuple)) and len(item) >= 2:
+            # EasyOCR detail=1 line shape: (box, text, confidence).
+            text = item[1]
+            if isinstance(text, str):
+                texts.append(text)
 
-        if isinstance(node, dict):
-            for key in ("rec_texts", "texts"):
-                value = node.get(key)
-                if isinstance(value, list):
-                    texts.extend(str(item) for item in value if str(item).strip())
-            for key in ("rec_text", "text"):
-                value = node.get(key)
-                if isinstance(value, str) and value.strip():
-                    texts.append(value)
-            for key in ("res", "result", "data"):
-                if key in node:
-                    visit(node[key])
-            return
-
-        if hasattr(node, "json"):
-            json_value = getattr(node, "json")
-            if callable(json_value):
-                try:
-                    visit(json_value())
-                    return
-                except Exception:
-                    pass
-            elif json_value is not None:
-                visit(json_value)
-                return
-
-        if isinstance(node, (list, tuple)):
-            # PaddleOCR 2.x line shape: [box, (text, confidence)].
-            if (
-                len(node) >= 2
-                and isinstance(node[1], (list, tuple))
-                and len(node[1]) >= 1
-                and isinstance(node[1][0], str)
-            ):
-                texts.append(node[1][0])
-                return
-            for item in node:
-                visit(item)
-
-    visit(result)
     return [normalize_text(text) for text in texts if normalize_text(text)]
 
 
 def run_ocr(ocr: Any, image: Any) -> str:
-    # PaddleOCR accepts BGR numpy arrays in the classic ocr() API. The newer
-    # predict() API is supported as a fallback for compatibility.
-    attempts = (
-        lambda: ocr.ocr(image, cls=True),
-        lambda: ocr.ocr(image),
-        lambda: ocr.predict(image),
-    )
-    last_error: Exception | None = None
-    for attempt in attempts:
-        try:
-            return normalize_text(" ".join(collect_ocr_texts(attempt())))
-        except TypeError as exc:
-            last_error = exc
-        except Exception as exc:  # pragma: no cover - OCR runtime dependent
-            last_error = exc
-            break
-    raise RuntimeError(f"PaddleOCR failed: {last_error}")
+    result = ocr.readtext(image, detail=1, paragraph=False)
+    return normalize_text(" ".join(collect_ocr_texts(result)))
 
 
 def iter_sample_times(duration_seconds: float, interval: float) -> Iterable[float]:
