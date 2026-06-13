@@ -8,6 +8,7 @@ I was pulled off the project.
 Let's call it a day.`;
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
 const EPISODE_PROGRESS_STORAGE_PREFIX = 'videoEnglishAssistant.episodeProgress.';
+const V29A_OBSTACLES_URL = 'output_text/v29a_obstacles.json';
 
 const subtitleTranslations = new Map([
   [
@@ -315,6 +316,7 @@ const cardStream = document.querySelector('#cardStream');
 const conqueredObstacleCount = document.querySelector('#conqueredObstacleCount');
 const remainingObstacleCount = document.querySelector('#remainingObstacleCount');
 const episodeUndoButton = document.querySelector('#episodeUndoButton');
+const episodeRestoreAllButton = createEpisodeRestoreAllButton();
 const subtitleTextInput = document.querySelector('#subtitleTextInput');
 const analyzeButton = document.querySelector('#analyzeButton');
 const currentSubtitleLine = document.querySelector('#currentSubtitleLine');
@@ -332,6 +334,169 @@ const obstacleBottomSheet = document.querySelector('#obstacleBottomSheet');
 const bottomSheetTitle = document.querySelector('#bottomSheetTitle');
 const bottomSheetContent = document.querySelector('#bottomSheetContent');
 const bottomSheetClose = document.querySelector('#bottomSheetClose');
+
+
+function createEpisodeRestoreAllButton() {
+  const progressSummary = document.querySelector('.episode-progress-summary');
+
+  if (!progressSummary) {
+    return null;
+  }
+
+  const button = document.createElement('button');
+  button.className = 'undo-button episode-progress-summary__undo episode-progress-summary__restore-all';
+  button.type = 'button';
+  button.textContent = 'Restore All';
+  button.style.display = 'block';
+  button.style.width = 'auto';
+  button.style.marginTop = '8px';
+  button.style.padding = '0';
+  button.style.background = 'transparent';
+  button.style.boxShadow = 'none';
+  button.style.color = 'var(--primary-dark)';
+  progressSummary.append(button);
+  return button;
+}
+
+function getObstacleKind(obstacle) {
+  if (obstacle.kind === 'word' || obstacle.type === 'vocab') {
+    return 'word';
+  }
+
+  return 'understanding';
+}
+
+function getObstacleText(obstacle) {
+  if (getObstacleKind(obstacle) === 'word') {
+    return obstacle.word || obstacle.baseForm || obstacle.surfaceText || obstacle.text || '';
+  }
+
+  return obstacle.text || obstacle.prototype || obstacle.phrase || obstacle.baseForm || obstacle.surfaceText || obstacle.source || '';
+}
+
+
+function getBottomSheetObstacleText(obstacle) {
+  if (getObstacleKind(obstacle) === 'word') {
+    return getObstacleText(obstacle);
+  }
+
+  return obstacle.phrase || obstacle.baseForm || obstacle.text || obstacle.surfaceText || obstacle.source || getObstacleText(obstacle);
+}
+
+function getObstaclePhonetic(obstacle) {
+  return String(obstacle.phonetic || '').trim() || '暂无音标';
+}
+
+function getObstacleTranslation(obstacle) {
+  return obstacle.translation || obstacle.sentenceMeaning || obstacle.meaning || '';
+}
+
+function isV29ADataObject(data) {
+  return data && typeof data === 'object';
+}
+
+function pickFirstArray(data, candidateKeys) {
+  if (Array.isArray(data)) {
+    return data;
+  }
+
+  if (!isV29ADataObject(data)) {
+    return [];
+  }
+
+  for (const key of candidateKeys) {
+    if (Array.isArray(data[key])) {
+      return data[key];
+    }
+  }
+
+  return [];
+}
+
+function normalizeJsonObstacle(rawObstacle, type, index) {
+  const raw = rawObstacle || {};
+  const isWord = type === 'vocab' || raw.type === 'vocab' || raw.kind === 'word' || Boolean(raw.word);
+  const obstacleType = isWord ? 'vocab' : 'comprehension';
+  const kind = isWord ? 'word' : 'understanding';
+  const text = isWord
+    ? raw.word || raw.baseForm || raw.surfaceText || raw.text || ''
+    : raw.text || raw.phrase || raw.baseForm || raw.surfaceText || raw.source || '';
+  const start = Number.isFinite(raw.index) ? raw.index : Number.isFinite(raw.start) ? raw.start : index;
+  const end = Number.isFinite(raw.end) ? raw.end : start + String(text).length;
+
+  return {
+    ...raw,
+    id: raw.id || `${obstacleType}-${String(text || index).toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${index}`,
+    type: obstacleType,
+    kind,
+    index: start,
+    start,
+    end,
+    surfaceText: raw.surfaceText || text,
+    word: isWord ? text : raw.word,
+    phrase: isWord ? raw.phrase : text,
+    text,
+    phonetic: isWord ? getObstaclePhonetic(raw) : raw.phonetic,
+    translation: isWord ? getObstacleTranslation(raw) : raw.translation,
+    literal: raw.literal || '',
+    actual: raw.actual || '',
+    grammar: raw.grammar || '',
+  };
+}
+
+function normalizeV29AObstacleData(data) {
+  if (!isV29ADataObject(data)) {
+    return [];
+  }
+
+  const vocabItems = pickFirstArray(data, ['vocab', 'vocabulary', 'vocabulary_obstacles', 'vocab_obstacles', 'words']);
+  const comprehensionItems = pickFirstArray(data, ['comprehension', 'comprehension_obstacles', 'understanding', 'understanding_obstacles']);
+
+  if (vocabItems.length || comprehensionItems.length) {
+    return [
+      ...vocabItems.map((item, index) => normalizeJsonObstacle(item, 'vocab', index)),
+      ...comprehensionItems.map((item, index) => normalizeJsonObstacle(item, 'comprehension', vocabItems.length + index)),
+    ].sort((firstObstacle, secondObstacle) => firstObstacle.index - secondObstacle.index);
+  }
+
+  const flatItems = pickFirstArray(data, ['obstacles', 'items', 'data', 'results']);
+  return flatItems
+    .map((item, index) => normalizeJsonObstacle(item, item?.type, index))
+    .sort((firstObstacle, secondObstacle) => firstObstacle.index - secondObstacle.index);
+}
+
+async function loadV29AObstacles() {
+  if (typeof window.fetch !== 'function') {
+    return [];
+  }
+
+  try {
+    const response = await window.fetch(V29A_OBSTACLES_URL, { cache: 'no-store' });
+
+    if (!response.ok) {
+      return [];
+    }
+
+    const data = await response.json();
+    return normalizeV29AObstacleData(data);
+  } catch (_error) {
+    return [];
+  }
+}
+
+function syncSubtitleInputFromJsonObstacles(jsonObstacles) {
+  const subtitleText = jsonObstacles
+    .map((obstacle) => obstacle.subtitle || obstacle.subtitleText || obstacle.sentence || '')
+    .filter(Boolean)
+    .join('\n\n');
+
+  if (!subtitleText) {
+    return subtitleTextInput.value;
+  }
+
+  subtitleTextInput.value = subtitleText;
+  return subtitleText;
+}
 
 function parseSubtitleSegments(text) {
   const sourceText = String(text || '').trim();
@@ -418,7 +583,7 @@ function getAxisWidth() {
 }
 
 function getObstacleLabel(obstacle) {
-  return obstacle.kind === 'word' ? obstacle.surfaceText || obstacle.word : obstacle.surfaceText || obstacle.source || obstacle.phrase;
+  return getObstacleText(obstacle) || obstacle.surfaceText || obstacle.source || obstacle.phrase || obstacle.word;
 }
 
 function getPendingObstacles() {
@@ -803,6 +968,17 @@ function createHeatClusterHighlight(cluster) {
   return highlight;
 }
 
+function getHeatClusterColor(cluster) {
+  const hasWord = cluster.items.some((item) => (item.obstacles || [item]).some((obstacle) => getObstacleKind(obstacle) === 'word'));
+  const hasUnderstanding = cluster.items.some((item) => (item.obstacles || [item]).some((obstacle) => getObstacleKind(obstacle) !== 'word'));
+
+  if (hasWord && hasUnderstanding) {
+    return 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)';
+  }
+
+  return hasUnderstanding ? '#7c3aed' : '#2563eb';
+}
+
 function createHeatClusterButton(cluster) {
   const button = document.createElement('button');
   const clusterKey = getHeatClusterKey(cluster);
@@ -813,6 +989,8 @@ function createHeatClusterButton(cluster) {
 
   button.textContent = obstacleCount;
   button.style.left = `${cluster.centerPercent}%`;
+  button.style.background = getHeatClusterColor(cluster);
+  button.style.borderColor = 'rgba(255, 255, 255, 0.85)';
   button.setAttribute('aria-label', `打开当前区域障碍（${obstacleCount}）`);
 
   if (clusterKey === activeHeatClusterKey) {
@@ -915,7 +1093,7 @@ function createBottomSheetObstacleButton(obstacle) {
   const button = document.createElement('button');
   button.className = 'bottom-sheet__obstacle';
   button.type = 'button';
-  button.textContent = `${obstacle.kind === 'word' ? '○' : '●'} ${obstacle.kind === 'word' ? obstacle.surfaceText || obstacle.word : obstacle.phrase}`;
+  button.textContent = `${getObstacleKind(obstacle) === 'word' ? '○' : '●'} ${getBottomSheetObstacleText(obstacle)}`;
   button.addEventListener('click', () => {
     const wasPlaying = isVideoPlaying;
     selectedObstacleId = obstacle.id;
@@ -1162,6 +1340,11 @@ function renderEpisodeProgress() {
     episodeUndoButton.textContent = '↶ 撤回上一步';
     episodeUndoButton.disabled = dismissedObstacleHistory.length === 0;
   }
+
+  if (episodeRestoreAllButton) {
+    episodeRestoreAllButton.textContent = 'Restore All';
+    episodeRestoreAllButton.disabled = conquered === 0;
+  }
 }
 
 function undoLastDismissedObstacle() {
@@ -1244,32 +1427,69 @@ function createDetailBlock(title, text) {
 
   const content = document.createElement('p');
   content.className = 'detail-text';
-  content.textContent = text;
+  content.textContent = text || '';
 
   block.append(label, content);
   return block;
 }
 
-function getCompactTranslation(translation) {
-  return String(translation || '').split(/[；;]/)[0].trim();
+function createCardTitle(text) {
+  const title = document.createElement('h3');
+  title.className = 'type-label';
+  title.textContent = text;
+  return title;
 }
 
-function createWordSummary(obstacle) {
-  const summary = document.createElement('p');
-  summary.className = 'word-summary';
-  const sentenceMeaning = obstacle.sentenceMeaning || getCompactTranslation(obstacle.translation);
-  summary.textContent = `${obstacle.baseForm || obstacle.word} ${obstacle.phonetic || ''} ${obstacle.partOfSpeech || ''}`.trim()
-    + `\n句中含义：${sentenceMeaning}`;
-
-  return summary;
+function createPlainValue(className, text) {
+  const value = document.createElement('p');
+  value.className = className;
+  value.textContent = text || '';
+  return value;
 }
 
-function createUnderstandingSummary(obstacle) {
-  const summary = document.createElement('p');
-  summary.className = 'understanding-summary';
-  summary.textContent = obstacle.prototype || obstacle.baseForm || obstacle.phrase;
+function createWordCardContent(obstacle) {
+  const group = document.createElement('div');
+  group.className = 'card-v29b-content';
+  group.append(
+    createCardTitle('生词障碍'),
+    createPlainValue('word-summary', getObstacleText(obstacle)),
+    createPlainValue('word-summary', getObstaclePhonetic(obstacle)),
+    createPlainValue('word-summary', getObstacleTranslation(obstacle)),
+  );
+  return group;
+}
 
-  return summary;
+function createUnderstandingCardContent(obstacle) {
+  const group = document.createElement('div');
+  group.className = 'card-v29b-content';
+  group.append(
+    createCardTitle('理解障碍'),
+    createPlainValue('understanding-summary', getObstacleText(obstacle)),
+    createDetailBlock('字面意思', obstacle.literal),
+    createDetailBlock('实际意思', obstacle.actual),
+    createDetailBlock('语法解释', obstacle.grammar),
+  );
+  return group;
+}
+
+function createDismissButton(obstacle) {
+  const dismissButton = document.createElement('button');
+  dismissButton.className = 'dismiss-button';
+  dismissButton.type = 'button';
+  dismissButton.textContent = '✓ 不用管我了';
+  dismissButton.style.width = 'auto';
+  dismissButton.style.display = 'inline-flex';
+  dismissButton.style.alignItems = 'center';
+  dismissButton.style.justifyContent = 'center';
+  dismissButton.style.justifySelf = 'start';
+  dismissButton.style.padding = '7px 11px';
+  dismissButton.style.borderRadius = '999px';
+  dismissButton.style.background = '#eef7f0';
+  dismissButton.style.color = '#15803d';
+  dismissButton.style.boxShadow = 'none';
+  dismissButton.style.fontSize = '0.86rem';
+  dismissButton.addEventListener('click', () => hideCurrentObstacle(obstacle.id));
+  return dismissButton;
 }
 
 function createCard(obstacle) {
@@ -1279,37 +1499,23 @@ function createCard(obstacle) {
   const inner = document.createElement('div');
   inner.className = 'card-inner';
 
-  const label = document.createElement('span');
-  label.className = 'type-label';
-  label.textContent = obstacle.type === 'vocab' ? '[vocab]' : '[comprehension]';
-
   const content = document.createElement('div');
   content.className = 'card-content';
+  content.style.marginTop = '0';
 
-  if (obstacle.kind === 'word') {
-    content.append(createWordSummary(obstacle));
-  }
-
-  if (obstacle.kind === 'understanding') {
-    content.append(
-      createUnderstandingSummary(obstacle),
-      createDetailBlock('字面意思', obstacle.literal),
-      createDetailBlock('实际意思', obstacle.actual),
-      createDetailBlock('语法解释', obstacle.grammar),
-    );
+  if (getObstacleKind(obstacle) === 'word') {
+    content.append(createWordCardContent(obstacle));
+  } else {
+    content.append(createUnderstandingCardContent(obstacle));
   }
 
   const actions = document.createElement('div');
   actions.className = 'card-actions';
+  actions.style.display = 'flex';
+  actions.style.justifyContent = 'flex-start';
+  actions.append(createDismissButton(obstacle));
 
-  const dismissButton = document.createElement('button');
-  dismissButton.className = 'dismiss-button';
-  dismissButton.type = 'button';
-  dismissButton.textContent = '✓ 不用管我了';
-  dismissButton.addEventListener('click', () => hideCurrentObstacle(obstacle.id));
-
-  actions.append(dismissButton);
-  inner.append(label, content, actions);
+  inner.append(content, actions);
   card.append(inner);
   return card;
 }
@@ -1376,6 +1582,9 @@ analyzeButton.addEventListener('click', handleAnalyzeClick);
 if (episodeUndoButton) {
   episodeUndoButton.addEventListener('click', undoLastDismissedObstacle);
 }
+if (episodeRestoreAllButton) {
+  episodeRestoreAllButton.addEventListener('click', restoreAllCurrentObstacles);
+}
 learningPauseHintDismiss.addEventListener('click', dismissLearningPauseHint);
 learningPauseHint.addEventListener('pointerup', stopMarkerEvent);
 learningPauseHint.addEventListener('touchend', stopMarkerEvent);
@@ -1404,12 +1613,26 @@ if (bottomSheetClose) {
 if (bottomSheetBackdrop) {
   bottomSheetBackdrop.addEventListener('click', closeBottomSheet);
 }
-currentEpisodeProgressKey = getEpisodeProgressKey(DEFAULT_SUBTITLE_TEXT);
-applyStoredEpisodeProgress(currentEpisodeProgressKey);
-saveEpisodeProgress();
-renderVideoState();
-renderCards();
-syncPlaybackClock();
+async function initializeApp() {
+  const jsonObstacles = await loadV29AObstacles();
+
+  if (jsonObstacles.length > 0) {
+    const sourceText = syncSubtitleInputFromJsonObstacles(jsonObstacles);
+    subtitleSegments = parseSubtitleSegments(sourceText || DEFAULT_SUBTITLE_TEXT);
+    obstacles = jsonObstacles;
+    currentEpisodeProgressKey = getEpisodeProgressKey(sourceText || DEFAULT_SUBTITLE_TEXT);
+  } else {
+    currentEpisodeProgressKey = getEpisodeProgressKey(DEFAULT_SUBTITLE_TEXT);
+  }
+
+  applyStoredEpisodeProgress(currentEpisodeProgressKey);
+  saveEpisodeProgress();
+  renderVideoState();
+  renderCards();
+  syncPlaybackClock();
+}
+
+initializeApp();
 
 window.ObstacleDetectionEngine = {
   Analyze: analyzeAndRender,
