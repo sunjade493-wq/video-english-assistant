@@ -124,7 +124,7 @@ const understandingPatterns = [
 ];
 
 function normalizeWord(word) {
-  return word.toLowerCase().replace(/^'+|'+$/g, '');
+  return String(word || '').toLowerCase().replace(/^'+|'+$/g, '');
 }
 
 function tokenize(text) {
@@ -133,6 +133,156 @@ function tokenize(text) {
 
 function normalizeText(text) {
   return text.toLowerCase().replace(/[^a-z0-9']+/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+
+const V29C4_FROZEN_VOCAB_ENTRIES = {
+  believe: {
+    forms: ['believe', 'believes', 'believed', 'believing'],
+    phonetic: '/bɪˈliːv/',
+    partOfSpeech: 'vt./vi.',
+    sentenceMeaning: '相信；认为',
+  },
+  alone: {
+    forms: ['alone'],
+    phonetic: '/əˈloʊn/',
+    partOfSpeech: 'adj./adv.',
+    sentenceMeaning: '单独；独自',
+  },
+  develop: {
+    forms: ['develop', 'develops', 'developed', 'developing'],
+    phonetic: '/dɪˈveləp/',
+    partOfSpeech: 'vt./vi.',
+    sentenceMeaning: '发展；开发；形成',
+  },
+  lecture: {
+    forms: ['lecture', 'lectures', 'lectured', 'lecturing'],
+    phonetic: '/ˈlektʃər/',
+    partOfSpeech: 'n./vi./vt.',
+    sentenceMeaning: '讲座',
+  },
+  marry: {
+    forms: ['marry', 'marries', 'married', 'marrying'],
+    phonetic: '/ˈmæri/',
+    partOfSpeech: 'vt./vi.',
+    sentenceMeaning: '结婚；嫁；娶',
+  },
+  official: {
+    forms: ['official', 'officials'],
+    phonetic: '/əˈfɪʃəl/',
+    partOfSpeech: 'adj.',
+    sentenceMeaning: '官方的；正式的',
+  },
+};
+
+const V29C4_FROZEN_FORM_TO_LEMMA = Object.entries(V29C4_FROZEN_VOCAB_ENTRIES).reduce(
+  (formMap, [lemma, entry]) => {
+    entry.forms.forEach((form) => formMap.set(normalizeWord(form), lemma));
+    return formMap;
+  },
+  new Map(),
+);
+
+function getVocabLemma(obstacle) {
+  const candidates = [
+    obstacle.baseForm,
+    obstacle.lemma,
+    obstacle.word,
+    obstacle.surfaceText,
+  ].map(normalizeWord).filter(Boolean);
+
+  for (const candidate of candidates) {
+    if (V29C4_FROZEN_FORM_TO_LEMMA.has(candidate)) {
+      return V29C4_FROZEN_FORM_TO_LEMMA.get(candidate);
+    }
+  }
+
+  return candidates[0] || '';
+}
+
+function normalizePartOfSpeech(partOfSpeech) {
+  if (partOfSpeech === 'n./v.') {
+    return 'n./vi./vt.';
+  }
+
+  if (partOfSpeech === 'v.') {
+    return 'vt./vi.';
+  }
+
+  return partOfSpeech || '';
+}
+
+function normalizeVocabObstacle(obstacle) {
+  const lemma = getVocabLemma(obstacle);
+  const frozenEntry = V29C4_FROZEN_VOCAB_ENTRIES[lemma] || {};
+  const sentenceMeaning = frozenEntry.sentenceMeaning || obstacle.sentenceMeaning || getCompactTranslation(obstacle.translation);
+  const phonetic = frozenEntry.phonetic || obstacle.phonetic || '待补充';
+  const partOfSpeech = frozenEntry.partOfSpeech || normalizePartOfSpeech(obstacle.partOfSpeech);
+
+  return {
+    ...obstacle,
+    id: `word-${lemma}`,
+    type: 'vocab',
+    kind: 'word',
+    baseForm: lemma,
+    lemma,
+    word: lemma,
+    phonetic,
+    partOfSpeech,
+    sentenceMeaning,
+    translation: sentenceMeaning,
+    explanation: `${lemma} ${phonetic} ${partOfSpeech}`.trim() + `\n句中含义：${sentenceMeaning}`,
+  };
+}
+
+function normalizeComprehensionObstacle(obstacle) {
+  const prototype = obstacle.prototype || obstacle.baseForm || obstacle.phrase || obstacle.source || '';
+
+  return {
+    ...obstacle,
+    type: 'comprehension',
+    kind: 'understanding',
+    prototype,
+    explanation: `${prototype}\n字面意思：${obstacle.literal || ''}\n实际意思：${obstacle.actual || ''}\n语法解释：${obstacle.grammar || ''}`,
+  };
+}
+
+function normalizeObstacleForV29C4Frozen(obstacle) {
+  if (obstacle.type === 'vocab' || obstacle.kind === 'word') {
+    return normalizeVocabObstacle(obstacle);
+  }
+
+  if (obstacle.type === 'comprehension' || obstacle.kind === 'understanding') {
+    return normalizeComprehensionObstacle(obstacle);
+  }
+
+  return obstacle;
+}
+
+function getV29C4DedupeKey(obstacle) {
+  if (obstacle.type === 'vocab') {
+    return `vocab:${obstacle.lemma || obstacle.baseForm || obstacle.word}`;
+  }
+
+  return obstacle.id || `${obstacle.type}:${obstacle.index}:${obstacle.baseForm || obstacle.phrase || ''}`;
+}
+
+function normalizeObstacleListForV29C4Frozen(obstaclesToNormalize) {
+  const seenKeys = new Set();
+  const normalizedObstacles = [];
+
+  obstaclesToNormalize.map(normalizeObstacleForV29C4Frozen).forEach((obstacle) => {
+    const dedupeKey = getV29C4DedupeKey(obstacle);
+
+    if (seenKeys.has(dedupeKey)) {
+      return;
+    }
+
+    seenKeys.add(dedupeKey);
+    normalizedObstacles.push(obstacle);
+  });
+
+  return normalizedObstacles;
 }
 
 function resolveVocabularyWords(levelName, customWords = []) {
@@ -249,10 +399,12 @@ function detectVocabularyObstacles(text, levelName = DEFAULT_VOCABULARY_LEVEL, c
   const engine = getAnalyzeEngine();
 
   if (engine) {
-    return engine.analyzeSubtitleItems(
+    const vocabObstacles = engine.analyzeSubtitleItems(
       [{ id: 'subtitle-1', text: String(text || ''), start: 0, end: String(text || '').length }],
       { level: levelName, customWords },
     ).filter((obstacle) => obstacle.type === 'vocab');
+
+    return normalizeObstacleListForV29C4Frozen(vocabObstacles);
   }
 
   return [];
@@ -265,7 +417,8 @@ function detectUnderstandingObstacles(text) {
     return engine.analyzeSubtitleItems(
       [{ id: 'subtitle-1', text: String(text || ''), start: 0, end: String(text || '').length }],
       { level: 'custom', customWords: tokenize(text) },
-    ).filter((obstacle) => obstacle.type === 'comprehension');
+    ).filter((obstacle) => obstacle.type === 'comprehension')
+      .map(normalizeObstacleForV29C4Frozen);
   }
 
   return [];
@@ -287,7 +440,9 @@ function analyzeSubtitleText(text, options = {}) {
     return [];
   }
 
-  return engine.analyzeSubtitleItems(createSubtitleItemsFromText(subtitleText), options);
+  return normalizeObstacleListForV29C4Frozen(
+    engine.analyzeSubtitleItems(createSubtitleItemsFromText(subtitleText), options),
+  );
 }
 
 let subtitleSegments = parseSubtitleSegments(DEFAULT_SUBTITLE_TEXT);
