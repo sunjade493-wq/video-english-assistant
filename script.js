@@ -4,15 +4,7 @@ const REAL_OBSTACLE_DATA_URL = 'output_text/v29a_obstacles.json';
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
 const EPISODE_PROGRESS_STORAGE_PREFIX = 'videoEnglishAssistant.episodeProgress.';
 
-const subtitleTranslations = new Map([
-  [
-    "If you enjoyed this lecture, I'm sure you're too busy to lay it on us.",
-    '如果你喜欢这堂讲座，我相信你也很忙，但请直接告诉我们。',
-  ],
-  ['Can you give me a hand?', '你能帮我一下吗？'],
-  ['I was pulled off the project.', '我被调离了这个项目。'],
-  ["Let's call it a day.", '今天就到这里吧。'],
-]);
+const subtitleTranslations = new Map();
 
 const vocabularyLevels = {
   junior: {
