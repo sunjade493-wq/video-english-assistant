@@ -1522,22 +1522,29 @@ function getCompactTranslation(translation) {
   return String(translation || '').split(/[；;]/)[0].trim();
 }
 
-function createWordSummary(obstacle) {
-  const summary = document.createElement('p');
-  summary.className = 'word-summary';
-  const sentenceMeaning = obstacle.sentenceMeaning || getCompactTranslation(obstacle.translation);
-  summary.textContent = `${obstacle.baseForm || obstacle.word} ${obstacle.phonetic || ''} ${obstacle.partOfSpeech || ''}`.trim()
-    + `\n句中含义：${sentenceMeaning}`;
+function createWordHeadline(obstacle) {
+  const headline = document.createElement('p');
+  headline.className = 'vocab-headline';
+  headline.textContent = `${obstacle.baseForm || obstacle.word} ${obstacle.phonetic || ''} ${obstacle.partOfSpeech || ''}`.trim();
 
-  return summary;
+  return headline;
 }
 
-function createUnderstandingSummary(obstacle) {
-  const summary = document.createElement('p');
-  summary.className = 'understanding-summary';
-  summary.textContent = obstacle.prototype || obstacle.baseForm || obstacle.phrase;
+function createWordSentenceMeaning(obstacle) {
+  const meaning = document.createElement('p');
+  meaning.className = 'vocab-sentence-meaning';
+  const sentenceMeaning = obstacle.sentenceMeaning || getCompactTranslation(obstacle.translation);
+  meaning.textContent = `句中含义：${sentenceMeaning}`;
 
-  return summary;
+  return meaning;
+}
+
+function createUnderstandingPrototype(obstacle) {
+  const prototype = document.createElement('p');
+  prototype.className = 'understanding-prototype';
+  prototype.textContent = obstacle.prototype || obstacle.baseForm || obstacle.phrase;
+
+  return prototype;
 }
 
 function createCard(obstacle) {
@@ -1555,12 +1562,15 @@ function createCard(obstacle) {
   content.className = 'card-content';
 
   if (obstacle.kind === 'word') {
-    content.append(createWordSummary(obstacle));
+    content.append(
+      createWordHeadline(obstacle),
+      createWordSentenceMeaning(obstacle),
+    );
   }
 
   if (obstacle.kind === 'understanding') {
     content.append(
-      createUnderstandingSummary(obstacle),
+      createUnderstandingPrototype(obstacle),
       createDetailBlock('字面意思', obstacle.literal),
       createDetailBlock('实际意思', obstacle.actual),
       createDetailBlock('语法解释', obstacle.grammar),

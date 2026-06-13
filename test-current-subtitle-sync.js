@@ -202,6 +202,72 @@ function assertCardStreamExcludes(name, unexpectedText) {
   console.log(`PASS ${name}: excludes ${unexpectedText}`);
 }
 
+
+function findDescendantsByClass(root, className) {
+  const matches = [];
+
+  function visit(node) {
+    if (!node || !node.children) {
+      return;
+    }
+
+    if (node.className && node.className.split(/\s+/).includes(className)) {
+      matches.push(node);
+    }
+
+    node.children.forEach(visit);
+  }
+
+  visit(root);
+  return matches;
+}
+
+function findCardsByLabel(labelText) {
+  return getElement('#cardStream').children.filter((card) => card.textContent.includes(labelText));
+}
+
+function assertStrictCardRendering() {
+  const vocabCards = findCardsByLabel('[vocab]');
+  const comprehensionCards = findCardsByLabel('[comprehension]');
+
+  if (vocabCards.length < 1) {
+    throw new Error('V29D-3 strict vocab card rendering: expected [vocab] label to remain visible');
+  }
+
+  if (comprehensionCards.length < 1) {
+    throw new Error('V29D-3 strict comprehension card rendering: expected [comprehension] label to remain visible');
+  }
+
+  const vocabHeadline = findDescendantsByClass(vocabCards[0], 'vocab-headline')[0];
+  const vocabSentenceMeaning = findDescendantsByClass(vocabCards[0], 'vocab-sentence-meaning')[0];
+  const understandingPrototype = findDescendantsByClass(comprehensionCards[0], 'understanding-prototype')[0];
+  const detailBlocks = findDescendantsByClass(comprehensionCards[0], 'detail-block');
+
+  if (!vocabHeadline || vocabHeadline.tag !== 'p') {
+    throw new Error('V29D-3 strict vocab card rendering: expected p.vocab-headline');
+  }
+
+  if (!vocabSentenceMeaning || vocabSentenceMeaning.tag !== 'p') {
+    throw new Error('V29D-3 strict vocab card rendering: expected p.vocab-sentence-meaning');
+  }
+
+  if (!understandingPrototype || understandingPrototype.tag !== 'p') {
+    throw new Error('V29D-3 strict comprehension card rendering: expected p.understanding-prototype');
+  }
+
+  if (detailBlocks.length < 3) {
+    throw new Error(`V29D-3 strict comprehension card rendering: expected at least 3 .detail-block nodes, got ${detailBlocks.length}`);
+  }
+
+  [...vocabCards, ...comprehensionCards].forEach((card) => {
+    if (!card.textContent.includes('✓ 不用管我了')) {
+      throw new Error('V29D-3 strict card rendering: expected dismiss button text to remain visible');
+    }
+  });
+
+  console.log('PASS V29D-3 strict card rendering uses separate vocab and comprehension DOM nodes');
+}
+
 function assertPlayback(name, expectedIsPlaying) {
   const { isVideoPlaying } = api.getPlaybackState();
 
@@ -223,6 +289,7 @@ assertCardStreamIncludes('V2.6A Review Fix title uses prototype structure', 'lay
 assertCardStreamExcludes('V2.6A Review Fix removes Prototype expression label', 'Prototype expression');
 assertCardStreamExcludes('Test V2.4A UI Cleanup first subtitle hides source label', '出处');
 assertCardStreamExcludes('Test V2.4A UI Cleanup first subtitle hides source text', '出处lay it on us');
+assertStrictCardRendering();
 
 api.pauseVideoForObstacle('understanding-lay-it-on-us');
 assertPlayback('Test 2 dotted marker enters Learning Pause', false);
@@ -438,14 +505,14 @@ function assertEpisodeUndoLightweightStyle(name) {
     }
   });
 
-  console.log(`PASS ${name}: ↶ 撤回上一步 uses lightweight link styling`);
+  console.log(`PASS ${name}: ↶ 返回上一个障碍 uses lightweight link styling`);
 }
 
 function assertEpisodeUndoPlacement(name, expectedEnabled) {
   const episodeUndoButton = getElement('#episodeUndoButton');
   const cardStreamText = getElement('#cardStream').textContent;
 
-  if (episodeUndoButton.textContent !== '↶ 撤回上一步') {
+  if (episodeUndoButton.textContent !== '↶ 返回上一个障碍') {
     throw new Error(`${name}: expected undo button in episode progress summary, got ${JSON.stringify(episodeUndoButton.textContent)}`);
   }
 
@@ -455,11 +522,11 @@ function assertEpisodeUndoPlacement(name, expectedEnabled) {
     throw new Error(`${name}: expected episode undo disabled=${expectedDisabled}, got disabled=${episodeUndoButton.disabled}`);
   }
 
-  if (cardStreamText.includes('↶ 撤回上一步')) {
+  if (cardStreamText.includes('↶ 返回上一个障碍')) {
     throw new Error(`${name}: expected Learning Tips cards to exclude undo action, got ${JSON.stringify(cardStreamText)}`);
   }
 
-  console.log(`PASS ${name}: ↶ 撤回上一步 is in 本集障碍 and enabled=${expectedEnabled}`);
+  console.log(`PASS ${name}: ↶ 返回上一个障碍 is in 本集障碍 and enabled=${expectedEnabled}`);
 }
 
 function assertEpisodeProgress(name, expectedConquered, expectedRemaining) {
