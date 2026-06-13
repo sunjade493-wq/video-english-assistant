@@ -56,6 +56,121 @@ const wordDictionary = {
   },
 };
 
+const dictionaryEntries = {
+  believe: {
+    lemma: 'believe',
+    baseForm: 'believe',
+    phonetic: '/bɪˈliːv/',
+    partOfSpeech: 'vt./vi.',
+    translation: '相信；认为',
+    sentenceMeaning: '相信；认为',
+  },
+  consummate: {
+    lemma: 'consummate',
+    baseForm: 'consummate',
+    phonetic: '/ˈkɑːnsəmeɪt/',
+    partOfSpeech: 'vt.',
+    translation: '使完成；圆房',
+    sentenceMeaning: '使完成；圆房',
+  },
+  honeymoon: {
+    lemma: 'honeymoon',
+    baseForm: 'honeymoon',
+    phonetic: '/ˈhʌnimuːn/',
+    partOfSpeech: 'n./vi.',
+    translation: '蜜月；度蜜月',
+    sentenceMeaning: '蜜月；度蜜月',
+  },
+  suppose: {
+    lemma: 'suppose',
+    baseForm: 'suppose',
+    phonetic: '/səˈpoʊz/',
+    partOfSpeech: 'vt.',
+    translation: '认为；假设',
+    sentenceMeaning: '认为；假设',
+  },
+  bedsheet: {
+    lemma: 'bedsheet',
+    baseForm: 'bedsheet',
+    phonetic: '/ˈbedʃiːt/',
+    partOfSpeech: 'n.',
+    translation: '床单',
+    sentenceMeaning: '床单',
+  },
+  outside: {
+    lemma: 'outside',
+    baseForm: 'outside',
+    phonetic: '/ˌaʊtˈsaɪd/',
+    partOfSpeech: 'adv./prep./adj./n.',
+    translation: '在外面；外部；外面的',
+    sentenceMeaning: '在外面；外部；外面的',
+  },
+  alone: {
+    lemma: 'alone',
+    baseForm: 'alone',
+    phonetic: '/əˈloʊn/',
+    partOfSpeech: 'adj./adv.',
+    translation: '单独的；独自地',
+    sentenceMeaning: '单独的；独自地',
+  },
+  official: {
+    lemma: 'official',
+    baseForm: 'official',
+    phonetic: '/əˈfɪʃəl/',
+    partOfSpeech: 'adj.',
+    translation: '官方的；正式的',
+    sentenceMeaning: '官方的；正式的',
+  },
+  tradition: {
+    lemma: 'tradition',
+    baseForm: 'tradition',
+    phonetic: '/trəˈdɪʃən/',
+    partOfSpeech: 'n.',
+    translation: '传统',
+    sentenceMeaning: '传统',
+  },
+  autotroph: {
+    lemma: 'autotroph',
+    baseForm: 'autotroph',
+    phonetic: '/ˈɔːtəˌtroʊf/',
+    partOfSpeech: 'n.',
+    translation: '自养生物',
+    sentenceMeaning: '自养生物',
+  },
+  neanderthal: {
+    lemma: 'neanderthal',
+    baseForm: 'neanderthal',
+    phonetic: '/niˈændərˌtɑːl/',
+    partOfSpeech: 'n./adj.',
+    translation: '尼安德特人；尼安德特人的',
+    sentenceMeaning: '尼安德特人；尼安德特人的',
+  },
+  develop: {
+    lemma: 'develop',
+    baseForm: 'develop',
+    phonetic: '/dɪˈveləp/',
+    partOfSpeech: 'vt./vi.',
+    translation: '发展；形成；开发',
+    sentenceMeaning: '发展；形成；开发',
+  },
+  lecture: {
+    lemma: 'lecture',
+    baseForm: 'lecture',
+    phonetic: '/ˈlektʃər/',
+    partOfSpeech: 'n./vi./vt.',
+    translation: '讲座；授课；训诫',
+    sentenceMeaning: '讲座；授课；训诫',
+  },
+  marry: {
+    lemma: 'marry',
+    baseForm: 'marry',
+    phonetic: '/ˈmæri/',
+    partOfSpeech: 'vt./vi.',
+    translation: '结婚；嫁；娶',
+    sentenceMeaning: '结婚；嫁；娶',
+  },
+};
+
 const fallbackPartOfSpeechDictionary = {
   believe: 'vt./vi.',
   official: 'adj.',
@@ -69,6 +184,24 @@ const fallbackPartOfSpeechDictionary = {
   developed: 'vt./vi.',
   lecture: 'n./vi./vt.',
   marry: 'vt./vi.',
+};
+
+const explicitLemmaMap = {
+  believed: 'believe',
+  believes: 'believe',
+  believing: 'believe',
+  consummated: 'consummate',
+  consummates: 'consummate',
+  consummating: 'consummate',
+  married: 'marry',
+  marries: 'marry',
+  marrying: 'marry',
+  developed: 'develop',
+  develops: 'develop',
+  developing: 'develop',
+  bedsheets: 'bedsheet',
+  autotrophs: 'autotroph',
+  neanderthals: 'neanderthal',
 };
 
 const understandingPatterns = [
@@ -278,7 +411,21 @@ function isIndexWithinRanges(index, ranges) {
 }
 
 function dedupeObstaclesById(obstaclesToDedupe) {
-  return obstaclesToDedupe;
+  const seenKeys = new Set();
+
+  return obstaclesToDedupe.filter((obstacle) => {
+    const type = normalizeObstacleType(obstacle?.type || obstacle?.kind);
+    const dedupeKey = type === 'vocab'
+      ? `vocab:${normalizeLemma(obstacle?.lemma || obstacle?.baseForm || obstacle?.word || obstacle?.surfaceText || obstacle?.phrase)}`
+      : obstacle?.id;
+
+    if (!dedupeKey || seenKeys.has(dedupeKey)) {
+      return false;
+    }
+
+    seenKeys.add(dedupeKey);
+    return true;
+  });
 }
 
 function analyzeSubtitleText(text, options = {}) {
@@ -373,28 +520,145 @@ function pickFirstValue(row, keys) {
   return key ? row[key] : undefined;
 }
 
+function normalizeLemma(value) {
+  const normalizedValue = String(value || '').trim().toLowerCase();
+
+  if (!normalizedValue) {
+    return '';
+  }
+
+  if (dictionaryEntries[normalizedValue] || explicitLemmaMap[normalizedValue]) {
+    return explicitLemmaMap[normalizedValue] || normalizedValue;
+  }
+
+  if (normalizedValue.endsWith('ies')) {
+    const candidate = `${normalizedValue.slice(0, -3)}y`;
+
+    if (dictionaryEntries[candidate]) {
+      return candidate;
+    }
+  }
+
+  if (normalizedValue.endsWith('ing')) {
+    const stem = normalizedValue.slice(0, -3);
+    const silentECandidate = `${stem}e`;
+
+    if (dictionaryEntries[silentECandidate]) {
+      return silentECandidate;
+    }
+
+    if (dictionaryEntries[stem]) {
+      return stem;
+    }
+  }
+
+  if (normalizedValue.endsWith('ed')) {
+    const stem = normalizedValue.slice(0, -2);
+    const silentECandidate = `${stem}e`;
+
+    if (dictionaryEntries[silentECandidate]) {
+      return silentECandidate;
+    }
+
+    if (dictionaryEntries[stem]) {
+      return stem;
+    }
+  }
+
+  if (normalizedValue.endsWith('s')) {
+    const singularCandidate = normalizedValue.slice(0, -1);
+
+    if (dictionaryEntries[singularCandidate]) {
+      return singularCandidate;
+    }
+  }
+
+  return normalizedValue;
+}
+
+function getLemma(row) {
+  const jsonLemma = pickFirstValue(row, ['lemma', 'baseForm']);
+
+  if (jsonLemma) {
+    return normalizeLemma(jsonLemma);
+  }
+
+  return normalizeLemma(pickFirstValue(row, ['word', 'text', 'phrase', 'surfaceText']) || '');
+}
+
+function resolveDictionaryEntry(row) {
+  const lemma = getLemma(row);
+
+  return {
+    lemma,
+    entry: dictionaryEntries[lemma] || null,
+  };
+}
+
+function resolveBaseForm(row) {
+  return resolveDictionaryEntry(row).lemma;
+}
+
 function normalizePartOfSpeech(partOfSpeech) {
-  const text = String(partOfSpeech || '').trim();
+  const text = String(partOfSpeech || '').trim().toLowerCase();
 
   if (!text) {
     return '';
   }
 
-  if (text === 'v.') {
-    return 'vt./vi.';
-  }
+  const normalizedText = text
+    .replace(/\s+/g, ' ')
+    .replace(/\bintransitive verb\b/g, 'vi.')
+    .replace(/\btransitive verb\b/g, 'vt.')
+    .replace(/\bauxiliary\s+verb\b/g, 'aux. v.')
+    .replace(/\bmodal\s+verb\b/g, 'modal v.')
+    .replace(/\blinking\s+verb\b/g, 'linking v.')
+    .replace(/\blink\s+verb\b/g, 'linking v.')
+    .replace(/\bverb\b/g, 'v.')
+    .replace(/\bnoun\b/g, 'n.')
+    .replace(/\bpronoun\b/g, 'pron.')
+    .replace(/\badjective\b/g, 'adj.')
+    .replace(/\badverb\b/g, 'adv.')
+    .replace(/\bpreposition\b/g, 'prep.')
+    .replace(/\bconjunction\b/g, 'conj.')
+    .replace(/\binterjection\b/g, 'interj.')
+    .replace(/\bdeterminer\b/g, 'det.')
+    .replace(/\bnumeral\b/g, 'num.')
+    .replace(/\btransitive\b/g, 'vt.')
+    .replace(/\bintransitive\b/g, 'vi.');
 
-  return text
+  const parts = normalizedText
     .split('/')
     .map((part) => part.trim())
     .filter(Boolean)
-    .flatMap((part) => (part === 'v.' ? ['vi.', 'vt.'] : [part]))
-    .join('/');
+    .flatMap((part) => (part === 'v.' ? ['vt.', 'vi.'] : [part]))
+    .map((part) => ({
+      n: 'n.',
+      pron: 'pron.',
+      adj: 'adj.',
+      adv: 'adv.',
+      prep: 'prep.',
+      conj: 'conj.',
+      interj: 'interj.',
+      det: 'det.',
+      num: 'num.',
+      vt: 'vt.',
+      vi: 'vi.',
+      aux: 'aux. v.',
+      modal: 'modal v.',
+      linking: 'linking v.',
+    }[part.replace(/\.$/, '')] || part));
+
+  return [...new Set(parts)].join('/');
 }
 
 function getFallbackPartOfSpeech(...words) {
   for (const word of words) {
-    const normalizedWord = String(word || '').trim().toLowerCase();
+    const normalizedWord = normalizeLemma(word);
+
+    if (normalizedWord && dictionaryEntries[normalizedWord]?.partOfSpeech) {
+      return dictionaryEntries[normalizedWord].partOfSpeech;
+    }
 
     if (normalizedWord && fallbackPartOfSpeechDictionary[normalizedWord]) {
       return fallbackPartOfSpeechDictionary[normalizedWord];
@@ -405,8 +669,11 @@ function getFallbackPartOfSpeech(...words) {
 }
 
 function getObstaclePartOfSpeech(obstacle) {
+  const { entry } = resolveDictionaryEntry(obstacle || {});
+
   return normalizePartOfSpeech(
     pickFirstValue(obstacle, ['partOfSpeech', 'pos', 'wordClass', 'speech'])
+      || entry?.partOfSpeech
       || getFallbackPartOfSpeech(obstacle?.baseForm, obstacle?.word, obstacle?.surfaceText, obstacle?.phrase),
   );
 }
@@ -510,26 +777,37 @@ function normalizeObstacle(row, rowIndex = 0) {
 
   if (type === 'vocab') {
     const word = row?.word || label;
-    const baseForm = row?.baseForm || row?.word || label;
     const surfaceText = row?.text || row?.word || label;
     const phrase = row?.phrase || row?.word || label;
+    const { lemma, entry } = resolveDictionaryEntry({
+      ...row,
+      word,
+      text: surfaceText,
+      phrase,
+    });
+    const baseForm = lemma || row?.baseForm || row?.word || label;
+    const phonetic = row?.phonetic || entry?.phonetic || '待补充';
+    const translation = row?.translation || entry?.translation || row?.source_zh || '待补充';
+    const sentenceMeaning = row?.sentenceMeaning || entry?.sentenceMeaning || translation;
 
     return {
       ...baseObstacle,
       word,
       baseForm,
+      lemma: baseForm,
       surfaceText,
       phrase,
-      prototype: row?.prototype || row?.word || label,
-      phonetic: row?.phonetic || '待补充',
+      prototype: row?.prototype || baseForm,
+      phonetic,
       partOfSpeech: normalizePartOfSpeech(
         pickFirstValue(row, ['partOfSpeech', 'pos', 'wordClass', 'speech'])
+          || entry?.partOfSpeech
           || getFallbackPartOfSpeech(baseForm, word, surfaceText, phrase),
       ),
-      translation: row?.translation || row?.source_zh || '待补充',
-      sentenceMeaning: row?.sentenceMeaning || row?.translation || row?.source_zh || '待补充',
+      translation,
+      sentenceMeaning,
       literal: row?.literal || '',
-      actual: row?.actual || row?.translation || row?.source_zh || '待补充',
+      actual: row?.actual || translation,
       grammar: row?.grammar || '',
     };
   }
@@ -550,7 +828,7 @@ function normalizeObstacle(row, rowIndex = 0) {
 }
 
 function normalizeObstacles(rows) {
-  return rows.map((row, rowIndex) => normalizeObstacle(row, rowIndex));
+  return dedupeObstaclesById(rows.map((row, rowIndex) => normalizeObstacle(row, rowIndex)));
 }
 
 function normalizeRealObstacleRows(payload) {
@@ -1522,11 +1800,24 @@ function undoLastDismissedObstacle() {
 
 function replaceObstacleStream(nextObstacles, text = subtitleTextInput.value) {
   activeDataSource = 'analyze';
-  obstacles = nextObstacles.map((obstacle) => (
-    normalizeObstacleType(obstacle?.type || obstacle?.kind) === 'vocab'
-      ? { ...obstacle, partOfSpeech: getObstaclePartOfSpeech(obstacle) }
-      : obstacle
-  ));
+  obstacles = dedupeObstaclesById(nextObstacles.map((obstacle) => {
+    if (normalizeObstacleType(obstacle?.type || obstacle?.kind) !== 'vocab') {
+      return obstacle;
+    }
+
+    const { lemma, entry } = resolveDictionaryEntry(obstacle || {});
+    const baseForm = lemma || obstacle?.baseForm || obstacle?.word;
+
+    return {
+      ...obstacle,
+      baseForm,
+      lemma: baseForm,
+      phonetic: obstacle?.phonetic || entry?.phonetic || '待补充',
+      partOfSpeech: getObstaclePartOfSpeech({ ...obstacle, baseForm, lemma: baseForm }),
+      translation: obstacle?.translation || entry?.translation || '待补充',
+      sentenceMeaning: obstacle?.sentenceMeaning || entry?.sentenceMeaning || obstacle?.translation || '待补充',
+    };
+  }));
   currentEpisodeProgressKey = getEpisodeProgressKey(text);
   applyStoredEpisodeProgress(currentEpisodeProgressKey);
   streamMode = 'dynamic';
