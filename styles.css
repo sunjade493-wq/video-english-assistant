@@ -342,14 +342,18 @@ button {
 .understanding-summary {
   margin: 0;
   white-space: pre-line;
-  padding: 10px 12px;
+  padding: 12px 14px;
   border-radius: var(--radius-md);
   background: var(--surface-muted);
   border: 1px solid #e7edf6;
   color: #2b3542;
   font-size: 1.02rem;
-  font-weight: 760;
-  line-height: 1.35;
+  font-weight: 650;
+  line-height: 1.6;
+}
+
+.frozen-card-text {
+  letter-spacing: 0.01em;
 }
 
 .detail-block {
@@ -498,14 +502,7 @@ button {
 }
 
 .subtitle-overlay {
-  position: absolute;
-  z-index: 2;
-  right: 28px;
-  bottom: clamp(80px, 10vh, 120px);
-  left: 28px;
-  display: flex;
-  justify-content: center;
-  pointer-events: none;
+  display: none;
 }
 
 .subtitle-line {
@@ -553,31 +550,21 @@ button {
   border: 0;
   border-radius: 0;
   cursor: pointer;
-  padding: 0 0 0.08em;
+  padding: 0;
   color: inherit;
   background: transparent;
   font: inherit;
-  font-weight: 900;
   pointer-events: auto;
-  text-decoration-line: underline;
-  text-decoration-style: dashed;
-  text-decoration-color: rgba(255, 216, 77, 0.95);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 0.18em;
-  text-shadow: inherit;
-  transition: color 160ms ease, text-decoration-color 160ms ease;
 }
 
 .subtitle-marker-button:hover,
 .subtitle-marker-button:focus-visible {
-  color: #fff4ad;
+  color: inherit;
   outline: none;
-  text-decoration-color: #fff4ad;
 }
 
 .subtitle-marker-button.is-selected {
-  color: #fff7c2;
-  text-decoration-color: #ffffff;
+  color: inherit;
 }
 
 @media (max-width: 640px) {
@@ -769,6 +756,31 @@ button {
 .heat-cluster-button:focus-visible {
   background: var(--primary-dark);
   outline: none;
+}
+
+.heat-cluster-button--vocab {
+  background: var(--primary);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.26);
+}
+
+.heat-cluster-button--comprehension {
+  background: #7c3aed;
+  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.26);
+}
+
+.heat-cluster-button--mixed {
+  background: linear-gradient(135deg, var(--primary) 0 50%, #7c3aed 50% 100%);
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.26);
+}
+
+.heat-cluster-button--comprehension:hover,
+.heat-cluster-button--comprehension:focus-visible {
+  background: #6d28d9;
+}
+
+.heat-cluster-button--mixed:hover,
+.heat-cluster-button--mixed:focus-visible {
+  background: linear-gradient(135deg, var(--primary-dark) 0 50%, #6d28d9 50% 100%);
 }
 
 .heat-cluster-button.is-selected {

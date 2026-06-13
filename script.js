@@ -568,32 +568,14 @@ function createSubtitleLanguageLine(className) {
 }
 
 function renderSubtitleMarkers() {
-  const segment = getCurrentSubtitleSegment();
-  currentSubtitleLine.innerHTML = '';
-
-  if (!segment) {
-    appendSubtitleText('暂无字幕');
+  if (!currentSubtitleLine) {
     return;
   }
 
-  const englishLine = createSubtitleLanguageLine('subtitle-language-line subtitle-english-line');
-  const chineseLine = createSubtitleLanguageLine('subtitle-language-line subtitle-chinese-line');
-  const ranges = getMarkerRangesForSegment(segment);
-  let cursor = 0;
-
-  ranges.forEach((range) => {
-    if (range.start < cursor) {
-      return;
-    }
-
-    appendSubtitleText(segment.text.slice(cursor, range.start), englishLine);
-    englishLine.append(createSubtitleMarker(segment.text.slice(range.start, range.end), range.obstacle));
-    cursor = range.end;
-  });
-
-  appendSubtitleText(segment.text.slice(cursor), englishLine);
-  chineseLine.textContent = subtitleTranslations.get(segment.text) || '（中文字幕待补充）';
-  currentSubtitleLine.append(englishLine, chineseLine);
+  // Route A: the source video already contains burned-in bilingual subtitles.
+  // Keep this DOM node available for accessibility/debugging, but do not overlay
+  // duplicate subtitles or obstacle marks on top of the video area.
+  currentSubtitleLine.innerHTML = '';
 }
 
 function getLearningStateLabel() {
@@ -605,14 +587,18 @@ function getLearningStateLabel() {
 }
 
 function renderVideoState() {
-  playIcon.textContent = isVideoPlaying ? '⏸' : '▶';
+  if (playIcon) {
+    playIcon.textContent = isVideoPlaying ? '⏸' : '▶';
+  }
 
   if (timelinePlayButton) {
     timelinePlayButton.textContent = isVideoPlaying ? '||' : '▶';
     timelinePlayButton.setAttribute('aria-label', isVideoPlaying ? '暂停视频' : '播放视频');
   }
 
-  videoStatusText.textContent = `V2.4A Obstacle Timeline · ${getLearningStateLabel()}`;
+  if (videoStatusText) {
+    videoStatusText.textContent = `V29C UI Cleanup · ${getLearningStateLabel()}`;
+  }
   renderSubtitleMarkers();
   renderTimelines();
 }
@@ -803,11 +789,33 @@ function createHeatClusterHighlight(cluster) {
   return highlight;
 }
 
+function getNavigationItemObstacleTypes(item) {
+  const sourceObstacles = Array.isArray(item.obstacles) ? item.obstacles : [item];
+  return new Set(sourceObstacles.map((obstacle) => obstacle.type || (obstacle.kind === 'word' ? 'vocab' : 'comprehension')));
+}
+
+function getHeatClusterTypeClass(cluster) {
+  const types = cluster.items.reduce((result, item) => {
+    getNavigationItemObstacleTypes(item).forEach((type) => result.add(type));
+    return result;
+  }, new Set());
+
+  if (types.has('comprehension') && !types.has('vocab')) {
+    return 'heat-cluster-button--comprehension';
+  }
+
+  if (types.has('vocab') && !types.has('comprehension')) {
+    return 'heat-cluster-button--vocab';
+  }
+
+  return 'heat-cluster-button--mixed';
+}
+
 function createHeatClusterButton(cluster) {
   const button = document.createElement('button');
   const clusterKey = getHeatClusterKey(cluster);
 
-  button.className = 'heat-cluster-button';
+  button.className = `heat-cluster-button ${getHeatClusterTypeClass(cluster)}`;
   button.type = 'button';
   const obstacleCount = getClusterObstacleCount(cluster);
 
@@ -1159,7 +1167,7 @@ function renderEpisodeProgress() {
   }
 
   if (episodeUndoButton) {
-    episodeUndoButton.textContent = '↶ 撤回上一步';
+    episodeUndoButton.textContent = '↶ 返回上一个障碍';
     episodeUndoButton.disabled = dismissedObstacleHistory.length === 0;
   }
 }
@@ -1254,20 +1262,31 @@ function getCompactTranslation(translation) {
   return String(translation || '').split(/[；;]/)[0].trim();
 }
 
+function getObstaclePartOfSpeech(obstacle) {
+  return obstacle.part_of_speech || obstacle.partOfSpeech || '';
+}
+
+function getObstacleTranslation(obstacle) {
+  return obstacle.translation || obstacle.sentenceMeaning || obstacle.sentence_meaning || '';
+}
+
 function createWordSummary(obstacle) {
   const summary = document.createElement('p');
-  summary.className = 'word-summary';
-  const sentenceMeaning = obstacle.sentenceMeaning || getCompactTranslation(obstacle.translation);
-  summary.textContent = `${obstacle.baseForm || obstacle.word} ${obstacle.phonetic || ''} ${obstacle.partOfSpeech || ''}`.trim()
-    + `\n句中含义：${sentenceMeaning}`;
+  summary.className = 'word-summary frozen-card-text';
+  const word = obstacle.word || obstacle.baseForm || obstacle.surfaceText || '未知单词';
+  const phonetic = obstacle.phonetic || '暂无音标';
+  const partOfSpeech = getObstaclePartOfSpeech(obstacle);
+  const translation = getObstacleTranslation(obstacle) || '暂无';
+  const wordLine = [word, phonetic, partOfSpeech].filter(Boolean).join(' ');
 
+  summary.textContent = `${wordLine}\n\n句中含义：${translation}`;
   return summary;
 }
 
 function createUnderstandingSummary(obstacle) {
   const summary = document.createElement('p');
-  summary.className = 'understanding-summary';
-  summary.textContent = obstacle.prototype || obstacle.baseForm || obstacle.phrase;
+  summary.className = 'understanding-summary frozen-card-text';
+  summary.textContent = obstacle.phrase || obstacle.baseForm || obstacle.source || obstacle.surfaceText || '暂无';
 
   return summary;
 }
@@ -1291,12 +1310,9 @@ function createCard(obstacle) {
   }
 
   if (obstacle.kind === 'understanding') {
-    content.append(
-      createUnderstandingSummary(obstacle),
-      createDetailBlock('字面意思', obstacle.literal),
-      createDetailBlock('实际意思', obstacle.actual),
-      createDetailBlock('语法解释', obstacle.grammar),
-    );
+    const summary = createUnderstandingSummary(obstacle);
+    summary.textContent = `${summary.textContent}\n\n字面意思：\n${obstacle.literal || '暂无'}\n\n实际意思：\n${obstacle.actual || '暂无'}\n\n语法解释：\n${obstacle.grammar || '暂无'}`;
+    content.append(summary);
   }
 
   const actions = document.createElement('div');
@@ -1315,6 +1331,10 @@ function createCard(obstacle) {
 }
 
 function renderEmptyState() {
+  if (!cardStream) {
+    return;
+  }
+
   const emptyState = document.createElement('div');
   emptyState.className = 'empty-state';
   emptyState.textContent = '当前视频内容没有需要处理的障碍。';
@@ -1326,6 +1346,10 @@ function getVisibleObstacles() {
 }
 
 function renderModePrompt() {
+  if (!cardStream) {
+    return;
+  }
+
   const prompt = document.createElement('div');
   prompt.className = 'empty-state';
   prompt.textContent = '当前字幕没有需要同步显示的障碍。';
@@ -1336,6 +1360,10 @@ function renderCards() {
   renderEpisodeProgress();
   const pendingObstacles = getPendingObstacles();
   const visibleObstacles = getVisibleObstacles();
+
+  if (!cardStream) {
+    return visibleObstacles;
+  }
 
   cardStream.innerHTML = '';
 
@@ -1368,21 +1396,181 @@ function analyzeAndRender(text, options = {}) {
   return renderCards();
 }
 
-function handleAnalyzeClick() {
-  analyzeAndRender(subtitleTextInput.value, { level: DEFAULT_VOCABULARY_LEVEL });
+function isPlainObject(value) {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 }
 
-analyzeButton.addEventListener('click', handleAnalyzeClick);
+function normalizeExternalSubtitleItems(payload) {
+  const sourceItems = Array.isArray(payload)
+    ? payload
+    : payload?.subtitles || payload?.subtitle_items || payload?.items || payload?.segments || [];
+
+  return sourceItems.map((item, index) => {
+    const english = item.english || item.en || item.text || item.subtitle || item.line || '';
+    const chinese = item.chinese || item.zh || item.translation || item.cn || '';
+
+    return {
+      id: item.id || item.subtitle_id || `subtitle-${index + 1}`,
+      text: String(english || '').trim(),
+      chinese: String(chinese || '').trim(),
+      startMs: Number.isFinite(Number(item.start_ms)) ? Number(item.start_ms) : null,
+      endMs: Number.isFinite(Number(item.end_ms)) ? Number(item.end_ms) : null,
+    };
+  }).filter((item) => item.text);
+}
+
+function mergeExternalSubtitleTranslations(items) {
+  items.forEach((item) => {
+    if (item.text && item.chinese) {
+      subtitleTranslations.set(item.text, item.chinese);
+    }
+  });
+}
+
+function getSubtitleTextFromExternalItems(items) {
+  return items.map((item) => item.text).join('\n\n');
+}
+
+function normalizeObstacleKind(obstacle) {
+  if (obstacle.kind === 'word' || obstacle.type === 'vocab') {
+    return 'word';
+  }
+
+  return 'understanding';
+}
+
+function normalizeExternalObstacles(payload, subtitleText) {
+  const sourceObstacles = Array.isArray(payload)
+    ? payload
+    : payload?.obstacles || payload?.items || payload?.data || [];
+  const occurrenceCounts = new Map();
+
+  return sourceObstacles.map((rawObstacle, index) => {
+    const rawType = rawObstacle.type || rawObstacle.kind || rawObstacle.obstacle_type || 'vocab';
+    const kind = normalizeObstacleKind(rawObstacle);
+    const type = kind === 'word' ? 'vocab' : 'comprehension';
+    const labelText = kind === 'word'
+      ? rawObstacle.word || rawObstacle.baseForm || rawObstacle.base_form || rawObstacle.surfaceText || rawObstacle.text || ''
+      : rawObstacle.phrase || rawObstacle.baseForm || rawObstacle.base_form || rawObstacle.source || rawObstacle.surfaceText || rawObstacle.text || '';
+    const subtitleTextValue = rawObstacle.subtitle || rawObstacle.subtitle_text || rawObstacle.sentence || '';
+    let indexValue = Number(rawObstacle.index ?? rawObstacle.start ?? rawObstacle.start_index);
+
+    if (!Number.isFinite(indexValue)) {
+      const searchText = subtitleTextValue || labelText;
+      const foundInSubtitle = searchText ? subtitleText.indexOf(searchText) : -1;
+      const foundLabel = labelText ? subtitleText.indexOf(labelText) : -1;
+      indexValue = foundLabel >= 0 ? foundLabel : Math.max(0, foundInSubtitle);
+    }
+
+    const endValue = Number(rawObstacle.end ?? rawObstacle.end_index);
+    const safeEnd = Number.isFinite(endValue) ? endValue : indexValue + String(labelText || '').length;
+    const idBase = rawObstacle.id || `${type}-${labelText || rawType}-${indexValue}`;
+    const occurrence = occurrenceCounts.get(idBase) || 0;
+    occurrenceCounts.set(idBase, occurrence + 1);
+
+    return {
+      ...rawObstacle,
+      id: occurrence > 0 ? `${idBase}-${occurrence + 1}` : String(idBase || `${type}-${index}`),
+      type,
+      kind,
+      label: kind === 'word' ? '生词' : '理解',
+      surfaceText: rawObstacle.surfaceText || rawObstacle.surface_text || rawObstacle.source || labelText,
+      baseForm: rawObstacle.baseForm || rawObstacle.base_form || labelText,
+      index: indexValue,
+      start: indexValue,
+      end: safeEnd,
+      word: rawObstacle.word || rawObstacle.baseForm || rawObstacle.base_form || labelText,
+      phrase: rawObstacle.phrase || rawObstacle.baseForm || rawObstacle.base_form || labelText,
+      phonetic: rawObstacle.phonetic || '',
+      partOfSpeech: rawObstacle.partOfSpeech || rawObstacle.part_of_speech || '',
+      sentenceMeaning: rawObstacle.sentenceMeaning || rawObstacle.sentence_meaning || rawObstacle.translation || '',
+      translation: rawObstacle.translation || rawObstacle.sentenceMeaning || rawObstacle.sentence_meaning || '',
+      literal: rawObstacle.literal || rawObstacle.literal_meaning || '',
+      actual: rawObstacle.actual || rawObstacle.actual_meaning || rawObstacle.meaning || '',
+      grammar: rawObstacle.grammar || rawObstacle.grammar_explanation || rawObstacle.explanation || '',
+    };
+  }).filter((obstacle) => Number.isFinite(obstacle.index));
+}
+
+async function fetchJsonIfAvailable(path) {
+  if (typeof fetch !== 'function') {
+    return null;
+  }
+
+  try {
+    const response = await fetch(path, { cache: 'no-store' });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    return response.json();
+  } catch (error) {
+    return null;
+  }
+}
+
+async function loadRealEpisodeData() {
+  const [subtitlePayload, obstaclePayload] = await Promise.all([
+    fetchJsonIfAvailable('output_text/v28d_bilingual_subtitles.json'),
+    fetchJsonIfAvailable('output_text/v29a_obstacles.json'),
+  ]);
+
+  const externalSubtitleItems = normalizeExternalSubtitleItems(subtitlePayload);
+  const externalSubtitleText = externalSubtitleItems.length > 0
+    ? getSubtitleTextFromExternalItems(externalSubtitleItems)
+    : DEFAULT_SUBTITLE_TEXT;
+  const externalObstacles = normalizeExternalObstacles(obstaclePayload, externalSubtitleText);
+
+  if (externalSubtitleItems.length > 0) {
+    mergeExternalSubtitleTranslations(externalSubtitleItems);
+    if (subtitleTextInput) {
+      subtitleTextInput.value = externalSubtitleText;
+    }
+  }
+
+  if (externalSubtitleItems.length > 0 || externalObstacles.length > 0) {
+    replaceObstacleStream(
+      externalObstacles.length > 0
+        ? externalObstacles
+        : analyzeSubtitleText(externalSubtitleText, { level: DEFAULT_VOCABULARY_LEVEL }),
+      externalSubtitleText,
+    );
+    renderCards();
+  }
+}
+
+function handleAnalyzeClick() {
+  analyzeAndRender(subtitleTextInput ? subtitleTextInput.value : DEFAULT_SUBTITLE_TEXT, { level: DEFAULT_VOCABULARY_LEVEL });
+}
+
+if (analyzeButton) {
+  analyzeButton.addEventListener('click', handleAnalyzeClick);
+}
 if (episodeUndoButton) {
   episodeUndoButton.addEventListener('click', undoLastDismissedObstacle);
 }
-learningPauseHintDismiss.addEventListener('click', dismissLearningPauseHint);
-learningPauseHint.addEventListener('pointerup', stopMarkerEvent);
-learningPauseHint.addEventListener('touchend', stopMarkerEvent);
-learningPauseHint.addEventListener('click', stopMarkerEvent);
-videoFrame.addEventListener('pointerup', handleVideoFrameActivation);
-videoFrame.addEventListener('touchend', handleVideoFrameActivation);
-videoFrame.addEventListener('click', handleVideoFrameActivation);
+if (learningPauseHintDismiss) {
+  learningPauseHintDismiss.addEventListener('click', dismissLearningPauseHint);
+}
+if (learningPauseHint) {
+  learningPauseHint.addEventListener('pointerup', stopMarkerEvent);
+}
+if (learningPauseHint) {
+  learningPauseHint.addEventListener('touchend', stopMarkerEvent);
+}
+if (learningPauseHint) {
+  learningPauseHint.addEventListener('click', stopMarkerEvent);
+}
+if (videoFrame) {
+  videoFrame.addEventListener('pointerup', handleVideoFrameActivation);
+}
+if (videoFrame) {
+  videoFrame.addEventListener('touchend', handleVideoFrameActivation);
+}
+if (videoFrame) {
+  videoFrame.addEventListener('click', handleVideoFrameActivation);
+}
 if (timelinePlayButton) {
   timelinePlayButton.addEventListener('click', (event) => {
     event.stopPropagation();
@@ -1410,6 +1598,7 @@ saveEpisodeProgress();
 renderVideoState();
 renderCards();
 syncPlaybackClock();
+loadRealEpisodeData();
 
 window.ObstacleDetectionEngine = {
   Analyze: analyzeAndRender,
