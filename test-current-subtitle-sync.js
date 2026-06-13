@@ -268,6 +268,52 @@ function assertStrictCardRendering() {
   console.log('PASS V29D-3 strict card rendering uses separate vocab and comprehension DOM nodes');
 }
 
+function assertFullPartOfSpeechRendering() {
+  const rows = [
+    {
+      id: 'v29d-4-believe',
+      type: 'vocab',
+      word: 'believe',
+      phonetic: '/bɪˈliːv/',
+      translation: '相信',
+    },
+    {
+      id: 'v29d-4-lecture',
+      type: 'vocab',
+      word: 'lecture',
+      phonetic: '/ˈlektʃər/',
+      translation: '讲座',
+      pos: 'n./v.',
+    },
+    {
+      id: 'v29d-4-alone',
+      type: 'vocab',
+      word: 'alone',
+      phonetic: '/əˈloʊn/',
+      translation: '独自',
+      wordClass: 'adj./adv.',
+    },
+  ];
+  const headlines = rows.map((row, rowIndex) => (
+    context.createWordHeadline(context.normalizeObstacle(row, rowIndex)).textContent
+  ));
+  const expectedHeadlines = [
+    'believe /bɪˈliːv/ vt./vi.',
+    'lecture /ˈlektʃər/ n./vi./vt.',
+    'alone /əˈloʊn/ adj./adv.',
+  ];
+
+  if (JSON.stringify(headlines) !== JSON.stringify(expectedHeadlines)) {
+    throw new Error(`V29D-4 full POS rendering: expected ${JSON.stringify(expectedHeadlines)}, got ${JSON.stringify(headlines)}`);
+  }
+
+  if (headlines.includes('believe /bɪˈliːv/')) {
+    throw new Error('V29D-4 full POS rendering: believe headline must not render without part of speech');
+  }
+
+  console.log('PASS V29D-4 full part-of-speech rendering includes fallback and normalized composite POS');
+}
+
 function assertPlayback(name, expectedIsPlaying) {
   const { isVideoPlaying } = api.getPlaybackState();
 
@@ -290,6 +336,7 @@ assertCardStreamExcludes('V2.6A Review Fix removes Prototype expression label', 
 assertCardStreamExcludes('Test V2.4A UI Cleanup first subtitle hides source label', '出处');
 assertCardStreamExcludes('Test V2.4A UI Cleanup first subtitle hides source text', '出处lay it on us');
 assertStrictCardRendering();
+assertFullPartOfSpeechRendering();
 
 api.pauseVideoForObstacle('understanding-lay-it-on-us');
 assertPlayback('Test 2 dotted marker enters Learning Pause', false);
