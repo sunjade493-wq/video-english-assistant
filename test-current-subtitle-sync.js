@@ -134,8 +134,12 @@ function assertAnalyzeEngineV26A() {
   const lectureObstacles = juniorObstacles.filter((obstacle) => obstacle.type === 'vocab' && obstacle.baseForm === 'lecture');
   const comprehensionObstacles = juniorObstacles.filter((obstacle) => obstacle.type === 'comprehension');
 
-  if (lectureObstacles.length !== 2) {
-    throw new Error(`V2.6A Analyze Engine: expected duplicate lecture vocab obstacles to remain, got ${lectureObstacles.length}`);
+  if (lectureObstacles.length !== 1) {
+    throw new Error(`V29D-5 Analyze Engine: expected same-episode lecture vocab obstacles to dedupe by lemma, got ${lectureObstacles.length}`);
+  }
+
+  if (lectureObstacles[0].partOfSpeech !== 'n./vi./vt.') {
+    throw new Error(`V29D-4 Analyze Engine: expected full POS n./vi./vt., got ${lectureObstacles[0].partOfSpeech}`);
   }
 
   if (seniorObstacles.some((obstacle) => obstacle.type === 'vocab' && obstacle.baseForm === 'lecture')) {
@@ -156,10 +160,23 @@ function assertAnalyzeEngineV26A() {
     }
   });
 
-  console.log('PASS V2.6A Analyze Engine outputs vocab/comprehension obstacles, prototype structures, same-sentence multiples, and vocab level');
+  console.log('PASS V29D Analyze Engine outputs lemma-deduped vocab, full POS, prototype structures, and vocab level');
 }
 
 assertAnalyzeEngineV26A();
+
+const inflectedVocab = analyzeEngine.analyzeSubtitleItems([{
+  id: 'inflected-subtitle-1',
+  text: 'She believes it, believed it, and is believing it. He married her before marrying again.',
+  start: 0,
+  end: 84,
+}], { level: 'junior' }).filter((obstacle) => obstacle.type === 'vocab' && ['believe', 'marry'].includes(obstacle.lemma));
+const inflectedKeys = inflectedVocab.map((obstacle) => `${obstacle.lemma}:${obstacle.partOfSpeech}`);
+if (JSON.stringify(inflectedKeys) !== JSON.stringify(['believe:vt./vi.', 'marry:vt./vi.'])) {
+  throw new Error(`V29D-5 dictionary pipeline: expected lemma dedupe for believe/marry with full POS, got ${JSON.stringify(inflectedKeys)}`);
+}
+console.log('PASS V29D-5 dictionary pipeline lemmatizes and dedupes inflected vocab');
+
 
 function getLabels() {
   return api.getVisibleObstacles().map((obstacle) => (
@@ -223,6 +240,23 @@ assertCardStreamIncludes('V2.6A Review Fix title uses prototype structure', 'lay
 assertCardStreamExcludes('V2.6A Review Fix removes Prototype expression label', 'Prototype expression');
 assertCardStreamExcludes('Test V2.4A UI Cleanup first subtitle hides source label', '出处');
 assertCardStreamExcludes('Test V2.4A UI Cleanup first subtitle hides source text', '出处lay it on us');
+
+const firstCardContent = getElement('#cardStream').children[0].children[0].children[1];
+if (firstCardContent.children.length !== 2
+  || firstCardContent.children[0].tag !== 'p'
+  || firstCardContent.children[0].className !== 'vocab-headline'
+  || firstCardContent.children[1].tag !== 'p'
+  || firstCardContent.children[1].className !== 'vocab-sentence-meaning') {
+  throw new Error('V29D-3 strict vocab card rendering: expected headline and sentence meaning as separate p nodes');
+}
+const secondCardContent = getElement('#cardStream').children[1].children[0].children[1];
+if (secondCardContent.children.length !== 4
+  || secondCardContent.children[0].tag !== 'p'
+  || secondCardContent.children[0].className !== 'understanding-prototype'
+  || secondCardContent.children.slice(1).some((child) => child.tag !== 'div' || child.className !== 'detail-block')) {
+  throw new Error('V29D-3 strict comprehension card rendering: expected prototype p plus separate detail-block nodes');
+}
+console.log('PASS V29D-3 strict card rendering uses separate DOM nodes');
 
 api.pauseVideoForObstacle('understanding-lay-it-on-us');
 assertPlayback('Test 2 dotted marker enters Learning Pause', false);
