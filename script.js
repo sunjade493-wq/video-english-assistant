@@ -232,6 +232,39 @@ function findUnderstandingMatch(text, pattern) {
   }, null);
 }
 
+
+function normalizeObstacleType(type) {
+  const normalizedType = String(type || '').trim().toLowerCase();
+
+  if (['vocabulary', 'vocab', 'word'].includes(normalizedType)) {
+    return 'vocab';
+  }
+
+  if (['comprehension', 'understanding'].includes(normalizedType)) {
+    return 'comprehension';
+  }
+
+  return normalizedType;
+}
+
+function normalizeObstacle(obstacle) {
+  if (!obstacle || typeof obstacle !== 'object') {
+    return obstacle;
+  }
+
+  const type = normalizeObstacleType(obstacle.type);
+
+  return {
+    ...obstacle,
+    type,
+    kind: obstacle.kind || (type === 'vocab' ? 'word' : type === 'comprehension' ? 'understanding' : obstacle.kind),
+  };
+}
+
+function normalizeObstacles(obstaclesToNormalize) {
+  return (obstaclesToNormalize || []).map(normalizeObstacle);
+}
+
 function getAnalyzeEngine() {
   return window.AnalyzeEngine || globalThis.AnalyzeEngine;
 }
@@ -252,7 +285,7 @@ function detectVocabularyObstacles(text, levelName = DEFAULT_VOCABULARY_LEVEL, c
     return engine.analyzeSubtitleItems(
       [{ id: 'subtitle-1', text: String(text || ''), start: 0, end: String(text || '').length }],
       { level: levelName, customWords },
-    ).filter((obstacle) => obstacle.type === 'vocab');
+    ).map(normalizeObstacle).filter((obstacle) => obstacle.type === 'vocab');
   }
 
   return [];
@@ -265,7 +298,7 @@ function detectUnderstandingObstacles(text) {
     return engine.analyzeSubtitleItems(
       [{ id: 'subtitle-1', text: String(text || ''), start: 0, end: String(text || '').length }],
       { level: 'custom', customWords: tokenize(text) },
-    ).filter((obstacle) => obstacle.type === 'comprehension');
+    ).map(normalizeObstacle).filter((obstacle) => obstacle.type === 'comprehension');
   }
 
   return [];
@@ -287,7 +320,7 @@ function analyzeSubtitleText(text, options = {}) {
     return [];
   }
 
-  return engine.analyzeSubtitleItems(createSubtitleItemsFromText(subtitleText), options);
+  return normalizeObstacles(engine.analyzeSubtitleItems(createSubtitleItemsFromText(subtitleText), options));
 }
 
 let subtitleSegments = parseSubtitleSegments(DEFAULT_SUBTITLE_TEXT);
@@ -1192,7 +1225,7 @@ function undoLastDismissedObstacle() {
 }
 
 function replaceObstacleStream(nextObstacles, text = subtitleTextInput.value) {
-  obstacles = nextObstacles;
+  obstacles = normalizeObstacles(nextObstacles);
   currentEpisodeProgressKey = getEpisodeProgressKey(text);
   applyStoredEpisodeProgress(currentEpisodeProgressKey);
   streamMode = 'dynamic';
