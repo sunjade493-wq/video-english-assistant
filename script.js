@@ -8,6 +8,7 @@ I was pulled off the project.
 Let's call it a day.`;
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
 const EPISODE_PROGRESS_STORAGE_PREFIX = 'videoEnglishAssistant.episodeProgress.';
+const OBSTACLE_JSON_URL = 'output_text/v29a_obstacles.json';
 
 const subtitleTranslations = new Map([
   [
@@ -333,6 +334,18 @@ const bottomSheetTitle = document.querySelector('#bottomSheetTitle');
 const bottomSheetContent = document.querySelector('#bottomSheetContent');
 const bottomSheetClose = document.querySelector('#bottomSheetClose');
 
+function addOptionalEventListener(element, eventName, listener, options) {
+  if (!element) {
+    return;
+  }
+
+  element.addEventListener(eventName, listener, options);
+}
+
+function getSubtitleInputValue() {
+  return subtitleTextInput ? subtitleTextInput.value : DEFAULT_SUBTITLE_TEXT;
+}
+
 function parseSubtitleSegments(text) {
   const sourceText = String(text || '').trim();
 
@@ -524,7 +537,7 @@ function getMarkerRangesForSegment(segment) {
 }
 
 function appendSubtitleText(text, targetLine = currentSubtitleLine) {
-  if (!text) {
+  if (!text || !targetLine) {
     return;
   }
 
@@ -535,7 +548,9 @@ function appendSubtitleText(text, targetLine = currentSubtitleLine) {
 }
 
 function stopMarkerEvent(event) {
-  event.stopPropagation();
+  if (event && typeof event.stopPropagation === 'function') {
+    event.stopPropagation();
+  }
 }
 
 function handleMarkerActivation(event, obstacleId) {
@@ -554,9 +569,9 @@ function createSubtitleMarker(text, obstacle) {
     marker.classList.add('is-selected');
   }
 
-  marker.addEventListener('pointerup', (event) => handleMarkerActivation(event, obstacle.id));
-  marker.addEventListener('touchend', (event) => handleMarkerActivation(event, obstacle.id));
-  marker.addEventListener('click', (event) => handleMarkerActivation(event, obstacle.id));
+  addOptionalEventListener(marker, 'pointerup', (event) => handleMarkerActivation(event, obstacle.id));
+  addOptionalEventListener(marker, 'touchend', (event) => handleMarkerActivation(event, obstacle.id));
+  addOptionalEventListener(marker, 'click', (event) => handleMarkerActivation(event, obstacle.id));
 
   return marker;
 }
@@ -568,6 +583,10 @@ function createSubtitleLanguageLine(className) {
 }
 
 function renderSubtitleMarkers() {
+  if (!currentSubtitleLine) {
+    return;
+  }
+
   const segment = getCurrentSubtitleSegment();
   currentSubtitleLine.innerHTML = '';
 
@@ -605,14 +624,18 @@ function getLearningStateLabel() {
 }
 
 function renderVideoState() {
-  playIcon.textContent = isVideoPlaying ? '⏸' : '▶';
+  if (playIcon) {
+    playIcon.textContent = isVideoPlaying ? '⏸' : '▶';
+  }
 
   if (timelinePlayButton) {
     timelinePlayButton.textContent = isVideoPlaying ? '||' : '▶';
     timelinePlayButton.setAttribute('aria-label', isVideoPlaying ? '暂停视频' : '播放视频');
   }
 
-  videoStatusText.textContent = `V2.4A Obstacle Timeline · ${getLearningStateLabel()}`;
+  if (videoStatusText) {
+    videoStatusText.textContent = `V2.4A Obstacle Timeline · ${getLearningStateLabel()}`;
+  }
   renderSubtitleMarkers();
   renderTimelines();
 }
@@ -822,8 +845,8 @@ function createHeatClusterButton(cluster) {
     button.setAttribute('aria-pressed', 'false');
   }
 
-  button.addEventListener('click', (event) => {
-    event.stopPropagation();
+  addOptionalEventListener(button, 'click', (event) => {
+    stopMarkerEvent(event);
     openBottomSheet(cluster);
   });
 
@@ -916,7 +939,7 @@ function createBottomSheetObstacleButton(obstacle) {
   button.className = 'bottom-sheet__obstacle';
   button.type = 'button';
   button.textContent = `${obstacle.kind === 'word' ? '○' : '●'} ${obstacle.kind === 'word' ? obstacle.surfaceText || obstacle.word : obstacle.phrase}`;
-  button.addEventListener('click', () => {
+  addOptionalEventListener(button, 'click', () => {
     const wasPlaying = isVideoPlaying;
     selectedObstacleId = obstacle.id;
     seekToTime(obstacle.timeMs);
@@ -1191,7 +1214,7 @@ function undoLastDismissedObstacle() {
   return null;
 }
 
-function replaceObstacleStream(nextObstacles, text = subtitleTextInput.value) {
+function replaceObstacleStream(nextObstacles, text = getSubtitleInputValue()) {
   obstacles = nextObstacles;
   currentEpisodeProgressKey = getEpisodeProgressKey(text);
   applyStoredEpisodeProgress(currentEpisodeProgressKey);
@@ -1254,20 +1277,30 @@ function getCompactTranslation(translation) {
   return String(translation || '').split(/[；;]/)[0].trim();
 }
 
+function getObstacleText(obstacle) {
+  return obstacle.text || obstacle.prototype || obstacle.surfaceText || obstacle.source || obstacle.phrase || obstacle.baseForm || '';
+}
+
 function createWordSummary(obstacle) {
-  const summary = document.createElement('p');
+  const summary = document.createElement('div');
   summary.className = 'word-summary';
-  const sentenceMeaning = obstacle.sentenceMeaning || getCompactTranslation(obstacle.translation);
-  summary.textContent = `${obstacle.baseForm || obstacle.word} ${obstacle.phonetic || ''} ${obstacle.partOfSpeech || ''}`.trim()
-    + `\n句中含义：${sentenceMeaning}`;
+  const word = obstacle.word || obstacle.baseForm || obstacle.surfaceText || '';
+  const phonetic = obstacle.phonetic || '暂无音标';
+  const translation = obstacle.translation || obstacle.sentenceMeaning || getCompactTranslation(obstacle.explanation) || '';
+
+  summary.append(
+    createDetailBlock('word', word),
+    createDetailBlock('phonetic', phonetic),
+    createDetailBlock('translation', translation),
+  );
 
   return summary;
 }
 
 function createUnderstandingSummary(obstacle) {
-  const summary = document.createElement('p');
+  const summary = document.createElement('div');
   summary.className = 'understanding-summary';
-  summary.textContent = obstacle.prototype || obstacle.baseForm || obstacle.phrase;
+  summary.append(createDetailBlock('text', getObstacleText(obstacle) || obstacle.prototype || ''));
 
   return summary;
 }
@@ -1306,7 +1339,7 @@ function createCard(obstacle) {
   dismissButton.className = 'dismiss-button';
   dismissButton.type = 'button';
   dismissButton.textContent = '✓ 不用管我了';
-  dismissButton.addEventListener('click', () => hideCurrentObstacle(obstacle.id));
+  addOptionalEventListener(dismissButton, 'click', () => hideCurrentObstacle(obstacle.id));
 
   actions.append(dismissButton);
   inner.append(label, content, actions);
@@ -1315,6 +1348,10 @@ function createCard(obstacle) {
 }
 
 function renderEmptyState() {
+  if (!cardStream) {
+    return;
+  }
+
   const emptyState = document.createElement('div');
   emptyState.className = 'empty-state';
   emptyState.textContent = '当前视频内容没有需要处理的障碍。';
@@ -1326,6 +1363,10 @@ function getVisibleObstacles() {
 }
 
 function renderModePrompt() {
+  if (!cardStream) {
+    return;
+  }
+
   const prompt = document.createElement('div');
   prompt.className = 'empty-state';
   prompt.textContent = '当前字幕没有需要同步显示的障碍。';
@@ -1336,6 +1377,10 @@ function renderCards() {
   renderEpisodeProgress();
   const pendingObstacles = getPendingObstacles();
   const visibleObstacles = getVisibleObstacles();
+
+  if (!cardStream) {
+    return visibleObstacles;
+  }
 
   cardStream.innerHTML = '';
 
@@ -1368,48 +1413,188 @@ function analyzeAndRender(text, options = {}) {
   return renderCards();
 }
 
-function handleAnalyzeClick() {
-  analyzeAndRender(subtitleTextInput.value, { level: DEFAULT_VOCABULARY_LEVEL });
+function getObstacleJsonArray(payload) {
+  if (Array.isArray(payload)) {
+    return payload;
+  }
+
+  if (!payload || typeof payload !== 'object') {
+    return [];
+  }
+
+  if (Array.isArray(payload.obstacles)) {
+    return payload.obstacles;
+  }
+
+  return [
+    ...(Array.isArray(payload.vocabulary_obstacles) ? payload.vocabulary_obstacles : []),
+    ...(Array.isArray(payload.vocab_obstacles) ? payload.vocab_obstacles : []),
+    ...(Array.isArray(payload.comprehension_obstacles) ? payload.comprehension_obstacles : []),
+    ...(Array.isArray(payload.understanding_obstacles) ? payload.understanding_obstacles : []),
+  ];
 }
 
-analyzeButton.addEventListener('click', handleAnalyzeClick);
-if (episodeUndoButton) {
-  episodeUndoButton.addEventListener('click', undoLastDismissedObstacle);
+function getObstacleJsonText(payload) {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+    return DEFAULT_SUBTITLE_TEXT;
+  }
+
+  if (typeof payload.text === 'string') {
+    return payload.text;
+  }
+
+  if (typeof payload.subtitle_text === 'string') {
+    return payload.subtitle_text;
+  }
+
+  if (typeof payload.subtitleText === 'string') {
+    return payload.subtitleText;
+  }
+
+  if (Array.isArray(payload.subtitles)) {
+    const subtitleText = payload.subtitles
+      .map((subtitle) => typeof subtitle === 'string' ? subtitle : subtitle?.text)
+      .filter(Boolean)
+      .join('\n\n');
+
+    if (subtitleText) {
+      return subtitleText;
+    }
+  }
+
+  return DEFAULT_SUBTITLE_TEXT;
 }
-learningPauseHintDismiss.addEventListener('click', dismissLearningPauseHint);
-learningPauseHint.addEventListener('pointerup', stopMarkerEvent);
-learningPauseHint.addEventListener('touchend', stopMarkerEvent);
-learningPauseHint.addEventListener('click', stopMarkerEvent);
-videoFrame.addEventListener('pointerup', handleVideoFrameActivation);
-videoFrame.addEventListener('touchend', handleVideoFrameActivation);
-videoFrame.addEventListener('click', handleVideoFrameActivation);
-if (timelinePlayButton) {
-  timelinePlayButton.addEventListener('click', (event) => {
-    event.stopPropagation();
-    toggleVideoPlayback();
-  });
+
+function inferJsonObstacleKind(obstacle) {
+  const rawKind = String(obstacle.kind || obstacle.type || obstacle.label || '').toLowerCase();
+
+  if (rawKind.includes('word') || rawKind.includes('vocab') || rawKind.includes('生词')) {
+    return 'word';
+  }
+
+  if (rawKind.includes('understanding') || rawKind.includes('comprehension') || rawKind.includes('理解')) {
+    return 'understanding';
+  }
+
+  if ('word' in obstacle || 'translation' in obstacle || 'phonetic' in obstacle) {
+    return 'word';
+  }
+
+  return 'understanding';
 }
-if (videoTimeline) {
-  videoTimeline.addEventListener('input', handleTimelineInput);
-  videoTimeline.addEventListener('click', stopMarkerEvent);
-  videoTimeline.addEventListener('pointerup', stopMarkerEvent);
+
+function normalizeJsonObstacle(rawObstacle, index) {
+  const obstacle = rawObstacle && typeof rawObstacle === 'object' ? rawObstacle : {};
+  const kind = inferJsonObstacleKind(obstacle);
+  const start = Number.isFinite(obstacle.start) ? obstacle.start : Number.isFinite(obstacle.index) ? obstacle.index : 0;
+  const end = Number.isFinite(obstacle.end) ? obstacle.end : start + String(obstacle.text || obstacle.word || obstacle.phrase || '').length;
+
+  if (kind === 'word') {
+    const word = obstacle.word || obstacle.baseForm || obstacle.text || obstacle.surfaceText || '';
+
+    return {
+      id: obstacle.id || `word-json-${index + 1}`,
+      type: 'vocab',
+      kind: 'word',
+      label: '生词',
+      surfaceText: obstacle.surfaceText || word,
+      baseForm: obstacle.baseForm || word,
+      start,
+      end,
+      index: start,
+      word,
+      phonetic: obstacle.phonetic || '',
+      translation: obstacle.translation || obstacle.meaning || obstacle.sentenceMeaning || '',
+    };
+  }
+
+  const text = obstacle.text || obstacle.surfaceText || obstacle.source || obstacle.phrase || obstacle.baseForm || '';
+
+  return {
+    id: obstacle.id || `understanding-json-${index + 1}`,
+    type: 'comprehension',
+    kind: 'understanding',
+    label: '理解',
+    surfaceText: obstacle.surfaceText || text,
+    baseForm: obstacle.baseForm || text,
+    start,
+    end,
+    index: start,
+    text,
+    phrase: obstacle.phrase || text,
+    source: obstacle.source || text,
+    literal: obstacle.literal || obstacle['字面意思'] || '',
+    actual: obstacle.actual || obstacle['实际意思'] || '',
+    grammar: obstacle.grammar || obstacle['语法解释'] || '',
+  };
 }
-if (obstacleHeatAxis) {
-  obstacleHeatAxis.addEventListener('click', stopMarkerEvent);
-  obstacleHeatAxis.addEventListener('pointerup', stopMarkerEvent);
+
+function loadObstacleJson() {
+  if (typeof fetch !== 'function') {
+    return Promise.resolve(null);
+  }
+
+  return fetch(OBSTACLE_JSON_URL, { cache: 'no-store' })
+    .then((response) => {
+      if (!response.ok) {
+        return null;
+      }
+
+      return response.json();
+    })
+    .then((payload) => {
+      if (!payload) {
+        return null;
+      }
+
+      const jsonObstacles = getObstacleJsonArray(payload).map(normalizeJsonObstacle);
+
+      if (jsonObstacles.length === 0) {
+        return null;
+      }
+
+      const jsonText = getObstacleJsonText(payload);
+      if (subtitleTextInput) {
+        subtitleTextInput.value = jsonText;
+      }
+      replaceObstacleStream(jsonObstacles, jsonText);
+      renderCards();
+      return jsonObstacles;
+    })
+    .catch(() => null);
 }
-if (bottomSheetClose) {
-  bottomSheetClose.addEventListener('click', closeBottomSheet);
+
+function handleAnalyzeClick() {
+  analyzeAndRender(getSubtitleInputValue(), { level: DEFAULT_VOCABULARY_LEVEL });
 }
-if (bottomSheetBackdrop) {
-  bottomSheetBackdrop.addEventListener('click', closeBottomSheet);
-}
+
+addOptionalEventListener(analyzeButton, 'click', handleAnalyzeClick);
+addOptionalEventListener(episodeUndoButton, 'click', undoLastDismissedObstacle);
+addOptionalEventListener(learningPauseHintDismiss, 'click', dismissLearningPauseHint);
+addOptionalEventListener(learningPauseHint, 'pointerup', stopMarkerEvent);
+addOptionalEventListener(learningPauseHint, 'touchend', stopMarkerEvent);
+addOptionalEventListener(learningPauseHint, 'click', stopMarkerEvent);
+addOptionalEventListener(videoFrame, 'pointerup', handleVideoFrameActivation);
+addOptionalEventListener(videoFrame, 'touchend', handleVideoFrameActivation);
+addOptionalEventListener(videoFrame, 'click', handleVideoFrameActivation);
+addOptionalEventListener(timelinePlayButton, 'click', (event) => {
+  stopMarkerEvent(event);
+  toggleVideoPlayback();
+});
+addOptionalEventListener(videoTimeline, 'input', handleTimelineInput);
+addOptionalEventListener(videoTimeline, 'click', stopMarkerEvent);
+addOptionalEventListener(videoTimeline, 'pointerup', stopMarkerEvent);
+addOptionalEventListener(obstacleHeatAxis, 'click', stopMarkerEvent);
+addOptionalEventListener(obstacleHeatAxis, 'pointerup', stopMarkerEvent);
+addOptionalEventListener(bottomSheetClose, 'click', closeBottomSheet);
+addOptionalEventListener(bottomSheetBackdrop, 'click', closeBottomSheet);
 currentEpisodeProgressKey = getEpisodeProgressKey(DEFAULT_SUBTITLE_TEXT);
 applyStoredEpisodeProgress(currentEpisodeProgressKey);
 saveEpisodeProgress();
 renderVideoState();
 renderCards();
 syncPlaybackClock();
+loadObstacleJson();
 
 window.ObstacleDetectionEngine = {
   Analyze: analyzeAndRender,
