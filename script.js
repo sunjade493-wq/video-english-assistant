@@ -1255,18 +1255,21 @@ function getCompactTranslation(translation) {
 }
 
 function createWordSummary(obstacle) {
-  const summary = document.createElement('p');
-  summary.className = 'word-summary';
+  const headline = document.createElement('p');
+  headline.className = 'vocab-headline';
   const sentenceMeaning = obstacle.sentenceMeaning || getCompactTranslation(obstacle.translation);
-  summary.textContent = `${obstacle.baseForm || obstacle.word} ${obstacle.phonetic || ''} ${obstacle.partOfSpeech || ''}`.trim()
-    + `\n句中含义：${sentenceMeaning}`;
+  headline.textContent = `${obstacle.lemma || obstacle.baseForm || obstacle.word} ${obstacle.phonetic || ''} ${obstacle.partOfSpeech || ''}`.trim();
 
-  return summary;
+  const meaning = document.createElement('p');
+  meaning.className = 'vocab-sentence-meaning';
+  meaning.textContent = `句中含义：${sentenceMeaning}`;
+
+  return [headline, meaning];
 }
 
 function createUnderstandingSummary(obstacle) {
   const summary = document.createElement('p');
-  summary.className = 'understanding-summary';
+  summary.className = 'understanding-prototype';
   summary.textContent = obstacle.prototype || obstacle.baseForm || obstacle.phrase;
 
   return summary;
@@ -1287,7 +1290,7 @@ function createCard(obstacle) {
   content.className = 'card-content';
 
   if (obstacle.kind === 'word') {
-    content.append(createWordSummary(obstacle));
+    content.append(...createWordSummary(obstacle));
   }
 
   if (obstacle.kind === 'understanding') {

@@ -33,25 +33,44 @@
     },
   };
 
-  const vocabularyMockEntries = {
+  const dictionaryEntries = {
     lecture: {
       phonetic: '/ˈlektʃər/',
-      partOfSpeech: 'n./v.',
+      partOfSpeech: 'n./vi./vt.',
       sentenceMeaning: '讲座',
-      explanation: 'lecture /ˈlektʃər/ n./v.\n句中含义：讲座',
     },
     academic: {
       phonetic: '/ˌækəˈdemɪk/',
       partOfSpeech: 'adj.',
       sentenceMeaning: '学术的',
-      explanation: 'academic /ˌækəˈdemɪk/ adj.\n句中含义：学术的',
     },
     project: {
       phonetic: '/ˈprɑːdʒekt/',
       partOfSpeech: 'n.',
       sentenceMeaning: '项目',
-      explanation: 'project /ˈprɑːdʒekt/ n.\n句中含义：项目',
     },
+
+    believe: {
+      phonetic: '/bɪˈliːv/',
+      partOfSpeech: 'vt./vi.',
+      sentenceMeaning: '相信',
+    },
+    marry: {
+      phonetic: '/ˈmæri/',
+      partOfSpeech: 'vt./vi.',
+      sentenceMeaning: '结婚；嫁；娶',
+    },
+    official: {
+      phonetic: '/əˈfɪʃəl/',
+      partOfSpeech: 'adj.',
+      sentenceMeaning: '官方的；正式的',
+    },
+    alone: {
+      phonetic: '/əˈloʊn/',
+      partOfSpeech: 'adj./adv.',
+      sentenceMeaning: '独自的；独自地',
+    },
+
   };
 
   const comprehensionMockEntries = [
@@ -104,6 +123,55 @@
     return String(text || '').match(/[A-Za-z]+(?:'[A-Za-z]+)?/g) || [];
   }
 
+
+  const posAliases = new Map([
+    ['noun', 'n.'], ['n', 'n.'], ['pronoun', 'pron.'], ['pron', 'pron.'],
+    ['adjective', 'adj.'], ['adj', 'adj.'], ['adverb', 'adv.'], ['adv', 'adv.'],
+    ['preposition', 'prep.'], ['prep', 'prep.'], ['conjunction', 'conj.'], ['conj', 'conj.'],
+    ['interjection', 'interj.'], ['interj', 'interj.'], ['determiner', 'det.'], ['det', 'det.'],
+    ['numeral', 'num.'], ['num', 'num.'], ['transitive verb', 'vt.'], ['vt', 'vt.'],
+    ['intransitive verb', 'vi.'], ['vi', 'vi.'], ['auxiliary verb', 'aux. v.'], ['aux v', 'aux. v.'], ['aux', 'aux. v.'],
+    ['modal verb', 'modal v.'], ['modal v', 'modal v.'], ['modal', 'modal v.'],
+    ['linking verb', 'linking v.'], ['linking v', 'linking v.'], ['linking', 'linking v.'],
+  ]);
+
+  function normalizePartOfSpeech(partOfSpeech) {
+    const raw = String(partOfSpeech || '').trim().toLowerCase();
+    if (!raw) return '';
+    const compact = raw.replace(/\s+/g, ' ');
+    if (compact === 'v.' || compact === 'v') return 'vt./vi.';
+    return compact.split('/').map((part) => {
+      const key = part.replace(/\./g, '').trim();
+      return posAliases.get(key) || posAliases.get(part.trim()) || part.trim();
+    }).filter(Boolean).join('/');
+  }
+
+  function lemmatizeWord(surfaceWord) {
+    const word = normalizeWord(surfaceWord);
+    const irregular = new Map([
+      ['believed', 'believe'], ['believes', 'believe'], ['believing', 'believe'],
+      ['married', 'marry'], ['marries', 'marry'], ['marrying', 'marry'],
+    ]);
+    if (irregular.has(word)) return irregular.get(word);
+    if (word.length > 4 && word.endsWith('ies')) return `${word.slice(0, -3)}y`;
+    if (word.length > 5 && word.endsWith('ying')) return `${word.slice(0, -4)}ie`;
+    if (word.length > 4 && word.endsWith('ing')) return word.slice(0, -3);
+    if (word.length > 3 && word.endsWith('ed')) return word.slice(0, -2);
+    if (word.length > 3 && word.endsWith('es')) return word.slice(0, -2);
+    if (word.length > 3 && word.endsWith('s') && !word.endsWith('ss')) return word.slice(0, -1);
+    return word;
+  }
+
+  function lookupDictionaryEntry(surfaceWord) {
+    const lemma = lemmatizeWord(surfaceWord);
+    const entry = dictionaryEntries[lemma] || createFallbackVocabEntry(lemma);
+    return {
+      ...entry,
+      lemma,
+      partOfSpeech: normalizePartOfSpeech(entry.partOfSpeech),
+    };
+  }
+
   function resolveVocabularyWords(levelName, customWords = []) {
     const level = vocabularyLevels[levelName] ? levelName : DEFAULT_VOCABULARY_LEVEL;
     const words = new Set(customWords.map(normalizeWord));
@@ -135,9 +203,8 @@
   function createFallbackVocabEntry(word) {
     return {
       phonetic: '待补充',
-      partOfSpeech: '',
+      partOfSpeech: '待补充',
       sentenceMeaning: '待补充',
-      explanation: `${word} 待补充\n句中含义：待补充`,
     };
   }
 
@@ -220,16 +287,20 @@
     const wordMatches = [...String(subtitleItem.text || '').matchAll(/[A-Za-z]+(?:'[A-Za-z]+)?/g)];
 
     return wordMatches.reduce((result, rawWordMatch) => {
-      const baseForm = normalizeWord(rawWordMatch[0]);
+      const surfaceForm = normalizeWord(rawWordMatch[0]);
+      const baseForm = lemmatizeWord(surfaceForm);
 
-      if (!baseForm || knownWords.has(baseForm)) {
+      if (!baseForm || knownWords.has(surfaceForm) || knownWords.has(baseForm)) {
         return result;
       }
 
-      const entry = vocabularyMockEntries[baseForm] || createFallbackVocabEntry(baseForm);
-      const occurrenceKey = `vocab:${subtitleItem.id}:${baseForm}`;
-      const occurrence = occurrenceCounts.get(occurrenceKey) || 0;
-      occurrenceCounts.set(occurrenceKey, occurrence + 1);
+      const entry = lookupDictionaryEntry(rawWordMatch[0]);
+      const occurrenceKey = `vocab:${baseForm}`;
+      if (occurrenceCounts.has(occurrenceKey)) {
+        return result;
+      }
+      const occurrence = 0;
+      occurrenceCounts.set(occurrenceKey, 1);
       const start = subtitleItem.start + rawWordMatch.index;
       const end = start + rawWordMatch[0].length;
 
@@ -242,7 +313,8 @@
         label: '生词',
         surfaceText: rawWordMatch[0],
         baseForm,
-        explanation: entry.explanation,
+        explanation: `${baseForm} ${entry.phonetic || ''} ${entry.partOfSpeech || ''}`.trim() + `\n句中含义：${entry.sentenceMeaning}`,
+        lemma: baseForm,
         start,
         end,
         index: start,
@@ -265,9 +337,14 @@
         return result;
       }
 
-      const occurrenceKey = `comprehension:${subtitleItem.id}:${entry.baseForm}`;
-      const occurrence = occurrenceCounts.get(occurrenceKey) || 0;
-      occurrenceCounts.set(occurrenceKey, occurrence + 1);
+      const occurrenceKey = `comprehension:${entry.prototype}`;
+
+      if (occurrenceCounts.has(occurrenceKey)) {
+        return result;
+      }
+
+      const occurrence = 0;
+      occurrenceCounts.set(occurrenceKey, 1);
       const start = subtitleItem.start + match.start;
       const end = subtitleItem.start + match.end;
       const explanation = `${entry.prototype}\n字面意思：${entry.literal}\n实际意思：${entry.actual}\n语法解释：${entry.grammar}`;
@@ -320,7 +397,7 @@
   global.AnalyzeEngine = {
     analyzeSubtitleItems,
     levels: vocabularyLevels,
-    vocabularyMockEntries,
+    dictionaryEntries,
     comprehensionMockEntries,
   };
 }(typeof window !== 'undefined' ? window : globalThis));
