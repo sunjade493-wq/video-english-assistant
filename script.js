@@ -1,23 +1,10 @@
-const DEFAULT_SUBTITLE_TEXT = `If you enjoyed this lecture,
-I'm sure you're too busy to lay it on us.
-
-Can you give me a hand?
-
-I was pulled off the project.
-
-Let's call it a day.`;
+const DEFAULT_SUBTITLE_TEXT = '';
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
 const EPISODE_PROGRESS_STORAGE_PREFIX = 'videoEnglishAssistant.episodeProgress.';
+const SUBTITLE_DATA_URL = 'output_text/v28d_bilingual_subtitles.json';
+const OBSTACLE_DATA_URL = 'output_text/v29a_obstacles.json';
 
-const subtitleTranslations = new Map([
-  [
-    "If you enjoyed this lecture, I'm sure you're too busy to lay it on us.",
-    '如果你喜欢这堂讲座，我相信你也很忙，但请直接告诉我们。',
-  ],
-  ['Can you give me a hand?', '你能帮我一下吗？'],
-  ['I was pulled off the project.', '我被调离了这个项目。'],
-  ["Let's call it a day.", '今天就到这里吧。'],
-]);
+const subtitleTranslations = new Map();
 
 const vocabularyLevels = {
   junior: {
@@ -236,6 +223,172 @@ function getAnalyzeEngine() {
   return window.AnalyzeEngine || globalThis.AnalyzeEngine;
 }
 
+
+function safeAddEventListener(target, eventName, handler, options) {
+  if (!target || typeof target.addEventListener !== 'function') {
+    return false;
+  }
+
+  target.addEventListener(eventName, handler, options);
+  return true;
+}
+
+function normalizeSubtitleRecord(record, index) {
+  if (typeof record === 'string') {
+    return {
+      id: `subtitle-${index + 1}`,
+      text: record,
+      translation: '',
+    };
+  }
+
+  const text = record?.text || record?.english || record?.en || record?.subtitle || record?.source || '';
+  const translation = record?.translation || record?.chinese || record?.zh || record?.cn || record?.target || '';
+
+  return {
+    ...record,
+    id: record?.id || `subtitle-${index + 1}`,
+    text: String(text || '').trim(),
+    translation: String(translation || '').trim(),
+  };
+}
+
+function normalizeSubtitleData(data) {
+  const records = Array.isArray(data)
+    ? data
+    : data?.subtitles || data?.items || data?.segments || data?.data || [];
+
+  return records.map(normalizeSubtitleRecord).filter((record) => record.text);
+}
+
+function buildSubtitleTextFromRecords(records) {
+  return records.map((record) => record.text).join('\n\n');
+}
+
+function applySubtitleTranslations(records) {
+  subtitleTranslations.clear();
+  records.forEach((record) => {
+    if (record.text && record.translation) {
+      subtitleTranslations.set(record.text, record.translation);
+    }
+  });
+}
+
+function normalizeObstacleKind(obstacle) {
+  if (obstacle.kind) {
+    return obstacle.kind;
+  }
+
+  if (obstacle.type === 'vocab' || obstacle.word || obstacle.baseForm || obstacle.phonetic) {
+    return 'word';
+  }
+
+  return 'understanding';
+}
+
+function findObstacleSourceText(obstacle) {
+  return obstacle.surfaceText || obstacle.source || obstacle.phrase || obstacle.word || obstacle.baseForm || '';
+}
+
+function findObstacleIndexInText(obstacle, subtitleText) {
+  if (Number.isFinite(obstacle.index)) {
+    return obstacle.index;
+  }
+
+  const source = findObstacleSourceText(obstacle);
+  if (!source) {
+    return 0;
+  }
+
+  const normalizedSource = normalizeText(source);
+  const directIndex = subtitleText.toLowerCase().indexOf(String(source).toLowerCase());
+
+  if (directIndex >= 0) {
+    return directIndex;
+  }
+
+  const segments = parseSubtitleSegments(subtitleText);
+  for (const segment of segments) {
+    if (normalizeText(segment.text).includes(normalizedSource)) {
+      return segment.start;
+    }
+  }
+
+  return 0;
+}
+
+function normalizeObstacleRecord(record, index, subtitleText) {
+  const kind = normalizeObstacleKind(record || {});
+  const type = record?.type || (kind === 'word' ? 'vocab' : 'comprehension');
+  const sourceText = findObstacleSourceText(record || {});
+  const obstacleIndex = findObstacleIndexInText(record || {}, subtitleText);
+  const end = Number.isFinite(record?.end) ? record.end : obstacleIndex + sourceText.length;
+
+  return {
+    ...(record || {}),
+    id: record?.id || `${type}-${index + 1}`,
+    type,
+    kind,
+    index: obstacleIndex,
+    end,
+    surfaceText: record?.surfaceText || sourceText,
+    word: record?.word || (kind === 'word' ? sourceText : record?.word),
+    phrase: record?.phrase || (kind === 'understanding' ? sourceText : record?.phrase),
+    literal: record?.literal || record?.literalMeaning || '',
+    actual: record?.actual || record?.actualMeaning || record?.meaning || '',
+    grammar: record?.grammar || record?.explanation || record?.usage || '',
+  };
+}
+
+function normalizeObstacleData(data, subtitleText) {
+  const records = Array.isArray(data)
+    ? data
+    : data?.obstacles || data?.items || data?.data || [];
+
+  return records.map((record, index) => normalizeObstacleRecord(record, index, subtitleText));
+}
+
+async function loadJsonFile(url) {
+  if (typeof fetch !== 'function') {
+    throw new Error('fetch is not available in this environment');
+  }
+
+  const response = await fetch(url, { cache: 'no-store' });
+
+  if (!response.ok) {
+    throw new Error(`Failed to load ${url}: ${response.status}`);
+  }
+
+  return response.json();
+}
+
+async function loadRealEpisodeData() {
+  try {
+    const [subtitleData, obstacleData] = await Promise.all([
+      loadJsonFile(SUBTITLE_DATA_URL),
+      loadJsonFile(OBSTACLE_DATA_URL),
+    ]);
+    const subtitleRecords = normalizeSubtitleData(subtitleData);
+    const subtitleText = buildSubtitleTextFromRecords(subtitleRecords);
+    const realObstacles = normalizeObstacleData(obstacleData, subtitleText);
+
+    applySubtitleTranslations(subtitleRecords);
+    if (subtitleTextInput) {
+      subtitleTextInput.value = subtitleText;
+    }
+    subtitleSegments = parseSubtitleSegments(subtitleText);
+    replaceObstacleStream(realObstacles, subtitleText);
+    renderCards();
+  } catch (error) {
+    if (typeof fetch === 'function') {
+      console.error(error);
+    }
+    if (cardStream && subtitleSegments.length === 0) {
+      renderEmptyState();
+    }
+  }
+}
+
 function createSubtitleItemsFromText(text) {
   return parseSubtitleSegments(text).map((segment, index) => ({
     id: `subtitle-${index + 1}`,
@@ -290,11 +443,11 @@ function analyzeSubtitleText(text, options = {}) {
   return engine.analyzeSubtitleItems(createSubtitleItemsFromText(subtitleText), options);
 }
 
-let subtitleSegments = parseSubtitleSegments(DEFAULT_SUBTITLE_TEXT);
+let subtitleSegments = [];
 let currentSegmentIndex = 0;
 let isVideoPlaying = true;
 let playbackTimer = null;
-let obstacles = analyzeSubtitleText(DEFAULT_SUBTITLE_TEXT, { level: DEFAULT_VOCABULARY_LEVEL });
+let obstacles = [];
 let hiddenObstacleIds = new Set();
 let dismissedObstacleHistory = [];
 let currentEpisodeProgressKey = '';
@@ -554,9 +707,9 @@ function createSubtitleMarker(text, obstacle) {
     marker.classList.add('is-selected');
   }
 
-  marker.addEventListener('pointerup', (event) => handleMarkerActivation(event, obstacle.id));
-  marker.addEventListener('touchend', (event) => handleMarkerActivation(event, obstacle.id));
-  marker.addEventListener('click', (event) => handleMarkerActivation(event, obstacle.id));
+  safeAddEventListener(marker, 'pointerup', (event) => handleMarkerActivation(event, obstacle.id));
+  safeAddEventListener(marker, 'touchend', (event) => handleMarkerActivation(event, obstacle.id));
+  safeAddEventListener(marker, 'click', (event) => handleMarkerActivation(event, obstacle.id));
 
   return marker;
 }
@@ -822,7 +975,7 @@ function createHeatClusterButton(cluster) {
     button.setAttribute('aria-pressed', 'false');
   }
 
-  button.addEventListener('click', (event) => {
+  safeAddEventListener(button, 'click', (event) => {
     event.stopPropagation();
     openBottomSheet(cluster);
   });
@@ -916,7 +1069,7 @@ function createBottomSheetObstacleButton(obstacle) {
   button.className = 'bottom-sheet__obstacle';
   button.type = 'button';
   button.textContent = `${obstacle.kind === 'word' ? '○' : '●'} ${obstacle.kind === 'word' ? obstacle.surfaceText || obstacle.word : obstacle.phrase}`;
-  button.addEventListener('click', () => {
+  safeAddEventListener(button, 'click', () => {
     const wasPlaying = isVideoPlaying;
     selectedObstacleId = obstacle.id;
     seekToTime(obstacle.timeMs);
@@ -1306,7 +1459,7 @@ function createCard(obstacle) {
   dismissButton.className = 'dismiss-button';
   dismissButton.type = 'button';
   dismissButton.textContent = '✓ 不用管我了';
-  dismissButton.addEventListener('click', () => hideCurrentObstacle(obstacle.id));
+  safeAddEventListener(dismissButton, 'click', () => hideCurrentObstacle(obstacle.id));
 
   actions.append(dismissButton);
   inner.append(label, content, actions);
@@ -1372,37 +1525,37 @@ function handleAnalyzeClick() {
   analyzeAndRender(subtitleTextInput.value, { level: DEFAULT_VOCABULARY_LEVEL });
 }
 
-analyzeButton.addEventListener('click', handleAnalyzeClick);
+safeAddEventListener(analyzeButton, 'click', handleAnalyzeClick);
 if (episodeUndoButton) {
-  episodeUndoButton.addEventListener('click', undoLastDismissedObstacle);
+  safeAddEventListener(episodeUndoButton, 'click', undoLastDismissedObstacle);
 }
-learningPauseHintDismiss.addEventListener('click', dismissLearningPauseHint);
-learningPauseHint.addEventListener('pointerup', stopMarkerEvent);
-learningPauseHint.addEventListener('touchend', stopMarkerEvent);
-learningPauseHint.addEventListener('click', stopMarkerEvent);
-videoFrame.addEventListener('pointerup', handleVideoFrameActivation);
-videoFrame.addEventListener('touchend', handleVideoFrameActivation);
-videoFrame.addEventListener('click', handleVideoFrameActivation);
+safeAddEventListener(learningPauseHintDismiss, 'click', dismissLearningPauseHint);
+safeAddEventListener(learningPauseHint, 'pointerup', stopMarkerEvent);
+safeAddEventListener(learningPauseHint, 'touchend', stopMarkerEvent);
+safeAddEventListener(learningPauseHint, 'click', stopMarkerEvent);
+safeAddEventListener(videoFrame, 'pointerup', handleVideoFrameActivation);
+safeAddEventListener(videoFrame, 'touchend', handleVideoFrameActivation);
+safeAddEventListener(videoFrame, 'click', handleVideoFrameActivation);
 if (timelinePlayButton) {
-  timelinePlayButton.addEventListener('click', (event) => {
+  safeAddEventListener(timelinePlayButton, 'click', (event) => {
     event.stopPropagation();
     toggleVideoPlayback();
   });
 }
 if (videoTimeline) {
-  videoTimeline.addEventListener('input', handleTimelineInput);
-  videoTimeline.addEventListener('click', stopMarkerEvent);
-  videoTimeline.addEventListener('pointerup', stopMarkerEvent);
+  safeAddEventListener(videoTimeline, 'input', handleTimelineInput);
+  safeAddEventListener(videoTimeline, 'click', stopMarkerEvent);
+  safeAddEventListener(videoTimeline, 'pointerup', stopMarkerEvent);
 }
 if (obstacleHeatAxis) {
-  obstacleHeatAxis.addEventListener('click', stopMarkerEvent);
-  obstacleHeatAxis.addEventListener('pointerup', stopMarkerEvent);
+  safeAddEventListener(obstacleHeatAxis, 'click', stopMarkerEvent);
+  safeAddEventListener(obstacleHeatAxis, 'pointerup', stopMarkerEvent);
 }
 if (bottomSheetClose) {
-  bottomSheetClose.addEventListener('click', closeBottomSheet);
+  safeAddEventListener(bottomSheetClose, 'click', closeBottomSheet);
 }
 if (bottomSheetBackdrop) {
-  bottomSheetBackdrop.addEventListener('click', closeBottomSheet);
+  safeAddEventListener(bottomSheetBackdrop, 'click', closeBottomSheet);
 }
 currentEpisodeProgressKey = getEpisodeProgressKey(DEFAULT_SUBTITLE_TEXT);
 applyStoredEpisodeProgress(currentEpisodeProgressKey);
@@ -1410,6 +1563,7 @@ saveEpisodeProgress();
 renderVideoState();
 renderCards();
 syncPlaybackClock();
+loadRealEpisodeData();
 
 window.ObstacleDetectionEngine = {
   Analyze: analyzeAndRender,
