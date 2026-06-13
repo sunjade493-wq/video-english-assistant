@@ -34,6 +34,30 @@
   };
 
   const vocabularyMockEntries = {
+    official: {
+      phonetic: '待补充',
+      partOfSpeech: 'adj./n.',
+      sentenceMeaning: '官方的；官员',
+      explanation: 'official 待补充 adj./n.\n句中含义：官方的；官员',
+    },
+    tradition: {
+      phonetic: '待补充',
+      partOfSpeech: 'n.',
+      sentenceMeaning: '传统',
+      explanation: 'tradition 待补充 n.\n句中含义：传统',
+    },
+    believe: {
+      phonetic: '待补充',
+      partOfSpeech: 'v.',
+      sentenceMeaning: '相信',
+      explanation: 'believe 待补充 v.\n句中含义：相信',
+    },
+    marry: {
+      phonetic: '待补充',
+      partOfSpeech: 'v.',
+      sentenceMeaning: '结婚；嫁；娶',
+      explanation: 'marry 待补充 v.\n句中含义：结婚；嫁；娶',
+    },
     lecture: {
       phonetic: '/ˈlektʃər/',
       partOfSpeech: 'n./v.',
@@ -51,6 +75,12 @@
       partOfSpeech: 'n.',
       sentenceMeaning: '项目',
       explanation: 'project /ˈprɑːdʒekt/ n.\n句中含义：项目',
+    },
+    actually: {
+      phonetic: '待补充',
+      partOfSpeech: 'adv.',
+      sentenceMeaning: '实际上；其实',
+      explanation: 'actually 待补充 adv.\n句中含义：实际上；其实',
     },
   };
 
@@ -83,6 +113,30 @@
       grammar: 'pull + somebody + off + something 的核心动作是“把某人拉离某个位置”。off 表示离开原来的接触点或参与位置，所以放到 project、task、case 等工作语境中，就表示把某人从该任务中调离或撤下。字幕中的 was pulled off 是被动形式，强调“我被撤下”。',
       patterns: [
         /\bpull(?:ed)?\s+(?:me\s+|[a-z]+\s+)?off\s+the\s+project\b/i,
+      ],
+    },
+    {
+      id: 'be-going-to',
+      baseForm: 'be going to',
+      prototype: 'be going to',
+      literal: '正在去做某事',
+      actual: '将要；打算。',
+      grammar: 'be going to 用 be + going + to 表示计划、意图或可预见的将来。going 不再只表示移动，而是和 to 后面的动词一起表达“接下来会发生/准备做”。',
+      patterns: [
+        'be going to',
+        /\b(?:am|are|is|was|were|'m|'re|'s)\s+going\s+to(?:\s+[a-z]+)?\b/i,
+      ],
+    },
+    {
+      id: 'it-is-to',
+      baseForm: 'it is ... to ...',
+      prototype: 'It is ... to ...',
+      literal: '它是……去……',
+      actual: '用 it 作形式主语，把真正动作放在 to 后面。',
+      grammar: 'It is + adjective/noun + to + verb 中，It 不指具体事物，而是占住主语位置；to 后面的动作才是真正被评价或说明的内容。',
+      patterns: [
+        'It is ... to ...',
+        /\bit\s+(?:is|'s)\s+[^.?!,;:]+?\s+to\s+[a-z]+\b/i,
       ],
     },
     {
@@ -130,6 +184,14 @@
 
     collect(level);
     return words;
+  }
+
+  function isSingleVocabularyUnit(text) {
+    return tokenize(text).length === 1;
+  }
+
+  function isComprehensionStructure(entry) {
+    return Boolean(entry && !isSingleVocabularyUnit(entry.prototype || entry.baseForm || ''));
   }
 
   function createFallbackVocabEntry(word) {
@@ -259,6 +321,10 @@
 
   function buildComprehensionObstacles(subtitleItem, occurrenceCounts) {
     return comprehensionMockEntries.reduce((result, entry) => {
+      if (!isComprehensionStructure(entry)) {
+        return result;
+      }
+
       const match = findComprehensionMatch(subtitleItem.text, entry);
 
       if (!match) {
@@ -322,5 +388,7 @@
     levels: vocabularyLevels,
     vocabularyMockEntries,
     comprehensionMockEntries,
+    isSingleVocabularyUnit,
+    isComprehensionStructure,
   };
 }(typeof window !== 'undefined' ? window : globalThis));
