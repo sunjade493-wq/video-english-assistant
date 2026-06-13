@@ -56,6 +56,21 @@ const wordDictionary = {
   },
 };
 
+const fallbackPartOfSpeechDictionary = {
+  believe: 'vt./vi.',
+  official: 'adj.',
+  tradition: 'n.',
+  alone: 'adj./adv.',
+  autotroph: 'n.',
+  autotrophs: 'n.',
+  neanderthal: 'n./adj.',
+  neanderthals: 'n./adj.',
+  develop: 'vt./vi.',
+  developed: 'vt./vi.',
+  lecture: 'n./vi./vt.',
+  marry: 'vt./vi.',
+};
+
 const understandingPatterns = [
   {
     id: 'understanding-lay-it-on-us',
@@ -358,6 +373,44 @@ function pickFirstValue(row, keys) {
   return key ? row[key] : undefined;
 }
 
+function normalizePartOfSpeech(partOfSpeech) {
+  const text = String(partOfSpeech || '').trim();
+
+  if (!text) {
+    return '';
+  }
+
+  if (text === 'v.') {
+    return 'vt./vi.';
+  }
+
+  return text
+    .split('/')
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .flatMap((part) => (part === 'v.' ? ['vi.', 'vt.'] : [part]))
+    .join('/');
+}
+
+function getFallbackPartOfSpeech(...words) {
+  for (const word of words) {
+    const normalizedWord = String(word || '').trim().toLowerCase();
+
+    if (normalizedWord && fallbackPartOfSpeechDictionary[normalizedWord]) {
+      return fallbackPartOfSpeechDictionary[normalizedWord];
+    }
+  }
+
+  return '';
+}
+
+function getObstaclePartOfSpeech(obstacle) {
+  return normalizePartOfSpeech(
+    pickFirstValue(obstacle, ['partOfSpeech', 'pos', 'wordClass', 'speech'])
+      || getFallbackPartOfSpeech(obstacle?.baseForm, obstacle?.word, obstacle?.surfaceText, obstacle?.phrase),
+  );
+}
+
 function normalizeObstacleType(type) {
   const normalizedType = String(type || '').trim().toLowerCase();
 
@@ -456,14 +509,23 @@ function normalizeObstacle(row, rowIndex = 0) {
   };
 
   if (type === 'vocab') {
+    const word = row?.word || label;
+    const baseForm = row?.baseForm || row?.word || label;
+    const surfaceText = row?.text || row?.word || label;
+    const phrase = row?.phrase || row?.word || label;
+
     return {
       ...baseObstacle,
-      word: row?.word || label,
-      baseForm: row?.baseForm || row?.word || label,
-      surfaceText: row?.text || row?.word || label,
-      phrase: row?.phrase || row?.word || label,
+      word,
+      baseForm,
+      surfaceText,
+      phrase,
       prototype: row?.prototype || row?.word || label,
       phonetic: row?.phonetic || '待补充',
+      partOfSpeech: normalizePartOfSpeech(
+        pickFirstValue(row, ['partOfSpeech', 'pos', 'wordClass', 'speech'])
+          || getFallbackPartOfSpeech(baseForm, word, surfaceText, phrase),
+      ),
       translation: row?.translation || row?.source_zh || '待补充',
       sentenceMeaning: row?.sentenceMeaning || row?.translation || row?.source_zh || '待补充',
       literal: row?.literal || '',
@@ -1460,7 +1522,11 @@ function undoLastDismissedObstacle() {
 
 function replaceObstacleStream(nextObstacles, text = subtitleTextInput.value) {
   activeDataSource = 'analyze';
-  obstacles = nextObstacles;
+  obstacles = nextObstacles.map((obstacle) => (
+    normalizeObstacleType(obstacle?.type || obstacle?.kind) === 'vocab'
+      ? { ...obstacle, partOfSpeech: getObstaclePartOfSpeech(obstacle) }
+      : obstacle
+  ));
   currentEpisodeProgressKey = getEpisodeProgressKey(text);
   applyStoredEpisodeProgress(currentEpisodeProgressKey);
   streamMode = 'dynamic';
