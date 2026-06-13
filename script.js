@@ -333,6 +333,15 @@ const bottomSheetTitle = document.querySelector('#bottomSheetTitle');
 const bottomSheetContent = document.querySelector('#bottomSheetContent');
 const bottomSheetClose = document.querySelector('#bottomSheetClose');
 
+function safeAddEventListener(target, type, listener, options) {
+  if (!target || typeof target.addEventListener !== 'function') {
+    return false;
+  }
+
+  target.addEventListener(type, listener, options);
+  return true;
+}
+
 function parseSubtitleSegments(text) {
   const sourceText = String(text || '').trim();
 
@@ -1372,38 +1381,26 @@ function handleAnalyzeClick() {
   analyzeAndRender(subtitleTextInput.value, { level: DEFAULT_VOCABULARY_LEVEL });
 }
 
-analyzeButton.addEventListener('click', handleAnalyzeClick);
-if (episodeUndoButton) {
-  episodeUndoButton.addEventListener('click', undoLastDismissedObstacle);
-}
-learningPauseHintDismiss.addEventListener('click', dismissLearningPauseHint);
-learningPauseHint.addEventListener('pointerup', stopMarkerEvent);
-learningPauseHint.addEventListener('touchend', stopMarkerEvent);
-learningPauseHint.addEventListener('click', stopMarkerEvent);
-videoFrame.addEventListener('pointerup', handleVideoFrameActivation);
-videoFrame.addEventListener('touchend', handleVideoFrameActivation);
-videoFrame.addEventListener('click', handleVideoFrameActivation);
-if (timelinePlayButton) {
-  timelinePlayButton.addEventListener('click', (event) => {
-    event.stopPropagation();
-    toggleVideoPlayback();
-  });
-}
-if (videoTimeline) {
-  videoTimeline.addEventListener('input', handleTimelineInput);
-  videoTimeline.addEventListener('click', stopMarkerEvent);
-  videoTimeline.addEventListener('pointerup', stopMarkerEvent);
-}
-if (obstacleHeatAxis) {
-  obstacleHeatAxis.addEventListener('click', stopMarkerEvent);
-  obstacleHeatAxis.addEventListener('pointerup', stopMarkerEvent);
-}
-if (bottomSheetClose) {
-  bottomSheetClose.addEventListener('click', closeBottomSheet);
-}
-if (bottomSheetBackdrop) {
-  bottomSheetBackdrop.addEventListener('click', closeBottomSheet);
-}
+safeAddEventListener(analyzeButton, 'click', handleAnalyzeClick);
+safeAddEventListener(episodeUndoButton, 'click', undoLastDismissedObstacle);
+safeAddEventListener(learningPauseHintDismiss, 'click', dismissLearningPauseHint);
+safeAddEventListener(learningPauseHint, 'pointerup', stopMarkerEvent);
+safeAddEventListener(learningPauseHint, 'touchend', stopMarkerEvent);
+safeAddEventListener(learningPauseHint, 'click', stopMarkerEvent);
+safeAddEventListener(videoFrame, 'pointerup', handleVideoFrameActivation);
+safeAddEventListener(videoFrame, 'touchend', handleVideoFrameActivation);
+safeAddEventListener(videoFrame, 'click', handleVideoFrameActivation);
+safeAddEventListener(timelinePlayButton, 'click', (event) => {
+  event.stopPropagation();
+  toggleVideoPlayback();
+});
+safeAddEventListener(videoTimeline, 'input', handleTimelineInput);
+safeAddEventListener(videoTimeline, 'click', stopMarkerEvent);
+safeAddEventListener(videoTimeline, 'pointerup', stopMarkerEvent);
+safeAddEventListener(obstacleHeatAxis, 'click', stopMarkerEvent);
+safeAddEventListener(obstacleHeatAxis, 'pointerup', stopMarkerEvent);
+safeAddEventListener(bottomSheetClose, 'click', closeBottomSheet);
+safeAddEventListener(bottomSheetBackdrop, 'click', closeBottomSheet);
 currentEpisodeProgressKey = getEpisodeProgressKey(DEFAULT_SUBTITLE_TEXT);
 applyStoredEpisodeProgress(currentEpisodeProgressKey);
 saveEpisodeProgress();
