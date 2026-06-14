@@ -1587,9 +1587,39 @@ function getCompactTranslation(translation) {
 }
 
 function createWordHeadline(obstacle) {
-  const headline = document.createElement('p');
+  const headline = document.createElement('div');
   headline.className = 'vocab-headline';
-  headline.textContent = `${obstacle.baseForm || obstacle.word} ${obstacle.phonetic || ''} ${obstacle.partOfSpeech || ''}`.trim();
+
+  const word = document.createElement('p');
+  word.className = 'vocab-word';
+  word.textContent = obstacle.word;
+  headline.append(word);
+
+  if (obstacle.baseForm && obstacle.baseForm !== obstacle.word) {
+    const baseForm = document.createElement('p');
+    baseForm.className = 'vocab-base-form';
+    baseForm.textContent = `(base: ${obstacle.baseForm})`;
+    headline.append(baseForm);
+  }
+
+  const meta = document.createElement('p');
+  meta.className = 'vocab-meta';
+
+  if (obstacle.phonetic) {
+    const phonetic = document.createElement('span');
+    phonetic.className = 'vocab-phonetic';
+    phonetic.textContent = obstacle.phonetic;
+    meta.append(phonetic);
+  }
+
+  if (obstacle.partOfSpeech) {
+    const partOfSpeech = document.createElement('span');
+    partOfSpeech.className = 'vocab-part-of-speech';
+    partOfSpeech.textContent = obstacle.partOfSpeech;
+    meta.append(partOfSpeech);
+  }
+
+  headline.append(meta);
 
   return headline;
 }
