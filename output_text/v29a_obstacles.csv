@@ -1,0 +1,9 @@
+id,type,word,lemma,baseForm,phonetic,partOfSpeech,sentenceMeaning,translation,source_en,source_zh,start,end
+v29a-vocab-001,vocabulary,sleeping,sleep,sleep,/sliːp/,v.,当前句子中表示正在睡觉或处于睡眠状态。,睡觉；睡眠,sleeping,当前句子中表示正在睡觉或处于睡眠状态。,,
+v29a-vocab-002,vocabulary,ordered,order,order,/ˈɔːrdər/,vt.,当前句子中表示点餐、预订或下达了某个要求。,命令；订购；点餐,ordered,当前句子中表示点餐、预订或下达了某个要求。,,
+v29a-vocab-003,vocabulary,satisfying,satisfy,satisfy,/ˈsætɪsfaɪ/,adj.,当前句子中表示令人满足或让人有成就感。,满足；使满意,satisfying,当前句子中表示令人满足或让人有成就感。,,
+v29a-vocab-004,vocabulary,consummated,consummate,consummate,/ˈkɑːnsəmeɪt/,vt.,当前句子中表示最终完成或正式达成某件事。,完成；使圆满；圆房,consummated,当前句子中表示最终完成或正式达成某件事。,,
+v29a-vocab-005,vocabulary,bedsheets,bedsheet,bedsheet,/ˈbedʃiːt/,n.,当前句子中表示床上铺盖用的床单。,床单,bedsheets,当前句子中表示床上铺盖用的床单。,,
+v29a-vocab-006,vocabulary,autotrophs,autotroph,autotroph,/ˈɔːtətrɑːf/,n.,当前句子中表示能自行制造养分的自养生物。,自养生物,autotrophs,当前句子中表示能自行制造养分的自养生物。,,
+v29a-vocab-007,vocabulary,Neanderthals,Neanderthal,Neanderthal,/niˈændərtɑːl/,n.,当前句子中表示尼安德特人这一古人类群体。,尼安德特人,Neanderthals,当前句子中表示尼安德特人这一古人类群体。,,
+v29a-vocab-008,vocabulary,room service,room service,room service,/ˈruːm sɜːrvɪs/,n.,当前句子中表示“酒店客房送餐服务”。,客房服务；送餐服务,room service,当前句子中表示“酒店客房送餐服务”。,,
