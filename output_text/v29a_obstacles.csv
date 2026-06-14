@@ -1,0 +1,14 @@
+id,type,priority,start,end,source_en,source_zh,word,lemma,baseForm,phonetic,partOfSpeech,sentenceMeaning,translation,phrase,prototype,literal,actual,grammar
+vocab-1-lecture,vocabulary,10,00:00:01.000,00:00:03.000,If you enjoyed this lecture lay it on us.,如果你喜欢这场讲座，就直接告诉我们。,lecture,lecture,lecture,/ˈlektʃər/,n.,在当前字幕中表示一次讲座或授课。,讲座；授课,,,,,
+vocab-2-academic,vocabulary,10,00:00:04.000,00:00:06.000,Can you give me a hand with this academic project?,你能帮我处理这个学术项目吗？,academic,academic,academic,/ˌækəˈdemɪk/,adj.,在当前字幕中表示与学习或学术环境有关的。,学术的；学院的,,,,,
+vocab-2-project,vocabulary,10,00:00:04.000,00:00:06.000,Can you give me a hand with this academic project?,你能帮我处理这个学术项目吗？,project,project,project,/ˈprɑːdʒekt/,n.,在当前字幕中表示正在进行的一项任务或项目。,项目；工程,,,,,
+vocab-3-official,vocabulary,10,00:00:07.000,00:00:09.000,I was pulled off the project by the official team.,我被官方团队从这个项目中撤下了。,official,official,official,/əˈfɪʃl/,adj.,在当前字幕中表示正式的、被确认的。,官方的；正式的,,,,,
+vocab-3-project,vocabulary,10,00:00:07.000,00:00:09.000,I was pulled off the project by the official team.,我被官方团队从这个项目中撤下了。,project,project,project,/ˈprɑːdʒekt/,n.,在当前字幕中表示正在进行的一项任务或项目。,项目；工程,,,,,
+vocab-4-tradition,vocabulary,10,00:00:10.000,00:00:12.000,Let's call it a day and keep the tradition alive.,今天就到这里，并把这个传统延续下去。,tradition,tradition,tradition,/trəˈdɪʃn/,n.,在当前字幕中表示长期延续的习惯或做法。,传统；惯例,,,,,
+vocab-5-believe,vocabulary,10,00:00:13.000,00:00:15.000,I believe you should say it straight up.,我认为你应该直接说出来。,believe,believe,believe,/bɪˈliːv/,v.,在当前字幕中表示认为某事是真的。,相信；认为,,,,,
+vocab-5-straight,vocabulary,10,00:00:13.000,00:00:15.000,I believe you should say it straight up.,我认为你应该直接说出来。,straight,straight,straight,/streɪt/,adv.,在当前字幕中和 up 连用，表示说话直接、坦率。,直地；直接地,,,,,
+comprehension-1-lay-it-on-us,comprehension,20,00:00:01.000,00:00:03.000,If you enjoyed this lecture lay it on us.,如果你喜欢这场讲座，就直接告诉我们。,,,,,,,,lay it on us,lay something on somebody,把某件事放到某人身上,把想说的话直接告诉对方；别拐弯抹角。,lay + something + on + somebody 可把信息直接交给对方承接。
+comprehension-2-give-me-a-hand,comprehension,20,00:00:04.000,00:00:06.000,Can you give me a hand with this academic project?,你能帮我处理这个学术项目吗？,,,,,,,,give me a hand,give somebody a hand,给某人一只手,帮某人一下；搭把手。,hand 在动作场景里代表劳力或协助。
+comprehension-3-pull-off-the-project,comprehension,20,00:00:07.000,00:00:09.000,I was pulled off the project by the official team.,我被官方团队从这个项目中撤下了。,,,,,,,,pull off the project,pull somebody off something,把某人从某事物上拉开,让某人退出某项任务；把某人从某事中撤下。,off 表示离开原来的参与位置。
+comprehension-4-call-it-a-day,comprehension,20,00:00:10.000,00:00:12.000,Let's call it a day and keep the tradition alive.,今天就到这里，并把这个传统延续下去。,,,,,,,,call it a day,call it a day,把某事称为一天的结束,今天到此为止；收工。,把当前活动认定为 a day，表示可以停止并结束今天的工作。
+comprehension-5-straight-up,comprehension,20,00:00:13.000,00:00:15.000,I believe you should say it straight up.,我认为你应该直接说出来。,,,,,,,,straight up,straight up,笔直向上,坦率地说；真的；不夸张地。,不歪不绕的方向感转到说话方式上，表示直接、坦率。
