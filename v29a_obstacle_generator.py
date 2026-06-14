@@ -35,7 +35,11 @@ OUTPUT_FIELDS = [
     "priority",
     "text",
     "word",
+    "lemma",
+    "baseForm",
     "phonetic",
+    "partOfSpeech",
+    "sentenceMeaning",
     "translation",
     "literal",
     "actual",
@@ -44,46 +48,56 @@ OUTPUT_FIELDS = [
     "source_zh",
 ]
 
+VOCAB_REQUIRED_FIELDS = (
+    "word",
+    "lemma",
+    "baseForm",
+    "phonetic",
+    "partOfSpeech",
+    "sentenceMeaning",
+    "translation",
+)
+
 # ---------------------------------------------------------------------------
 # Vocabulary Dictionary
 # ---------------------------------------------------------------------------
-# Required shape for every entry: word, phonetic, translation.
+# Required shape for every entry: word, lemma, baseForm, phonetic, partOfSpeech, sentenceMeaning, translation.
 # Keep this rule library inside this file so V29A can be restored even when no
 # historical generator files are present in the working tree.
 VOCABULARY_DICTIONARY: List[Dict[str, str]] = [
-    {"word": "considering", "phonetic": "/kənˈsɪdərɪŋ/", "translation": "考虑到；鉴于"},
-    {"word": "official", "phonetic": "/əˈfɪʃəl/", "translation": "官方的；正式的；官员"},
-    {"word": "tradition", "phonetic": "/trəˈdɪʃən/", "translation": "传统；惯例"},
-    {"word": "consummated", "phonetic": "/ˈkɑːnsəmeɪtɪd/", "translation": "圆房；完成；使圆满"},
-    {"word": "appropriate", "phonetic": "/əˈproʊpriət/", "translation": "合适的；恰当的"},
-    {"word": "metaphor", "phonetic": "/ˈmetəfɔːr/", "translation": "隐喻；比喻"},
-    {"word": "marital", "phonetic": "/ˈmærɪtl/", "translation": "婚姻的；夫妻的"},
-    {"word": "congress", "phonetic": "/ˈkɑːŋɡrəs/", "translation": "国会；大会；交合（委婉/正式）"},
-    {"word": "interlock", "phonetic": "/ˌɪntərˈlɑːk/", "translation": "互锁；扣在一起；咬合"},
-    {"word": "satisfying", "phonetic": "/ˈsætɪsfaɪɪŋ/", "translation": "令人满足的；令人满意的"},
-    {"word": "ordered", "phonetic": "/ˈɔːrdərd/", "translation": "点了；订购了；命令了；有序的"},
-    {"word": "universe", "phonetic": "/ˈjuːnɪvɜːrs/", "translation": "宇宙；万物"},
-    {"word": "dense", "phonetic": "/dens/", "translation": "密集的；浓密的；难懂的"},
-    {"word": "expansion", "phonetic": "/ɪkˈspænʃən/", "translation": "扩张；膨胀；展开"},
-    {"word": "autotrophs", "phonetic": "/ˈɔːtoʊtroʊfs/", "translation": "自养生物"},
-    {"word": "Neanderthals", "phonetic": "/niˈændərˌtɑːlz/", "translation": "尼安德特人"},
-    {"word": "developed", "phonetic": "/dɪˈveləpt/", "translation": "发展了；形成了；发达的"},
-    {"word": "pyramids", "phonetic": "/ˈpɪrəmɪdz/", "translation": "金字塔"},
-    {"word": "unraveling", "phonetic": "/ʌnˈrævəlɪŋ/", "translation": "解开；阐明；逐渐崩解"},
-    {"word": "mystery", "phonetic": "/ˈmɪstəri/", "translation": "谜；神秘的事物"},
-    {"word": "honeymoon", "phonetic": "/ˈhʌnimuːn/", "translation": "蜜月"},
-    {"word": "believe", "phonetic": "/bɪˈliːv/", "translation": "相信；认为"},
-    {"word": "bedsheets", "phonetic": "/ˈbedʃiːts/", "translation": "床单"},
-    {"word": "outside", "phonetic": "/ˌaʊtˈsaɪd/", "translation": "在外面；外部"},
-    {"word": "suppose", "phonetic": "/səˈpoʊz/", "translation": "认为；假设；料想"},
-    {"word": "perfect", "phonetic": "/ˈpɜːrfɪkt/", "translation": "完美的；完全的"},
-    {"word": "sleeping", "phonetic": "/ˈsliːpɪŋ/", "translation": "睡觉；睡着的"},
-    {"word": "alone", "phonetic": "/əˈloʊn/", "translation": "独自；单独"},
-    {"word": "room service", "phonetic": "/ˈruːm ˌsɜːrvɪs/", "translation": "客房送餐服务"},
-    {"word": "hot", "phonetic": "/hɑːt/", "translation": "热的；热门的"},
-    {"word": "state", "phonetic": "/steɪt/", "translation": "状态；州；陈述"},
-    {"word": "snap", "phonetic": "/snæp/", "translation": "咔哒声；猛然折断；迅速动作"},
-    {"word": "started", "phonetic": "/ˈstɑːrtɪd/", "translation": "开始了"},
+    {"word": 'considering', "lemma": 'consider', "baseForm": 'consider', "phonetic": '/kənˈsɪdərɪŋ/', "partOfSpeech": 'preposition', "sentenceMeaning": '在这句话里表示“考虑到/鉴于某个情况”。', "translation": '考虑到；鉴于'},
+    {"word": 'official', "lemma": 'official', "baseForm": 'official', "phonetic": '/əˈfɪʃəl/', "partOfSpeech": 'adjective', "sentenceMeaning": '在语境中强调某事被正式确认、具有官方性质。', "translation": '官方的；正式的；官员'},
+    {"word": 'tradition', "lemma": 'tradition', "baseForm": 'tradition', "phonetic": '/trəˈdɪʃən/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指婚礼或社会习俗中流传下来的做法。', "translation": '传统；惯例'},
+    {"word": 'consummated', "lemma": 'consummate', "baseForm": 'consummate', "phonetic": '/ˈkɑːnsəmeɪtɪd/', "partOfSpeech": 'verb', "sentenceMeaning": '在婚姻语境中委婉表示“圆房/完成夫妻关系”。', "translation": '圆房；完成；使圆满'},
+    {"word": 'appropriate', "lemma": 'appropriate', "baseForm": 'appropriate', "phonetic": '/əˈproʊpriət/', "partOfSpeech": 'adjective', "sentenceMeaning": '这里表示某种说法或比喻在当前场合很合适。', "translation": '合适的；恰当的'},
+    {"word": 'metaphor', "lemma": 'metaphor', "baseForm": 'metaphor', "phonetic": '/ˈmetəfɔːr/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指用一个具体画面象征另一件事的比喻。', "translation": '隐喻；比喻'},
+    {"word": 'marital', "lemma": 'marital', "baseForm": 'marital', "phonetic": '/ˈmærɪtl/', "partOfSpeech": 'adjective', "sentenceMeaning": '在短语中修饰婚姻关系，带正式或滑稽语气。', "translation": '婚姻的；夫妻的'},
+    {"word": 'congress', "lemma": 'congress', "baseForm": 'congress', "phonetic": '/ˈkɑːŋɡrəs/', "partOfSpeech": 'noun', "sentenceMeaning": '在 marital congress 中是正式委婉的“性交/圆房”说法。', "translation": '国会；大会；交合（委婉/正式）'},
+    {"word": 'interlock', "lemma": 'interlock', "baseForm": 'interlock', "phonetic": '/ˌɪntərˈlɑːk/', "partOfSpeech": 'verb', "sentenceMeaning": '这里表示两个部件严丝合缝地扣在一起。', "translation": '互锁；扣在一起；咬合'},
+    {"word": 'satisfying', "lemma": 'satisfy', "baseForm": 'satisfy', "phonetic": '/ˈsætɪsfaɪɪŋ/', "partOfSpeech": 'adjective', "sentenceMeaning": '这里形容咔哒声让人感觉动作完成得很到位。', "translation": '令人满足的；令人满意的'},
+    {"word": 'ordered', "lemma": 'order', "baseForm": 'order', "phonetic": '/ˈɔːrdərd/', "partOfSpeech": 'verb', "sentenceMeaning": '在酒店语境中表示叫了/点了客房服务。', "translation": '点了；订购了；命令了；有序的'},
+    {"word": 'universe', "lemma": 'universe', "baseForm": 'universe', "phonetic": '/ˈjuːnɪvɜːrs/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指大爆炸理论里所说的整个宇宙。', "translation": '宇宙；万物'},
+    {"word": 'dense', "lemma": 'dense', "baseForm": 'dense', "phonetic": '/dens/', "partOfSpeech": 'adjective', "sentenceMeaning": '在科学描述中表示物质密度很高。', "translation": '密集的；浓密的；难懂的'},
+    {"word": 'expansion', "lemma": 'expansion', "baseForm": 'expansion', "phonetic": '/ɪkˈspænʃən/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指宇宙开始向外膨胀的过程。', "translation": '扩张；膨胀；展开'},
+    {"word": 'autotrophs', "lemma": 'autotroph', "baseForm": 'autotroph', "phonetic": '/ˈɔːtoʊtroʊfs/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指歌词/科学梗中提到的自养生物。', "translation": '自养生物'},
+    {"word": 'Neanderthals', "lemma": 'Neanderthal', "baseForm": 'Neanderthal', "phonetic": '/niˈændərˌtɑːlz/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指人类演化历史中的尼安德特人。', "translation": '尼安德特人'},
+    {"word": 'developed', "lemma": 'develop', "baseForm": 'develop', "phonetic": '/dɪˈveləpt/', "partOfSpeech": 'verb', "sentenceMeaning": '这里表示事物逐步形成或发展出来。', "translation": '发展了；形成了；发达的'},
+    {"word": 'pyramids', "lemma": 'pyramid', "baseForm": 'pyramid', "phonetic": '/ˈpɪrəmɪdz/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指历史文明建造的金字塔。', "translation": '金字塔'},
+    {"word": 'unraveling', "lemma": 'unravel', "baseForm": 'unravel', "phonetic": '/ʌnˈrævəlɪŋ/', "partOfSpeech": 'verb', "sentenceMeaning": '这里表示把谜团逐步解释清楚。', "translation": '解开；阐明；逐渐崩解'},
+    {"word": 'mystery', "lemma": 'mystery', "baseForm": 'mystery', "phonetic": '/ˈmɪstəri/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指尚未被解释清楚的问题或谜团。', "translation": '谜；神秘的事物'},
+    {"word": 'honeymoon', "lemma": 'honeymoon', "baseForm": 'honeymoon', "phonetic": '/ˈhʌnimuːn/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指新婚之后开始的蜜月旅行。', "translation": '蜜月'},
+    {"word": 'believe', "lemma": 'believe', "baseForm": 'believe', "phonetic": '/bɪˈliːv/', "partOfSpeech": 'verb', "sentenceMeaning": '在 Can you believe 中用来表达惊讶和难以置信。', "translation": '相信；认为'},
+    {"word": 'bedsheets', "lemma": 'bedsheet', "baseForm": 'bedsheet', "phonetic": '/ˈbedʃiːts/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指婚俗玩笑里要挂出去展示的床单。', "translation": '床单'},
+    {"word": 'outside', "lemma": 'outside', "baseForm": 'outside', "phonetic": '/ˌaʊtˈsaɪd/', "partOfSpeech": 'adverb', "sentenceMeaning": '这里表示把床单挂到房间或建筑外面。', "translation": '在外面；外部'},
+    {"word": 'suppose', "lemma": 'suppose', "baseForm": 'suppose', "phonetic": '/səˈpoʊz/', "partOfSpeech": 'verb', "sentenceMeaning": '这里表示带保留地认为对方说得对。', "translation": '认为；假设；料想'},
+    {"word": 'perfect', "lemma": 'perfect', "baseForm": 'perfect', "phonetic": '/ˈpɜːrfɪkt/', "partOfSpeech": 'adjective', "sentenceMeaning": '这里强调某个比喻非常贴切。', "translation": '完美的；完全的'},
+    {"word": 'sleeping', "lemma": 'sleep', "baseForm": 'sleep', "phonetic": '/ˈsliːpɪŋ/', "partOfSpeech": 'verb', "sentenceMeaning": '在 While you were sleeping 中表示当时正在睡觉。', "translation": '睡觉；睡着的'},
+    {"word": 'alone', "lemma": 'alone', "baseForm": 'alone', "phonetic": '/əˈloʊn/', "partOfSpeech": 'adjective', "sentenceMeaning": '在 alone time 中表示不被别人打扰的二人/独处时间。', "translation": '独自；单独'},
+    {"word": 'room service', "lemma": 'room service', "baseForm": 'room service', "phonetic": '/ˈruːm ˌsɜːrvɪs/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指在酒店叫客房送餐或相关服务。', "translation": '客房送餐服务'},
+    {"word": 'hot', "lemma": 'hot', "baseForm": 'hot', "phonetic": '/hɑːt/', "partOfSpeech": 'adjective', "sentenceMeaning": '在科学语境中表示早期宇宙温度很高。', "translation": '热的；热门的'},
+    {"word": 'state', "lemma": 'state', "baseForm": 'state', "phonetic": '/steɪt/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指宇宙所处的一种物理状态。', "translation": '状态；州；陈述'},
+    {"word": 'snap', "lemma": 'snap', "baseForm": 'snap', "phonetic": '/snæp/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指部件扣上时发出的清脆咔哒声。', "translation": '咔哒声；猛然折断；迅速动作'},
+    {"word": 'started', "lemma": 'start', "baseForm": 'start', "phonetic": '/ˈstɑːrtɪd/', "partOfSpeech": 'verb', "sentenceMeaning": '这里表示某个过程或事件开始发生。', "translation": '开始了'},
 ]
 
 # ---------------------------------------------------------------------------
@@ -377,7 +391,11 @@ def blank_obstacle(row: SubtitleRow, obstacle_type: str, priority: int, text: st
         "priority": priority,
         "text": text,
         "word": "",
+        "lemma": "",
+        "baseForm": "",
         "phonetic": "",
+        "partOfSpeech": "",
+        "sentenceMeaning": "",
         "translation": "",
         "literal": "",
         "actual": "",
@@ -402,7 +420,11 @@ def generate_vocabulary_obstacles(rows: Iterable[SubtitleRow]) -> List[Dict[str,
                 obstacle.update(
                     {
                         "word": entry["word"],
+                        "lemma": entry["lemma"],
+                        "baseForm": entry["baseForm"],
                         "phonetic": entry["phonetic"],
+                        "partOfSpeech": entry["partOfSpeech"],
+                        "sentenceMeaning": entry["sentenceMeaning"],
                         "translation": entry["translation"],
                     }
                 )
@@ -445,7 +467,23 @@ def sort_obstacles(obstacles: List[Dict[str, object]]) -> List[Dict[str, object]
     )
 
 
+def validate_vocab_obstacle(obstacle: Dict[str, object]) -> None:
+    if obstacle.get("type") != "vocabulary":
+        return
+
+    for field in VOCAB_REQUIRED_FIELDS:
+        value = obstacle.get(field)
+        if value is None or str(value).strip() == "":
+            raise ValueError(f"Vocabulary obstacle missing {field}: {obstacle!r}")
+
+
+def validate_vocab_obstacles(obstacles: Iterable[Dict[str, object]]) -> None:
+    for obstacle in obstacles:
+        validate_vocab_obstacle(obstacle)
+
+
 def write_json(path: Path, obstacles: List[Dict[str, object]]) -> None:
+    validate_vocab_obstacles(obstacles)
     payload = {
         "version": VERSION,
         "input": str(INPUT_CSV),
@@ -459,9 +497,10 @@ def write_json(path: Path, obstacles: List[Dict[str, object]]) -> None:
 
 
 def write_csv(path: Path, obstacles: List[Dict[str, object]]) -> None:
+    validate_vocab_obstacles(obstacles)
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8-sig", newline="") as file_obj:
-        writer = csv.DictWriter(file_obj, fieldnames=OUTPUT_FIELDS, extrasaction="ignore")
+        writer = csv.DictWriter(file_obj, fieldnames=OUTPUT_FIELDS, extrasaction="ignore", lineterminator="\n")
         writer.writeheader()
         for obstacle in obstacles:
             writer.writerow({field: obstacle.get(field, "") for field in OUTPUT_FIELDS})
@@ -520,7 +559,7 @@ def validate_rule_libraries() -> None:
         raise RuntimeError(f"Comprehension Patterns missing required expressions: {', '.join(missing_patterns)}")
 
     for entry in VOCABULARY_DICTIONARY:
-        for key in ("word", "phonetic", "translation"):
+        for key in VOCAB_REQUIRED_FIELDS:
             if not entry.get(key):
                 raise RuntimeError(f"Vocabulary entry missing {key}: {entry!r}")
 
