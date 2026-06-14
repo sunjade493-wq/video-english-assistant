@@ -510,24 +510,22 @@ function normalizeObstacle(row, rowIndex = 0) {
 
   if (type === 'vocab') {
     const word = row?.word || label;
-    const baseForm = row?.baseForm || row?.word || label;
+    const baseForm = row?.baseForm || '';
     const surfaceText = row?.text || row?.word || label;
     const phrase = row?.phrase || row?.word || label;
 
     return {
       ...baseObstacle,
       word,
+      lemma: row?.lemma || '',
       baseForm,
       surfaceText,
       phrase,
       prototype: row?.prototype || row?.word || label,
       phonetic: row?.phonetic || '待补充',
-      partOfSpeech: normalizePartOfSpeech(
-        pickFirstValue(row, ['partOfSpeech', 'pos', 'wordClass', 'speech'])
-          || getFallbackPartOfSpeech(baseForm, word, surfaceText, phrase),
-      ),
+      partOfSpeech: normalizePartOfSpeech(row?.partOfSpeech || ''),
       translation: row?.translation || row?.source_zh || '待补充',
-      sentenceMeaning: row?.sentenceMeaning || row?.translation || row?.source_zh || '待补充',
+      sentenceMeaning: row?.sentenceMeaning || '',
       literal: row?.literal || '',
       actual: row?.actual || row?.translation || row?.source_zh || '待补充',
       grammar: row?.grammar || '',
