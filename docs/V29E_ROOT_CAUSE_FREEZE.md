@@ -161,3 +161,70 @@ No production-code fix may begin before that serializer or generator is identifi
 ## No Fix Implemented
 
 This freeze intentionally does not modify production code, generated obstacle JSON, frontend rendering, CSS, DOM structure, dictionary entries, normalizers, serializers, or fallbacks.
+
+## Final Root Cause
+
+V29A Python generator itself uses a legacy three-field vocabulary schema.
+
+Vocabulary entries only contain:
+
+- `word`
+- `phonetic`
+- `translation`
+
+The generator never creates:
+
+- `lemma`
+- `baseForm`
+- `partOfSpeech`
+- `sentenceMeaning`
+
+Therefore:
+
+```text
+output_text/v29a_obstacles.json
+```
+
+is incomplete by construction.
+
+The issue is not caused by:
+
+- frontend rendering
+- browser cache
+- script.js normalization
+- serializer projection
+- json.dump
+- external generator
+- dictionary coverage
+
+## Required Future Fix Direction
+
+The backend vocabulary schema must be upgraded.
+
+Required vocab fields:
+
+- `word`
+- `lemma`
+- `baseForm`
+- `phonetic`
+- `partOfSpeech`
+- `sentenceMeaning`
+- `translation`
+
+Frontend must only:
+
+```text
+read
+↓
+render
+```
+
+Frontend must not:
+
+- guess lemma
+- guess partOfSpeech
+- guess sentenceMeaning
+- maintain fallback dictionaries
+- perform vocabulary enrichment
+
+All language intelligence belongs to backend generation.
