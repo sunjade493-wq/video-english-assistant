@@ -1,31 +1,80 @@
-# V29E Root Cause Freeze
+# V29E-3B Root Cause Freeze
 
-## 1. Evidence Summary
+## Scope
 
-V29E-2 freezes the root cause based on evidence from the user's real local runtime environment.
+This document freezes the V29E-3B root cause candidate ranking only. It does **not** implement a fix.
 
-The real generated obstacle file exists and contains vocabulary obstacles that are only partially enriched. The backend generator already writes `word`, `phonetic`, and `translation`, but it does not write the V29D-required `lemma` / `baseForm`, `partOfSpeech`, or `sentenceMeaning` fields.
+Do not modify production code as part of this freeze:
 
-Therefore, all observed vocabulary obstacles in the real generated file violate the frozen V29D Backend Data Contract. This is a backend obstacle JSON schema/enrichment completeness issue.
+- `script.js`
+- `analyze-engine.js`
+- `index.html`
+- `styles.css`
+- `output_text/*.json`
 
-## 2. Actual Runtime Path
+Do not add a new `dictionaryEntries` path, fallback, normalizer, serializer, or production-code commit for this investigation stage.
 
-The actual runtime file path is:
+## Prior Investigation Context
+
+The following V29E investigation stages have already been completed:
+
+- V29E-1
+- V29E-1B
+- V29E-1C
+- V29E-3A
+
+Those investigations established that the frontend path is read-only for the real obstacle JSON:
+
+```text
+REAL_OBSTACLE_DATA_URL
+↓
+loadRealEpisodeData()
+↓
+fetchJson(...)
+↓
+normalizeRealObstacleRows(...)
+↓
+render
+```
+
+The frontend reads only:
+
+```text
+output_text/v29a_obstacles.json
+```
+
+It does not generate or write that file.
+
+## Current Repository Generator Evidence
+
+The only obstacle generator found in the currently checked-in repository is:
+
+```text
+AnalyzeEngine.analyzeSubtitleItems(...)
+↓
+buildVocabObstacles(...)
+```
+
+The vocabulary object produced by this generator already contains the enrichment fields expected by the V29D-style vocabulary contract:
+
+- `baseForm`
+- `partOfSpeech`
+- `sentenceMeaning`
+- `word`
+- `phonetic`
+- `translation`
+
+This means the checked-in `buildVocabObstacles(...)` path is more complete than the real runtime JSON currently observed.
+
+## Real Runtime JSON Evidence
+
+The real runtime file under investigation is:
 
 ```text
 C:\Users\10604\Desktop\Video_English_Assistant\output_text\v29a_obstacles.json
 ```
 
-Observed file information:
-
-```text
-Length: 29307
-LastWriteTime: 2026/6/13 3:20:13
-```
-
-## 3. Vocab Completeness Statistics
-
-The real vocabulary completeness statistics are:
+Observed vocabulary completeness statistics from the real runtime file:
 
 ```text
 vocab count: 39
@@ -36,169 +85,79 @@ missing sentenceMeaning: 39
 missing translation: 0
 ```
 
-## 4. Sample Broken Vocab Entries
-
-The following entries are representative examples of the broken legacy vocabulary schema in the real generated obstacle JSON.
-
-### official
+The real JSON vocabulary entries follow this legacy shape:
 
 ```json
 {
-  "start": "49.5",
-  "end": "51.5",
   "type": "vocabulary",
-  "priority": 1,
-  "text": "official",
-  "word": "official",
-  "phonetic": "/əˈfɪʃəl/",
-  "translation": "官方的；正式的；官员",
-  "literal": "",
-  "actual": "",
-  "grammar": "",
-  "source_en": "It's official. According to tradition,",
-  "source_zh": "正式完婚了 根据传统"
+  "word": "...",
+  "phonetic": "...",
+  "translation": "..."
 }
 ```
 
-### interlock
+They are missing:
 
-```json
-{
-  "start": "70.0",
-  "end": "79.5",
-  "type": "vocabulary",
-  "priority": 1,
-  "text": "interlock",
-  "word": "interlock",
-  "phonetic": "/ˌɪntərˈlɑːk/",
-  "translation": "互锁；扣在一起；咬合",
-  "literal": "",
-  "actual": "",
-  "grammar": "",
-  "source_en": "Two pieces that interlock with a satisfying snap.",
-  "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声"
-}
-```
+- `lemma`
+- `baseForm`
+- `partOfSpeech`
+- `sentenceMeaning`
 
-### sleeping
+## Frozen Root Cause Candidate
 
-```json
-{
-  "start": "80.5",
-  "end": "83.5",
-  "type": "vocabulary",
-  "priority": 1,
-  "text": "sleeping",
-  "word": "sleeping",
-  "phonetic": "/ˈsliːpɪŋ/",
-  "translation": "睡觉；睡着的",
-  "literal": "",
-  "actual": "",
-  "grammar": "",
-  "source_en": "While you were sleeping, I ordered room service.",
-  "source_zh": "在你睡觉的时候 我点了客房送餐"
-}
-```
+The highest-likelihood root cause candidate is:
 
-### ordered
+> The real runtime obstacle JSON is produced by a legacy serializer or another generator that is outside the current checked-in repository.
 
-```json
-{
-  "start": "80.5",
-  "end": "83.5",
-  "type": "vocabulary",
-  "priority": 1,
-  "text": "ordered",
-  "word": "ordered",
-  "phonetic": "/ˈɔːrdərd/",
-  "translation": "点了；订购了；命令了；有序的",
-  "literal": "",
-  "actual": "",
-  "grammar": "",
-  "source_en": "While you were sleeping, I ordered room service.",
-  "source_zh": "在你睡觉的时候 我点了客房送餐"
-}
-```
+Evidence:
 
-### room service
+1. `buildVocabObstacles(...)` already generates `baseForm`, `partOfSpeech`, and `sentenceMeaning`.
+2. The real runtime JSON only contains `word`, `phonetic`, and `translation` for vocabulary entries.
+3. Therefore, either:
+   - another generator writes `output_text/v29a_obstacles.json`, or
+   - a legacy serializer projects an enriched object into a legacy schema and discards `lemma` / `baseForm`, `partOfSpeech`, and `sentenceMeaning`.
 
-```json
-{
-  "start": "80.5",
-  "end": "83.5",
-  "type": "vocabulary",
-  "priority": 1,
-  "text": "room service",
-  "word": "room service",
-  "phonetic": "/ˈruːm ˌsɜːrvɪs/",
-  "translation": "客房送餐服务",
-  "literal": "",
-  "actual": "",
-  "grammar": "",
-  "source_en": "While you were sleeping, I ordered room service.",
-  "source_zh": "在你睡觉的时候 我点了客房送餐"
-}
-```
+## Root Cause Candidate Ranking
 
-## 5. Frozen Root Cause
+1. Legacy serializer outside current repository
+   Likelihood: Very High
 
-The backend generator outputs partially enriched legacy vocab rows.
+2. Real backend generator is not `analyze-engine.js`
+   Likelihood: High
 
-The current backend generator is producing the legacy vocabulary schema:
+3. Enriched object exists but serializer discards fields
+   Likelihood: Medium-High
 
-```text
-type: "vocabulary"
-word
-phonetic
-translation
-```
+4. Enrichment stops too early
+   Likelihood: Medium
 
-instead of the frozen V29D vocabulary schema:
+5. Frontend rendering issue
+   Likelihood: Ruled Out
 
-```text
-type: "vocab"
-word
-lemma
-baseForm
-phonetic
-partOfSpeech
-sentenceMeaning
-translation
-```
-
-## 6. Not Root Causes
+## Explicit Non-Root-Causes
 
 The following are explicitly **not** the root cause:
 
-- frontend card rendering
+- frontend rendering
 - CSS
 - DOM structure
 - browser cache
-- individual missing dictionary entries
-- V29D data contract
+- missing dictionary entries
 - only a few special words
+- card rendering
+- part-of-speech rendering
+- V29D data contract
 
-## 7. Required Fix Direction
+## Required Next Step Before Any Fix
 
-A future V29E fix must update the backend generator/enrichment pipeline so every vocabulary obstacle written to `output_text/v29a_obstacles.json` contains all of the following fields:
-
-```text
-lemma
-baseForm
-phonetic
-partOfSpeech
-sentenceMeaning
-translation
-```
-
-The generated vocabulary obstacles must also use the frozen type:
+Before any implementation work begins, the project must locate the actual serializer or generator that writes:
 
 ```text
-type: "vocab"
+C:\Users\10604\Desktop\Video_English_Assistant\output_text\v29a_obstacles.json
 ```
 
-## 8. No Fix Implemented In This PR
+No production-code fix may begin before that serializer or generator is identified.
 
-Do not implement the fix in this PR.
+## No Fix Implemented
 
-This PR only freezes the root cause. It must not modify `output_text/*.json`, `script.js`, frontend rendering, CSS, DOM structure, or dictionary entries.
+This freeze intentionally does not modify production code, generated obstacle JSON, frontend rendering, CSS, DOM structure, dictionary entries, normalizers, serializers, or fallbacks.
