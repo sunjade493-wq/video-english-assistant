@@ -44,9 +44,10 @@ Numbers are approximate vocabulary coverage references only.
 
 Input:
 
-subtitle items
-+
-user vocabulary level
+- subtitle items
+- user vocabulary level
+- analyzer version
+- vocabulary database version
 
 Output:
 
@@ -376,6 +377,15 @@ phonetic ✅
 partOfSpeech ✅
 sentenceMeaning ✅
 translation ✅
+
+For every comprehension obstacle:
+
+prototype ✅
+
+For obstacle output:
+
+deduplication by lemma/prototype ✅
+deterministic output ✅
 
 No incomplete vocab entries may exist inside:
 
