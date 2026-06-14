@@ -175,3 +175,50 @@ PR name
 No files modified.
 No commit.
 No PR.
+
+## 9. Repository Ready Check
+
+Before every Codex task:
+
+```powershell
+cd C:\Users\10604\Desktop\video-english-assistant-github
+
+git status
+git pull origin main
+```
+
+Repository is considered READY only if:
+
+### Condition 1
+
+git status contains:
+
+```text
+nothing to commit, working tree clean
+```
+
+### Condition 2
+
+git pull origin main contains:
+
+```text
+Already up to date.
+```
+
+Only when BOTH conditions are satisfied may a new Codex task begin.
+
+If either condition fails:
+
+❌ Do not ask Codex to work.
+
+First resolve repository synchronization issues.
+
+Reason:
+
+The V29E/V29F incident showed that starting Codex work before repository synchronization can lead to:
+
+- missing real files
+- multiple baselines
+- demo data generation
+- file guessing and rewrites
+- incorrect fixes based on non-canonical code
