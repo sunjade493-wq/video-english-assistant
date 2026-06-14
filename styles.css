@@ -338,6 +338,54 @@ button {
   margin-top: 14px;
 }
 
+.vocab-headline {
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+  border: 1px solid #e7edf6;
+}
+
+.vocab-word,
+.vocab-base-form,
+.vocab-meta,
+.vocab-sentence-meaning {
+  margin: 0;
+}
+
+.vocab-word {
+  color: #1f2937;
+  font-size: 1.35rem;
+  font-weight: 850;
+  line-height: 1.2;
+}
+
+.vocab-base-form {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.vocab-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  color: #2b3542;
+  font-size: 0.96rem;
+  font-weight: 760;
+}
+
+.vocab-sentence-meaning {
+  margin-top: 10px;
+  padding: 11px 12px;
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+  border: 1px solid #e7edf6;
+  color: #2b3542;
+  line-height: 1.55;
+}
+
 .word-summary,
 .understanding-summary {
   margin: 0;
