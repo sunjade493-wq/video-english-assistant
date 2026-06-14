@@ -1,0 +1,60 @@
+id,type,start,end,source_en,source_zh,word,lemma,baseForm,phonetic,partOfSpeech,sentenceMeaning,translation,phrase,prototype,literal,actual,grammar
+comprehension-01,comprehension,,,,,,,,,,,,comprehension pattern 1,contextual understanding,按字面逐词理解,第 1 个理解点需要结合上下文判断。,context
+comprehension-02,comprehension,,,,,,,,,,,,comprehension pattern 2,contextual understanding,按字面逐词理解,第 2 个理解点需要结合上下文判断。,context
+comprehension-03,comprehension,,,,,,,,,,,,comprehension pattern 3,contextual understanding,按字面逐词理解,第 3 个理解点需要结合上下文判断。,context
+comprehension-04,comprehension,,,,,,,,,,,,comprehension pattern 4,contextual understanding,按字面逐词理解,第 4 个理解点需要结合上下文判断。,context
+comprehension-05,comprehension,,,,,,,,,,,,comprehension pattern 5,contextual understanding,按字面逐词理解,第 5 个理解点需要结合上下文判断。,context
+comprehension-06,comprehension,,,,,,,,,,,,comprehension pattern 6,contextual understanding,按字面逐词理解,第 6 个理解点需要结合上下文判断。,context
+comprehension-07,comprehension,,,,,,,,,,,,comprehension pattern 7,contextual understanding,按字面逐词理解,第 7 个理解点需要结合上下文判断。,context
+comprehension-08,comprehension,,,,,,,,,,,,comprehension pattern 8,contextual understanding,按字面逐词理解,第 8 个理解点需要结合上下文判断。,context
+comprehension-09,comprehension,,,,,,,,,,,,comprehension pattern 9,contextual understanding,按字面逐词理解,第 9 个理解点需要结合上下文判断。,context
+comprehension-10,comprehension,,,,,,,,,,,,comprehension pattern 10,contextual understanding,按字面逐词理解,第 10 个理解点需要结合上下文判断。,context
+comprehension-11,comprehension,,,,,,,,,,,,comprehension pattern 11,contextual understanding,按字面逐词理解,第 11 个理解点需要结合上下文判断。,context
+comprehension-12,comprehension,,,,,,,,,,,,comprehension pattern 12,contextual understanding,按字面逐词理解,第 12 个理解点需要结合上下文判断。,context
+comprehension-13,comprehension,,,,,,,,,,,,comprehension pattern 13,contextual understanding,按字面逐词理解,第 13 个理解点需要结合上下文判断。,context
+comprehension-14,comprehension,,,,,,,,,,,,comprehension pattern 14,contextual understanding,按字面逐词理解,第 14 个理解点需要结合上下文判断。,context
+comprehension-15,comprehension,,,,,,,,,,,,comprehension pattern 15,contextual understanding,按字面逐词理解,第 15 个理解点需要结合上下文判断。,context
+comprehension-16,comprehension,,,,,,,,,,,,comprehension pattern 16,contextual understanding,按字面逐词理解,第 16 个理解点需要结合上下文判断。,context
+comprehension-17,comprehension,,,,,,,,,,,,comprehension pattern 17,contextual understanding,按字面逐词理解,第 17 个理解点需要结合上下文判断。,context
+comprehension-18,comprehension,,,,,,,,,,,,comprehension pattern 18,contextual understanding,按字面逐词理解,第 18 个理解点需要结合上下文判断。,context
+comprehension-19,comprehension,,,,,,,,,,,,comprehension pattern 19,contextual understanding,按字面逐词理解,第 19 个理解点需要结合上下文判断。,context
+comprehension-20,comprehension,,,,,,,,,,,,comprehension pattern 20,contextual understanding,按字面逐词理解,第 20 个理解点需要结合上下文判断。,context
+vocab-01,vocabulary,,,,,believe,believe,believe,/bɪˈliːv/,v.,在句中表示认为某事是真的。,相信；认为,,,,,
+vocab-02,vocabulary,,,,,official,official,official,/əˈfɪʃl/,adj.,在语境中表示被正式认可的。,官方的；正式的,,,,,
+vocab-03,vocabulary,,,,,tradition,tradition,tradition,/trəˈdɪʃn/,n.,在句中指长期保留下来的习俗。,传统；惯例,,,,,
+vocab-04,vocabulary,,,,,alone,alone,alone,/əˈloʊn/,adj./adv.,在语境中表示没有其他人陪同。,独自；单独的,,,,,
+vocab-05,vocabulary,,,,,autotrophs,autotroph,autotroph,/ˈɔːtoʊtroʊf/,n.,在句中指能自己制造养分的生物。,自养生物,,,,,
+vocab-06,vocabulary,,,,,Neanderthals,Neanderthal,Neanderthal,/niˈændərˌtɑːl/,n.,在语境中指尼安德特人这个古人类群体。,尼安德特人,,,,,
+vocab-07,vocabulary,,,,,develop,develop,develop,/dɪˈveləp/,v.,在句中表示逐渐形成或产生。,发展；形成,,,,,
+vocab-08,vocabulary,,,,,developed,develop,develop,/dɪˈveləp/,v.,在语境中表示已经逐渐形成。,发展；形成,,,,,
+vocab-09,vocabulary,,,,,lecture,lecture,lecture,/ˈlektʃər/,n.,在当前句子中指课堂讲授内容。,讲座；授课,,,,,
+vocab-10,vocabulary,,,,,marry,marry,marry,/ˈmæri/,v.,在语境中表示与某人结婚。,结婚；嫁；娶,,,,,
+vocab-11,vocabulary,,,,,married,marry,marry,/ˈmæri/,v.,在句中表示已经完成结婚这件事。,结婚；嫁；娶,,,,,
+vocab-12,vocabulary,,,,,satisfying,satisfy,satisfy,/ˈsætɪsfaɪ/,adj.,在语境中表示让人感到满足的。,使满意；令人满足的,,,,,
+vocab-13,vocabulary,,,,,consummated,consummate,consummate,/ˈkɑːnsəmeɪt/,v.,在句中表示使关系或行为最终完成。,完成；圆房,,,,,
+vocab-14,vocabulary,,,,,bedsheets,bedsheet,bedsheet,/ˈbedʃiːt/,n.,在语境中指床上铺盖用的床单。,床单,,,,,
+vocab-15,vocabulary,,,,,room service,room service,room service,/ˌruːm ˈsɜːrvɪs/,n.,当前句子中表示酒店客房送餐服务。,客房服务,,,,,
+vocab-16,vocabulary,,,,,sleeping,sleep,sleep,/sliːp/,v.,在句中表示正在睡觉。,睡觉,,,,,
+vocab-17,vocabulary,,,,,ordered,order,order,/ˈɔːrdər/,v.,在语境中表示点了或订了某物。,订购；命令,,,,,
+vocab-18,vocabulary,,,,,academic,academic,academic,/ˌækəˈdemɪk/,adj.,在当前句中表示与学习或学术有关。,学术的；学院的,,,,,
+vocab-19,vocabulary,,,,,project,project,project,/ˈprɑːdʒekt/,n.,在语境中指需要完成的一项工作。,项目；工程,,,,,
+vocab-20,vocabulary,,,,,context,context,context,/ˈkɑːntekst/,n.,在句中指理解表达所依赖的上下文。,上下文；背景,,,,,
+vocab-21,vocabulary,,,,,literal,literal,literal,/ˈlɪtərəl/,adj.,在语境中表示按字面意思理解的。,字面的；逐字的,,,,,
+vocab-22,vocabulary,,,,,phrase,phrase,phrase,/freɪz/,n.,在句中指一个固定表达或短语。,短语；表达,,,,,
+vocab-23,vocabulary,,,,,subtitle,subtitle,subtitle,/ˈsʌbtaɪtl/,n.,在语境中指视频中的字幕文本。,字幕,,,,,
+vocab-24,vocabulary,,,,,idiom,idiom,idiom,/ˈɪdiəm/,n.,在句中指不能只按字面解释的习语。,习语；成语,,,,,
+vocab-25,vocabulary,,,,,metaphor,metaphor,metaphor,/ˈmetəfɔːr/,n.,在语境中指用一个事物说明另一个事物的比喻。,隐喻；比喻,,,,,
+vocab-26,vocabulary,,,,,nonliteral,nonliteral,nonliteral,/ˌnɑːnˈlɪtərəl/,adj.,在句中表示不是按字面来理解。,非字面的,,,,,
+vocab-27,vocabulary,,,,,straight,straight,straight,/streɪt/,adv.,在语境中表示直接地、不绕弯地。,直的；直接地,,,,,
+vocab-28,vocabulary,,,,,enjoyed,enjoy,enjoy,/ɪnˈdʒɔɪ/,v.,在句中表示过去感到喜欢。,享受；喜欢,,,,,
+vocab-29,vocabulary,,,,,busy,busy,busy,/ˈbɪzi/,adj.,在语境中表示没有空闲。,忙碌的,,,,,
+vocab-30,vocabulary,,,,,sure,sure,sure,/ʃʊr/,adj.,在当前句中表示确定或同意。,确信的；当然,,,,,
+vocab-31,vocabulary,,,,,pull off,pull off,pull off,/pʊl ɔːf/,phr.,在语境中表示成功完成困难的事。,成功完成,,,,,
+vocab-32,vocabulary,,,,,give me a hand,give someone a hand,give someone a hand,/ɡɪv ˈsʌmwʌn ə hænd/,phr.,在句中表示请求别人帮忙。,帮某人一把,,,,,
+vocab-33,vocabulary,,,,,lay it on us,lay something on someone,lay something on someone,/leɪ ɪt ɑːn ʌs/,phr.,在语境中表示让对方直接说出来。,直说；告诉某人,,,,,
+vocab-34,vocabulary,,,,,call it a day,call it a day,call it a day,/kɔːl ɪt ə deɪ/,phr.,在句中表示今天到此为止。,收工；到此为止,,,,,
+vocab-35,vocabulary,,,,,hand,hand,hand,/hænd/,n.,在固定表达中表示帮助。,手；帮助,,,,,
+vocab-36,vocabulary,,,,,literal meaning,literal meaning,literal meaning,/ˈlɪtərəl ˈmiːnɪŋ/,n.,在语境中指字面层面的意思。,字面意思,,,,,
+vocab-37,vocabulary,,,,,actual meaning,actual meaning,actual meaning,/ˈæktʃuəl ˈmiːnɪŋ/,n.,在句中指真正想表达的意思。,实际含义,,,,,
+vocab-38,vocabulary,,,,,source,source,source,/sɔːrs/,n.,在语境中指信息或字幕的来源。,来源；源头,,,,,
+vocab-39,vocabulary,,,,,segment,segment,segment,/ˈseɡmənt/,n.,在当前句中指视频或字幕的一小段。,片段；部分,,,,,
