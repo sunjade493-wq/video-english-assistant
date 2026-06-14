@@ -1,48 +1,63 @@
-# V29D Data Contract Frozen
+# V29D Backend Data Contract Frozen ✅
 
-Status: Frozen
+Status: Frozen ✅
 
-Scope: Backend data contract for generating video learning obstacles.
+Purpose:
 
-This document freezes the V29D backend data responsibility boundary. The goal is to prevent unstable or incomplete learning cards, including cases where the same word inconsistently has part of speech data, the same word changes between known and unknown, the same expression alternates between prototype and subtitle variants, or the frontend silently performs dictionary lookup, lemma guessing, or part-of-speech guessing.
+The Video English Assistant has entered the real-video experiment stage.
+
+The frontend is already frozen.
+
+The backend data contract must now also be frozen.
+
+The frontend must never become an English dictionary, morphology engine, or obstacle analysis engine.
+
+All language intelligence belongs to the backend.
 
 ## 1. Product Goal
 
-The product goal is not to:
+The product does not aim to make users permanently memorize all vocabulary or grammar.
 
-- Permanently memorize every English word.
-- Prepare users for CET-4, CET-6, or any other exam as the primary objective.
-- Teach all grammar knowledge exhaustively.
+The goal is:
 
-The product goal is to:
+* remove obstacles while watching English videos
+* make users increasingly able to understand videos
+* improve confidence
+* improve efficiency
+* maintain learning motivation
 
-- Remove comprehension blockers in the current video.
-- Help users listen to and understand English videos more smoothly over time.
-- Improve learning efficiency, confidence, and motivation to continue.
+## 2. Vocabulary Level System — Frozen
 
-## 2. Vocabulary Level System
+Vocabulary levels are approximate coverage references only.
 
-The vocabulary level system is frozen as:
+* Junior High (1500)
+* Senior High (3500)
+* CET-4 (4500)
+* CET-6 (6000)
+* TEM-4 (8000)
+* TEM-8 (12000)
+* GRE (20000+)
 
-| Level | Approximate vocabulary coverage |
-| --- | ---: |
-| Junior High | 1,500 |
-| Senior High | 3,500 |
-| CET-4 | 4,500 |
-| CET-6 | 6,000 |
-| TEM-4 | 8,000 |
-| TEM-8 | 12,000 |
-| GRE | 20,000+ |
+Numbers are approximate vocabulary coverage references only.
 
-These numbers are approximate vocabulary coverage references only.
+## 3. Analyze Engine Input / Output — Frozen
 
-They indicate an approximate known-vocabulary range. They do not indicate education level, school grade, or exam score.
+Input:
 
-## 3. Vocab Obstacle Mechanism
+subtitle items
++
+user vocabulary level
 
-Frozen principle: vocabulary obstacles are user-level dependent.
+Output:
 
-The backend must use this decision flow:
+* vocab obstacles
+* comprehension obstacles
+
+## 4. Vocab Obstacle Principle — Frozen
+
+Vocabulary obstacles are user-level dependent.
+
+Detection flow:
 
 ```text
 surface form
@@ -82,237 +97,288 @@ Senior High (3500)
 generate vocab obstacle
 ```
 
-## 4. Comprehension Obstacle Mechanism
+## 5. Comprehension Obstacle Principle — Frozen
 
-Frozen principle: comprehension obstacles are expression-dependent.
+Comprehension obstacles are expression-dependent.
 
 Comprehension obstacles are independent of vocabulary level.
 
-Examples include:
+Examples:
 
-- `lay it on us`
-- `pull somebody off something`
-- `call it a day`
+* lay it on us
+* pull somebody off something
+* call it a day
 
-Even a user at `GRE (20000+)` level may still receive comprehension obstacles.
+Even GRE (20000+) users may still receive comprehension obstacles.
 
-## 5. Backend Responsibilities
+## 6. Backend Responsibilities — Frozen
 
-The backend is responsible for all of the following.
+The backend is responsible for:
 
-### 5.1 Identify obstacle type
+1. obstacle detection
+2. vocabulary-level filtering
+3. lemma restoration
+4. prototype abstraction
+5. phonetic generation
+6. part-of-speech generation
+7. translation generation
+8. sentence meaning generation
+9. vocab deduplication
+10. comprehension deduplication
+11. data validation
+12. data enrichment
 
-The backend must identify whether an obstacle is:
+The frontend is not allowed to perform any of these responsibilities.
 
-- `vocab`
-- `comprehension`
+## 7. Vocab Obstacle Contract — Frozen
 
-### 5.2 Make vocabulary level decisions
+Every vocab obstacle must contain:
 
-The backend must decide whether to generate or ignore a vocab obstacle by comparing:
+* lemma
+* phonetic
+* partOfSpeech
+* sentenceMeaning
+* translation
 
-- `lemma`
-- user vocabulary level
+Optional compatibility fields may exist:
 
-The result is either:
+* word
+* baseForm
+* surfaceForm
+* kind
+* index
+* phrase
 
-- generate vocab obstacle
-- ignore
+However, the required fields above must always exist.
 
-### 5.3 Restore lemma
+## 8. Completeness Rule — Frozen
 
-The backend must normalize inflected surface forms to their lemma/base form.
+Any selected vocab obstacle must be fully completed before being written into:
+
+output_text/v29a_obstacles.json
+
+Incomplete vocab entries are forbidden.
+
+The generator must never output half-complete vocab data.
+
+The backend must not drop a selected vocab obstacle simply because some fields are temporarily unavailable.
+
+A selected vocab obstacle must continue enrichment until all required fields are completed.
+
+Examples of forbidden output:
+
+```json
+{
+  "word": "interlock",
+  "phonetic": "",
+  "partOfSpeech": ""
+}
+```
+
+```json
+{
+  "word": "ordered",
+  "phonetic": "/ˈɔːrdərd/",
+  "partOfSpeech": ""
+}
+```
+
+These entries must continue enrichment until all required fields are complete.
+
+## 9. Data Validation Rule — Frozen
+
+Every generated vocab obstacle must pass validation before being written into:
+
+output_text/v29a_obstacles.json
+
+Required fields:
+
+* lemma
+* phonetic
+* partOfSpeech
+* sentenceMeaning
+* translation
+
+If any required field is missing, the generator must:
+
+* continue dictionary lookup
+* continue normalization
+* continue enrichment
+
+The generator must not silently output incomplete vocab data.
+
+The following data is forbidden:
+
+```json
+{
+  "word": "interlock",
+  "phonetic": "",
+  "partOfSpeech": ""
+}
+```
+
+The generator must continue completing the required fields before outputting the vocab obstacle to the frontend.
+
+## 10. Deterministic Output Rule — Frozen
+
+Under identical inputs:
+
+* episode
+* subtitle items
+* user vocabulary level
+* analyzer version
+* vocabulary database version
+
+The output must be:
+
+* deterministic
+* reproducible
+* stable
+
+For the same inputs and the same backend version, the generated obstacle JSON must be identical.
+
+The same user must receive exactly the same obstacle data every time.
+
+Obstacle output must not randomly change.
+
+## 11. Lemma Rule — Frozen
+
+Vocabulary obstacles always display lemma.
 
 Examples:
 
 ```text
-believed
 believes
+believed
 believing
-→ believe
+↓
+
+believe
 ```
 
 ```text
-married
 marries
+married
 marrying
-→ marry
+↓
+
+marry
 ```
 
-```text
-sleeping
-→ sleep
-```
+## 12. Prototype Rule — Frozen
 
-### 5.4 Abstract prototypes
-
-The backend must normalize expression instances to stable prototypes.
+Comprehension obstacles always display prototypes.
 
 Examples:
-
-```text
-give me a hand
-→ give somebody a hand
-```
 
 ```text
 lay it on us
-→ lay something on somebody
+↓
+
+lay something on somebody
 ```
 
-### 5.5 Deduplicate obstacles
+```text
+pull me off the project
+↓
 
-For vocab obstacles, the deduplication key is:
+pull somebody off something
+```
+
+```text
+give me a hand
+↓
+
+give somebody a hand
+```
+
+Fixed expressions display themselves:
+
+* call it a day
+* by the way
+* come on
+
+## 13. Deduplication Rule — Frozen
+
+Vocabulary dedupe key:
 
 ```text
 vocab:${lemma}
 ```
 
-For example, these surface forms must produce only one vocab obstacle:
+Examples:
 
 ```text
 believe
 believes
 believed
 believing
+
+↓
+
+one obstacle only:
+
+vocab:believe
 ```
 
-For comprehension obstacles, deduplication is based on the prototype.
+Comprehension obstacles must dedupe by prototype.
 
-For example, these subtitle variants must produce only one comprehension obstacle:
+Examples:
 
 ```text
 give me a hand
 give him a hand
 give us a hand
-```
 
-The resulting obstacle must use the prototype:
+↓
 
-```text
+one obstacle only:
+
 give somebody a hand
 ```
 
-## 6. Vocab Data Completeness Principle
+## 14. Frontend Responsibilities — Frozen
 
-If a word is selected as a `vocab` obstacle, the backend must complete all learning fields before sending it to the frontend.
+The frontend may only:
 
-Required fields:
+1. read obstacle JSON
+2. render cards
+3. render subtitles
+4. manage progress
+5. manage interaction state
 
-- `lemma` / `baseForm`
-- `phonetic`
-- `partOfSpeech`
-- `sentenceMeaning`
-- `translation`
+## 15. Frontend Prohibitions — Frozen
 
-Example:
+The frontend must never:
 
-```json
-{
-  "type": "vocab",
-  "word": "consummated",
-  "lemma": "consummate",
-  "baseForm": "consummate",
-  "phonetic": "/ˈkɑːnsəmeɪt/",
-  "partOfSpeech": "vt.",
-  "sentenceMeaning": "圆房；完成",
-  "translation": "圆房；完成"
-}
-```
+* perform dictionary lookup
+* infer lemma
+* infer prototype
+* infer phonetic
+* infer partOfSpeech
+* determine whether a word is unknown
+* perform vocabulary-level filtering
+* deduplicate vocab obstacles
+* deduplicate comprehension obstacles
+* enrich incomplete data
+* use local dictionaryEntries to complete learning data
 
-Important principle: there is no such thing as a selected vocab obstacle whose part of speech, phonetic transcription, or explanation is unknowable.
+The frontend is display-only.
 
-The following values do not mean the knowledge does not exist:
+All language intelligence belongs to the backend.
 
-```json
-{
-  "phonetic": "",
-  "partOfSpeech": "",
-  "sentenceMeaning": ""
-}
-```
+## 16. Acceptance Criteria — Frozen
 
-They only mean the generator failed to complete dictionary lookup.
+For every vocab obstacle:
 
-## 7. Completeness Rule
+lemma ✅
+phonetic ✅
+partOfSpeech ✅
+sentenceMeaning ✅
+translation ✅
 
-If a word has been classified as a `vocab` obstacle, the backend must not abandon it or emit a partial card.
+No incomplete vocab entries may exist inside:
 
-Examples include:
+output_text/v29a_obstacles.json
 
-- `interlock`
-- `snap`
-- `sleeping`
-- `ordered`
-
-The backend must not output a partially complete card because `partOfSpeech` or `phonetic` is missing.
-
-Correct flow:
-
-```text
-identified as vocab
-↓
-continue dictionary lookup
-↓
-complete all required fields
-↓
-output complete obstacle
-↓
-send to frontend
-```
-
-## 8. Frontend Responsibilities
-
-The frontend is responsible only for:
-
-- Reading JSON.
-- Rendering cards.
-- Showing the timeline.
-- Pausing video playback.
-- Handling `✓ 不用管我了`.
-- Returning to the previous obstacle.
-- Storing learning progress in `localStorage`.
-
-## 9. Frontend Must Not
-
-The frontend must not:
-
-- Query a complete English dictionary.
-- Guess lemma.
-- Guess prototype.
-- Guess phonetic transcription.
-- Guess part of speech.
-- Decide whether a word is unknown.
-- Decide vocabulary level.
-- Deduplicate obstacles.
-- Use local `dictionaryEntries` to complete learning data.
-
-## 10. Deterministic Output Rule
-
-For the same:
-
-- episode
-- subtitle data
-- user vocabulary level
-- analyzer version
-- vocabulary database version
-
-The generated outputs must be deterministic, reproducible, and stable for:
-
-- vocab obstacles
-- comprehension obstacles
-
-For the same video, same subtitles, same user vocabulary level, and same analysis versions, the output must be fixed.
-
-The system must not produce unstable results such as:
-
-- 52 obstacles today and 58 obstacles tomorrow for the same inputs.
-- `interlock` has part of speech today but no part of speech tomorrow for the same inputs.
-
-## 11. One-Sentence Summary
-
-The backend kitchen is responsible for identifying, deciding, looking up dictionary data, completing data, deduplicating, and outputting complete learning data.
-
-The frontend waiter is responsible for reading, displaying, interaction, and learning progress.
-
-Core principle: the kitchen must finish the dish before serving it. The frontend only serves the dish; it does not cook.
+This contract is frozen and becomes the canonical backend specification for V29D.
