@@ -345,11 +345,17 @@ button {
   border: 1px solid #e7edf6;
 }
 
-.vocab-word,
-.vocab-base-form,
-.vocab-meta,
+.vocab-title-line,
+.vocab-phonetic-line,
 .vocab-sentence-meaning {
   margin: 0;
+}
+
+.vocab-title-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
 }
 
 .vocab-word {
@@ -359,21 +365,25 @@ button {
   line-height: 1.2;
 }
 
-.vocab-base-form {
-  margin-top: 4px;
+.vocab-base-form,
+.vocab-part-of-speech {
   color: var(--muted);
   font-size: 0.92rem;
   font-weight: 700;
 }
 
-.vocab-meta {
+.vocab-phonetic-line {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  align-items: center;
+  gap: 6px;
   margin-top: 8px;
   color: #2b3542;
   font-size: 0.96rem;
   font-weight: 760;
+}
+
+.vocab-audio-icon {
+  line-height: 1;
 }
 
 .vocab-sentence-meaning {

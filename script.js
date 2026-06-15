@@ -1590,36 +1590,46 @@ function createWordHeadline(obstacle) {
   const headline = document.createElement('div');
   headline.className = 'vocab-headline';
 
-  const word = document.createElement('p');
+  const titleLine = document.createElement('p');
+  titleLine.className = 'vocab-title-line';
+
+  const word = document.createElement('span');
   word.className = 'vocab-word';
   word.textContent = obstacle.word;
-  headline.append(word);
+  titleLine.append(word);
 
   if (obstacle.baseForm && obstacle.baseForm !== obstacle.word) {
-    const baseForm = document.createElement('p');
+    const baseForm = document.createElement('span');
     baseForm.className = 'vocab-base-form';
     baseForm.textContent = `(base: ${obstacle.baseForm})`;
-    headline.append(baseForm);
-  }
-
-  const meta = document.createElement('p');
-  meta.className = 'vocab-meta';
-
-  if (obstacle.phonetic) {
-    const phonetic = document.createElement('span');
-    phonetic.className = 'vocab-phonetic';
-    phonetic.textContent = obstacle.phonetic;
-    meta.append(phonetic);
+    titleLine.append(baseForm);
   }
 
   if (obstacle.partOfSpeech) {
     const partOfSpeech = document.createElement('span');
     partOfSpeech.className = 'vocab-part-of-speech';
-    partOfSpeech.textContent = obstacle.partOfSpeech;
-    meta.append(partOfSpeech);
+    partOfSpeech.textContent = ` / ${obstacle.partOfSpeech}`;
+    titleLine.append(partOfSpeech);
   }
 
-  headline.append(meta);
+  headline.append(titleLine);
+
+  if (obstacle.phonetic) {
+    const phoneticLine = document.createElement('p');
+    phoneticLine.className = 'vocab-phonetic-line';
+
+    const audioIcon = document.createElement('span');
+    audioIcon.className = 'vocab-audio-icon';
+    audioIcon.textContent = '🔊';
+    phoneticLine.append(audioIcon);
+
+    const phonetic = document.createElement('span');
+    phonetic.className = 'vocab-phonetic';
+    phonetic.textContent = obstacle.phonetic;
+    phoneticLine.append(phonetic);
+
+    headline.append(phoneticLine);
+  }
 
   return headline;
 }
