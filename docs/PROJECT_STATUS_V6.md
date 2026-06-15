@@ -168,7 +168,7 @@ Current frozen vocab schema:
 
 ## 10. Runtime Capability
 
-Sources: `docs/V29H_RUNTIME_CAPABILITY_FREEZE.md`, `docs/V29H_POS_SPEC_FREEZE.md`, `docs/V29H_VOCAB_CARD_DISPLAY_SPEC_FREEZE.md`
+Sources: `docs/V29H_RUNTIME_CAPABILITY_FREEZE.md`, `docs/V29H_POS_SPEC_FREEZE.md`, `docs/V29H_VOCAB_CARD_DISPLAY_SPEC_FREEZE.md`, `docs/V29I_VOCAB_DISPLAY_DATA_CONTRACT_FREEZE.md`
 
 Runtime can load:
 
@@ -249,6 +249,30 @@ V29H-3B Implement Vocabulary Card Display is completed in repository state:
 - `script.js` renders vocabulary cards according to the frozen V29H-3A field order and conditional baseForm rule.
 - `styles.css` contains the vocabulary card display classes for the headline, title line, second line, audio icon, and sentence meaning line.
 
+## 10C. Vocabulary Display Data Contract Status
+
+Source: `docs/V29I_VOCAB_DISPLAY_DATA_CONTRACT_FREEZE.md`
+
+V29I-0A Backend + Frontend Vocabulary Display Data Contract Freeze is completed.
+
+Corrected vocabulary display data contract:
+
+- `word` = dictionary/base form of the vocabulary item.
+- `baseForm` is optional / legacy compatibility only and is not required by the vocabulary card display contract.
+- `phonetic` = phonetic transcription of the dictionary/base form shown in `word`.
+- `partOfSpeech` = complete POS combination for the vocabulary word, using the frozen POS formats and canonical ordering from `docs/V29H_POS_SPEC_FREEZE.md`.
+- `sentenceMeaning` = short best-fit meaning of the word in the current sentence.
+- `translation` = general dictionary-style translation of the word; it does not replace `sentenceMeaning`, and the current vocabulary card does not display it.
+- Vocabulary card display no longer shows a separate `原型：baseForm` line because `word` is already the dictionary/base form.
+
+Frontend display contract after V29I-0A:
+
+- Line 1 displays `word + phonetic + partOfSpeech`.
+- Line 2 displays `🔊`.
+- Line 3 displays `句中含义：{sentenceMeaning}`.
+
+V29I-0A corrects the vocabulary display data contract. All other frozen decisions remain unchanged unless a later repository freeze document explicitly revises them.
+
 ## 11. Runtime Interaction Status
 
 Sources: `README.md`, `CHANGELOG.md`, `Freeze_Summary.md`
@@ -283,6 +307,7 @@ Completed:
 - V29H-2B Backend POS Normalize
 - V29H-3A Vocabulary Card Display Specification Freeze
 - V29H-3B Implement Vocabulary Card Display
+- V29I-0A Backend + Frontend Vocabulary Display Data Contract Freeze
 
 Current / Next:
 
