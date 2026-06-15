@@ -1,0 +1,247 @@
+# Video English Assistant — PROJECT_STATUS_V6
+
+## 1. How to Use This Document
+
+This document is the bootstrap document for future Video English Assistant conversations.
+
+Future conversations should read this document first.
+
+Repository evidence wins over chat memory.
+
+This document is generated from repository freeze documents, repository code evidence, repository runtime evidence, and verified git history. It must not be treated as a replacement for the frozen documents referenced inside it.
+
+## 2. Evidence Rules
+
+- Repository Evidence First: repository files are authoritative. Chat memory, assistant memory, and human recollection are not authoritative project state.
+- Conflict Resolution: if chat history, assistant memory, human recollection, and repository documents conflict, repository documents always win.
+- Verification Rule: statements such as "I remember", "We discussed", or "I think we froze" are not freeze evidence. Freeze evidence requires repository freeze/specification documents, repository code evidence, git history, or PR history.
+- Investigation First: when uncertainty exists, investigate repository evidence first, produce an investigation report, freeze conclusions, and only then update this bootstrap status document.
+
+## 3. Single Source of Truth
+
+Canonical repository:
+
+GitHub main branch.
+
+Local canonical working directory:
+
+```text
+C:\Users\10604\Desktop\video-english-assistant-github
+```
+
+Local experiment directory:
+
+```text
+C:\Users\10604\Desktop\Video_English_Assistant
+```
+
+The local experiment directory may be used only for local experiments, temporary debugging, and data validation. It must not be used as the Codex or GitHub baseline.
+
+## 4. Long-Term Product Direction
+
+Status: FROZEN
+
+Source: `docs/LONG_TERM_PRODUCT_DIRECTION_FREEZE.md`
+
+- Platform provides built-in learning materials.
+- Users should not upload videos.
+- Users should not upload subtitles.
+- Users should not manage learning resources.
+- Users choose learning content by interests and difficulty level.
+- Users are not responsible for finding learning materials.
+- The platform provides learning materials.
+- Analyze Engine produces learning data for platform-provided content.
+- Runtime consumes generated learning data and presents learning interactions.
+
+## 5. Product Goal
+
+Sources: `docs/V29D_DATA_CONTRACT.md`, `README.md`
+
+The product goal is not permanent memorization, grammar mastery, or exam preparation.
+
+The goal is to remove obstacles while watching English videos and improve comprehension, confidence, efficiency, and learning motivation.
+
+## 6. Frozen Obstacle System
+
+Sources: `docs/V29D_DATA_CONTRACT.md`, `Freeze_Summary.md`, `README.md`
+
+- The obstacle system contains Vocabulary Obstacles and Comprehension Obstacles.
+- Vocabulary obstacles are user-level dependent.
+- Comprehension obstacles are expression-dependent and independent of vocabulary level.
+- Vocabulary obstacles are prioritized before comprehension obstacles in current Learning Tips.
+- Analyze Engine uses a Vocabulary Pipeline, Comprehension Pipeline, and Merge Pipeline.
+- Runtime reads frozen obstacle data; users do not run obstacle detection.
+
+## 7. Vocabulary Level System
+
+Status: FROZEN
+
+Sources: `docs/V29D_DATA_CONTRACT.md`, `Freeze_Summary.md`
+
+Current frozen vocabulary levels:
+
+- Junior High (1500)
+- Senior High (3500)
+- CET-4 (4500)
+- CET-6 (6000)
+- TEM-4 (8000)
+- TEM-8 (12000)
+- GRE (20000+)
+
+Numbers are approximate coverage references only.
+
+Do not replace this system with:
+
+- CEFR A1/A2/B1/B2/C1/C2
+- Beginner / Elementary / Intermediate
+- Any unverified new vocabulary level system
+
+## 8. Backend / Frontend Responsibility Split
+
+Sources: `docs/V29D_DATA_CONTRACT.md`, `docs/V29F_BACKEND_VOCAB_SCHEMA_DESIGN.md`
+
+Backend / Analyze Engine is responsible for language intelligence:
+
+- obstacle detection
+- vocabulary level filtering
+- lemma restoration
+- prototype abstraction
+- phonetic
+- partOfSpeech
+- translation
+- sentenceMeaning
+- validation
+- enrichment
+
+Runtime / Frontend is a read-only consumer.
+
+Frontend must not guess, infer, enrich, or fallback language intelligence fields.
+
+## 9. Vocabulary Schema
+
+Source: `docs/V29F_BACKEND_VOCAB_SCHEMA_DESIGN.md`
+
+Current frozen vocab schema:
+
+- word
+- lemma
+- baseForm
+- phonetic
+- partOfSpeech
+- sentenceMeaning
+- translation
+
+## 10. Runtime Capability
+
+Source: `docs/V29H_RUNTIME_CAPABILITY_FREEZE.md`
+
+Runtime can load:
+
+- `output_text/v28d_bilingual_subtitles.json`
+- `output_text/v29a_obstacles.json`
+
+Runtime can distinguish and render:
+
+- `[vocab]`
+- `[comprehension]`
+
+Vocabulary card current capability:
+
+- word
+- baseForm optional
+- phonetic
+- partOfSpeech
+- sentenceMeaning
+
+Comprehension card current capability:
+
+- prototype / phrase
+- literal
+- actual
+- grammar
+
+V29H freezes runtime capability only.
+
+V29H does NOT freeze:
+
+- UI layout
+- CSS styling
+- field ordering
+- wording
+- typography
+- spacing
+- card redesign
+- POS display format
+- baseForm display style
+- sentenceMeaning display style
+
+## 11. Runtime Interaction Status
+
+Sources: `README.md`, `CHANGELOG.md`, `Freeze_Summary.md`
+
+- V2.3A current subtitle Learning Tips behavior is frozen: Learning Tips only displays obstacles from the current subtitle, does not preload previous/next/global obstacles, shows all obstacles in the current subtitle, and orders Vocabulary Obstacles before Comprehension Obstacles.
+- V2.3A subtitle marker / Learning Pause behavior is frozen: clicking a subtitle obstacle underline enters Learning Pause, forces video pause, shows the Learning Pause Hint, and keeps Learning Tips on all current-subtitle obstacles rather than only the clicked obstacle.
+- V2.3A card actions are decoupled from playback: `✓ 不用管我了` hides only the current card, `恢复全部` restores current-round hidden cards, and neither controls playback.
+- V2.4A Obstacle Timeline is frozen: dual timeline, obstacle heat axis, visual density clustering, cluster counts, Bottom Sheet, selected-region highlight, subtitle-node grouping, same-subtitle obstacle binding, obstacle click-to-seek, Learning Tips sync, and playback-state preservation.
+- V2.5A episode progress is frozen: `✓ 已攻克 N`, `○ 剩余 N`, `↶ 撤回上一步`, localStorage persistence, same-subtitle Analyze recovery, browser-refresh recovery, and the Learning Tips top progress module.
+
+## 12. Root Cause / Backend Repair Status
+
+Sources: `docs/V29E_ROOT_CAUSE_FREEZE.md`, `docs/V29F_BACKEND_VOCAB_SCHEMA_DESIGN.md`
+
+V29E final root cause:
+
+V29A Python generator used legacy three-field vocabulary schema.
+
+V29F design fixed the backend vocabulary schema direction by defining seven required vocab fields and validation.
+
+## 13. Current Development Status
+
+Completed:
+
+- Repository Evidence First Rule
+- Codex Workflow Freeze
+- Codex Workspace Exception Rule
+- Long-Term Product Direction Freeze
+- V29H Runtime Capability Baseline
+- V29H-1 Vocabulary Card UI Polish
+
+Current / Next:
+
+- V29H-2A POS Specification Freeze
+- V29H-2B Backend POS Normalize
+- V29H-3 Vocabulary Card Polish / Redesign
+- V29I Runtime Fail Fast
+- V29I Vocabulary Data Quality Improvements
+
+## 14. Explicitly Unverified / Not Frozen
+
+The following are NOT currently frozen unless later repository evidence is added:
+
+- Vocabulary card final UI design
+- POS display format
+- baseForm display style
+- sentenceMeaning display style
+- CEFR vocabulary level system
+- Beginner / Elementary / Intermediate vocabulary level system
+- Any user-upload workflow
+- Any creator mode
+- Any alternative content-ingestion pipeline
+
+## 15. Future Conversation Startup Prompt
+
+Future conversations should begin with:
+
+Please read:
+
+```text
+docs/PROJECT_STATUS_V6.md
+```
+
+and all frozen documents referenced inside it.
+
+Treat repository files as the canonical project state.
+
+Do not infer project history from chat memory.
+
+Do not re-discuss frozen decisions unless the user explicitly asks to revise them.
