@@ -1,6 +1,6 @@
 # Video English Assistant — PROJECT_STATUS_V6
 
-Status: Bootstrap V1 ✅
+Status: Bootstrap V1.1 ✅
 
 ## Bootstrap Maintenance Rule
 
@@ -168,7 +168,7 @@ Current frozen vocab schema:
 
 ## 10. Runtime Capability
 
-Source: `docs/V29H_RUNTIME_CAPABILITY_FREEZE.md`
+Sources: `docs/V29H_RUNTIME_CAPABILITY_FREEZE.md`, `docs/V29H_POS_SPEC_FREEZE.md`
 
 Runtime can load:
 
@@ -210,6 +210,26 @@ V29H does NOT freeze:
 - baseForm display style
 - sentenceMeaning display style
 
+Note: the list above is the V29H runtime capability baseline scope. POS display format is frozen later by V29H-2A.
+
+## 10A. POS Specification and Backend Normalize Status
+
+Sources: `docs/V29H_POS_SPEC_FREEZE.md`, `v29a_obstacle_generator.py`, `output_text/v29a_obstacles.json`
+
+V29H-2A POS Specification Freeze is completed.
+
+Frozen POS rules:
+
+- Runtime displays `partOfSpeech` exactly as provided.
+- Runtime does not infer, guess, reorder, normalize, convert, or fallback POS.
+- Backend generator / Analyze Engine must output final display-ready POS strings.
+- Supported POS formats and canonical ordering are defined in `docs/V29H_POS_SPEC_FREEZE.md`.
+
+V29H-2B Backend POS Normalize is completed in repository state:
+
+- `v29a_obstacle_generator.py` contains POS display normalization, supported POS display formats, canonical combination ordering, and validation for vocabulary obstacles.
+- `output_text/v29a_obstacles.json` contains normalized vocabulary `partOfSpeech` values such as `vt.`, `vi.`, `adj.`, `adv.`, `prep.`, and `n.`.
+
 ## 11. Runtime Interaction Status
 
 Sources: `README.md`, `CHANGELOG.md`, `Freeze_Summary.md`
@@ -240,11 +260,11 @@ Completed:
 - Long-Term Product Direction Freeze
 - V29H Runtime Capability Baseline
 - V29H-1 Vocabulary Card UI Polish
+- V29H-2A POS Specification Freeze
+- V29H-2B Backend POS Normalize
 
 Current / Next:
 
-- V29H-2A POS Specification Freeze
-- V29H-2B Backend POS Normalize
 - V29H-3 Vocabulary Card Polish / Redesign
 - V29I Runtime Fail Fast
 - V29I Vocabulary Data Quality Improvements
@@ -254,7 +274,6 @@ Current / Next:
 The following are NOT currently frozen unless later repository evidence is added:
 
 - Vocabulary card final UI design
-- POS display format
 - baseForm display style
 - sentenceMeaning display style
 - CEFR vocabulary level system
