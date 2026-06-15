@@ -168,7 +168,7 @@ Current frozen vocab schema:
 
 ## 10. Runtime Capability
 
-Sources: `docs/V29H_RUNTIME_CAPABILITY_FREEZE.md`, `docs/V29H_POS_SPEC_FREEZE.md`, `docs/V29H_VOCAB_CARD_DISPLAY_SPEC_FREEZE.md`, `docs/V29I_VOCAB_DISPLAY_DATA_CONTRACT_FREEZE.md`
+Sources: `docs/V29H_RUNTIME_CAPABILITY_FREEZE.md`, `docs/V29H_POS_SPEC_FREEZE.md`, `docs/V29H_VOCAB_CARD_DISPLAY_SPEC_FREEZE.md`, `docs/V29I_VOCAB_DISPLAY_DATA_CONTRACT_FREEZE.md`, `docs/V29I_RUNTIME_FAIL_FAST_SPEC_FREEZE.md`
 
 Runtime can load:
 
@@ -251,7 +251,7 @@ V29H-3B Implement Vocabulary Card Display is completed in repository state:
 
 ## 10C. Vocabulary Display Data Contract Status
 
-Sources: `docs/V29I_VOCAB_DISPLAY_DATA_CONTRACT_FREEZE.md`, `docs/V29I_SENTENCE_MEANING_SEMANTIC_RESPONSIBILITY_FREEZE.md`
+Sources: `docs/V29I_VOCAB_DISPLAY_DATA_CONTRACT_FREEZE.md`, `docs/V29I_SENTENCE_MEANING_SEMANTIC_RESPONSIBILITY_FREEZE.md`, `docs/V29I_RUNTIME_FAIL_FAST_SPEC_FREEZE.md`
 
 V29I-0A Backend + Frontend Vocabulary Display Data Contract Freeze is completed.
 
@@ -302,6 +302,18 @@ Frozen `sentenceMeaning` semantic responsibility rules:
 - `source_zh` is important semantic evidence but is not the only source of truth.
 - AI / Analyze Engine may decide the best-fit short learner-friendly meaning by combining available evidence.
 
+V29I-1A Runtime Fail Fast Specification Freeze is completed and merged.
+
+Runtime fail-fast status note:
+
+- Runtime / Frontend is a read-only consumer of generated learning data.
+- Runtime must not silently accept invalid obstacle data.
+- Runtime must not guess, infer, normalize, enrich, rewrite, shorten, translate, or fallback language intelligence fields.
+- Vocabulary required fields are `word`, `phonetic`, `partOfSpeech`, and `sentenceMeaning`.
+- Comprehension required fields are `prototype` or `phrase` or `text`, plus `literal`, `actual`, and `grammar`.
+- Invalid obstacle data must produce a clear developer-facing failure signal in implementation.
+- Silent rendering of incomplete or invalid learning cards is forbidden.
+
 ## 11. Runtime Interaction Status
 
 Sources: `README.md`, `CHANGELOG.md`, `Freeze_Summary.md`
@@ -339,6 +351,7 @@ Completed:
 - V29I-0A Backend + Frontend Vocabulary Display Data Contract Freeze
 - V29I-0B Backend + Frontend Vocabulary Display Data Normalize
 - V29I-0C Vocabulary SentenceMeaning Semantic Responsibility Freeze
+- V29I-1A Runtime Fail Fast Specification Freeze
 
 Current / Next:
 
