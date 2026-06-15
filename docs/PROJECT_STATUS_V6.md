@@ -273,6 +273,24 @@ Frontend display contract after V29I-0A:
 
 V29I-0A corrects the vocabulary display data contract. All other frozen decisions remain unchanged unless a later repository freeze document explicitly revises them.
 
+V29I-0B Backend + Frontend Vocabulary Display Data Normalize is completed in repository state:
+
+- Backend generator now outputs vocabulary `word` as the dictionary/base form.
+- `lemma` generally matches the dictionary/base form.
+- `phonetic` is the dictionary/base form phonetic.
+- `partOfSpeech` preserves complete frozen POS combinations.
+- `sentenceMeaning` is short current-sentence word-level meaning.
+- `baseForm` is legacy-compatible only and is not required by vocabulary display.
+- Frontend no longer renders a separate `原型：baseForm` line.
+- Regenerated `output_text/v29a_obstacles.json` and `output_text/v29a_obstacles.csv` comply with the V29I vocabulary display data contract.
+
+V29I-0B validation results:
+
+- Total vocabulary obstacle count: 39
+- Invalid POS count: 0
+- Long sentenceMeaning count: 0
+- Inflected display word count: 0
+
 ## 11. Runtime Interaction Status
 
 Sources: `README.md`, `CHANGELOG.md`, `Freeze_Summary.md`
@@ -308,11 +326,11 @@ Completed:
 - V29H-3A Vocabulary Card Display Specification Freeze
 - V29H-3B Implement Vocabulary Card Display
 - V29I-0A Backend + Frontend Vocabulary Display Data Contract Freeze
+- V29I-0B Backend + Frontend Vocabulary Display Data Normalize
 
 Current / Next:
 
 - V29I Runtime Fail Fast
-- V29I Vocabulary Data Quality Improvements
 
 ## 14. Explicitly Unverified / Not Frozen
 
