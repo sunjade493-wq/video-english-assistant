@@ -1,5 +1,40 @@
 # Video English Assistant — PROJECT_STATUS_V6
 
+Status: Bootstrap V1 ✅
+
+## Bootstrap Maintenance Rule
+
+PROJECT_STATUS_V6.md is the bootstrap index of all frozen project knowledge.
+
+Whenever a new document is added or updated that belongs to any of the following categories:
+
+* freeze
+* frozen
+* spec
+* specification
+* status
+* contract
+* workflow
+* bootstrap
+* major architecture/design document
+
+the workflow is mandatory:
+
+1. Create or update the document.
+2. Merge it.
+3. Update PROJECT_STATUS_V6.md.
+4. Merge the PROJECT_STATUS_V6.md update.
+
+No exceptions.
+
+PROJECT_STATUS_V6.md must always reflect the latest frozen repository state.
+
+Future conversations are expected to read PROJECT_STATUS_V6.md first.
+
+Therefore:
+
+A freeze document that is not referenced by PROJECT_STATUS_V6.md is considered an incomplete bootstrap update.
+
 ## 1. How to Use This Document
 
 This document is the bootstrap document for future Video English Assistant conversations.
