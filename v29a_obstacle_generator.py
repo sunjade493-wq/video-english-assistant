@@ -36,7 +36,6 @@ OUTPUT_FIELDS = [
     "text",
     "word",
     "lemma",
-    "baseForm",
     "phonetic",
     "partOfSpeech",
     "sentenceMeaning",
@@ -51,7 +50,6 @@ OUTPUT_FIELDS = [
 VOCAB_REQUIRED_FIELDS = (
     "word",
     "lemma",
-    "baseForm",
     "phonetic",
     "partOfSpeech",
     "sentenceMeaning",
@@ -61,7 +59,7 @@ VOCAB_REQUIRED_FIELDS = (
 # ---------------------------------------------------------------------------
 # Vocabulary Dictionary
 # ---------------------------------------------------------------------------
-# Required shape for every entry: word, lemma, baseForm, phonetic, partOfSpeech, sentenceMeaning, translation.
+# Required shape for every entry: word, lemma, phonetic, partOfSpeech, sentenceMeaning, translation. baseForm is legacy-compatible output only.
 # Keep this rule library inside this file so V29A can be restored even when no
 # historical generator files are present in the working tree.
 
@@ -84,15 +82,18 @@ POS_DISPLAY_BY_SOURCE = {
 }
 
 POS_DISPLAY_OVERRIDES_BY_WORD = {
-    "believe": "vt.",
-    "consummated": "vi.",
-    "developed": "vt.",
-    "interlock": "vi.",
-    "ordered": "vt.",
-    "sleeping": "vi.",
-    "started": "vi.",
-    "suppose": "vt.",
-    "unraveling": "vt.",
+    "alone": "adj./adv.",
+    "believe": "vt./vi.",
+    "consummate": "adj./vt.",
+    "develop": "vt./vi.",
+    "interlock": "vt./vi.",
+    "lecture": "n./vi./vt.",
+    "official": "adj./n.",
+    "order": "n./vi./vt.",
+    "sleep": "n./vi.",
+    "start": "n./vi./vt.",
+    "suppose": "vt./vi.",
+    "unravel": "vt./vi.",
 }
 
 SUPPORTED_POS_DISPLAY_FORMATS = {
@@ -112,6 +113,7 @@ SUPPORTED_POS_DISPLAY_FORMATS = {
     "n./vi.",
     "n./vi./vt.",
     "adj./n.",
+    "adj./vt.",
     "adj./adv.",
     "adv./adj.",
     "aux. v.",
@@ -163,39 +165,39 @@ def normalize_part_of_speech(entry: Dict[str, str]) -> str:
     raise ValueError(f"Unsupported partOfSpeech for {entry.get('word', '<unknown>')}: {source!r}")
 
 VOCABULARY_DICTIONARY: List[Dict[str, str]] = [
-    {"word": 'considering', "lemma": 'consider', "baseForm": 'consider', "phonetic": '/kənˈsɪdərɪŋ/', "partOfSpeech": 'preposition', "sentenceMeaning": '在这句话里表示“考虑到/鉴于某个情况”。', "translation": '考虑到；鉴于'},
-    {"word": 'official', "lemma": 'official', "baseForm": 'official', "phonetic": '/əˈfɪʃəl/', "partOfSpeech": 'adjective', "sentenceMeaning": '在语境中强调某事被正式确认、具有官方性质。', "translation": '官方的；正式的；官员'},
-    {"word": 'tradition', "lemma": 'tradition', "baseForm": 'tradition', "phonetic": '/trəˈdɪʃən/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指婚礼或社会习俗中流传下来的做法。', "translation": '传统；惯例'},
-    {"word": 'consummated', "lemma": 'consummate', "baseForm": 'consummate', "phonetic": '/ˈkɑːnsəmeɪtɪd/', "partOfSpeech": 'verb', "sentenceMeaning": '在婚姻语境中委婉表示“圆房/完成夫妻关系”。', "translation": '圆房；完成；使圆满'},
-    {"word": 'appropriate', "lemma": 'appropriate', "baseForm": 'appropriate', "phonetic": '/əˈproʊpriət/', "partOfSpeech": 'adjective', "sentenceMeaning": '这里表示某种说法或比喻在当前场合很合适。', "translation": '合适的；恰当的'},
-    {"word": 'metaphor', "lemma": 'metaphor', "baseForm": 'metaphor', "phonetic": '/ˈmetəfɔːr/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指用一个具体画面象征另一件事的比喻。', "translation": '隐喻；比喻'},
-    {"word": 'marital', "lemma": 'marital', "baseForm": 'marital', "phonetic": '/ˈmærɪtl/', "partOfSpeech": 'adjective', "sentenceMeaning": '在短语中修饰婚姻关系，带正式或滑稽语气。', "translation": '婚姻的；夫妻的'},
-    {"word": 'congress', "lemma": 'congress', "baseForm": 'congress', "phonetic": '/ˈkɑːŋɡrəs/', "partOfSpeech": 'noun', "sentenceMeaning": '在 marital congress 中是正式委婉的“性交/圆房”说法。', "translation": '国会；大会；交合（委婉/正式）'},
-    {"word": 'interlock', "lemma": 'interlock', "baseForm": 'interlock', "phonetic": '/ˌɪntərˈlɑːk/', "partOfSpeech": 'verb', "sentenceMeaning": '这里表示两个部件严丝合缝地扣在一起。', "translation": '互锁；扣在一起；咬合'},
-    {"word": 'satisfying', "lemma": 'satisfy', "baseForm": 'satisfy', "phonetic": '/ˈsætɪsfaɪɪŋ/', "partOfSpeech": 'adjective', "sentenceMeaning": '这里形容咔哒声让人感觉动作完成得很到位。', "translation": '令人满足的；令人满意的'},
-    {"word": 'ordered', "lemma": 'order', "baseForm": 'order', "phonetic": '/ˈɔːrdərd/', "partOfSpeech": 'verb', "sentenceMeaning": '在酒店语境中表示叫了/点了客房服务。', "translation": '点了；订购了；命令了；有序的'},
-    {"word": 'universe', "lemma": 'universe', "baseForm": 'universe', "phonetic": '/ˈjuːnɪvɜːrs/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指大爆炸理论里所说的整个宇宙。', "translation": '宇宙；万物'},
-    {"word": 'dense', "lemma": 'dense', "baseForm": 'dense', "phonetic": '/dens/', "partOfSpeech": 'adjective', "sentenceMeaning": '在科学描述中表示物质密度很高。', "translation": '密集的；浓密的；难懂的'},
-    {"word": 'expansion', "lemma": 'expansion', "baseForm": 'expansion', "phonetic": '/ɪkˈspænʃən/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指宇宙开始向外膨胀的过程。', "translation": '扩张；膨胀；展开'},
-    {"word": 'autotrophs', "lemma": 'autotroph', "baseForm": 'autotroph', "phonetic": '/ˈɔːtoʊtroʊfs/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指歌词/科学梗中提到的自养生物。', "translation": '自养生物'},
-    {"word": 'Neanderthals', "lemma": 'Neanderthal', "baseForm": 'Neanderthal', "phonetic": '/niˈændərˌtɑːlz/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指人类演化历史中的尼安德特人。', "translation": '尼安德特人'},
-    {"word": 'developed', "lemma": 'develop', "baseForm": 'develop', "phonetic": '/dɪˈveləpt/', "partOfSpeech": 'verb', "sentenceMeaning": '这里表示事物逐步形成或发展出来。', "translation": '发展了；形成了；发达的'},
-    {"word": 'pyramids', "lemma": 'pyramid', "baseForm": 'pyramid', "phonetic": '/ˈpɪrəmɪdz/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指历史文明建造的金字塔。', "translation": '金字塔'},
-    {"word": 'unraveling', "lemma": 'unravel', "baseForm": 'unravel', "phonetic": '/ʌnˈrævəlɪŋ/', "partOfSpeech": 'verb', "sentenceMeaning": '这里表示把谜团逐步解释清楚。', "translation": '解开；阐明；逐渐崩解'},
-    {"word": 'mystery', "lemma": 'mystery', "baseForm": 'mystery', "phonetic": '/ˈmɪstəri/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指尚未被解释清楚的问题或谜团。', "translation": '谜；神秘的事物'},
-    {"word": 'honeymoon', "lemma": 'honeymoon', "baseForm": 'honeymoon', "phonetic": '/ˈhʌnimuːn/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指新婚之后开始的蜜月旅行。', "translation": '蜜月'},
-    {"word": 'believe', "lemma": 'believe', "baseForm": 'believe', "phonetic": '/bɪˈliːv/', "partOfSpeech": 'verb', "sentenceMeaning": '在 Can you believe 中用来表达惊讶和难以置信。', "translation": '相信；认为'},
-    {"word": 'bedsheets', "lemma": 'bedsheet', "baseForm": 'bedsheet', "phonetic": '/ˈbedʃiːts/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指婚俗玩笑里要挂出去展示的床单。', "translation": '床单'},
-    {"word": 'outside', "lemma": 'outside', "baseForm": 'outside', "phonetic": '/ˌaʊtˈsaɪd/', "partOfSpeech": 'adverb', "sentenceMeaning": '这里表示把床单挂到房间或建筑外面。', "translation": '在外面；外部'},
-    {"word": 'suppose', "lemma": 'suppose', "baseForm": 'suppose', "phonetic": '/səˈpoʊz/', "partOfSpeech": 'verb', "sentenceMeaning": '这里表示带保留地认为对方说得对。', "translation": '认为；假设；料想'},
-    {"word": 'perfect', "lemma": 'perfect', "baseForm": 'perfect', "phonetic": '/ˈpɜːrfɪkt/', "partOfSpeech": 'adjective', "sentenceMeaning": '这里强调某个比喻非常贴切。', "translation": '完美的；完全的'},
-    {"word": 'sleeping', "lemma": 'sleep', "baseForm": 'sleep', "phonetic": '/ˈsliːpɪŋ/', "partOfSpeech": 'verb', "sentenceMeaning": '在 While you were sleeping 中表示当时正在睡觉。', "translation": '睡觉；睡着的'},
-    {"word": 'alone', "lemma": 'alone', "baseForm": 'alone', "phonetic": '/əˈloʊn/', "partOfSpeech": 'adjective', "sentenceMeaning": '在 alone time 中表示不被别人打扰的二人/独处时间。', "translation": '独自；单独'},
-    {"word": 'room service', "lemma": 'room service', "baseForm": 'room service', "phonetic": '/ˈruːm ˌsɜːrvɪs/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指在酒店叫客房送餐或相关服务。', "translation": '客房送餐服务'},
-    {"word": 'hot', "lemma": 'hot', "baseForm": 'hot', "phonetic": '/hɑːt/', "partOfSpeech": 'adjective', "sentenceMeaning": '在科学语境中表示早期宇宙温度很高。', "translation": '热的；热门的'},
-    {"word": 'state', "lemma": 'state', "baseForm": 'state', "phonetic": '/steɪt/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指宇宙所处的一种物理状态。', "translation": '状态；州；陈述'},
-    {"word": 'snap', "lemma": 'snap', "baseForm": 'snap', "phonetic": '/snæp/', "partOfSpeech": 'noun', "sentenceMeaning": '这里指部件扣上时发出的清脆咔哒声。', "translation": '咔哒声；猛然折断；迅速动作'},
-    {"word": 'started', "lemma": 'start', "baseForm": 'start', "phonetic": '/ˈstɑːrtɪd/', "partOfSpeech": 'verb', "sentenceMeaning": '这里表示某个过程或事件开始发生。', "translation": '开始了'},
+    {"word": 'considering', "lemma": 'considering', "baseForm": 'considering', "surfaceForms": 'considering', "phonetic": '/kənˈsɪdərɪŋ/', "partOfSpeech": 'preposition', "sentenceMeaning": '考虑到', "translation": '考虑到；鉴于'},
+    {"word": 'official', "lemma": 'official', "baseForm": 'official', "surfaceForms": 'official', "phonetic": '/əˈfɪʃəl/', "partOfSpeech": 'adjective', "sentenceMeaning": '正式的', "translation": '官方的；正式的；官员'},
+    {"word": 'tradition', "lemma": 'tradition', "baseForm": 'tradition', "surfaceForms": 'tradition', "phonetic": '/trəˈdɪʃən/', "partOfSpeech": 'noun', "sentenceMeaning": '传统', "translation": '传统；惯例'},
+    {"word": 'consummate', "lemma": 'consummate', "baseForm": 'consummate', "surfaceForms": 'consummated', "phonetic": '/ˈkɑːnsəmeɪt/', "partOfSpeech": 'verb', "sentenceMeaning": '圆房', "translation": '圆房；完成；使圆满'},
+    {"word": 'appropriate', "lemma": 'appropriate', "baseForm": 'appropriate', "surfaceForms": 'appropriate', "phonetic": '/əˈproʊpriət/', "partOfSpeech": 'adjective', "sentenceMeaning": '合适的', "translation": '合适的；恰当的'},
+    {"word": 'metaphor', "lemma": 'metaphor', "baseForm": 'metaphor', "surfaceForms": 'metaphor', "phonetic": '/ˈmetəfɔːr/', "partOfSpeech": 'noun', "sentenceMeaning": '比喻', "translation": '隐喻；比喻'},
+    {"word": 'marital', "lemma": 'marital', "baseForm": 'marital', "surfaceForms": 'marital', "phonetic": '/ˈmærɪtl/', "partOfSpeech": 'adjective', "sentenceMeaning": '婚姻的', "translation": '婚姻的；夫妻的'},
+    {"word": 'congress', "lemma": 'congress', "baseForm": 'congress', "surfaceForms": 'congress', "phonetic": '/ˈkɑːŋɡrəs/', "partOfSpeech": 'noun', "sentenceMeaning": '圆房', "translation": '国会；大会；交合（委婉/正式）'},
+    {"word": 'interlock', "lemma": 'interlock', "baseForm": 'interlock', "surfaceForms": 'interlock', "phonetic": '/ˌɪntərˈlɑːk/', "partOfSpeech": 'verb', "sentenceMeaning": '扣合', "translation": '互锁；扣在一起；咬合'},
+    {"word": 'satisfying', "lemma": 'satisfying', "baseForm": 'satisfying', "surfaceForms": 'satisfying', "phonetic": '/ˈsætɪsfaɪɪŋ/', "partOfSpeech": 'adjective', "sentenceMeaning": '令人满足的', "translation": '令人满足的；令人满意的'},
+    {"word": 'order', "lemma": 'order', "baseForm": 'order', "surfaceForms": 'ordered', "phonetic": '/ˈɔːrdər/', "partOfSpeech": 'verb', "sentenceMeaning": '点餐', "translation": '命令；点餐；订购；顺序'},
+    {"word": 'universe', "lemma": 'universe', "baseForm": 'universe', "surfaceForms": 'universe', "phonetic": '/ˈjuːnɪvɜːrs/', "partOfSpeech": 'noun', "sentenceMeaning": '宇宙', "translation": '宇宙；万物'},
+    {"word": 'dense', "lemma": 'dense', "baseForm": 'dense', "surfaceForms": 'dense', "phonetic": '/dens/', "partOfSpeech": 'adjective', "sentenceMeaning": '稠密的', "translation": '密集的；浓密的；难懂的'},
+    {"word": 'expansion', "lemma": 'expansion', "baseForm": 'expansion', "surfaceForms": 'expansion', "phonetic": '/ɪkˈspænʃən/', "partOfSpeech": 'noun', "sentenceMeaning": '膨胀', "translation": '扩张；膨胀；展开'},
+    {"word": 'autotroph', "lemma": 'autotroph', "baseForm": 'autotroph', "surfaceForms": 'autotrophs', "phonetic": '/ˈɔːtoʊtroʊf/', "partOfSpeech": 'noun', "sentenceMeaning": '自养生物', "translation": '自养生物'},
+    {"word": 'Neanderthal', "lemma": 'Neanderthal', "baseForm": 'Neanderthal', "surfaceForms": 'Neanderthals', "phonetic": '/niˈændərˌtɑːl/', "partOfSpeech": 'noun', "sentenceMeaning": '尼安德特人', "translation": '尼安德特人'},
+    {"word": 'develop', "lemma": 'develop', "baseForm": 'develop', "surfaceForms": 'developed', "phonetic": '/dɪˈveləp/', "partOfSpeech": 'verb', "sentenceMeaning": '发明', "translation": '发展；发明；形成'},
+    {"word": 'pyramid', "lemma": 'pyramid', "baseForm": 'pyramid', "surfaceForms": 'pyramids', "phonetic": '/ˈpɪrəmɪd/', "partOfSpeech": 'noun', "sentenceMeaning": '金字塔', "translation": '金字塔'},
+    {"word": 'unravel', "lemma": 'unravel', "baseForm": 'unravel', "surfaceForms": 'unraveling', "phonetic": '/ʌnˈrævəl/', "partOfSpeech": 'verb', "sentenceMeaning": '解开', "translation": '解开；阐明；逐渐崩解'},
+    {"word": 'mystery', "lemma": 'mystery', "baseForm": 'mystery', "surfaceForms": 'mystery', "phonetic": '/ˈmɪstəri/', "partOfSpeech": 'noun', "sentenceMeaning": '谜团', "translation": '谜；神秘的事物'},
+    {"word": 'honeymoon', "lemma": 'honeymoon', "baseForm": 'honeymoon', "surfaceForms": 'honeymoon', "phonetic": '/ˈhʌnimuːn/', "partOfSpeech": 'noun', "sentenceMeaning": '蜜月', "translation": '蜜月'},
+    {"word": 'believe', "lemma": 'believe', "baseForm": 'believe', "surfaceForms": 'believe', "phonetic": '/bɪˈliːv/', "partOfSpeech": 'verb', "sentenceMeaning": '相信', "translation": '相信；认为'},
+    {"word": 'bedsheet', "lemma": 'bedsheet', "baseForm": 'bedsheet', "surfaceForms": 'bedsheets', "phonetic": '/ˈbedʃiːt/', "partOfSpeech": 'noun', "sentenceMeaning": '床单', "translation": '床单'},
+    {"word": 'outside', "lemma": 'outside', "baseForm": 'outside', "surfaceForms": 'outside', "phonetic": '/ˌaʊtˈsaɪd/', "partOfSpeech": 'adverb', "sentenceMeaning": '外面', "translation": '在外面；外部'},
+    {"word": 'suppose', "lemma": 'suppose', "baseForm": 'suppose', "surfaceForms": 'suppose', "phonetic": '/səˈpoʊz/', "partOfSpeech": 'verb', "sentenceMeaning": '认为', "translation": '认为；假设；料想'},
+    {"word": 'perfect', "lemma": 'perfect', "baseForm": 'perfect', "surfaceForms": 'perfect', "phonetic": '/ˈpɜːrfɪkt/', "partOfSpeech": 'adjective', "sentenceMeaning": '完美的', "translation": '完美的；完全的'},
+    {"word": 'sleep', "lemma": 'sleep', "baseForm": 'sleep', "surfaceForms": 'sleeping', "phonetic": '/sliːp/', "partOfSpeech": 'verb', "sentenceMeaning": '睡觉', "translation": '睡觉；睡眠'},
+    {"word": 'alone', "lemma": 'alone', "baseForm": 'alone', "surfaceForms": 'alone', "phonetic": '/əˈloʊn/', "partOfSpeech": 'adjective', "sentenceMeaning": '独处的', "translation": '独自；单独'},
+    {"word": 'room service', "lemma": 'room service', "baseForm": 'room service', "surfaceForms": 'room service', "phonetic": '/ˈruːm ˌsɜːrvɪs/', "partOfSpeech": 'noun', "sentenceMeaning": '客房服务', "translation": '客房送餐服务'},
+    {"word": 'hot', "lemma": 'hot', "baseForm": 'hot', "surfaceForms": 'hot', "phonetic": '/hɑːt/', "partOfSpeech": 'adjective', "sentenceMeaning": '热的', "translation": '热的；热门的'},
+    {"word": 'state', "lemma": 'state', "baseForm": 'state', "surfaceForms": 'state', "phonetic": '/steɪt/', "partOfSpeech": 'noun', "sentenceMeaning": '状态', "translation": '状态；州；陈述'},
+    {"word": 'snap', "lemma": 'snap', "baseForm": 'snap', "surfaceForms": 'snap', "phonetic": '/snæp/', "partOfSpeech": 'noun', "sentenceMeaning": '咔哒声', "translation": '咔哒声；猛然折断；迅速动作'},
+    {"word": 'start', "lemma": 'start', "baseForm": 'start', "surfaceForms": 'started', "phonetic": '/stɑːrt/', "partOfSpeech": 'verb', "sentenceMeaning": '开始', "translation": '开始；开端'},
 ]
 
 # ---------------------------------------------------------------------------
@@ -504,15 +506,18 @@ def blank_obstacle(row: SubtitleRow, obstacle_type: str, priority: int, text: st
 
 
 def generate_vocabulary_obstacles(rows: Iterable[SubtitleRow]) -> List[Dict[str, object]]:
-    compiled = [(entry, word_pattern(entry["word"])) for entry in VOCABULARY_DICTIONARY]
+    compiled = []
+    for entry in VOCABULARY_DICTIONARY:
+        surface_forms = [form.strip() for form in str(entry.get("surfaceForms", entry["word"])).split("|") if form.strip()]
+        compiled.append((entry, [word_pattern(form) for form in surface_forms]))
     obstacles: List[Dict[str, object]] = []
 
     for row in rows:
         seen_in_row = set()
-        for entry, pattern in compiled:
+        for entry, patterns in compiled:
             if entry["word"].lower() in seen_in_row:
                 continue
-            if pattern.search(row.source_en):
+            if any(pattern.search(row.source_en) for pattern in patterns):
                 seen_in_row.add(entry["word"].lower())
                 obstacle = blank_obstacle(row, "vocabulary", 1, entry["word"])
                 obstacle.update(
@@ -613,22 +618,22 @@ def validate_rule_libraries() -> None:
         "considering",
         "official",
         "tradition",
-        "consummated",
+        "consummate",
         "appropriate",
         "metaphor",
         "marital",
         "congress",
         "interlock",
         "satisfying",
-        "ordered",
+        "order",
         "universe",
         "dense",
         "expansion",
-        "autotrophs",
-        "neanderthals",
-        "developed",
-        "pyramids",
-        "unraveling",
+        "autotroph",
+        "neanderthal",
+        "develop",
+        "pyramid",
+        "unravel",
         "mystery",
         "honeymoon",
     }
