@@ -314,6 +314,21 @@ Runtime fail-fast status note:
 - Invalid obstacle data must produce a clear developer-facing failure signal in implementation.
 - Silent rendering of incomplete or invalid learning cards is forbidden.
 
+V29I-1B Runtime Fail Fast has been completed and merged.
+
+Runtime fail-fast implementation status note:
+
+- Runtime is a read-only consumer of generated obstacle data.
+- Runtime validates obstacle data before normalization and rendering.
+- Invalid obstacles are skipped and never rendered.
+- Runtime emits developer-facing `console.error` diagnostics for invalid obstacles.
+- Vocabulary obstacles require `word`, `phonetic`, `partOfSpeech`, and `sentenceMeaning`.
+- `partOfSpeech` must match frozen runtime-supported formats exactly.
+- `sentenceMeaning` must not use explanatory/fallback text patterns.
+- Comprehension obstacles require a `prototype` / `phrase` / `text` display title, `literal`, `actual`, and `grammar`.
+- Runtime no longer infers, rewrites, translates, normalizes, enriches, or falls back language-intelligence fields.
+- Runtime no longer derives `word` from `lemma` / `baseForm` / `phrase`, `sentenceMeaning` from `translation` / `source_zh`, or comprehension fields from unrelated fallback fields.
+
 ## 11. Runtime Interaction Status
 
 Sources: `README.md`, `CHANGELOG.md`, `Freeze_Summary.md`
@@ -352,10 +367,11 @@ Completed:
 - V29I-0B Backend + Frontend Vocabulary Display Data Normalize
 - V29I-0C Vocabulary SentenceMeaning Semantic Responsibility Freeze
 - V29I-1A Runtime Fail Fast Specification Freeze
+- V29I-1B Implement Runtime Fail Fast
 
 Current / Next:
 
-- V29I Runtime Fail Fast
+- V29I Runtime Fail Fast Video QA
 
 ## 14. Explicitly Unverified / Not Frozen
 
