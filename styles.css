@@ -346,7 +346,7 @@ button {
 }
 
 .vocab-title-line,
-.vocab-phonetic-line,
+.vocab-second-line,
 .vocab-sentence-meaning {
   margin: 0;
 }
@@ -355,7 +355,7 @@ button {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 6px;
+  gap: 8px;
 }
 
 .vocab-word {
@@ -365,6 +365,7 @@ button {
   line-height: 1.2;
 }
 
+.vocab-phonetic,
 .vocab-base-form,
 .vocab-part-of-speech {
   color: var(--muted);
@@ -372,10 +373,11 @@ button {
   font-weight: 700;
 }
 
-.vocab-phonetic-line {
+.vocab-second-line {
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: space-between;
+  gap: 16px;
   margin-top: 8px;
   color: #2b3542;
   font-size: 0.96rem;
