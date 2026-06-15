@@ -251,7 +251,7 @@ V29H-3B Implement Vocabulary Card Display is completed in repository state:
 
 ## 10C. Vocabulary Display Data Contract Status
 
-Source: `docs/V29I_VOCAB_DISPLAY_DATA_CONTRACT_FREEZE.md`
+Sources: `docs/V29I_VOCAB_DISPLAY_DATA_CONTRACT_FREEZE.md`, `docs/V29I_SENTENCE_MEANING_SEMANTIC_RESPONSIBILITY_FREEZE.md`
 
 V29I-0A Backend + Frontend Vocabulary Display Data Contract Freeze is completed.
 
@@ -291,6 +291,17 @@ V29I-0B validation results:
 - Long sentenceMeaning count: 0
 - Inflected display word count: 0
 
+V29I-0C Vocabulary SentenceMeaning Semantic Responsibility Freeze is completed and merged.
+
+Frozen `sentenceMeaning` semantic responsibility rules:
+
+- Backend / Analyze Engine owns `sentenceMeaning` semantic correctness.
+- Frontend only displays `sentenceMeaning` exactly as provided.
+- Frontend must not infer, rewrite, shorten, translate, replace, or derive `sentenceMeaning`.
+- Backend / Analyze Engine uses multiple semantic evidence sources: `source_en`, `source_zh`, `word` / `lemma`, `translation`, current sentence context, and nearby subtitle context when needed.
+- `source_zh` is important semantic evidence but is not the only source of truth.
+- AI / Analyze Engine may decide the best-fit short learner-friendly meaning by combining available evidence.
+
 ## 11. Runtime Interaction Status
 
 Sources: `README.md`, `CHANGELOG.md`, `Freeze_Summary.md`
@@ -327,6 +338,7 @@ Completed:
 - V29H-3B Implement Vocabulary Card Display
 - V29I-0A Backend + Frontend Vocabulary Display Data Contract Freeze
 - V29I-0B Backend + Frontend Vocabulary Display Data Normalize
+- V29I-0C Vocabulary SentenceMeaning Semantic Responsibility Freeze
 
 Current / Next:
 
