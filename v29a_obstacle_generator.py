@@ -64,6 +64,104 @@ VOCAB_REQUIRED_FIELDS = (
 # Required shape for every entry: word, lemma, baseForm, phonetic, partOfSpeech, sentenceMeaning, translation.
 # Keep this rule library inside this file so V29A can be restored even when no
 # historical generator files are present in the working tree.
+
+POS_DISPLAY_BY_SOURCE = {
+    "noun": "n.",
+    "pronoun": "pron.",
+    "adjective": "adj.",
+    "adverb": "adv.",
+    "preposition": "prep.",
+    "conjunction": "conj.",
+    "interjection": "interj.",
+    "determiner": "det.",
+    "numeral": "num.",
+    "transitive verb": "vt.",
+    "intransitive verb": "vi.",
+    "auxiliary verb": "aux. v.",
+    "modal verb": "modal v.",
+    "linking verb": "linking v.",
+    "verb with both transitive and intransitive usage": "vt./vi.",
+}
+
+POS_DISPLAY_OVERRIDES_BY_WORD = {
+    "believe": "vt.",
+    "consummated": "vi.",
+    "developed": "vt.",
+    "interlock": "vi.",
+    "ordered": "vt.",
+    "sleeping": "vi.",
+    "started": "vi.",
+    "suppose": "vt.",
+    "unraveling": "vt.",
+}
+
+SUPPORTED_POS_DISPLAY_FORMATS = {
+    "n.",
+    "pron.",
+    "adj.",
+    "adv.",
+    "prep.",
+    "conj.",
+    "interj.",
+    "det.",
+    "num.",
+    "vt.",
+    "vi.",
+    "vt./vi.",
+    "n./vt.",
+    "n./vi.",
+    "n./vi./vt.",
+    "adj./n.",
+    "adj./adv.",
+    "adv./adj.",
+    "aux. v.",
+    "modal v.",
+    "linking v.",
+}
+
+POS_CANONICAL_COMBINATIONS = {
+    ("n.", "vt."): "n./vt.",
+    ("vt.", "n."): "n./vt.",
+    ("n.", "vi."): "n./vi.",
+    ("vi.", "n."): "n./vi.",
+    ("n.", "vi.", "vt."): "n./vi./vt.",
+    ("n.", "vt.", "vi."): "n./vi./vt.",
+    ("vi.", "n.", "vt."): "n./vi./vt.",
+    ("vi.", "vt.", "n."): "n./vi./vt.",
+    ("vt.", "n.", "vi."): "n./vi./vt.",
+    ("vt.", "vi.", "n."): "n./vi./vt.",
+    ("adj.", "adv."): "adj./adv.",
+    ("adv.", "adj."): "adv./adj.",
+    ("vt.", "vi."): "vt./vi.",
+    ("vi.", "vt."): "vt./vi.",
+}
+
+
+def normalize_part_of_speech(entry: Dict[str, str]) -> str:
+    """Return the frozen display-ready POS format for a vocabulary entry."""
+    word_key = str(entry.get("word", "")).strip().lower()
+    if word_key in POS_DISPLAY_OVERRIDES_BY_WORD:
+        return POS_DISPLAY_OVERRIDES_BY_WORD[word_key]
+
+    source = str(entry.get("partOfSpeech", "")).strip()
+    source_key = source.lower()
+    if source_key in POS_DISPLAY_BY_SOURCE:
+        return POS_DISPLAY_BY_SOURCE[source_key]
+    if source in SUPPORTED_POS_DISPLAY_FORMATS:
+        return source
+
+    if "/" in source:
+        parts = []
+        for part in source.split("/"):
+            normalized_part = POS_DISPLAY_BY_SOURCE.get(part.strip().lower(), part.strip())
+            if normalized_part:
+                parts.append(normalized_part)
+        canonical = POS_CANONICAL_COMBINATIONS.get(tuple(parts))
+        if canonical:
+            return canonical
+
+    raise ValueError(f"Unsupported partOfSpeech for {entry.get('word', '<unknown>')}: {source!r}")
+
 VOCABULARY_DICTIONARY: List[Dict[str, str]] = [
     {"word": 'considering', "lemma": 'consider', "baseForm": 'consider', "phonetic": '/kənˈsɪdərɪŋ/', "partOfSpeech": 'preposition', "sentenceMeaning": '在这句话里表示“考虑到/鉴于某个情况”。', "translation": '考虑到；鉴于'},
     {"word": 'official', "lemma": 'official', "baseForm": 'official', "phonetic": '/əˈfɪʃəl/', "partOfSpeech": 'adjective', "sentenceMeaning": '在语境中强调某事被正式确认、具有官方性质。', "translation": '官方的；正式的；官员'},
@@ -423,7 +521,7 @@ def generate_vocabulary_obstacles(rows: Iterable[SubtitleRow]) -> List[Dict[str,
                         "lemma": entry["lemma"],
                         "baseForm": entry["baseForm"],
                         "phonetic": entry["phonetic"],
-                        "partOfSpeech": entry["partOfSpeech"],
+                        "partOfSpeech": normalize_part_of_speech(entry),
                         "sentenceMeaning": entry["sentenceMeaning"],
                         "translation": entry["translation"],
                     }
@@ -475,6 +573,10 @@ def validate_vocab_obstacle(obstacle: Dict[str, object]) -> None:
         value = obstacle.get(field)
         if value is None or str(value).strip() == "":
             raise ValueError(f"Vocabulary obstacle missing {field}: {obstacle!r}")
+
+    part_of_speech = str(obstacle.get("partOfSpeech", "")).strip()
+    if part_of_speech not in SUPPORTED_POS_DISPLAY_FORMATS:
+        raise ValueError(f"Vocabulary obstacle has unsupported partOfSpeech: {obstacle!r}")
 
 
 def validate_vocab_obstacles(obstacles: Iterable[Dict[str, object]]) -> None:
@@ -562,6 +664,7 @@ def validate_rule_libraries() -> None:
         for key in VOCAB_REQUIRED_FIELDS:
             if not entry.get(key):
                 raise RuntimeError(f"Vocabulary entry missing {key}: {entry!r}")
+        normalize_part_of_speech(entry)
 
     for pattern in COMPREHENSION_PATTERNS:
         for key in ("literal", "actual", "grammar"):
