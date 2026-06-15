@@ -222,3 +222,40 @@ The V29E/V29F incident showed that starting Codex work before repository synchro
 - demo data generation
 - file guessing and rewrites
 - incorrect fixes based on non-canonical code
+
+## Codex Workspace Exception
+
+Codex workspace may not have an origin remote.
+
+If the user's local repository has already passed:
+
+```text
+git status
+→ nothing to commit, working tree clean
+```
+
+```text
+git pull origin main
+→ Already up to date.
+```
+
+then:
+
+```text
+'origin does not appear to be a git repository'
+```
+
+inside Codex workspace is NOT considered a repository failure.
+
+It does NOT imply:
+
+* GitHub is broken
+* Repository is out of sync
+* Baseline is lost
+* Files are missing
+
+Codex may continue with:
+
+* documentation tasks
+* read-only investigations
+* code tasks that already have real files available
