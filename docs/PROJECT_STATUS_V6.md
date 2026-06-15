@@ -168,7 +168,7 @@ Current frozen vocab schema:
 
 ## 10. Runtime Capability
 
-Sources: `docs/V29H_RUNTIME_CAPABILITY_FREEZE.md`, `docs/V29H_POS_SPEC_FREEZE.md`
+Sources: `docs/V29H_RUNTIME_CAPABILITY_FREEZE.md`, `docs/V29H_POS_SPEC_FREEZE.md`, `docs/V29H_VOCAB_CARD_DISPLAY_SPEC_FREEZE.md`
 
 Runtime can load:
 
@@ -210,7 +210,7 @@ V29H does NOT freeze:
 - baseForm display style
 - sentenceMeaning display style
 
-Note: the list above is the V29H runtime capability baseline scope. POS display format is frozen later by V29H-2A.
+Note: the list above is the V29H runtime capability baseline scope. POS display format is frozen later by V29H-2A. Vocabulary card field ordering, baseForm display style, and sentenceMeaning display style are frozen later by V29H-3A and implemented by V29H-3B.
 
 ## 10A. POS Specification and Backend Normalize Status
 
@@ -229,6 +229,25 @@ V29H-2B Backend POS Normalize is completed in repository state:
 
 - `v29a_obstacle_generator.py` contains POS display normalization, supported POS display formats, canonical combination ordering, and validation for vocabulary obstacles.
 - `output_text/v29a_obstacles.json` contains normalized vocabulary `partOfSpeech` values such as `vt.`, `vi.`, `adj.`, `adv.`, `prep.`, and `n.`.
+
+## 10B. Vocabulary Card Display Specification and Runtime Implementation Status
+
+Sources: `docs/V29H_VOCAB_CARD_DISPLAY_SPEC_FREEZE.md`, `script.js`, `styles.css`
+
+V29H-3A Vocabulary Card Display Specification Freeze is completed.
+
+Frozen vocabulary card display rules:
+
+- Header line displays `word + phonetic + partOfSpeech`.
+- Second line displays `原型：{baseForm}` only when `word != baseForm`; otherwise baseForm is not displayed.
+- The audio icon displays on the second line.
+- Meaning line displays `句中含义：{sentenceMeaning}`.
+- `sentenceMeaning` means the word-level meaning in the current sentence only, and must remain short and directly usable by learners.
+
+V29H-3B Implement Vocabulary Card Display is completed in repository state:
+
+- `script.js` renders vocabulary cards according to the frozen V29H-3A field order and conditional baseForm rule.
+- `styles.css` contains the vocabulary card display classes for the headline, title line, second line, audio icon, and sentence meaning line.
 
 ## 11. Runtime Interaction Status
 
@@ -262,10 +281,11 @@ Completed:
 - V29H-1 Vocabulary Card UI Polish
 - V29H-2A POS Specification Freeze
 - V29H-2B Backend POS Normalize
+- V29H-3A Vocabulary Card Display Specification Freeze
+- V29H-3B Implement Vocabulary Card Display
 
 Current / Next:
 
-- V29H-3 Vocabulary Card Polish / Redesign
 - V29I Runtime Fail Fast
 - V29I Vocabulary Data Quality Improvements
 
@@ -273,9 +293,7 @@ Current / Next:
 
 The following are NOT currently frozen unless later repository evidence is added:
 
-- Vocabulary card final UI design
-- baseForm display style
-- sentenceMeaning display style
+- Vocabulary card future UI redesign beyond the frozen V29H-3A / V29H-3B display rules
 - CEFR vocabulary level system
 - Beginner / Elementary / Intermediate vocabulary level system
 - Any user-upload workflow
