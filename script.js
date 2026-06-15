@@ -56,21 +56,6 @@ const wordDictionary = {
   },
 };
 
-const fallbackPartOfSpeechDictionary = {
-  believe: 'vt./vi.',
-  official: 'adj.',
-  tradition: 'n.',
-  alone: 'adj./adv.',
-  autotroph: 'n.',
-  autotrophs: 'n.',
-  neanderthal: 'n./adj.',
-  neanderthals: 'n./adj.',
-  develop: 'vt./vi.',
-  developed: 'vt./vi.',
-  lecture: 'n./vi./vt.',
-  marry: 'vt./vi.',
-};
-
 const understandingPatterns = [
   {
     id: 'understanding-lay-it-on-us',
@@ -373,44 +358,6 @@ function pickFirstValue(row, keys) {
   return key ? row[key] : undefined;
 }
 
-function normalizePartOfSpeech(partOfSpeech) {
-  const text = String(partOfSpeech || '').trim();
-
-  if (!text) {
-    return '';
-  }
-
-  if (text === 'v.') {
-    return 'vt./vi.';
-  }
-
-  return text
-    .split('/')
-    .map((part) => part.trim())
-    .filter(Boolean)
-    .flatMap((part) => (part === 'v.' ? ['vi.', 'vt.'] : [part]))
-    .join('/');
-}
-
-function getFallbackPartOfSpeech(...words) {
-  for (const word of words) {
-    const normalizedWord = String(word || '').trim().toLowerCase();
-
-    if (normalizedWord && fallbackPartOfSpeechDictionary[normalizedWord]) {
-      return fallbackPartOfSpeechDictionary[normalizedWord];
-    }
-  }
-
-  return '';
-}
-
-function getObstaclePartOfSpeech(obstacle) {
-  return normalizePartOfSpeech(
-    pickFirstValue(obstacle, ['partOfSpeech', 'pos', 'wordClass', 'speech'])
-      || getFallbackPartOfSpeech(obstacle?.baseForm, obstacle?.word, obstacle?.surfaceText, obstacle?.phrase),
-  );
-}
-
 function normalizeObstacleType(type) {
   const normalizedType = String(type || '').trim().toLowerCase();
 
@@ -522,12 +469,12 @@ function normalizeObstacle(row, rowIndex = 0) {
       surfaceText,
       phrase,
       prototype: row?.prototype || row?.word || label,
-      phonetic: row?.phonetic || '待补充',
-      partOfSpeech: normalizePartOfSpeech(row?.partOfSpeech || ''),
-      translation: row?.translation || row?.source_zh || '待补充',
+      phonetic: row?.phonetic || '',
+      partOfSpeech: row?.partOfSpeech || '',
+      translation: row?.translation || '',
       sentenceMeaning: row?.sentenceMeaning || '',
       literal: row?.literal || '',
-      actual: row?.actual || row?.translation || row?.source_zh || '待补充',
+      actual: row?.actual || '',
       grammar: row?.grammar || '',
     };
   }
@@ -1520,11 +1467,7 @@ function undoLastDismissedObstacle() {
 
 function replaceObstacleStream(nextObstacles, text = subtitleTextInput.value) {
   activeDataSource = 'analyze';
-  obstacles = nextObstacles.map((obstacle) => (
-    normalizeObstacleType(obstacle?.type || obstacle?.kind) === 'vocab'
-      ? { ...obstacle, partOfSpeech: getObstaclePartOfSpeech(obstacle) }
-      : obstacle
-  ));
+  obstacles = nextObstacles;
   currentEpisodeProgressKey = getEpisodeProgressKey(text);
   applyStoredEpisodeProgress(currentEpisodeProgressKey);
   streamMode = 'dynamic';
@@ -1582,10 +1525,6 @@ function createDetailBlock(title, text) {
   return block;
 }
 
-function getCompactTranslation(translation) {
-  return String(translation || '').split(/[；;]/)[0].trim();
-}
-
 function createWordHeadline(obstacle) {
   const headline = document.createElement('div');
   headline.className = 'vocab-headline';
@@ -1595,50 +1534,42 @@ function createWordHeadline(obstacle) {
 
   const word = document.createElement('span');
   word.className = 'vocab-word';
-  word.textContent = obstacle.word;
+  word.textContent = obstacle.word || '';
   titleLine.append(word);
+
+  const phonetic = document.createElement('span');
+  phonetic.className = 'vocab-phonetic';
+  phonetic.textContent = obstacle.phonetic || '';
+  titleLine.append(phonetic);
+
+  const partOfSpeech = document.createElement('span');
+  partOfSpeech.className = 'vocab-part-of-speech';
+  partOfSpeech.textContent = obstacle.partOfSpeech || '';
+  titleLine.append(partOfSpeech);
+
+  const secondLine = document.createElement('p');
+  secondLine.className = 'vocab-second-line';
 
   if (obstacle.baseForm && obstacle.baseForm !== obstacle.word) {
     const baseForm = document.createElement('span');
     baseForm.className = 'vocab-base-form';
-    baseForm.textContent = `(base: ${obstacle.baseForm})`;
-    titleLine.append(baseForm);
+    baseForm.textContent = `原型：${obstacle.baseForm}`;
+    secondLine.append(baseForm);
   }
 
-  if (obstacle.partOfSpeech) {
-    const partOfSpeech = document.createElement('span');
-    partOfSpeech.className = 'vocab-part-of-speech';
-    partOfSpeech.textContent = ` / ${obstacle.partOfSpeech}`;
-    titleLine.append(partOfSpeech);
-  }
+  const audioIcon = document.createElement('span');
+  audioIcon.className = 'vocab-audio-icon';
+  audioIcon.textContent = '🔊';
+  secondLine.append(audioIcon);
 
-  headline.append(titleLine);
-
-  if (obstacle.phonetic) {
-    const phoneticLine = document.createElement('p');
-    phoneticLine.className = 'vocab-phonetic-line';
-
-    const audioIcon = document.createElement('span');
-    audioIcon.className = 'vocab-audio-icon';
-    audioIcon.textContent = '🔊';
-    phoneticLine.append(audioIcon);
-
-    const phonetic = document.createElement('span');
-    phonetic.className = 'vocab-phonetic';
-    phonetic.textContent = obstacle.phonetic;
-    phoneticLine.append(phonetic);
-
-    headline.append(phoneticLine);
-  }
-
+  headline.append(titleLine, secondLine);
   return headline;
 }
 
 function createWordSentenceMeaning(obstacle) {
   const meaning = document.createElement('p');
   meaning.className = 'vocab-sentence-meaning';
-  const sentenceMeaning = obstacle.sentenceMeaning || getCompactTranslation(obstacle.translation);
-  meaning.textContent = `句中含义：${sentenceMeaning}`;
+  meaning.textContent = `句中含义：${obstacle.sentenceMeaning || ''}`;
 
   return meaning;
 }
