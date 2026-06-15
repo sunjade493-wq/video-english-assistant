@@ -4,6 +4,33 @@ const REAL_OBSTACLE_DATA_URL = 'output_text/v29a_obstacles.json';
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
 const EPISODE_PROGRESS_STORAGE_PREFIX = 'videoEnglishAssistant.episodeProgress.';
 
+const SUPPORTED_PART_OF_SPEECH_FORMATS = new Set([
+  'n.',
+  'pron.',
+  'adj.',
+  'adv.',
+  'prep.',
+  'conj.',
+  'interj.',
+  'det.',
+  'num.',
+  'vt.',
+  'vi.',
+  'vt./vi.',
+  'n./vt.',
+  'n./vi.',
+  'n./vi./vt.',
+  'adj./n.',
+  'adj./vt.',
+  'adj./adv.',
+  'adv./adj.',
+  'aux. v.',
+  'modal v.',
+  'linking v.',
+]);
+const SENTENCE_MEANING_EXPLANATORY_PATTERNS = ['在', '这里', '语境', '表示', '用来', '指', '说明', '意思是', '相当于'];
+
+
 const subtitleTranslations = new Map();
 
 const vocabularyLevels = {
@@ -372,6 +399,97 @@ function normalizeObstacleType(type) {
   return normalizedType || 'comprehension';
 }
 
+function isBlankRuntimeField(value) {
+  return value === undefined || value === null || (typeof value === 'string' && value.trim() === '');
+}
+
+function getRuntimeDisplayText(value) {
+  return String(value ?? '').trim();
+}
+
+function getComprehensionDisplayTitle(row) {
+  return getRuntimeDisplayText(pickFirstValue(row, ['prototype', 'phrase', 'text']));
+}
+
+function logInvalidRuntimeObstacle(row, type, field, reason) {
+  console.error('Invalid runtime obstacle data skipped', {
+    id: row?.id,
+    type,
+    field,
+    reason,
+    source_en: row?.source_en,
+    source_zh: row?.source_zh,
+    raw: row,
+  });
+}
+
+function validateVocabularyObstacle(row) {
+  const type = 'vocab';
+  const requiredFields = ['word', 'phonetic', 'partOfSpeech', 'sentenceMeaning'];
+
+  for (const field of requiredFields) {
+    if (isBlankRuntimeField(row?.[field])) {
+      logInvalidRuntimeObstacle(row, type, field, 'required field is missing, null, empty, or whitespace-only');
+      return false;
+    }
+  }
+
+  const partOfSpeech = getRuntimeDisplayText(row.partOfSpeech);
+
+  if (!SUPPORTED_PART_OF_SPEECH_FORMATS.has(partOfSpeech)) {
+    logInvalidRuntimeObstacle(row, type, 'partOfSpeech', 'unsupported partOfSpeech display format');
+    return false;
+  }
+
+  const sentenceMeaning = getRuntimeDisplayText(row.sentenceMeaning);
+  const explanatoryPattern = SENTENCE_MEANING_EXPLANATORY_PATTERNS.find((pattern) => sentenceMeaning.includes(pattern));
+
+  if (explanatoryPattern) {
+    logInvalidRuntimeObstacle(
+      row,
+      type,
+      'sentenceMeaning',
+      `clearly long explanatory text pattern detected: ${explanatoryPattern}`,
+    );
+    return false;
+  }
+
+  return true;
+}
+
+function validateComprehensionObstacle(row) {
+  const type = 'comprehension';
+
+  if (!getComprehensionDisplayTitle(row)) {
+    logInvalidRuntimeObstacle(row, type, 'prototype|phrase|text', 'no display title can be resolved');
+    return false;
+  }
+
+  for (const field of ['literal', 'actual', 'grammar']) {
+    if (isBlankRuntimeField(row?.[field])) {
+      logInvalidRuntimeObstacle(row, type, field, 'required field is missing, null, empty, or whitespace-only');
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function validateRuntimeObstacle(row) {
+  const type = normalizeObstacleType(row?.type || row?.kind);
+
+  if (type === 'vocab') {
+    return validateVocabularyObstacle(row);
+  }
+
+  if (type === 'comprehension') {
+    return validateComprehensionObstacle(row);
+  }
+
+  logInvalidRuntimeObstacle(row, type, 'type', 'unsupported obstacle type');
+  return false;
+}
+
 function normalizeRealSubtitleRows(payload) {
   const rows = Array.isArray(payload) ? payload : payload?.subtitles || payload?.rows || payload?.items || [];
   let nextCharStart = 0;
@@ -438,7 +556,9 @@ function normalizeObstacle(row, rowIndex = 0) {
   const endMs = parseTimeToMs(pickFirstValue(row, ['end', 'end_time']));
   const segmentIndex = findSubtitleSegmentIndexByTime(startMs);
   const segment = subtitleSegments[segmentIndex] || { start: 0, end: 1, text: '' };
-  const label = String(row?.word || row?.text || row?.phrase || row?.actual || row?.source_en || '').trim();
+  const label = type === 'vocab'
+    ? getRuntimeDisplayText(row?.word)
+    : getComprehensionDisplayTitle(row);
   const labelIndex = label ? findNormalizedPhraseIndex(segment.text, label) : -1;
   const index = labelIndex >= 0 ? segment.start + labelIndex : segment.start;
   const end = labelIndex >= 0 ? index + label.length : Math.min(segment.end, index + Math.max(1, label.length));
@@ -456,7 +576,7 @@ function normalizeObstacle(row, rowIndex = 0) {
   };
 
   if (type === 'vocab') {
-    const word = row?.word || label;
+    const word = getRuntimeDisplayText(row?.word);
     const baseForm = row?.baseForm || '';
     const surfaceText = row?.text || row?.word || label;
     const phrase = row?.phrase || row?.word || label;
@@ -469,10 +589,10 @@ function normalizeObstacle(row, rowIndex = 0) {
       surfaceText,
       phrase,
       prototype: row?.prototype || row?.word || label,
-      phonetic: row?.phonetic || '',
-      partOfSpeech: row?.partOfSpeech || '',
+      phonetic: getRuntimeDisplayText(row?.phonetic),
+      partOfSpeech: getRuntimeDisplayText(row?.partOfSpeech),
       translation: row?.translation || '',
-      sentenceMeaning: row?.sentenceMeaning || '',
+      sentenceMeaning: getRuntimeDisplayText(row?.sentenceMeaning),
       literal: row?.literal || '',
       actual: row?.actual || '',
       grammar: row?.grammar || '',
@@ -481,21 +601,23 @@ function normalizeObstacle(row, rowIndex = 0) {
 
   return {
     ...baseObstacle,
-    phrase: row?.text || row?.word || label,
-    prototype: row?.prototype || row?.word || row?.text || label,
-    word: row?.word || label,
-    baseForm: row?.baseForm || row?.word || label,
+    phrase: getRuntimeDisplayText(row?.phrase || row?.text),
+    prototype: getComprehensionDisplayTitle(row),
+    word: row?.word || '',
+    baseForm: row?.baseForm || '',
     phonetic: row?.phonetic || '',
-    translation: row?.translation || row?.source_zh || '',
+    translation: row?.translation || '',
     sentenceMeaning: row?.sentenceMeaning || '',
-    literal: row?.literal || '',
-    actual: row?.actual || row?.translation || row?.source_zh || '',
-    grammar: row?.grammar || '',
+    literal: getRuntimeDisplayText(row?.literal),
+    actual: getRuntimeDisplayText(row?.actual),
+    grammar: getRuntimeDisplayText(row?.grammar),
   };
 }
 
 function normalizeObstacles(rows) {
-  return rows.map((row, rowIndex) => normalizeObstacle(row, rowIndex));
+  return rows
+    .filter((row) => validateRuntimeObstacle(row))
+    .map((row, rowIndex) => normalizeObstacle(row, rowIndex));
 }
 
 function normalizeRealObstacleRows(payload) {
@@ -1570,7 +1692,7 @@ function createWordSentenceMeaning(obstacle) {
 function createUnderstandingPrototype(obstacle) {
   const prototype = document.createElement('p');
   prototype.className = 'understanding-prototype';
-  prototype.textContent = obstacle.prototype || obstacle.baseForm || obstacle.phrase;
+  prototype.textContent = obstacle.prototype;
 
   return prototype;
 }
