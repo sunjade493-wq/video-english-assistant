@@ -487,7 +487,7 @@ function normalizeObstacle(row, rowIndex = 0) {
     baseForm: row?.baseForm || row?.word || label,
     phonetic: row?.phonetic || '',
     translation: row?.translation || row?.source_zh || '',
-    sentenceMeaning: row?.sentenceMeaning || row?.translation || row?.source_zh || '',
+    sentenceMeaning: row?.sentenceMeaning || '',
     literal: row?.literal || '',
     actual: row?.actual || row?.translation || row?.source_zh || '',
     grammar: row?.grammar || '',
@@ -1549,13 +1549,6 @@ function createWordHeadline(obstacle) {
 
   const secondLine = document.createElement('p');
   secondLine.className = 'vocab-second-line';
-
-  if (obstacle.baseForm && obstacle.baseForm !== obstacle.word) {
-    const baseForm = document.createElement('span');
-    baseForm.className = 'vocab-base-form';
-    baseForm.textContent = `原型：${obstacle.baseForm}`;
-    secondLine.append(baseForm);
-  }
 
   const audioIcon = document.createElement('span');
   audioIcon.className = 'vocab-audio-icon';

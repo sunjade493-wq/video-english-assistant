@@ -366,7 +366,6 @@ button {
 }
 
 .vocab-phonetic,
-.vocab-base-form,
 .vocab-part-of-speech {
   color: var(--muted);
   font-size: 0.92rem;
