@@ -335,6 +335,50 @@ Runtime fail-fast implementation status note:
 - Runtime no longer infers, rewrites, translates, normalizes, enriches, or falls back language-intelligence fields.
 - Runtime no longer derives `word` from `lemma` / `baseForm` / `phrase`, `sentenceMeaning` from `translation` / `source_zh`, or comprehension fields from unrelated fallback fields.
 
+### V29I-0F POS Architecture Freeze
+
+Date: 2026-06-16
+
+Status: Frozen
+
+Validation Results:
+
+- outside -> adv./adj./prep./n.
+- official -> adj./n.
+- alone -> adj./adv.
+- believe -> vt./vi.
+- order -> n./vi./vt.
+- sleep -> n./vi.
+
+End-to-end Verification:
+
+- Backend generator emits complete dictionary-level POS combinations.
+- output_text/v29a_obstacles.json serializes partOfSpeech correctly.
+- Runtime allowlist accepts legal combined POS formats.
+- outside obstacle is no longer filtered.
+- Obstacle count restored from 58 back to 59.
+- Frontend displays all POS combinations correctly.
+
+Frozen Rules:
+
+Backend-generated dictionary-level partOfSpeech is the only source of truth.
+
+Runtime behavior is frozen:
+
+- No inference
+- No stitching
+- No trimming
+- No reordering
+- No normalization
+- No fallback generation
+
+Runtime may validate POS formats via allowlist, but must display backend-generated POS values exactly as emitted.
+
+Result:
+
+V29I POS architecture repair is accepted and frozen.
+Future development must not modify this behavior unless an explicit unfreeze decision is made.
+
 ## 11. Runtime Interaction Status
 
 Sources: `README.md`, `CHANGELOG.md`, `Freeze_Summary.md`
