@@ -1578,7 +1578,7 @@ function renderEpisodeProgress() {
   }
 
   if (episodeUndoButton) {
-    episodeUndoButton.textContent = '↶ 返回上一个障碍';
+    episodeUndoButton.textContent = '↩ 返回上一个障碍';
     episodeUndoButton.disabled = dismissedObstacleHistory.length === 0;
   }
 }
