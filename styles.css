@@ -60,7 +60,7 @@ button {
 .video-panel {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 18px;
   padding: 24px;
   border-radius: var(--radius-xl);
 }
@@ -68,7 +68,7 @@ button {
 .video-frame {
   position: relative;
   flex: 1;
-  min-height: 420px;
+  min-height: 390px;
   overflow: hidden;
   border-radius: 24px;
   background:
@@ -538,7 +538,7 @@ button {
   position: absolute;
   z-index: 2;
   right: 28px;
-  bottom: clamp(80px, 10vh, 120px);
+  bottom: clamp(32px, 5vh, 56px);
   left: 28px;
   display: flex;
   justify-content: center;
@@ -620,7 +620,7 @@ button {
 @media (max-width: 640px) {
   .subtitle-overlay {
     right: 14px;
-    bottom: clamp(84px, 18vh, 112px);
+    bottom: clamp(36px, 7vh, 60px);
     left: 14px;
   }
 
