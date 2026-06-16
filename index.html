@@ -42,10 +42,9 @@
       </section>
 
       <section class="player-control-panel" aria-label="播放器控制区">
-        <div class="episode-card" aria-labelledby="episodeTitle">
-          <p class="eyebrow">Episode</p>
-          <h2 id="episodeTitle">S12E01</h2>
-          <p>The Conjugal Configuration</p>
+        <div class="episode-card" aria-labelledby="episodeLabel">
+          <span class="eyebrow" id="episodeLabel">Episode</span>
+          <button class="episode-select-button" type="button" aria-haspopup="listbox" aria-expanded="false">S12E01 <span aria-hidden="true">▼</span></button>
         </div>
 
         <div class="playback-speed-card" aria-labelledby="playbackSpeedTitle">
@@ -62,19 +61,16 @@
 
     </section>
 
-    <aside class="obstacle-panel" aria-label="提示">
-      <header class="stream-header">
-        <div>
-          <p class="eyebrow">Learning Tips</p>
-          <h2>提示</h2>
-        </div>
-      </header>
-
+    <aside class="obstacle-panel" aria-label="障碍卡片">
       <section class="episode-progress-summary" aria-labelledby="episodeProgressTitle">
         <h3 id="episodeProgressTitle">本集障碍</h3>
-        <p class="episode-progress-summary__item episode-progress-summary__item--conquered">✓ 已攻克 <span id="conqueredObstacleCount">0</span></p>
-        <p class="episode-progress-summary__item">○ 剩余 <span id="remainingObstacleCount">0</span></p>
-        <button class="undo-button episode-progress-summary__undo" id="episodeUndoButton" type="button">↶ 撤回上一步</button>
+        <div class="episode-progress-summary__status-row">
+          <p class="episode-progress-summary__item episode-progress-summary__item--conquered">✓ 已攻克<span id="conqueredObstacleCount">0</span></p>
+          <span class="episode-progress-summary__separator" aria-hidden="true">·</span>
+          <p class="episode-progress-summary__item">○ 剩余<span id="remainingObstacleCount">0</span></p>
+          <span class="episode-progress-summary__separator" aria-hidden="true">·</span>
+          <button class="undo-button episode-progress-summary__undo" id="episodeUndoButton" type="button">↩ 返回上一个障碍</button>
+        </div>
       </section>
 
       <div class="card-stream" id="cardStream" aria-live="polite"></div>
