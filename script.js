@@ -331,8 +331,6 @@ const cardStream = document.querySelector('#cardStream');
 const conqueredObstacleCount = document.querySelector('#conqueredObstacleCount');
 const remainingObstacleCount = document.querySelector('#remainingObstacleCount');
 const episodeUndoButton = document.querySelector('#episodeUndoButton');
-const subtitleTextInput = document.querySelector('#subtitleTextInput');
-const analyzeButton = document.querySelector('#analyzeButton');
 const currentSubtitleLine = document.querySelector('#currentSubtitleLine');
 const playIcon = document.querySelector('#playIcon');
 const videoStatusText = document.querySelector('#videoStatusText');
@@ -1588,7 +1586,7 @@ function undoLastDismissedObstacle() {
   return null;
 }
 
-function replaceObstacleStream(nextObstacles, text = subtitleTextInput.value) {
+function replaceObstacleStream(nextObstacles, text = DEFAULT_SUBTITLE_TEXT) {
   activeDataSource = 'analyze';
   obstacles = nextObstacles;
   currentEpisodeProgressKey = getEpisodeProgressKey(text);
@@ -1797,11 +1795,6 @@ function analyzeAndRender(text, options = {}) {
   return renderCards();
 }
 
-function handleAnalyzeClick() {
-  analyzeAndRender(subtitleTextInput.value, { level: DEFAULT_VOCABULARY_LEVEL });
-}
-
-analyzeButton.addEventListener('click', handleAnalyzeClick);
 if (episodeUndoButton) {
   episodeUndoButton.addEventListener('click', undoLastDismissedObstacle);
 }
