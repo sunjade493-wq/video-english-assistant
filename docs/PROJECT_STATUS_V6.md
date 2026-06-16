@@ -337,47 +337,24 @@ Runtime fail-fast implementation status note:
 
 ### V29I-0F POS Architecture Freeze
 
+Status: FROZEN
+
 Date: 2026-06-16
 
-Status: Frozen
+V29I-0F POS Architecture Freeze is completed and merged.
 
-Validation Results:
+Frozen POS architecture rules:
 
-- outside -> adv./adj./prep./n.
-- official -> adj./n.
-- alone -> adj./adv.
-- believe -> vt./vi.
-- order -> n./vi./vt.
-- sleep -> n./vi.
+- Backend-generated dictionary-level `partOfSpeech` is the only source of truth.
+- Runtime must not infer, stitch, trim, reorder, normalize, or generate fallback POS values.
+- Runtime may validate POS formats via allowlist.
+- Runtime must display backend-generated POS values exactly as emitted.
 
-End-to-end Verification:
+Obstacle count:
 
-- Backend generator emits complete dictionary-level POS combinations.
-- output_text/v29a_obstacles.json serializes partOfSpeech correctly.
-- Runtime allowlist accepts legal combined POS formats.
-- outside obstacle is no longer filtered.
-- Obstacle count restored from 58 back to 59.
-- Frontend displays all POS combinations correctly.
+59 / 59
 
-Frozen Rules:
-
-Backend-generated dictionary-level partOfSpeech is the only source of truth.
-
-Runtime behavior is frozen:
-
-- No inference
-- No stitching
-- No trimming
-- No reordering
-- No normalization
-- No fallback generation
-
-Runtime may validate POS formats via allowlist, but must display backend-generated POS values exactly as emitted.
-
-Result:
-
-V29I POS architecture repair is accepted and frozen.
-Future development must not modify this behavior unless an explicit unfreeze decision is made.
+Future development must not modify the POS architecture unless an explicit unfreeze decision is made.
 
 ## 11. Runtime Interaction Status
 
