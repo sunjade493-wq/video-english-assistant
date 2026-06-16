@@ -396,7 +396,7 @@ Completed:
 - V29I-1A Runtime Fail Fast Specification Freeze
 - V29I-1B Implement Runtime Fail Fast
 
-Current / Next:
+Completed:
 
 - V29I Runtime Fail Fast Video QA
 
