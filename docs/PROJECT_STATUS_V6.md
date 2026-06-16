@@ -29,6 +29,12 @@ No exceptions.
 
 PROJECT_STATUS_V6.md must always reflect the latest frozen repository state.
 
+Hard safety rule for future updates:
+
+- Do not overwrite the entire status document.
+- Only append content to the specified section(s).
+- Deleted lines in a PROJECT_STATUS_V6.md update must not exceed 5 lines.
+
 Future conversations are expected to read PROJECT_STATUS_V6.md first.
 
 Therefore:
