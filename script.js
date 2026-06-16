@@ -1655,14 +1655,14 @@ function restoreAllCurrentObstacles() {
 }
 
 function createDetailBlock(title, text) {
-  const block = document.createElement('div');
+  const block = document.createElement('p');
   block.className = 'detail-block';
 
   const label = document.createElement('span');
   label.className = 'detail-title';
   label.textContent = `${title}：`;
 
-  const content = document.createElement('p');
+  const content = document.createElement('span');
   content.className = 'detail-text';
   content.textContent = text;
 
@@ -1692,15 +1692,12 @@ function createWordHeadline(obstacle) {
   partOfSpeech.textContent = obstacle.partOfSpeech || '';
   titleLine.append(partOfSpeech);
 
-  const secondLine = document.createElement('p');
-  secondLine.className = 'vocab-second-line';
-
   const audioIcon = document.createElement('span');
   audioIcon.className = 'vocab-audio-icon';
   audioIcon.textContent = '🔊';
-  secondLine.append(audioIcon);
+  titleLine.append(audioIcon);
 
-  headline.append(titleLine, secondLine);
+  headline.append(titleLine);
   return headline;
 }
 
@@ -1729,7 +1726,7 @@ function createCard(obstacle) {
 
   const label = document.createElement('span');
   label.className = 'type-label';
-  label.textContent = obstacle.type === 'vocab' ? '[vocab]' : '[comprehension]';
+  label.textContent = obstacle.type === 'vocab' ? '生词' : '理解';
 
   const content = document.createElement('div');
   content.className = 'card-content';
