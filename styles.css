@@ -41,11 +41,11 @@ button {
 .app-shell {
   display: grid;
   grid-template-columns: 70% 30%;
-  gap: 24px;
+  gap: 18px;
   width: min(100%, 1520px);
   height: 100vh;
   margin: 0 auto;
-  padding: 24px;
+  padding: 18px;
 }
 
 .video-panel,
@@ -60,15 +60,15 @@ button {
 .video-panel {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  padding: 24px;
+  gap: 12px;
+  padding: 18px;
   border-radius: var(--radius-xl);
 }
 
 .video-frame {
   position: relative;
   flex: 1;
-  min-height: 390px;
+  min-height: 320px;
   overflow: hidden;
   border-radius: 24px;
   background:
@@ -90,17 +90,17 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 22px;
+  gap: 18px;
   height: 100%;
-  padding: 32px;
+  padding: 24px;
   color: #fff;
   text-align: left;
 }
 
 .play-icon {
   display: grid;
-  width: 76px;
-  height: 76px;
+  width: 64px;
+  height: 64px;
   place-items: center;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.16);
@@ -115,7 +115,7 @@ button {
 }
 
 .video-placeholder h1 {
-  font-size: clamp(2rem, 4vw, 4.5rem);
+  font-size: clamp(1.8rem, 3.5vw, 4rem);
   letter-spacing: -0.05em;
 }
 
@@ -128,47 +128,60 @@ button {
 .video-placeholder p {
   margin-top: 8px;
   color: rgba(255, 255, 255, 0.72);
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 .player-control-panel {
-  display: grid;
-  grid-template-columns: minmax(220px, 0.9fr) minmax(320px, 1.1fr);
-  gap: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(219, 227, 239, 0.92);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 10px 24px rgba(27, 36, 48, 0.07);
 }
 
 .episode-card,
 .playback-speed-card {
+  display: flex;
   min-width: 0;
-  padding: 18px 20px;
-  border: 1px solid rgba(219, 227, 239, 0.92);
-  border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.86);
-  box-shadow: 0 12px 30px rgba(27, 36, 48, 0.08);
+  align-items: center;
+  gap: 10px;
+}
+
+.episode-card {
+  flex: 0 1 42%;
+}
+
+.playback-speed-card {
+  flex: 1 1 auto;
+  justify-content: flex-end;
 }
 
 .episode-card h2 {
-  margin-top: 8px;
-  font-size: clamp(1.35rem, 2vw, 2rem);
-  letter-spacing: -0.04em;
+  font-size: clamp(1rem, 1.4vw, 1.35rem);
+  letter-spacing: -0.03em;
 }
 
 .episode-card p:last-child {
-  margin-top: 6px;
+  overflow: hidden;
   color: var(--muted);
+  font-size: 0.88rem;
   font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .playback-speed-options {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 12px;
+  flex-wrap: nowrap;
+  gap: 6px;
 }
 
 .playback-speed-button {
-  min-width: 68px;
-  padding: 10px 14px;
+  min-width: 48px;
+  padding: 6px 10px;
   border: 1px solid var(--border);
   border-radius: 999px;
   color: var(--muted);
@@ -188,7 +201,7 @@ button {
   border-color: var(--primary);
   color: #fff;
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.24);
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.2);
 }
 
 .eyebrow {
@@ -501,6 +514,16 @@ button {
     min-height: 48vh;
   }
 
+  .player-control-panel {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .episode-card,
+  .playback-speed-card {
+    justify-content: space-between;
+  }
+
   .obstacle-panel {
     min-height: 480px;
     max-height: 70vh;
@@ -700,8 +723,8 @@ button {
 
 .timeline-panel {
   display: grid;
-  gap: 12px;
-  padding: 16px 18px;
+  gap: 8px;
+  padding: 10px 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: rgba(255, 255, 255, 0.86);
@@ -711,14 +734,14 @@ button {
 .heat-axis-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .timeline-play-button {
   display: grid;
   flex: 0 0 auto;
-  width: 42px;
-  height: 42px;
+  width: 34px;
+  height: 34px;
   place-items: center;
   border: 0;
   border-radius: 999px;
@@ -754,7 +777,7 @@ button {
 .obstacle-heat-axis {
   position: relative;
   flex: 1;
-  height: 42px;
+  height: 30px;
 }
 
 .obstacle-heat-axis::before {
@@ -774,8 +797,8 @@ button {
   position: absolute;
   top: 50%;
   z-index: 1;
-  min-width: 44px;
-  height: 18px;
+  min-width: 38px;
+  height: 14px;
   border-radius: 999px;
   background: rgba(37, 99, 235, 0.16);
   box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.08);
@@ -788,8 +811,8 @@ button {
   z-index: 2;
   top: 50%;
   display: grid;
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   place-items: center;
   border: 2px solid #fff;
   border-radius: 999px;
