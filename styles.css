@@ -41,11 +41,11 @@ button {
 .app-shell {
   display: grid;
   grid-template-columns: 70% 30%;
-  gap: 18px;
+  gap: 14px;
   width: min(100%, 1520px);
   height: 100vh;
   margin: 0 auto;
-  padding: 18px;
+  padding: 14px;
 }
 
 .video-panel,
@@ -60,8 +60,8 @@ button {
 .video-panel {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 14px;
+  gap: 6px;
+  padding: 10px;
   border-radius: var(--radius-xl);
 }
 
@@ -135,8 +135,8 @@ button {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 42px;
-  padding: 4px 8px;
+  min-height: 36px;
+  padding: 3px 6px;
   border: 1px solid rgba(219, 227, 239, 0.92);
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.86);
@@ -148,7 +148,7 @@ button {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .episode-card {
@@ -176,8 +176,8 @@ button {
 
 
 .episode-select-button {
-  height: 32px;
-  padding: 0 12px;
+  height: 30px;
+  padding: 0 10px;
   border: 1px solid rgba(15, 23, 42, 0.12);
   border-radius: 999px;
   color: var(--text);
@@ -210,13 +210,13 @@ button {
 .playback-speed-options {
   display: flex;
   flex-wrap: nowrap;
-  gap: 4px;
+  gap: 3px;
 }
 
 .playback-speed-button {
-  min-width: 42px;
+  min-width: 38px;
   height: 32px;
-  padding: 0 9px;
+  padding: 0 8px;
   border: 1px solid rgba(15, 23, 42, 0.12);
   border-radius: 999px;
   color: #475569;
@@ -293,15 +293,20 @@ button {
 }
 
 .episode-progress-summary {
-  padding: 10px 14px 9px;
-  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px 6px;
+  border-bottom: 0;
   background: rgba(247, 249, 252, 0.82);
 }
 
 .episode-progress-summary h3 {
-  margin: 0 0 6px;
-  font-size: 1rem;
+  flex: 0 0 auto;
+  margin: 0;
+  font-size: 0.96rem;
   letter-spacing: -0.02em;
+  line-height: 1;
 }
 
 .episode-progress-summary__item {
@@ -339,9 +344,9 @@ button {
   flex: 1;
   min-height: 0;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   overflow-y: auto;
-  padding: 12px;
+  padding: 8px 10px 10px;
   scroll-behavior: smooth;
 }
 
@@ -354,14 +359,14 @@ button {
 }
 
 .card-inner {
-  padding: 18px;
+  padding: 10px 12px;
 }
 
 .type-label {
   display: inline-flex;
   align-items: center;
   width: fit-content;
-  padding: 5px 10px;
+  padding: 3px 8px;
   border-radius: 999px;
   background: #e0ecff;
   color: #1d4ed8;
@@ -370,14 +375,14 @@ button {
 }
 
 .card-content {
-  margin-top: 14px;
+  margin-top: 7px;
 }
 
 .vocab-headline {
-  padding: 12px 14px;
-  border-radius: var(--radius-md);
-  background: var(--surface-muted);
-  border: 1px solid #e7edf6;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  border: 0;
 }
 
 .vocab-title-line,
@@ -390,14 +395,14 @@ button {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 8px;
+  gap: 6px;
 }
 
 .vocab-word {
   color: #1f2937;
-  font-size: 1.35rem;
+  font-size: 1.18rem;
   font-weight: 850;
-  line-height: 1.2;
+  line-height: 1.22;
 }
 
 .vocab-phonetic,
@@ -423,23 +428,24 @@ button {
 }
 
 .vocab-sentence-meaning {
-  margin-top: 10px;
-  padding: 11px 12px;
-  border-radius: var(--radius-md);
-  background: var(--surface-muted);
-  border: 1px solid #e7edf6;
+  margin-top: 5px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  border: 0;
   color: #2b3542;
-  line-height: 1.55;
+  line-height: 1.36;
 }
 
 .word-summary,
-.understanding-summary {
+.understanding-summary,
+.understanding-prototype {
   margin: 0;
   white-space: pre-line;
-  padding: 10px 12px;
-  border-radius: var(--radius-md);
-  background: var(--surface-muted);
-  border: 1px solid #e7edf6;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  border: 0;
   color: #2b3542;
   font-size: 1.02rem;
   font-weight: 760;
@@ -450,11 +456,11 @@ button {
   display: flex;
   align-items: baseline;
   gap: 4px;
-  margin-top: 10px;
-  padding: 11px 12px;
-  border-radius: var(--radius-md);
-  background: var(--surface-muted);
-  border: 1px solid #e7edf6;
+  margin: 5px 0 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  border: 0;
 }
 
 .detail-title {
@@ -468,20 +474,20 @@ button {
   flex: 1;
   margin: 0;
   color: #2b3542;
-  line-height: 1.55;
+  line-height: 1.36;
 }
 
 .card-actions {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 10px;
-  margin-top: 18px;
+  gap: 6px;
+  margin-top: 10px;
 }
 
 .dismiss-button,
 .undo-button {
   width: 100%;
-  padding: 12px 14px;
+  padding: 8px 10px;
 }
 
 .dismiss-button {
@@ -698,7 +704,7 @@ button {
   align-items: center;
   gap: 12px;
   max-width: min(360px, calc(100% - 48px));
-  padding: 12px 14px;
+  padding: 8px 10px;
   border: 1px solid rgba(255, 255, 255, 0.26);
   border-radius: 18px;
   color: #fff;
@@ -759,8 +765,8 @@ button {
 
 .timeline-panel {
   display: grid;
-  gap: 3px;
-  padding: 5px 8px;
+  gap: 2px;
+  padding: 3px 6px;
   border: 1px solid var(--border);
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.86);
@@ -776,8 +782,8 @@ button {
 .timeline-play-button {
   display: grid;
   flex: 0 0 auto;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   place-items: center;
   border: 0;
   border-radius: 999px;
@@ -813,7 +819,7 @@ button {
 .obstacle-heat-axis {
   position: relative;
   flex: 1;
-  height: 24px;
+  height: 18px;
 }
 
 .obstacle-heat-axis::before {
@@ -847,8 +853,8 @@ button {
   z-index: 2;
   top: 50%;
   display: grid;
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   place-items: center;
   border: 2px solid #fff;
   border-radius: 999px;
@@ -968,14 +974,14 @@ button {
   margin: 0 0 12px;
   color: var(--text);
   font-weight: 740;
-  line-height: 1.55;
+  line-height: 1.36;
   white-space: normal;
 }
 
 .bottom-sheet__obstacles {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
 }
 
 .bottom-sheet__obstacle {
