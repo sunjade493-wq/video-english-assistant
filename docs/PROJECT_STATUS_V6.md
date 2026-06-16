@@ -379,6 +379,43 @@ Result:
 V29I POS architecture repair is accepted and frozen.
 Future development must not modify this behavior unless an explicit unfreeze decision is made.
 
+
+### V29I-0F POS Architecture Freeze
+
+Status: FROZEN
+Date: 2026-06-16
+
+Backend-generated dictionary-level partOfSpeech is the only source of truth.
+
+Runtime validates only.
+
+Runtime never:
+
+* infer
+* rewrite
+* normalize
+* trim
+* reorder
+* generate POS combinations
+
+End-to-end verification passed.
+
+Validated vocabulary items:
+
+outside  -> adv./adj./prep./n.
+official -> adj./n.
+alone    -> adj./adv.
+believe  -> vt./vi.
+order    -> n./vi./vt.
+sleep    -> n./vi.
+
+All render correctly.
+
+Obstacle count:
+59 / 59
+
+Future development must not modify the POS architecture unless an explicit unfreeze decision is made.
+
 ## 11. Runtime Interaction Status
 
 Sources: `README.md`, `CHANGELOG.md`, `Freeze_Summary.md`
@@ -418,9 +455,6 @@ Completed:
 - V29I-0C Vocabulary SentenceMeaning Semantic Responsibility Freeze
 - V29I-1A Runtime Fail Fast Specification Freeze
 - V29I-1B Implement Runtime Fail Fast
-
-Current / Next:
-
 - V29I Runtime Fail Fast Video QA
 
 ## 14. Explicitly Unverified / Not Frozen
