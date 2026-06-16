@@ -60,7 +60,7 @@ button {
 .video-panel {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 18px;
   padding: 24px;
   border-radius: var(--radius-xl);
 }
@@ -68,7 +68,7 @@ button {
 .video-frame {
   position: relative;
   flex: 1;
-  min-height: 420px;
+  min-height: 390px;
   overflow: hidden;
   border-radius: 24px;
   background:
@@ -109,7 +109,6 @@ button {
 }
 
 .video-placeholder h1,
-.video-meta h2,
 .stream-header h2 {
   margin: 0;
 }
@@ -120,7 +119,6 @@ button {
 }
 
 .video-placeholder p,
-.video-meta p,
 .eyebrow {
   margin: 0;
 }
@@ -131,8 +129,91 @@ button {
   font-size: 1.1rem;
 }
 
-.video-meta {
-  padding: 0 4px 4px;
+.player-control-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.episode-card,
+.playback-speed-card {
+  border: 1px solid rgba(219, 227, 239, 0.92);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 14px 36px rgba(27, 36, 48, 0.08);
+}
+
+.episode-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  padding: 18px 20px;
+}
+
+.episode-card h2 {
+  margin: 0;
+  font-size: clamp(1.35rem, 2.15vw, 2rem);
+  letter-spacing: -0.04em;
+}
+
+.episode-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.playback-speed-card {
+  display: flex;
+  min-width: 220px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+}
+
+.playback-speed-card h3 {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.playback-speed-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.playback-speed-button {
+  border: 1px solid rgba(37, 99, 235, 0.22);
+  border-radius: 999px;
+  cursor: pointer;
+  padding: 8px 12px;
+  color: var(--primary);
+  background: rgba(37, 99, 235, 0.08);
+  font-size: 0.92rem;
+  font-weight: 800;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.playback-speed-button:hover,
+.playback-speed-button:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(37, 99, 235, 0.46);
+  outline: none;
+  background: rgba(37, 99, 235, 0.14);
+}
+
+.playback-speed-button.is-selected {
+  border-color: var(--primary);
+  color: #fff;
+  background: var(--primary);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.22);
 }
 
 .eyebrow {
@@ -141,17 +222,6 @@ button {
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-}
-
-.video-meta h2 {
-  margin-top: 6px;
-  font-size: clamp(1.6rem, 2.5vw, 2.4rem);
-  letter-spacing: -0.04em;
-}
-
-.video-meta p:last-child {
-  margin-top: 8px;
-  color: var(--muted);
 }
 
 .sr-only {
@@ -472,6 +542,14 @@ button {
     border-radius: 22px;
   }
 
+  .player-control-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .playback-speed-card {
+    min-width: 0;
+  }
+
   .video-placeholder {
     flex-direction: column;
     text-align: center;
@@ -492,7 +570,7 @@ button {
   position: absolute;
   z-index: 2;
   right: 28px;
-  bottom: clamp(80px, 10vh, 120px);
+  bottom: clamp(32px, 5vh, 56px);
   left: 28px;
   display: flex;
   justify-content: center;
@@ -574,7 +652,7 @@ button {
 @media (max-width: 640px) {
   .subtitle-overlay {
     right: 14px;
-    bottom: clamp(84px, 18vh, 112px);
+    bottom: clamp(36px, 7vh, 60px);
     left: 14px;
   }
 
