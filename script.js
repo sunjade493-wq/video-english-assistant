@@ -323,6 +323,7 @@ let playbackStartedTimeMs = 0;
 let timelineRenderTimer = null;
 let activeHeatClusterKey = null;
 let activeDataSource = 'pending';
+let playbackRate = 1;
 
 const SEGMENT_DURATION_MS = 3600;
 const LEARNING_PAUSE_HINT_STORAGE_KEY = 'videoEnglishAssistant.learningPauseHintDismissed';
@@ -346,7 +347,30 @@ const obstacleBottomSheet = document.querySelector('#obstacleBottomSheet');
 const bottomSheetTitle = document.querySelector('#bottomSheetTitle');
 const bottomSheetContent = document.querySelector('#bottomSheetContent');
 const bottomSheetClose = document.querySelector('#bottomSheetClose');
+const playbackSpeedButtons = document.querySelectorAll('.playback-speed-button');
 
+
+
+function renderPlaybackSpeedControls() {
+  playbackSpeedButtons.forEach((button) => {
+    const buttonRate = Number(button.dataset.playbackRate);
+    const isSelected = buttonRate === playbackRate;
+
+    button.classList.toggle('is-selected', isSelected);
+    button.setAttribute('aria-pressed', String(isSelected));
+  });
+}
+
+function handlePlaybackSpeedSelection(event) {
+  const nextPlaybackRate = Number(event.currentTarget.dataset.playbackRate);
+
+  if (!Number.isFinite(nextPlaybackRate)) {
+    return;
+  }
+
+  playbackRate = nextPlaybackRate;
+  renderPlaybackSpeedControls();
+}
 
 function parseTimeToMs(value) {
   if (typeof value === 'number' && Number.isFinite(value)) {
@@ -1826,6 +1850,10 @@ if (bottomSheetClose) {
 if (bottomSheetBackdrop) {
   bottomSheetBackdrop.addEventListener('click', closeBottomSheet);
 }
+playbackSpeedButtons.forEach((button) => {
+  button.addEventListener('click', handlePlaybackSpeedSelection);
+});
+renderPlaybackSpeedControls();
 initApp();
 
 window.ObstacleDetectionEngine = {

@@ -41,11 +41,24 @@
         </div>
       </section>
 
-      <div class="video-meta">
-        <p class="eyebrow">Today's Lecture</p>
-        <h2>Academic Listening Practice</h2>
-        <p>在左侧观看视频，右侧按照出现顺序追踪生词与理解障碍。</p>
-      </div>
+      <section class="player-control-panel" aria-label="播放器控制区">
+        <div class="episode-card" aria-labelledby="episodeTitle">
+          <p class="eyebrow">Episode</p>
+          <h2 id="episodeTitle">S12E01</h2>
+          <p>The Conjugal Configuration</p>
+        </div>
+
+        <div class="playback-speed-card" aria-labelledby="playbackSpeedTitle">
+          <p class="eyebrow" id="playbackSpeedTitle">Playback Speed</p>
+          <div class="playback-speed-options" role="group" aria-label="选择播放速度">
+            <button class="playback-speed-button" type="button" data-playback-rate="0.75" aria-pressed="false">0.75x</button>
+            <button class="playback-speed-button is-selected" type="button" data-playback-rate="1" aria-pressed="true">1x</button>
+            <button class="playback-speed-button" type="button" data-playback-rate="1.25" aria-pressed="false">1.25x</button>
+            <button class="playback-speed-button" type="button" data-playback-rate="1.5" aria-pressed="false">1.5x</button>
+            <button class="playback-speed-button" type="button" data-playback-rate="2" aria-pressed="false">2x</button>
+          </div>
+        </div>
+      </section>
 
     </section>
 
