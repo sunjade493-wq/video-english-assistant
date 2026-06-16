@@ -24,6 +24,7 @@ const SUPPORTED_PART_OF_SPEECH_FORMATS = new Set([
   'adj./vt.',
   'adj./adv.',
   'adv./adj.',
+  'adv./adj./prep./n.',
   'aux. v.',
   'modal v.',
   'linking v.',
