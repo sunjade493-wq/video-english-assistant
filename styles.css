@@ -60,8 +60,8 @@ button {
 .video-panel {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 10px;
+  gap: 0;
+  padding: 8px;
   border-radius: var(--radius-xl);
 }
 
@@ -70,7 +70,7 @@ button {
   flex: 1;
   min-height: 320px;
   overflow: hidden;
-  border-radius: 24px;
+  border-radius: 22px 22px 12px 12px;
   background:
     linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(30, 41, 59, 0.9)),
     repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px 18px);
@@ -109,7 +109,6 @@ button {
 }
 
 .video-placeholder h1,
-.player-control-panel h2,
 .stream-header h2 {
   margin: 0;
 }
@@ -120,7 +119,7 @@ button {
 }
 
 .video-placeholder p,
-.player-control-panel p,
+.playback-speed-card p,
 .eyebrow {
   margin: 0;
 }
@@ -131,16 +130,34 @@ button {
   font-size: 1rem;
 }
 
-.player-control-panel {
+.player-footer {
+  display: grid;
+  gap: 1px;
+  flex: 0 0 auto;
+  padding: 4px 8px 5px;
+  border: 0;
+  border-radius: 0 0 20px 20px;
+  background: rgba(255, 255, 255, 0.68);
+}
+
+.player-footer__row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  min-height: 36px;
-  padding: 3px 6px;
-  border: 1px solid rgba(219, 227, 239, 0.92);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.86);
-  box-shadow: 0 6px 16px rgba(27, 36, 48, 0.06);
+  gap: 9px;
+  min-width: 0;
+}
+
+.player-footer__row--meta {
+  min-height: 32px;
+}
+
+.player-footer__row--timeline {
+  min-height: 32px;
+}
+
+.player-footer__row--heat {
+  min-height: 20px;
+  opacity: 0.76;
 }
 
 .episode-card,
@@ -153,11 +170,11 @@ button {
 
 .episode-card {
   flex: 0 0 auto;
+  margin-left: auto;
 }
 
 .playback-speed-card {
-  flex: 1 1 auto;
-  justify-content: flex-end;
+  flex: 0 1 auto;
 }
 
 .episode-card h2 {
@@ -176,12 +193,12 @@ button {
 
 
 .episode-select-button {
-  height: 30px;
+  height: 28px;
   padding: 0 10px;
-  border: 1px solid rgba(15, 23, 42, 0.12);
+  border: 0;
   border-radius: 999px;
   color: var(--text);
-  background: rgba(15, 23, 42, 0.04);
+  background: rgba(15, 23, 42, 0.06);
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 850;
@@ -214,9 +231,9 @@ button {
 }
 
 .playback-speed-button {
-  min-width: 38px;
-  height: 32px;
-  padding: 0 8px;
+  min-width: 34px;
+  height: 28px;
+  padding: 0 7px;
   border: 1px solid rgba(15, 23, 42, 0.12);
   border-radius: 999px;
   color: #475569;
@@ -556,14 +573,12 @@ button {
     min-height: 48vh;
   }
 
-  .player-control-panel {
-    align-items: stretch;
-    flex-direction: column;
+  .player-footer__row--meta {
+    flex-wrap: wrap;
   }
 
-  .episode-card,
-  .playback-speed-card {
-    justify-content: space-between;
+  .episode-card {
+    margin-left: 0;
   }
 
   .obstacle-panel {
@@ -763,22 +778,6 @@ button {
   }
 }
 
-.timeline-panel {
-  display: grid;
-  gap: 2px;
-  padding: 3px 6px;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.86);
-}
-
-.video-timeline-row,
-.heat-axis-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 .timeline-play-button {
   display: grid;
   flex: 0 0 auto;
@@ -790,12 +789,13 @@ button {
   cursor: pointer;
   color: #fff;
   background: var(--primary);
-  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.24);
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.2);
   font-weight: 900;
 }
 
 .video-timeline {
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
   accent-color: var(--primary);
   cursor: pointer;
 }
@@ -806,20 +806,21 @@ button {
   color: var(--muted);
   font-size: 0.82rem;
   font-variant-numeric: tabular-nums;
-  text-align: right;
+  font-weight: 760;
 }
 
 .heat-axis-label {
   flex: 0 0 auto;
   color: var(--muted);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 750;
 }
 
 .obstacle-heat-axis {
   position: relative;
-  flex: 1;
-  height: 18px;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 16px;
 }
 
 .obstacle-heat-axis::before {
@@ -827,23 +828,22 @@ button {
   top: 50%;
   right: 0;
   left: 0;
-  height: 2px;
+  height: 1px;
   border-radius: 999px;
-  background: linear-gradient(90deg, rgba(37, 99, 235, 0.2), rgba(37, 99, 235, 0.58), rgba(37, 99, 235, 0.2));
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0.18), rgba(37, 99, 235, 0.46), rgba(37, 99, 235, 0.18));
   content: "";
   transform: translateY(-50%);
 }
-
 
 .heat-cluster-highlight {
   position: absolute;
   top: 50%;
   z-index: 1;
-  min-width: 38px;
-  height: 14px;
+  min-width: 30px;
+  height: 8px;
   border-radius: 999px;
-  background: rgba(37, 99, 235, 0.16);
-  box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.08);
+  background: rgba(37, 99, 235, 0.12);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.05);
   transform: translateY(-50%);
   pointer-events: none;
 }
@@ -853,16 +853,16 @@ button {
   z-index: 2;
   top: 50%;
   display: grid;
-  width: 18px;
-  height: 18px;
+  width: 12px;
+  height: 12px;
   place-items: center;
   border: 2px solid #fff;
   border-radius: 999px;
   cursor: pointer;
-  color: #fff;
+  color: transparent;
   background: var(--primary);
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.26);
-  font-size: 0.9rem;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.22);
+  font-size: 0;
   font-weight: 900;
   transform: translate(-50%, -50%);
 }
@@ -875,10 +875,11 @@ button {
 
 .heat-cluster-button.is-selected {
   border-color: #dbeafe;
-  color: var(--primary-dark);
+  color: transparent;
   background: #fff;
-  box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.16), 0 12px 24px rgba(37, 99, 235, 0.28);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.14), 0 8px 16px rgba(37, 99, 235, 0.2);
 }
+
 
 .bottom-sheet-backdrop {
   position: fixed;
@@ -1003,27 +1004,16 @@ button {
 }
 
 @media (max-width: 640px) {
-  .timeline-panel {
-    padding: 14px;
+  .player-footer {
+    padding: 6px 8px 8px;
   }
 
-  .video-timeline-row {
-    flex-wrap: wrap;
+  .player-footer__row--timeline {
+    gap: 8px;
   }
 
-  .video-timeline {
-    min-width: calc(100% - 54px);
-  }
-
-  .timeline-time {
-    width: 100%;
-    text-align: left;
-  }
-
-  .heat-axis-row {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 6px;
+  .playback-speed-options {
+    overflow-x: auto;
   }
 
   .bottom-sheet {
