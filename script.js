@@ -582,6 +582,36 @@ function findSubtitleSegmentIndexByTime(startMs) {
   return nearestIndex;
 }
 
+function getNormalizedTokenCount(text) {
+  return tokenize(text).map(normalizeWord).filter(Boolean).length;
+}
+
+function getExactObstacleMarkerText(row, type, segmentText) {
+  if (type === 'vocab') {
+    const word = getRuntimeDisplayText(row?.word);
+    return findNormalizedPhraseRange(segmentText, word) ? word : '';
+  }
+
+  const segmentTokenCount = getNormalizedTokenCount(segmentText);
+  const candidates = [row?.phrase, row?.text]
+    .map((candidate) => getRuntimeDisplayText(candidate))
+    .filter(Boolean);
+
+  for (const candidate of candidates) {
+    const candidateTokenCount = getNormalizedTokenCount(candidate);
+
+    if (candidateTokenCount === 0 || candidateTokenCount >= segmentTokenCount) {
+      continue;
+    }
+
+    if (findNormalizedPhraseRange(segmentText, candidate)) {
+      return candidate;
+    }
+  }
+
+  return '';
+}
+
 function normalizeObstacle(row, rowIndex = 0) {
   const type = normalizeObstacleType(row?.type || row?.kind);
   const kind = type === 'vocab' ? 'word' : 'understanding';
@@ -592,12 +622,10 @@ function normalizeObstacle(row, rowIndex = 0) {
   const label = type === 'vocab'
     ? getRuntimeDisplayText(row?.word)
     : getComprehensionDisplayTitle(row);
-  const markerText = type === 'vocab'
-    ? getRuntimeDisplayText(row?.text || row?.word)
-    : getRuntimeDisplayText(row?.text || row?.phrase);
+  const markerText = getExactObstacleMarkerText(row, type, segment.text);
   const markerRange = markerText ? findNormalizedPhraseRange(segment.text, markerText) : null;
   const index = markerRange ? segment.start + markerRange.index : segment.start;
-  const end = markerRange ? segment.start + markerRange.end : Math.min(segment.end, index + Math.max(1, label.length));
+  const end = markerRange ? segment.start + markerRange.end : index;
   const baseObstacle = {
     id: row?.id || `real-obstacle-${rowIndex + 1}`,
     type,
@@ -940,17 +968,24 @@ function getActiveSubtitleObstacles(segment = getCurrentSubtitleSegment()) {
 }
 
 function getMarkerRangeForObstacle(segment, obstacle) {
-  const markerStart = Number.isFinite(obstacle.markerStart) ? obstacle.markerStart : obstacle.index;
-  const markerEnd = Number.isFinite(obstacle.markerEnd) ? obstacle.markerEnd : obstacle.end;
+  const markerStart = Number.isFinite(obstacle.markerStart) ? obstacle.markerStart : null;
+  const markerEnd = Number.isFinite(obstacle.markerEnd) ? obstacle.markerEnd : null;
 
-  if (!Number.isFinite(markerStart) || !Number.isFinite(markerEnd)) {
+  if (markerStart === null || markerEnd === null || markerEnd <= markerStart) {
+    return null;
+  }
+
+  const start = markerStart - segment.start;
+  const end = markerEnd - segment.start;
+
+  if (start < 0 || end > segment.text.length) {
     return null;
   }
 
   return {
     obstacle,
-    start: Math.max(0, markerStart - segment.start),
-    end: Math.min(segment.text.length, markerEnd - segment.start),
+    start,
+    end,
   };
 }
 
