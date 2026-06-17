@@ -1717,19 +1717,13 @@ function createUnderstandingPrototype(obstacle) {
   return prototype;
 }
 
-function createCard(obstacle) {
-  const card = document.createElement('article');
-  card.className = 'obstacle-card';
-
-  const inner = document.createElement('div');
-  inner.className = 'card-inner';
-
-  const label = document.createElement('span');
-  label.className = 'type-label';
-  label.textContent = obstacle.type === 'vocab' ? '生词' : '理解';
+function createObstacleItem(obstacle) {
+  const item = document.createElement('article');
+  item.className = 'obstacle-item';
+  item.dataset.obstacleId = obstacle.id;
 
   const content = document.createElement('div');
-  content.className = 'card-content';
+  content.className = 'card-content obstacle-item__content';
 
   if (obstacle.kind === 'word') {
     content.append(
@@ -1757,9 +1751,44 @@ function createCard(obstacle) {
   dismissButton.addEventListener('click', () => hideCurrentObstacle(obstacle.id));
 
   actions.append(dismissButton);
-  inner.append(label, content, actions);
-  card.append(inner);
-  return card;
+  item.append(content, actions);
+  return item;
+}
+
+function createObstacleGroup(type, groupObstacles) {
+  const group = document.createElement('section');
+  group.className = 'obstacle-card obstacle-group';
+  group.dataset.obstacleType = type;
+
+  const inner = document.createElement('div');
+  inner.className = 'card-inner obstacle-group__inner';
+
+  const label = document.createElement('h3');
+  label.className = 'type-label obstacle-group__label';
+  label.textContent = type === 'vocab' ? '生词' : '理解';
+
+  const list = document.createElement('div');
+  list.className = 'obstacle-group__items';
+
+  groupObstacles.forEach((obstacle) => {
+    list.append(createObstacleItem(obstacle));
+  });
+
+  inner.append(label, list);
+  group.append(inner);
+  return group;
+}
+
+function renderObstacleGroups(visibleObstacles) {
+  const groupOrder = ['vocab', 'comprehension'];
+
+  groupOrder.forEach((type) => {
+    const groupObstacles = visibleObstacles.filter((obstacle) => obstacle.type === type);
+
+    if (groupObstacles.length > 0) {
+      cardStream.append(createObstacleGroup(type, groupObstacles));
+    }
+  });
 }
 
 function renderEmptyState() {
@@ -1797,9 +1826,7 @@ function renderCards() {
     return visibleObstacles;
   }
 
-  visibleObstacles.forEach((obstacle) => {
-    cardStream.append(createCard(obstacle));
-  });
+  renderObstacleGroups(visibleObstacles);
 
   return visibleObstacles;
 }
