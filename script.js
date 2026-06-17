@@ -186,27 +186,37 @@ function createFallbackWordEntry(word) {
   };
 }
 
-function findNormalizedPhraseIndex(text, phrase) {
+function findNormalizedPhraseRange(text, phrase) {
   const phraseWords = tokenize(phrase).map(normalizeWord);
 
   if (phraseWords.length === 0) {
-    return -1;
+    return null;
   }
 
   const textWords = [...text.matchAll(/[A-Za-z]+(?:'[A-Za-z]+)?/g)].map((match) => ({
     word: normalizeWord(match[0]),
     index: match.index,
+    end: match.index + match[0].length,
   }));
 
   for (let index = 0; index <= textWords.length - phraseWords.length; index += 1) {
     const isMatch = phraseWords.every((word, offset) => textWords[index + offset].word === word);
 
     if (isMatch) {
-      return textWords[index].index;
+      const lastWord = textWords[index + phraseWords.length - 1];
+
+      return {
+        index: textWords[index].index,
+        end: lastWord.end,
+      };
     }
   }
 
-  return -1;
+  return null;
+}
+
+function findNormalizedPhraseIndex(text, phrase) {
+  return findNormalizedPhraseRange(text, phrase)?.index ?? -1;
 }
 
 function findUnderstandingMatch(text, pattern) {
@@ -228,13 +238,13 @@ function findUnderstandingMatch(text, pattern) {
         };
       }
     } else {
-      const index = findNormalizedPhraseIndex(text, matcher);
+      const range = findNormalizedPhraseRange(text, matcher);
 
-      if (index >= 0) {
+      if (range) {
         match = {
-          index,
-          source: text.slice(index, index + matcher.length),
-          end: index + matcher.length,
+          index: range.index,
+          source: text.slice(range.index, range.end),
+          end: range.end,
         };
       }
     }
@@ -582,15 +592,20 @@ function normalizeObstacle(row, rowIndex = 0) {
   const label = type === 'vocab'
     ? getRuntimeDisplayText(row?.word)
     : getComprehensionDisplayTitle(row);
-  const labelIndex = label ? findNormalizedPhraseIndex(segment.text, label) : -1;
-  const index = labelIndex >= 0 ? segment.start + labelIndex : segment.start;
-  const end = labelIndex >= 0 ? index + label.length : Math.min(segment.end, index + Math.max(1, label.length));
+  const markerText = type === 'vocab'
+    ? getRuntimeDisplayText(row?.text || row?.word)
+    : getRuntimeDisplayText(row?.text || row?.phrase);
+  const markerRange = markerText ? findNormalizedPhraseRange(segment.text, markerText) : null;
+  const index = markerRange ? segment.start + markerRange.index : segment.start;
+  const end = markerRange ? segment.start + markerRange.end : Math.min(segment.end, index + Math.max(1, label.length));
   const baseObstacle = {
     id: row?.id || `real-obstacle-${rowIndex + 1}`,
     type,
     kind,
     index,
     end,
+    markerStart: markerRange ? index : null,
+    markerEnd: markerRange ? end : null,
     source: row?.source_en || row?.text || label,
     sourceZh: row?.source_zh,
     priority: row?.priority,
@@ -925,20 +940,24 @@ function getActiveSubtitleObstacles(segment = getCurrentSubtitleSegment()) {
 }
 
 function getMarkerRangeForObstacle(segment, obstacle) {
+  const markerStart = Number.isFinite(obstacle.markerStart) ? obstacle.markerStart : obstacle.index;
+  const markerEnd = Number.isFinite(obstacle.markerEnd) ? obstacle.markerEnd : obstacle.end;
+
+  if (!Number.isFinite(markerStart) || !Number.isFinite(markerEnd)) {
+    return null;
+  }
+
   return {
     obstacle,
-    start: Math.max(0, obstacle.index - segment.start),
-    end: Math.min(
-      segment.text.length,
-      (obstacle.end || obstacle.index + getObstacleLabel(obstacle).length) - segment.start,
-    ),
+    start: Math.max(0, markerStart - segment.start),
+    end: Math.min(segment.text.length, markerEnd - segment.start),
   };
 }
 
 function getMarkerRangesForSegment(segment) {
   return getActiveSubtitleObstacles(segment)
     .map((obstacle) => getMarkerRangeForObstacle(segment, obstacle))
-    .filter((range) => range.end > range.start)
+    .filter((range) => range && range.end > range.start)
     .sort((firstRange, secondRange) => firstRange.start - secondRange.start);
 }
 
