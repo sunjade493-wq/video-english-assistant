@@ -157,7 +157,6 @@ button {
 
 .player-footer__row--heat {
   min-height: 20px;
-  opacity: 0.76;
 }
 
 .episode-card,
@@ -520,7 +519,7 @@ button {
   display: flex;
   justify-content: flex-end;
   gap: 6px;
-  margin-top: 9px;
+  margin-top: 2px;
 }
 
 .dismiss-button,
@@ -806,7 +805,11 @@ button {
   display: inline-flex;
   flex: 0 0 var(--footer-label-width);
   width: var(--footer-label-width);
+  height: 20px;
   align-items: center;
+  justify-content: flex-start;
+  margin: 0;
+  padding: 0;
   border: 0;
   cursor: pointer;
   color: var(--muted);
@@ -873,7 +876,11 @@ button {
   display: inline-flex;
   flex: 0 0 var(--footer-label-width);
   width: var(--footer-label-width);
+  height: 20px;
   align-items: center;
+  justify-content: flex-start;
+  margin: 0;
+  padding: 0;
   color: var(--muted);
   font-size: 0.78rem;
   font-weight: 500;
