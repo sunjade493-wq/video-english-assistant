@@ -337,7 +337,9 @@ let playbackRate = 1;
 
 const SEGMENT_DURATION_MS = 3600;
 const LEARNING_PAUSE_HINT_STORAGE_KEY = 'videoEnglishAssistant.learningPauseHintDismissed';
-const HEAT_AXIS_CLUSTER_THRESHOLD_PX = 56;
+const DESKTOP_HEAT_AXIS_CLUSTER_THRESHOLD_PX = 24;
+const MOBILE_HEAT_AXIS_CLUSTER_THRESHOLD_PX = 18;
+const MOBILE_HEAT_AXIS_MEDIA_QUERY = '(max-width: 640px)';
 const cardStream = document.querySelector('#cardStream');
 const conqueredObstacleCount = document.querySelector('#conqueredObstacleCount');
 const remainingObstacleCount = document.querySelector('#remainingObstacleCount');
@@ -867,6 +869,16 @@ function getTimelinePercent(timeMs) {
   return (clampTime(timeMs) / getTotalDurationMs()) * 100;
 }
 
+function getHeatAxisClusterThresholdPx() {
+  if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
+    return window.matchMedia(MOBILE_HEAT_AXIS_MEDIA_QUERY).matches
+      ? MOBILE_HEAT_AXIS_CLUSTER_THRESHOLD_PX
+      : DESKTOP_HEAT_AXIS_CLUSTER_THRESHOLD_PX;
+  }
+
+  return DESKTOP_HEAT_AXIS_CLUSTER_THRESHOLD_PX;
+}
+
 function getAxisWidth() {
   if (!obstacleHeatAxis || typeof obstacleHeatAxis.getBoundingClientRect !== 'function') {
     return 720;
@@ -1074,10 +1086,10 @@ function getLearningStateLabel() {
 }
 
 function renderVideoState() {
-  playIcon.textContent = isVideoPlaying ? 'Ⅱ' : '▷';
+  playIcon.textContent = isVideoPlaying ? '⏸' : '▶';
 
   if (timelinePlayButton) {
-    timelinePlayButton.textContent = isVideoPlaying ? 'Ⅱ（暂停）' : '▷（播放）';
+    timelinePlayButton.textContent = isVideoPlaying ? '⏸（暂停）' : '▶（播放）';
     timelinePlayButton.setAttribute('aria-label', isVideoPlaying ? '暂停视频' : '播放视频');
   }
 
@@ -1229,7 +1241,7 @@ function clusterObstacleItems(items) {
     const pixel = (item.percent / 100) * axisWidth;
     const lastCluster = clusters[clusters.length - 1];
 
-    if (lastCluster && pixel - lastCluster.lastPixel <= HEAT_AXIS_CLUSTER_THRESHOLD_PX) {
+    if (lastCluster && pixel - lastCluster.lastPixel <= getHeatAxisClusterThresholdPx()) {
       lastCluster.items.push(item);
       lastCluster.lastPixel = pixel;
       lastCluster.centerPercent = lastCluster.items.reduce((sum, clusterItem) => sum + clusterItem.percent, 0) / lastCluster.items.length;
