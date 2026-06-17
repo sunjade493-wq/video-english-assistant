@@ -20,7 +20,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "Can you believe our little lamb is finally getting married?",
-      "source_zh": "你能相信我们的小羊羔终于要嫁人了吗"
+      "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+      "markerStart": 8,
+      "markerEnd": 15
     },
     {
       "start": "10.0",
@@ -39,7 +41,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "He can't believe it.",
-      "source_zh": "他肯定不信"
+      "source_zh": "他肯定不信",
+      "markerStart": 9,
+      "markerEnd": 16
     },
     {
       "start": "47.5",
@@ -58,7 +62,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "I can't believe we're actually married.",
-      "source_zh": "真不敢相信我们真的结婚了"
+      "source_zh": "真不敢相信我们真的结婚了",
+      "markerStart": 8,
+      "markerEnd": 15
     },
     {
       "start": "49.5",
@@ -77,7 +83,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "It's official. According to tradition,",
-      "source_zh": "正式完婚了 根据传统"
+      "source_zh": "正式完婚了 根据传统",
+      "markerStart": 5,
+      "markerEnd": 13
     },
     {
       "start": "49.5",
@@ -96,7 +104,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "It's official. According to tradition,",
-      "source_zh": "正式完婚了 根据传统"
+      "source_zh": "正式完婚了 根据传统",
+      "markerStart": 28,
+      "markerEnd": 37
     },
     {
       "start": "51.5",
@@ -115,7 +125,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "we should hang the bedsheets outside",
-      "source_zh": "我们应该把床单挂在外面"
+      "source_zh": "我们应该把床单挂在外面",
+      "markerStart": 19,
+      "markerEnd": 28
     },
     {
       "start": "51.5",
@@ -134,7 +146,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "we should hang the bedsheets outside",
-      "source_zh": "我们应该把床单挂在外面"
+      "source_zh": "我们应该把床单挂在外面",
+      "markerStart": 29,
+      "markerEnd": 36
     },
     {
       "start": "53.0",
@@ -153,7 +167,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "so the villagers can see that we consummated.",
-      "source_zh": "这样其他村民就能知道我们行过房了"
+      "source_zh": "这样其他村民就能知道我们行过房了",
+      "markerStart": 33,
+      "markerEnd": 44
     },
     {
       "start": "58.0",
@@ -172,7 +188,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "considering where we're starting our honeymoon.",
-      "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅"
+      "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅",
+      "markerStart": 0,
+      "markerEnd": 11
     },
     {
       "start": "58.0",
@@ -191,7 +209,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "considering where we're starting our honeymoon.",
-      "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅"
+      "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅",
+      "markerStart": 37,
+      "markerEnd": 46
     },
     {
       "start": "60.5",
@@ -210,7 +230,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "Well, I suppose you're right.",
-      "source_zh": "你说的有道理"
+      "source_zh": "你说的有道理",
+      "markerStart": 8,
+      "markerEnd": 15
     },
     {
       "start": "67.0",
@@ -229,7 +251,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "Lego is the perfect metaphor for marital congress.",
-      "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢"
+      "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+      "markerStart": 41,
+      "markerEnd": 49
     },
     {
       "start": "67.0",
@@ -248,7 +272,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "Lego is the perfect metaphor for marital congress.",
-      "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢"
+      "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+      "markerStart": 33,
+      "markerEnd": 40
     },
     {
       "start": "67.0",
@@ -267,7 +293,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "Lego is the perfect metaphor for marital congress.",
-      "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢"
+      "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+      "markerStart": 20,
+      "markerEnd": 28
     },
     {
       "start": "67.0",
@@ -286,7 +314,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "Lego is the perfect metaphor for marital congress.",
-      "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢"
+      "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+      "markerStart": 12,
+      "markerEnd": 19
     },
     {
       "start": "70.0",
@@ -305,7 +335,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "Two pieces that interlock with a satisfying snap.",
-      "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声"
+      "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+      "markerStart": 16,
+      "markerEnd": 25
     },
     {
       "start": "70.0",
@@ -324,7 +356,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "Two pieces that interlock with a satisfying snap.",
-      "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声"
+      "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+      "markerStart": 33,
+      "markerEnd": 43
     },
     {
       "start": "70.0",
@@ -343,7 +377,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "Two pieces that interlock with a satisfying snap.",
-      "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声"
+      "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+      "markerStart": 44,
+      "markerEnd": 48
     },
     {
       "start": "80.5",
@@ -362,7 +398,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "While you were sleeping, I ordered room service.",
-      "source_zh": "在你睡觉的时候 我点了客房送餐"
+      "source_zh": "在你睡觉的时候 我点了客房送餐",
+      "markerStart": 27,
+      "markerEnd": 34
     },
     {
       "start": "80.5",
@@ -381,7 +419,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "While you were sleeping, I ordered room service.",
-      "source_zh": "在你睡觉的时候 我点了客房送餐"
+      "source_zh": "在你睡觉的时候 我点了客房送餐",
+      "markerStart": 35,
+      "markerEnd": 47
     },
     {
       "start": "80.5",
@@ -400,7 +440,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "While you were sleeping, I ordered room service.",
-      "source_zh": "在你睡觉的时候 我点了客房送餐"
+      "source_zh": "在你睡觉的时候 我点了客房送餐",
+      "markerStart": 15,
+      "markerEnd": 23
     },
     {
       "start": "92.0",
@@ -419,7 +461,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "Our whole universe was in a hot, dense state",
-      "source_zh": "我们的宇宙曾经超热又超密"
+      "source_zh": "我们的宇宙曾经超热又超密",
+      "markerStart": 33,
+      "markerEnd": 38
     },
     {
       "start": "92.0",
@@ -438,7 +482,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "Our whole universe was in a hot, dense state",
-      "source_zh": "我们的宇宙曾经超热又超密"
+      "source_zh": "我们的宇宙曾经超热又超密",
+      "markerStart": 28,
+      "markerEnd": 31
     },
     {
       "start": "92.0",
@@ -457,7 +503,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "Our whole universe was in a hot, dense state",
-      "source_zh": "我们的宇宙曾经超热又超密"
+      "source_zh": "我们的宇宙曾经超热又超密",
+      "markerStart": 39,
+      "markerEnd": 44
     },
     {
       "start": "92.0",
@@ -476,7 +524,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "Our whole universe was in a hot, dense state",
-      "source_zh": "我们的宇宙曾经超热又超密"
+      "source_zh": "我们的宇宙曾经超热又超密",
+      "markerStart": 10,
+      "markerEnd": 18
     },
     {
       "start": "95.0",
@@ -495,7 +545,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
-      "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等"
+      "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+      "markerStart": 33,
+      "markerEnd": 42
     },
     {
       "start": "95.0",
@@ -514,7 +566,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
-      "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等"
+      "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+      "markerStart": 43,
+      "markerEnd": 50
     },
     {
       "start": "101.0",
@@ -533,7 +587,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
-      "source_zh": "自养生物开始发育 尼安德塔人发明工具"
+      "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+      "markerStart": 4,
+      "markerEnd": 14
     },
     {
       "start": "101.0",
@@ -552,7 +608,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
-      "source_zh": "自养生物开始发育 尼安德塔人发明工具"
+      "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+      "markerStart": 44,
+      "markerEnd": 53
     },
     {
       "start": "101.0",
@@ -571,7 +629,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
-      "source_zh": "自养生物开始发育 尼安德塔人发明工具"
+      "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+      "markerStart": 31,
+      "markerEnd": 43
     },
     {
       "start": "104.0",
@@ -590,7 +650,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "We built the Wall We built the pyramids",
-      "source_zh": "我们建了长城 我们建了金字塔"
+      "source_zh": "我们建了长城 我们建了金字塔",
+      "markerStart": 31,
+      "markerEnd": 39
     },
     {
       "start": "105.0",
@@ -609,7 +671,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "Math, Science, History, unraveling the mystery",
-      "source_zh": "数学 科学 历史 解开了谜团"
+      "source_zh": "数学 科学 历史 解开了谜团",
+      "markerStart": 39,
+      "markerEnd": 46
     },
     {
       "start": "105.0",
@@ -628,7 +692,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "Math, Science, History, unraveling the mystery",
-      "source_zh": "数学 科学 历史 解开了谜团"
+      "source_zh": "数学 科学 历史 解开了谜团",
+      "markerStart": 24,
+      "markerEnd": 34
     },
     {
       "start": "106.0",
@@ -647,7 +713,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "♪ Math, Science, History, unraveling the mystery ♪",
-      "source_zh": "♪ 数学 科学 历史 解开了谜团 ♪"
+      "source_zh": "♪ 数学 科学 历史 解开了谜团 ♪",
+      "markerStart": 41,
+      "markerEnd": 48
     },
     {
       "start": "106.0",
@@ -666,7 +734,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "♪ Math, Science, History, unraveling the mystery ♪",
-      "source_zh": "♪ 数学 科学 历史 解开了谜团 ♪"
+      "source_zh": "♪ 数学 科学 历史 解开了谜团 ♪",
+      "markerStart": 26,
+      "markerEnd": 36
     },
     {
       "start": "108.0",
@@ -685,7 +755,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "That all started with a big bang",
-      "source_zh": "一切都始于大爆炸"
+      "source_zh": "一切都始于大爆炸",
+      "markerStart": 9,
+      "markerEnd": 16
     },
     {
       "start": "116.5",
@@ -704,7 +776,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "Is it nice having Sheldon and Amy away on their honeymoon?",
-      "source_zh": "谢尔顿跟艾米出去度蜜月你们是不是很爽啊"
+      "source_zh": "谢尔顿跟艾米出去度蜜月你们是不是很爽啊",
+      "markerStart": 48,
+      "markerEnd": 57
     },
     {
       "start": "119.5",
@@ -723,7 +797,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "Yeah, because now Leonard and I get all this alone time.",
-      "source_zh": "是啊 因为我跟莱纳德有大把的独处时间"
+      "source_zh": "是啊 因为我跟莱纳德有大把的独处时间",
+      "markerStart": 45,
+      "markerEnd": 50
     },
     {
       "start": "122.5",
@@ -742,7 +818,9 @@
       "actual": "",
       "grammar": "",
       "source_en": "But you're not alone. We're here.",
-      "source_zh": "但你俩不能独处啊 我们在呢"
+      "source_zh": "但你俩不能独处啊 我们在呢",
+      "markerStart": 15,
+      "markerEnd": 20
     },
     {
       "start": "6.0",
@@ -761,7 +839,9 @@
       "actual": "表示惊讶、难以置信，相当于“你敢信吗？”",
       "grammar": "Can you believe + 从句/名词短语；反问式口语开场，用来强化情绪。",
       "source_en": "Can you believe our little lamb is finally getting married?",
-      "source_zh": "你能相信我们的小羊羔终于要嫁人了吗"
+      "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+      "markerStart": 0,
+      "markerEnd": 15
     },
     {
       "start": "47.5",
@@ -780,7 +860,9 @@
       "actual": "我真不敢相信；强调说话人惊讶或不满。",
       "grammar": "I can't believe + 从句/宾语；否定情态动词表达强烈主观反应。",
       "source_en": "I can't believe we're actually married.",
-      "source_zh": "真不敢相信我们真的结婚了"
+      "source_zh": "真不敢相信我们真的结婚了",
+      "markerStart": 0,
+      "markerEnd": 15
     },
     {
       "start": "49.5",
@@ -799,7 +881,9 @@
       "actual": "按习俗来说；引出某个传统规定或社会惯例。",
       "grammar": "According to + 名词；介词短语作状语，说明信息依据。",
       "source_en": "It's official. According to tradition,",
-      "source_zh": "正式完婚了 根据传统"
+      "source_zh": "正式完婚了 根据传统",
+      "markerStart": 15,
+      "markerEnd": 37
     },
     {
       "start": "51.5",
@@ -818,7 +902,9 @@
       "actual": "指按传统展示床单，语境里带有婚俗和尴尬的喜剧效果。",
       "grammar": "hang + 宾语 + 地点副词；祈使/不定式结构中常省略主语。",
       "source_en": "we should hang the bedsheets outside",
-      "source_zh": "我们应该把床单挂在外面"
+      "source_zh": "我们应该把床单挂在外面",
+      "markerStart": 10,
+      "markerEnd": 36
     },
     {
       "start": "53.0",
@@ -837,7 +923,9 @@
       "actual": "委婉地说夫妻圆房、完成婚姻关系。",
       "grammar": "consummate 可作及物或不及物动词；过去式表示已完成的行为。",
       "source_en": "so the villagers can see that we consummated.",
-      "source_zh": "这样其他村民就能知道我们行过房了"
+      "source_zh": "这样其他村民就能知道我们行过房了",
+      "markerStart": 30,
+      "markerEnd": 44
     },
     {
       "start": "58.0",
@@ -856,7 +944,9 @@
       "actual": "说明蜜月旅程从哪里开始，where 引导地点从句。",
       "grammar": "where + 主语 + be + -ing；现在进行时表示计划中的近未来安排。",
       "source_en": "considering where we're starting our honeymoon.",
-      "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅"
+      "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅",
+      "markerStart": 12,
+      "markerEnd": 46
     },
     {
       "start": "60.5",
@@ -875,7 +965,9 @@
       "actual": "我想你说得对；带有让步、勉强同意的语气。",
       "grammar": "I suppose + 宾语从句；弱化语气，比 I think 更犹豫。",
       "source_en": "Well, I suppose you're right.",
-      "source_zh": "你说的有道理"
+      "source_zh": "你说的有道理",
+      "markerStart": 6,
+      "markerEnd": 28
     },
     {
       "start": "67.0",
@@ -894,7 +986,9 @@
       "actual": "非常正式或滑稽地指夫妻性行为。",
       "grammar": "形容词 marital 修饰名词 congress；congress 在此为委婉旧式用法。",
       "source_en": "Lego is the perfect metaphor for marital congress.",
-      "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢"
+      "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+      "markerStart": 33,
+      "markerEnd": 49
     },
     {
       "start": "67.0",
@@ -913,7 +1007,9 @@
       "actual": "用某物来非常贴切地象征另一件事。",
       "grammar": "metaphor for + 名词/动名词；for 标记隐喻指向的对象。",
       "source_en": "Lego is the perfect metaphor for marital congress.",
-      "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢"
+      "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+      "markerStart": 8,
+      "markerEnd": 32
     },
     {
       "start": "70.0",
@@ -932,7 +1028,9 @@
       "actual": "形容两个部件严丝合缝地扣上，声音让人觉得到位。",
       "grammar": "interlock with + 名词短语；with 表示伴随方式或伴随结果。",
       "source_en": "Two pieces that interlock with a satisfying snap.",
-      "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声"
+      "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+      "markerStart": 16,
+      "markerEnd": 48
     },
     {
       "start": "70.0",
@@ -951,7 +1049,9 @@
       "actual": "用声音说明动作完成得干脆、到位。",
       "grammar": "with + 名词短语作方式/伴随状语。",
       "source_en": "Two pieces that interlock with a satisfying snap.",
-      "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声"
+      "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+      "markerStart": 26,
+      "markerEnd": 48
     },
     {
       "start": "80.5",
@@ -970,7 +1070,9 @@
       "actual": "在酒店叫了送餐/客房服务。",
       "grammar": "order + 名词；order 在餐饮场景中表示“点餐/订购”。",
       "source_en": "While you were sleeping, I ordered room service.",
-      "source_zh": "在你睡觉的时候 我点了客房送餐"
+      "source_zh": "在你睡觉的时候 我点了客房送餐",
+      "markerStart": 27,
+      "markerEnd": 47
     },
     {
       "start": "80.5",
@@ -989,7 +1091,9 @@
       "actual": "趁你睡着时；说明另一件事发生的时间背景。",
       "grammar": "While + 主语 + 过去进行时；背景动作与主句动作同时发生。",
       "source_en": "While you were sleeping, I ordered room service.",
-      "source_zh": "在你睡觉的时候 我点了客房送餐"
+      "source_zh": "在你睡觉的时候 我点了客房送餐",
+      "markerStart": 0,
+      "markerEnd": 23
     },
     {
       "start": "88.5",
@@ -1008,7 +1112,9 @@
       "actual": "制造反差：听者以为叫的是吃的，但实际不是。",
       "grammar": "thought + 宾语从句；was going to be 表示过去视角下的将来。",
       "source_en": "You thought it was going to be food, didn't you?",
-      "source_zh": "你本来还以为是食物 对吧"
+      "source_zh": "你本来还以为是食物 对吧",
+      "markerStart": 0,
+      "markerEnd": 35
     },
     {
       "start": "92.0",
@@ -1027,7 +1133,9 @@
       "actual": "描述物理状态，不是日常“热闹”的意思。",
       "grammar": "冠词 + 并列形容词 + 名词；逗号连接同级形容词。",
       "source_en": "Our whole universe was in a hot, dense state",
-      "source_zh": "我们的宇宙曾经超热又超密"
+      "source_zh": "我们的宇宙曾经超热又超密",
+      "markerStart": 26,
+      "markerEnd": 44
     },
     {
       "start": "92.0",
@@ -1046,7 +1154,9 @@
       "actual": "大爆炸理论开场，描述早期宇宙高温高密度状态。",
       "grammar": "be in a/an + 形容词 + state；state 表示抽象状态。",
       "source_en": "Our whole universe was in a hot, dense state",
-      "source_zh": "我们的宇宙曾经超热又超密"
+      "source_zh": "我们的宇宙曾经超热又超密",
+      "markerStart": 0,
+      "markerEnd": 44
     },
     {
       "start": "92.0",
@@ -1065,7 +1175,9 @@
       "actual": "强调整体范围，常见于科学解释或夸张表达。",
       "grammar": "whole 放在名词前表示“整个的”，常与 the/our 连用。",
       "source_en": "Our whole universe was in a hot, dense state",
-      "source_zh": "我们的宇宙曾经超热又超密"
+      "source_zh": "我们的宇宙曾经超热又超密",
+      "markerStart": 4,
+      "markerEnd": 18
     },
     {
       "start": "95.0",
@@ -1084,7 +1196,9 @@
       "actual": "指宇宙开始扩张。",
       "grammar": "名词 + 不及物动词过去式；简洁叙述事件发生。",
       "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
-      "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等"
+      "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+      "markerStart": 33,
+      "markerEnd": 50
     },
     {
       "start": "108.0",
@@ -1103,7 +1217,9 @@
       "actual": "说明一连串事情的起点或原因。",
       "grammar": "start with + 名词/动名词；with 引出起点、开端或触发因素。",
       "source_en": "That all started with a big bang",
-      "source_zh": "一切都始于大爆炸"
+      "source_zh": "一切都始于大爆炸",
+      "markerStart": 0,
+      "markerEnd": 21
     },
     {
       "start": "119.5",
@@ -1122,7 +1238,9 @@
       "actual": "获得这么多二人/独处时间，语气通常带期待或调侃。",
       "grammar": "get + 名词短语；all this 修饰不可数/抽象时间，强调数量。",
       "source_en": "Yeah, because now Leonard and I get all this alone time.",
-      "source_zh": "是啊 因为我跟莱纳德有大把的独处时间"
+      "source_zh": "是啊 因为我跟莱纳德有大把的独处时间",
+      "markerStart": 32,
+      "markerEnd": 55
     }
   ]
 }

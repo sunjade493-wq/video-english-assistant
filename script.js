@@ -582,34 +582,31 @@ function findSubtitleSegmentIndexByTime(startMs) {
   return nearestIndex;
 }
 
-function getNormalizedTokenCount(text) {
-  return tokenize(text).map(normalizeWord).filter(Boolean).length;
+function warnInvalidFrozenMarker(row, rowIndex, reason) {
+  const obstacleId = row?.id || row?.engineId || `row-${rowIndex + 1}`;
+  console.warn(`[subtitle-marker] Obstacle ${obstacleId} has no valid frozen marker bounds: ${reason}`);
 }
 
-function getExactObstacleMarkerText(row, type, segmentText) {
-  if (type === 'vocab') {
-    const word = getRuntimeDisplayText(row?.word);
-    return findNormalizedPhraseRange(segmentText, word) ? word : '';
+function normalizeFrozenMarkerBounds(row, rowIndex, segment) {
+  const hasMarkerStart = row?.markerStart !== null && row?.markerStart !== undefined && row?.markerStart !== '';
+  const hasMarkerEnd = row?.markerEnd !== null && row?.markerEnd !== undefined && row?.markerEnd !== '';
+  const markerStart = Number(row?.markerStart);
+  const markerEnd = Number(row?.markerEnd);
+
+  if (!hasMarkerStart || !hasMarkerEnd || !Number.isFinite(markerStart) || !Number.isFinite(markerEnd)) {
+    warnInvalidFrozenMarker(row, rowIndex, 'markerStart/markerEnd are missing or not finite');
+    return { markerStart: null, markerEnd: null };
   }
 
-  const segmentTokenCount = getNormalizedTokenCount(segmentText);
-  const candidates = [row?.phrase, row?.text]
-    .map((candidate) => getRuntimeDisplayText(candidate))
-    .filter(Boolean);
-
-  for (const candidate of candidates) {
-    const candidateTokenCount = getNormalizedTokenCount(candidate);
-
-    if (candidateTokenCount === 0 || candidateTokenCount >= segmentTokenCount) {
-      continue;
-    }
-
-    if (findNormalizedPhraseRange(segmentText, candidate)) {
-      return candidate;
-    }
+  if (markerStart < 0 || markerEnd <= markerStart || markerEnd > segment.text.length) {
+    warnInvalidFrozenMarker(row, rowIndex, 'markerStart/markerEnd are outside the subtitle segment or reversed');
+    return { markerStart: null, markerEnd: null };
   }
 
-  return '';
+  return {
+    markerStart: segment.start + markerStart,
+    markerEnd: segment.start + markerEnd,
+  };
 }
 
 function normalizeObstacle(row, rowIndex = 0) {
@@ -622,18 +619,17 @@ function normalizeObstacle(row, rowIndex = 0) {
   const label = type === 'vocab'
     ? getRuntimeDisplayText(row?.word)
     : getComprehensionDisplayTitle(row);
-  const markerText = getExactObstacleMarkerText(row, type, segment.text);
-  const markerRange = markerText ? findNormalizedPhraseRange(segment.text, markerText) : null;
-  const index = markerRange ? segment.start + markerRange.index : segment.start;
-  const end = markerRange ? segment.start + markerRange.end : index;
+  const frozenMarkerBounds = normalizeFrozenMarkerBounds(row, rowIndex, segment);
+  const index = frozenMarkerBounds.markerStart ?? segment.start;
+  const end = frozenMarkerBounds.markerEnd ?? index;
   const baseObstacle = {
     id: row?.id || `real-obstacle-${rowIndex + 1}`,
     type,
     kind,
     index,
     end,
-    markerStart: markerRange ? index : null,
-    markerEnd: markerRange ? end : null,
+    markerStart: frozenMarkerBounds.markerStart,
+    markerEnd: frozenMarkerBounds.markerEnd,
     source: row?.source_en || row?.text || label,
     sourceZh: row?.source_zh,
     priority: row?.priority,
