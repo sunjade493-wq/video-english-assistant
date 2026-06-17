@@ -930,33 +930,38 @@ button {
   position: absolute;
   z-index: 2;
   top: 50%;
-  display: grid;
-  width: 18px;
-  height: 18px;
-  place-items: center;
-  border: 2px solid #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border: 1.5px solid #4f7cff;
   border-radius: 999px;
   cursor: pointer;
-  color: #fff;
-  background: var(--primary);
-  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.22);
+  color: #3b5fe2;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.12);
   font-size: 11px;
-  font-weight: 900;
+  font-weight: 600;
   line-height: 1;
   transform: translate(-50%, -50%);
 }
 
 .heat-cluster-button:hover,
 .heat-cluster-button:focus-visible {
-  background: var(--primary-dark);
+  border-color: #2563eb;
+  color: #1d4ed8;
+  background: #eef4ff;
   outline: none;
 }
 
 .heat-cluster-button.is-selected {
-  border-color: #dbeafe;
-  color: var(--primary-dark);
-  background: #fff;
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.14), 0 8px 16px rgba(37, 99, 235, 0.2);
+  border-color: #2563eb;
+  color: #1d4ed8;
+  background: #eaf2ff;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
 
