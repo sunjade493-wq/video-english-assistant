@@ -1815,7 +1815,7 @@ function createObstacleGroup(type, groupObstacles) {
 
   const label = document.createElement('h3');
   label.className = 'type-label obstacle-group__label';
-  label.textContent = type === 'vocab' ? '生词' : '理解';
+  label.textContent = type === 'vocab' ? '生词障碍' : '理解障碍';
 
   const list = document.createElement('div');
   list.className = 'obstacle-group__items';
