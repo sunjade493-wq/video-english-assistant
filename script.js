@@ -337,7 +337,6 @@ let playbackRate = 1;
 
 const SEGMENT_DURATION_MS = 3600;
 const LEARNING_PAUSE_HINT_STORAGE_KEY = 'videoEnglishAssistant.learningPauseHintDismissed';
-const HEAT_AXIS_CLUSTER_THRESHOLD_PX = 56;
 const cardStream = document.querySelector('#cardStream');
 const conqueredObstacleCount = document.querySelector('#conqueredObstacleCount');
 const remainingObstacleCount = document.querySelector('#remainingObstacleCount');
@@ -1077,7 +1076,7 @@ function renderVideoState() {
   playIcon.textContent = isVideoPlaying ? 'Ⅱ' : '▷';
 
   if (timelinePlayButton) {
-    timelinePlayButton.textContent = '▷（播放）';
+    timelinePlayButton.textContent = isVideoPlaying ? 'Ⅱ（暂停）' : '▷（播放）';
     timelinePlayButton.setAttribute('aria-label', isVideoPlaying ? '暂停视频' : '播放视频');
   }
 
@@ -1221,33 +1220,17 @@ function getClusterObstacleCount(cluster) {
   return cluster.items.reduce((count, item) => count + getNavigationItemObstacleCount(item), 0);
 }
 
+function createSingleItemHeatCluster(item) {
+  return {
+    items: [item],
+    centerPercent: item.percent,
+    minPercent: item.percent,
+    maxPercent: item.percent,
+  };
+}
+
 function clusterObstacleItems(items) {
-  const axisWidth = getAxisWidth();
-  const clusters = [];
-
-  items.forEach((item) => {
-    const pixel = (item.percent / 100) * axisWidth;
-    const lastCluster = clusters[clusters.length - 1];
-
-    if (lastCluster && pixel - lastCluster.lastPixel <= HEAT_AXIS_CLUSTER_THRESHOLD_PX) {
-      lastCluster.items.push(item);
-      lastCluster.lastPixel = pixel;
-      lastCluster.centerPercent = lastCluster.items.reduce((sum, clusterItem) => sum + clusterItem.percent, 0) / lastCluster.items.length;
-      lastCluster.minPercent = Math.min(lastCluster.minPercent, item.percent);
-      lastCluster.maxPercent = Math.max(lastCluster.maxPercent, item.percent);
-      return;
-    }
-
-    clusters.push({
-      items: [item],
-      centerPercent: item.percent,
-      minPercent: item.percent,
-      maxPercent: item.percent,
-      lastPixel: pixel,
-    });
-  });
-
-  return clusters;
+  return items.map((item) => createSingleItemHeatCluster(item));
 }
 
 function getHeatClusterKey(cluster) {
