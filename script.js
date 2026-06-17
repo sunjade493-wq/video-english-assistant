@@ -1077,7 +1077,7 @@ function renderVideoState() {
   playIcon.textContent = isVideoPlaying ? 'Ⅱ' : '▷';
 
   if (timelinePlayButton) {
-    timelinePlayButton.textContent = '▷（播放）';
+    timelinePlayButton.textContent = isVideoPlaying ? 'Ⅱ（暂停）' : '▷（播放）';
     timelinePlayButton.setAttribute('aria-label', isVideoPlaying ? '暂停视频' : '播放视频');
   }
 
