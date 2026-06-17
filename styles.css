@@ -140,6 +140,7 @@ button {
 }
 
 .player-footer__row {
+  --footer-label-width: 66px;
   display: flex;
   align-items: center;
   gap: 9px;
@@ -366,6 +367,38 @@ button {
 
 .card-content {
   margin-top: 7px;
+}
+
+.obstacle-group__inner {
+  padding: 10px 12px 8px;
+}
+
+.obstacle-group__label {
+  margin: 0;
+}
+
+.obstacle-group__items {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 9px;
+}
+
+.obstacle-item {
+  padding: 0 0 9px;
+}
+
+.obstacle-item + .obstacle-item {
+  padding-top: 9px;
+  border-top: 1px solid rgba(148, 163, 184, 0.22);
+}
+
+.obstacle-item:last-child {
+  padding-bottom: 0;
+}
+
+.obstacle-item__content {
+  margin-top: 0;
 }
 
 .vocab-headline {
@@ -771,8 +804,8 @@ button {
 
 .timeline-play-button {
   display: inline-flex;
-  flex: 0 0 auto;
-  min-width: 58px;
+  flex: 0 0 var(--footer-label-width);
+  width: var(--footer-label-width);
   align-items: center;
   border: 0;
   cursor: pointer;
@@ -781,7 +814,7 @@ button {
   box-shadow: none;
   font-size: 0.78rem;
   font-weight: 500;
-  line-height: 1;
+  line-height: 1.25;
   white-space: nowrap;
 }
 
@@ -837,12 +870,14 @@ button {
 }
 
 .heat-axis-label {
-  flex: 0 0 auto;
-  min-width: 58px;
+  display: inline-flex;
+  flex: 0 0 var(--footer-label-width);
+  width: var(--footer-label-width);
+  align-items: center;
   color: var(--muted);
   font-size: 0.78rem;
   font-weight: 500;
-  line-height: 1;
+  line-height: 1.25;
   white-space: nowrap;
 }
 
