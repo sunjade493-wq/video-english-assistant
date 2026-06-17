@@ -11,7 +11,7 @@
     <section class="video-panel" aria-label="视频学习区">
       <div class="video-frame">
         <div class="video-placeholder">
-          <span class="play-icon" aria-hidden="true" id="playIcon">▶</span>
+          <span class="play-icon" aria-hidden="true" id="playIcon">▷</span>
           <div>
             <h1>Video English Assistant</h1>
             <p id="videoStatusText">V2.3A Current Subtitle Learning Tips · Playing</p>
@@ -37,23 +37,17 @@
             <button class="episode-select-button" type="button" aria-haspopup="listbox" aria-expanded="false">Episodes <span aria-hidden="true">▼</span></button>
           </div>
           <div class="playback-speed-card" aria-labelledby="playbackSpeedTitle">
-            <p class="eyebrow sr-only" id="playbackSpeedTitle">Playback Speed</p>
-            <div class="playback-speed-options" role="group" aria-label="选择播放速度">
-              <button class="playback-speed-button" type="button" data-playback-rate="0.75" aria-pressed="false">0.75x</button>
-              <button class="playback-speed-button is-selected" type="button" data-playback-rate="1" aria-pressed="true">Speed 1x</button>
-              <button class="playback-speed-button" type="button" data-playback-rate="1.25" aria-pressed="false">1.25x</button>
-              <button class="playback-speed-button" type="button" data-playback-rate="1.5" aria-pressed="false">1.5x</button>
-              <button class="playback-speed-button" type="button" data-playback-rate="2" aria-pressed="false">2x</button>
-            </div>
+            <span class="eyebrow sr-only" id="playbackSpeedTitle">Playback Speed</span>
+            <button class="speed-select-button" type="button" aria-haspopup="listbox" aria-expanded="false">Speed <span aria-hidden="true">▼</span></button>
           </div>
         </div>
         <div class="player-footer__row player-footer__row--timeline">
-          <button class="timeline-play-button" id="timelinePlayButton" type="button" aria-label="暂停视频">||</button>
+          <button class="timeline-play-button" id="timelinePlayButton" type="button" aria-label="暂停视频">▷</button>
           <input class="video-timeline" id="videoTimeline" type="range" min="0" max="100" value="0" step="0.1" aria-label="视频时间轴">
         </div>
         <div class="player-footer__row player-footer__row--heat">
           <span class="heat-axis-label">○ 障碍</span>
-          <div class="obstacle-heat-axis" id="obstacleHeatAxis" aria-label="障碍热力轴"></div>
+          <div class="obstacle-heat-axis" id="obstacleHeatAxis" aria-label="障碍"></div>
         </div>
       </section>
 

@@ -98,14 +98,13 @@ button {
 }
 
 .play-icon {
-  display: grid;
-  width: 64px;
-  height: 64px;
-  place-items: center;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.16);
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 2.1rem;
+  font-weight: 400;
+  line-height: 1;
 }
 
 .video-placeholder h1,
@@ -186,13 +185,14 @@ button {
   overflow: hidden;
   color: var(--muted);
   font-size: 0.88rem;
-  font-weight: 700;
+  font-weight: 500;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 
-.episode-select-button {
+.episode-select-button,
+.speed-select-button {
   height: 28px;
   padding: 0 10px;
   border: 0;
@@ -200,12 +200,14 @@ button {
   color: var(--text);
   background: rgba(15, 23, 42, 0.06);
   cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 850;
+  font-size: 0.84rem;
+  font-weight: 500;
 }
 
 .episode-select-button:hover,
-.episode-select-button:focus-visible {
+.episode-select-button:focus-visible,
+.speed-select-button:hover,
+.speed-select-button:focus-visible {
   border-color: rgba(37, 99, 235, 0.42);
   color: var(--primary-dark);
   outline: none;
@@ -224,44 +226,12 @@ button {
   line-height: 1;
 }
 
-.playback-speed-options {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 3px;
-}
-
-.playback-speed-button {
-  min-width: 34px;
-  height: 28px;
-  padding: 0 7px;
-  border: 1px solid rgba(15, 23, 42, 0.12);
-  border-radius: 999px;
-  color: #475569;
-  background: rgba(15, 23, 42, 0.05);
-  cursor: pointer;
-  font-size: 0.82rem;
-  font-weight: 800;
-  transition: transform 160ms ease, border-color 160ms ease, color 160ms ease, background 160ms ease, box-shadow 160ms ease;
-}
-
-.playback-speed-button:hover {
-  transform: translateY(-1px);
-  border-color: rgba(37, 99, 235, 0.42);
-  color: var(--primary);
-}
-
-.playback-speed-button.is-selected {
-  border-color: #111827;
-  color: #fff;
-  background: #111827;
-  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.18);
-}
 
 .eyebrow {
   color: var(--primary);
   font-size: 0.74rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
+  font-weight: 500;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
@@ -300,7 +270,7 @@ button {
   border: 0;
   border-radius: 999px;
   cursor: pointer;
-  font-weight: 750;
+  font-weight: 500;
   transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
 }
 
@@ -313,7 +283,7 @@ button {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 7px 10px 6px;
+  padding: 12px 10px 6px;
   border-bottom: 0;
   background: rgba(247, 249, 252, 0.82);
 }
@@ -321,8 +291,9 @@ button {
 .episode-progress-summary h3 {
   flex: 0 0 auto;
   margin: 0;
-  font-size: 0.96rem;
-  letter-spacing: -0.02em;
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
   line-height: 1;
 }
 
@@ -332,7 +303,8 @@ button {
   gap: 3px;
   margin: 0;
   color: var(--muted);
-  font-weight: 760;
+  font-size: 0.88rem;
+  font-weight: 500;
   line-height: 1;
 }
 
@@ -351,7 +323,8 @@ button {
   color: var(--muted);
   background: transparent;
   box-shadow: none;
-  font-size: 0.86rem;
+  font-size: 0.88rem;
+  font-weight: 500;
   line-height: 1;
   text-align: left;
 }
@@ -387,8 +360,8 @@ button {
   border-radius: 999px;
   background: #e0ecff;
   color: #1d4ed8;
-  font-size: 0.78rem;
-  font-weight: 850;
+  font-size: 0.72rem;
+  font-weight: 500;
 }
 
 .card-content {
@@ -417,16 +390,16 @@ button {
 
 .vocab-word {
   color: #1f2937;
-  font-size: 1.18rem;
-  font-weight: 850;
+  font-size: 1.08rem;
+  font-weight: 600;
   line-height: 1.22;
 }
 
 .vocab-phonetic,
 .vocab-part-of-speech {
   color: var(--muted);
-  font-size: 0.92rem;
-  font-weight: 700;
+  font-size: 0.84rem;
+  font-weight: 400;
 }
 
 .vocab-second-line {
@@ -437,7 +410,7 @@ button {
   margin-top: 8px;
   color: #2b3542;
   font-size: 0.96rem;
-  font-weight: 760;
+  font-weight: 400;
 }
 
 .vocab-audio-icon {
@@ -451,12 +424,13 @@ button {
   background: transparent;
   border: 0;
   color: #2b3542;
-  line-height: 1.36;
+  font-size: 0.84rem;
+  font-weight: 400;
+  line-height: 1.5;
 }
 
 .word-summary,
-.understanding-summary,
-.understanding-prototype {
+.understanding-summary {
   margin: 0;
   white-space: pre-line;
   padding: 0;
@@ -464,9 +438,22 @@ button {
   background: transparent;
   border: 0;
   color: #2b3542;
-  font-size: 1.02rem;
-  font-weight: 760;
-  line-height: 1.35;
+  font-size: 0.84rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.understanding-prototype {
+  margin: 0;
+  white-space: pre-line;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  border: 0;
+  color: #1f2937;
+  font-size: 1.08rem;
+  font-weight: 600;
+  line-height: 1.22;
 }
 
 .detail-block {
@@ -483,34 +470,38 @@ button {
 .detail-title {
   flex: 0 0 auto;
   color: var(--muted);
-  font-size: 0.82rem;
-  font-weight: 850;
+  font-size: 0.84rem;
+  font-weight: 400;
 }
 
 .detail-text {
   flex: 1;
   margin: 0;
   color: #2b3542;
-  line-height: 1.36;
+  font-size: 0.84rem;
+  font-weight: 400;
+  line-height: 1.5;
 }
 
 .card-actions {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  justify-content: flex-end;
   gap: 6px;
-  margin-top: 10px;
+  margin-top: 9px;
 }
 
 .dismiss-button,
 .undo-button {
-  width: 100%;
-  padding: 8px 10px;
+  padding: 6px 10px;
+  font-size: 0.88rem;
+  font-weight: 500;
 }
 
 .dismiss-button {
+  width: auto;
   color: #fff;
   background: var(--success);
-  box-shadow: 0 10px 22px rgba(22, 163, 74, 0.2);
+  box-shadow: 0 8px 18px rgba(22, 163, 74, 0.16);
 }
 
 .dismiss-button:hover {
@@ -781,16 +772,17 @@ button {
 .timeline-play-button {
   display: grid;
   flex: 0 0 auto;
-  width: 28px;
-  height: 28px;
+  width: 20px;
+  min-width: 20px;
   place-items: center;
   border: 0;
-  border-radius: 999px;
   cursor: pointer;
-  color: #fff;
-  background: var(--primary);
-  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.2);
-  font-weight: 900;
+  color: var(--primary-dark);
+  background: transparent;
+  box-shadow: none;
+  font-size: 1.05rem;
+  font-weight: 400;
+  line-height: 1;
 }
 
 .video-timeline {
@@ -806,14 +798,14 @@ button {
   color: var(--muted);
   font-size: 0.82rem;
   font-variant-numeric: tabular-nums;
-  font-weight: 760;
+  font-weight: 500;
 }
 
 .heat-axis-label {
   flex: 0 0 auto;
   color: var(--muted);
   font-size: 0.78rem;
-  font-weight: 750;
+  font-weight: 500;
 }
 
 .obstacle-heat-axis {
@@ -1010,10 +1002,6 @@ button {
 
   .player-footer__row--timeline {
     gap: 8px;
-  }
-
-  .playback-speed-options {
-    overflow-x: auto;
   }
 
   .bottom-sheet {

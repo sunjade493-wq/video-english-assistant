@@ -1024,10 +1024,10 @@ function getLearningStateLabel() {
 }
 
 function renderVideoState() {
-  playIcon.textContent = isVideoPlaying ? '⏸' : '▶';
+  playIcon.textContent = isVideoPlaying ? 'Ⅱ' : '▷';
 
   if (timelinePlayButton) {
-    timelinePlayButton.textContent = isVideoPlaying ? '||' : '▶';
+    timelinePlayButton.textContent = isVideoPlaying ? 'Ⅱ' : '▷';
     timelinePlayButton.setAttribute('aria-label', isVideoPlaying ? '暂停视频' : '播放视频');
   }
 
