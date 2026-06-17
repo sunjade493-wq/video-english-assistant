@@ -283,7 +283,7 @@ button {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 10px 6px;
+  padding: 20px 10px 6px;
   border-bottom: 0;
   background: rgba(247, 249, 252, 0.82);
 }
@@ -770,26 +770,61 @@ button {
 }
 
 .timeline-play-button {
-  display: grid;
+  display: inline-flex;
   flex: 0 0 auto;
-  width: 20px;
-  min-width: 20px;
-  place-items: center;
+  min-width: 58px;
+  align-items: center;
   border: 0;
   cursor: pointer;
-  color: var(--primary-dark);
+  color: var(--muted);
   background: transparent;
   box-shadow: none;
-  font-size: 1.05rem;
-  font-weight: 400;
+  font-size: 0.78rem;
+  font-weight: 500;
   line-height: 1;
+  white-space: nowrap;
 }
 
 .video-timeline {
   flex: 1 1 auto;
   min-width: 0;
-  accent-color: var(--primary);
+  height: 16px;
+  appearance: none;
+  -webkit-appearance: none;
   cursor: pointer;
+  background: transparent;
+}
+
+.video-timeline::-webkit-slider-runnable-track {
+  height: 1px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0.18), rgba(37, 99, 235, 0.46), rgba(37, 99, 235, 0.18));
+}
+
+.video-timeline::-moz-range-track {
+  height: 1px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0.18), rgba(37, 99, 235, 0.46), rgba(37, 99, 235, 0.18));
+}
+
+.video-timeline::-webkit-slider-thumb {
+  width: 10px;
+  height: 10px;
+  margin-top: -4.5px;
+  border: 0;
+  border-radius: 50%;
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--primary);
+}
+
+.video-timeline::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--primary);
 }
 
 .timeline-time {
@@ -803,9 +838,12 @@ button {
 
 .heat-axis-label {
   flex: 0 0 auto;
+  min-width: 58px;
   color: var(--muted);
   font-size: 0.78rem;
   font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .obstacle-heat-axis {
