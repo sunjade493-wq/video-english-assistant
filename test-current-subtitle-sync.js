@@ -12,6 +12,7 @@ class TestElement {
     this.value = '';
     this.style = {};
     this.type = '';
+    this.dataset = {};
     this.eventHistory = [];
     this.classList = {
       add: (...classNames) => {
@@ -99,6 +100,7 @@ const context = {
   Date,
   document: {
     querySelector: getElement,
+    querySelectorAll: () => [],
     createElement: (tag) => new TestElement(tag),
   },
   window: {
@@ -461,9 +463,9 @@ const renderedHeatClusters = api.renderTimelines();
 if (renderedHeatClusters[0].items.length !== 1 || renderedHeatClusters[0].items[0].obstacles.length !== 2) {
   throw new Error('Test V2.4 Phase 2 heat cluster: expected first cluster to contain one subtitle group with two obstacles');
 }
-const firstHeatButton = getElement('#obstacleHeatAxis').children.find((child) => child.className.includes('heat-cluster-button') && child.textContent === '2');
+const firstHeatButton = getElement('#obstacleHeatAxis').children.find((child) => child.className.includes('heat-cluster-button') && child.textContent === '[2]');
 if (!firstHeatButton) {
-  throw new Error('Test V2.4 Phase 2 heat cluster count: expected first heat button to show total obstacle count 2');
+  throw new Error('Test V2.4 Phase 2 heat cluster count: expected first heat button to show bracketed total obstacle count [2]');
 }
 api.openBottomSheet(renderedHeatClusters[0]);
 if (getElement('#bottomSheetTitle').textContent !== '当前区域障碍（2）') {

@@ -934,18 +934,19 @@ button {
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  min-width: 20px;
+  min-width: 28px;
   height: 20px;
-  padding: 0 6px;
-  border: 1.5px solid #4f7cff;
+  padding: 0 7px;
+  border: 1px solid rgba(79, 124, 255, 0.62);
   border-radius: 999px;
   cursor: pointer;
   color: #3b5fe2;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.12);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.08);
   font-size: 11px;
   font-weight: 600;
   line-height: 1;
+  letter-spacing: 0.01em;
   transform: translate(-50%, -50%);
 }
 
@@ -960,8 +961,8 @@ button {
 .heat-cluster-button.is-selected {
   border-color: #2563eb;
   color: #1d4ed8;
-  background: #eaf2ff;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  background: #eef4ff;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
 }
 
 

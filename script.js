@@ -1294,7 +1294,7 @@ function createHeatClusterButton(cluster) {
 
   const displayCount = obstacleCount >= 100 ? '99+' : String(obstacleCount);
 
-  button.textContent = displayCount;
+  button.textContent = `[${displayCount}]`;
   button.style.left = `${cluster.centerPercent}%`;
   button.setAttribute('aria-label', `打开当前区域障碍（${obstacleCount}）`);
 
