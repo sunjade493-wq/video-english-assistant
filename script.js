@@ -1294,9 +1294,9 @@ function createHeatClusterButton(cluster) {
 
   const displayCount = obstacleCount >= 100 ? '99+' : String(obstacleCount);
 
-  button.textContent = displayCount;
+  button.textContent = `[${displayCount}]`;
   button.style.left = `${cluster.centerPercent}%`;
-  button.setAttribute('aria-label', `打开当前区域障碍（${obstacleCount}）`);
+  button.setAttribute('aria-label', `${obstacleCount} obstacles`);
 
   if (clusterKey === activeHeatClusterKey) {
     button.classList.add('is-selected');
@@ -1327,13 +1327,7 @@ function renderTimelines() {
   }
 
   const clusters = clusterObstacleItems(getObstacleNavigationItems());
-  const activeCluster = clusters.find((cluster) => getHeatClusterKey(cluster) === activeHeatClusterKey);
-
   obstacleHeatAxis.innerHTML = '';
-
-  if (activeCluster) {
-    obstacleHeatAxis.append(createHeatClusterHighlight(activeCluster));
-  }
 
   clusters.forEach((cluster) => obstacleHeatAxis.append(createHeatClusterButton(cluster)));
   return clusters;
