@@ -428,3 +428,17 @@ Treat repository files as the canonical project state.
 Do not infer project history from chat memory.
 
 Do not re-discuss frozen decisions unless the user explicitly asks to revise them.
+
+## 16. V2.4A MVP UI Baseline Freeze
+
+Status: FROZEN
+
+Date: 2026-06-18
+
+Source: `docs/CURRENT_UI_FREEZE_V2_4A.md`
+
+V2.4A MVP UI baseline is frozen as the currently accepted player-page state. The freeze records layout, subtitle marker behavior, right obstacle panel, playback controls, heat timeline clustering, bracket-text heat markers, and Bottom Sheet interactions.
+
+This is a documentation-only baseline record. It must not be treated as permission to change UI logic, styling, or obstacle data structures.
+
+Future work should avoid reworking these accepted modules unless an explicit unfreeze decision is made. Recommended next P0 work: real episode video, subtitle downward adjustment, episode selector, speed controls, and removal of demo-only workflow.
