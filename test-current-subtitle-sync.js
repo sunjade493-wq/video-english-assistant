@@ -461,7 +461,7 @@ const renderedHeatClusters = api.renderTimelines();
 if (renderedHeatClusters[0].items.length !== 1 || renderedHeatClusters[0].items[0].obstacles.length !== 2) {
   throw new Error('Test V2.4 Phase 2 heat cluster: expected first cluster to contain one subtitle group with two obstacles');
 }
-const firstHeatButton = getElement('#obstacleHeatAxis').children.find((child) => child.className.includes('heat-cluster-button') && child.textContent === '2');
+const firstHeatButton = getElement('#obstacleHeatAxis').children.find((child) => child.className.includes('heat-cluster-button') && child.textContent === '[2]');
 if (!firstHeatButton) {
   throw new Error('Test V2.4 Phase 2 heat cluster count: expected first heat button to show total obstacle count 2');
 }
@@ -475,10 +475,10 @@ if (firstClusterGroups.length !== 1 || firstClusterGroups[0].children[2].childre
 }
 const selectedHeatButton = getElement('#obstacleHeatAxis').children.find((child) => child.className.includes('heat-cluster-button is-selected'));
 const selectedHighlight = getElement('#obstacleHeatAxis').children.find((child) => child.className === 'heat-cluster-highlight');
-if (!selectedHeatButton || !selectedHighlight) {
-  throw new Error('Test V2.4A heat cluster highlight: expected selected cluster button and highlighted region');
+if (!selectedHeatButton || selectedHighlight) {
+  throw new Error('Test V2.4A heat cluster text selection: expected selected cluster button without highlighted region');
 }
-console.log('PASS Test V2.4A selected heat cluster is highlighted');
+console.log('PASS Test V2.4A selected heat cluster stays text-only');
 
 api.openBottomSheet(renderedHeatClusters[0]);
 const wasPlayingBeforeLectureJump = api.getPlaybackState().isVideoPlaying;
