@@ -159,6 +159,7 @@ button {
   min-height: 20px;
 }
 
+.level-card,
 .episode-card,
 .playback-speed-card {
   display: flex;
@@ -167,9 +168,14 @@ button {
   gap: 6px;
 }
 
-.episode-card {
+.level-card {
+  position: relative;
   flex: 0 0 auto;
   margin-left: auto;
+}
+
+.episode-card {
+  flex: 0 0 auto;
 }
 
 .playback-speed-card {
@@ -191,6 +197,7 @@ button {
 }
 
 
+.level-select,
 .episode-select-button,
 .speed-select-button {
   height: 28px;
@@ -204,6 +211,26 @@ button {
   font-weight: 500;
 }
 
+.level-select {
+  min-width: 82px;
+  appearance: none;
+  padding-right: 26px;
+}
+
+.level-card::after {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  color: var(--text);
+  content: "▼";
+  font-size: 0.62rem;
+  line-height: 1;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.level-select:hover,
+.level-select:focus-visible,
 .episode-select-button:hover,
 .episode-select-button:focus-visible,
 .speed-select-button:hover,
