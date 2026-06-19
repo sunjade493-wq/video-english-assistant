@@ -13,6 +13,7 @@ class TestElement {
     this.style = {};
     this.type = '';
     this.eventHistory = [];
+    this.dataset = {};
     this.classList = {
       add: (...classNames) => {
         const existingClassNames = new Set(this.className.split(/\s+/).filter(Boolean));
@@ -27,6 +28,15 @@ class TestElement {
           .join(' ');
       },
       contains: (className) => this.className.split(/\s+/).includes(className),
+      toggle: (className, force) => {
+        const shouldAdd = force === undefined ? !this.classList.contains(className) : Boolean(force);
+        if (shouldAdd) {
+          this.classList.add(className);
+        } else {
+          this.classList.remove(className);
+        }
+        return shouldAdd;
+      },
     };
     this.currentTextContent = '';
   }
@@ -99,6 +109,7 @@ const context = {
   Date,
   document: {
     querySelector: getElement,
+    querySelectorAll: () => [],
     createElement: (tag) => new TestElement(tag),
   },
   window: {
@@ -134,8 +145,8 @@ function assertAnalyzeEngineV26A() {
   const lectureObstacles = juniorObstacles.filter((obstacle) => obstacle.type === 'vocab' && obstacle.baseForm === 'lecture');
   const comprehensionObstacles = juniorObstacles.filter((obstacle) => obstacle.type === 'comprehension');
 
-  if (lectureObstacles.length !== 2) {
-    throw new Error(`V2.6A Analyze Engine: expected duplicate lecture vocab obstacles to remain, got ${lectureObstacles.length}`);
+  if (lectureObstacles.length !== 1) {
+    throw new Error(`V2.6G Analyze Engine: expected episode-level lecture vocab deduplication, got ${lectureObstacles.length}`);
   }
 
   if (seniorObstacles.some((obstacle) => obstacle.type === 'vocab' && obstacle.baseForm === 'lecture')) {
@@ -156,7 +167,7 @@ function assertAnalyzeEngineV26A() {
     }
   });
 
-  console.log('PASS V2.6A Analyze Engine outputs vocab/comprehension obstacles, prototype structures, same-sentence multiples, and vocab level');
+  console.log('PASS V2.6G Analyze Engine deduplicates episode learning items while preserving vocab/comprehension output and vocab level');
 }
 
 assertAnalyzeEngineV26A();
@@ -227,8 +238,8 @@ function findCardsByLabel(labelText) {
 }
 
 function assertStrictCardRendering() {
-  const vocabCards = findCardsByLabel('[vocab]');
-  const comprehensionCards = findCardsByLabel('[comprehension]');
+  const vocabCards = findCardsByLabel('生词障碍');
+  const comprehensionCards = findCardsByLabel('理解障碍');
 
   if (vocabCards.length < 1) {
     throw new Error('V29D-3 strict vocab card rendering: expected [vocab] label to remain visible');
@@ -243,8 +254,8 @@ function assertStrictCardRendering() {
   const understandingPrototype = findDescendantsByClass(comprehensionCards[0], 'understanding-prototype')[0];
   const detailBlocks = findDescendantsByClass(comprehensionCards[0], 'detail-block');
 
-  if (!vocabHeadline || vocabHeadline.tag !== 'p') {
-    throw new Error('V29D-3 strict vocab card rendering: expected p.vocab-headline');
+  if (!vocabHeadline || vocabHeadline.tag !== 'div') {
+    throw new Error('V29D-3 strict vocab card rendering: expected div.vocab-headline');
   }
 
   if (!vocabSentenceMeaning || vocabSentenceMeaning.tag !== 'p') {
@@ -276,6 +287,8 @@ function assertFullPartOfSpeechRendering() {
       word: 'believe',
       phonetic: '/bɪˈliːv/',
       translation: '相信',
+      partOfSpeech: 'vt./vi.',
+      sentenceMeaning: '相信',
     },
     {
       id: 'v29d-4-lecture',
@@ -283,7 +296,8 @@ function assertFullPartOfSpeechRendering() {
       word: 'lecture',
       phonetic: '/ˈlektʃər/',
       translation: '讲座',
-      pos: 'n./v.',
+      partOfSpeech: 'n./vi./vt.',
+      sentenceMeaning: '讲座',
     },
     {
       id: 'v29d-4-alone',
@@ -291,23 +305,24 @@ function assertFullPartOfSpeechRendering() {
       word: 'alone',
       phonetic: '/əˈloʊn/',
       translation: '独自',
-      wordClass: 'adj./adv.',
+      partOfSpeech: 'adj./adv.',
+      sentenceMeaning: '独自',
     },
   ];
   const headlines = rows.map((row, rowIndex) => (
     context.createWordHeadline(context.normalizeObstacle(row, rowIndex)).textContent
   ));
   const expectedHeadlines = [
-    'believe /bɪˈliːv/ vt./vi.',
-    'lecture /ˈlektʃər/ n./vi./vt.',
-    'alone /əˈloʊn/ adj./adv.',
+    'believe/bɪˈliːv/vt./vi.🔊',
+    'lecture/ˈlektʃər/n./vi./vt.🔊',
+    'alone/əˈloʊn/adj./adv.🔊',
   ];
 
   if (JSON.stringify(headlines) !== JSON.stringify(expectedHeadlines)) {
     throw new Error(`V29D-4 full POS rendering: expected ${JSON.stringify(expectedHeadlines)}, got ${JSON.stringify(headlines)}`);
   }
 
-  if (headlines.includes('believe /bɪˈliːv/')) {
+  if (headlines.includes('believe/bɪˈliːv/🔊')) {
     throw new Error('V29D-4 full POS rendering: believe headline must not render without part of speech');
   }
 
@@ -552,14 +567,14 @@ function assertEpisodeUndoLightweightStyle(name) {
     }
   });
 
-  console.log(`PASS ${name}: ↶ 返回上一个障碍 uses lightweight link styling`);
+  console.log(`PASS ${name}: ↩ 返回上一个障碍 uses lightweight link styling`);
 }
 
 function assertEpisodeUndoPlacement(name, expectedEnabled) {
   const episodeUndoButton = getElement('#episodeUndoButton');
   const cardStreamText = getElement('#cardStream').textContent;
 
-  if (episodeUndoButton.textContent !== '↶ 返回上一个障碍') {
+  if (episodeUndoButton.textContent !== '↩ 返回上一个障碍') {
     throw new Error(`${name}: expected undo button in episode progress summary, got ${JSON.stringify(episodeUndoButton.textContent)}`);
   }
 
@@ -569,11 +584,11 @@ function assertEpisodeUndoPlacement(name, expectedEnabled) {
     throw new Error(`${name}: expected episode undo disabled=${expectedDisabled}, got disabled=${episodeUndoButton.disabled}`);
   }
 
-  if (cardStreamText.includes('↶ 返回上一个障碍')) {
+  if (cardStreamText.includes('↩ 返回上一个障碍')) {
     throw new Error(`${name}: expected Learning Tips cards to exclude undo action, got ${JSON.stringify(cardStreamText)}`);
   }
 
-  console.log(`PASS ${name}: ↶ 返回上一个障碍 is in 本集障碍 and enabled=${expectedEnabled}`);
+  console.log(`PASS ${name}: ↩ 返回上一个障碍 is in 本集障碍 and enabled=${expectedEnabled}`);
 }
 
 function assertEpisodeProgress(name, expectedConquered, expectedRemaining) {

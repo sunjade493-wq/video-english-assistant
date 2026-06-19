@@ -300,8 +300,31 @@ function isIndexWithinRanges(index, ranges) {
   return ranges.some((range) => index >= range.start && index < range.end);
 }
 
+function getObstacleDedupeKey(obstacle) {
+  if (obstacle.type === 'vocab' || obstacle.kind === 'word') {
+    return `vocab:${normalizeWord(obstacle.baseForm || obstacle.lemma || obstacle.word || obstacle.surfaceText || obstacle.text)}`;
+  }
+
+  if (obstacle.type === 'comprehension' || obstacle.kind === 'understanding') {
+    return `comprehension:${normalizeText(obstacle.prototype || obstacle.baseForm || obstacle.phrase || obstacle.text || obstacle.surfaceText)}`;
+  }
+
+  return '';
+}
+
 function dedupeObstaclesById(obstaclesToDedupe) {
-  return obstaclesToDedupe;
+  const seenKeys = new Set();
+
+  return obstaclesToDedupe.filter((obstacle) => {
+    const dedupeKey = getObstacleDedupeKey(obstacle);
+
+    if (!dedupeKey || seenKeys.has(dedupeKey)) {
+      return false;
+    }
+
+    seenKeys.add(dedupeKey);
+    return true;
+  });
 }
 
 function analyzeSubtitleText(text, options = {}) {
@@ -686,7 +709,7 @@ function normalizeObstacles(rows) {
 
 function normalizeRealObstacleRows(payload) {
   const rows = Array.isArray(payload) ? payload : payload?.obstacles || [];
-  return normalizeObstacles(rows);
+  return dedupeObstaclesById(normalizeObstacles(rows));
 }
 
 async function fetchJson(url) {

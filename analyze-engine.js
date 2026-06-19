@@ -310,15 +310,43 @@
     }));
   }
 
+  function getEpisodeDedupeKey(obstacle) {
+    if (obstacle.type === 'vocab') {
+      return `vocab:${normalizeWord(obstacle.baseForm || obstacle.word || obstacle.surfaceText)}`;
+    }
+
+    if (obstacle.type === 'comprehension') {
+      return `comprehension:${normalizeWord(obstacle.prototype || obstacle.baseForm || obstacle.phrase || obstacle.surfaceText)}`;
+    }
+
+    return '';
+  }
+
+  function dedupeEpisodeLearningItems(obstacles) {
+    const seenKeys = new Set();
+
+    return obstacles.filter((obstacle) => {
+      const dedupeKey = getEpisodeDedupeKey(obstacle);
+
+      if (!dedupeKey || seenKeys.has(dedupeKey)) {
+        return false;
+      }
+
+      seenKeys.add(dedupeKey);
+      return true;
+    });
+  }
+
   function analyzeSubtitleItems(subtitleItems, options = {}) {
     const occurrenceCounts = new Map();
     const levelName = options.level || DEFAULT_VOCABULARY_LEVEL;
     const customWords = options.customWords || [];
-
-    return normalizeSubtitleItems(subtitleItems).flatMap((subtitleItem) => [
+    const detectedObstacles = normalizeSubtitleItems(subtitleItems).flatMap((subtitleItem) => [
       ...buildVocabObstacles(subtitleItem, levelName, customWords, occurrenceCounts),
       ...buildComprehensionObstacles(subtitleItem, occurrenceCounts),
     ]).sort((firstObstacle, secondObstacle) => firstObstacle.start - secondObstacle.start);
+
+    return dedupeEpisodeLearningItems(detectedObstacles);
   }
 
   global.AnalyzeEngine = {
@@ -326,5 +354,6 @@
     levels: vocabularyLevels,
     vocabularyMockEntries,
     comprehensionMockEntries,
+    dedupeEpisodeLearningItems,
   };
 }(typeof window !== 'undefined' ? window : globalThis));
