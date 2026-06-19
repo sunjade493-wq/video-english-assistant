@@ -32,6 +32,18 @@
       <section class="player-footer" aria-label="播放器控制区">
         <div class="player-footer__row player-footer__row--meta">
           <span class="timeline-time" id="timelineTimeText">00:00 / 00:14</span>
+          <div class="level-card" aria-labelledby="levelLabel">
+            <label class="level-card__label" id="levelLabel" for="levelSelect">Level</label>
+            <select class="level-select" id="levelSelect" aria-label="Vocabulary level">
+              <option value="junior">Junior High (1500)</option>
+              <option value="senior">Senior High (3500)</option>
+              <option value="cet4">CET-4 (4500)</option>
+              <option value="cet6">CET-6 (6000)</option>
+              <option value="tem4">TEM-4 (8000)</option>
+              <option value="tem8">TEM-8 (12000)</option>
+              <option value="gre">GRE (20000+)</option>
+            </select>
+          </div>
           <div class="episode-card" aria-labelledby="episodeLabel">
             <span class="eyebrow sr-only" id="episodeLabel">Episode</span>
             <button class="episode-select-button" type="button" aria-haspopup="listbox" aria-expanded="false">Episodes <span aria-hidden="true">▼</span></button>

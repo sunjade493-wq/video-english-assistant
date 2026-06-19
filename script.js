@@ -1,6 +1,7 @@
 const DEFAULT_SUBTITLE_TEXT = `Demo subtitle unavailable.`;
 const REAL_SUBTITLE_DATA_URL = 'output_text/v28d_bilingual_subtitles.json';
 const REAL_OBSTACLE_DATA_URL = 'output_text/v29a_obstacles.json';
+const REAL_EPISODE_ID = 'S12E01';
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
 const EPISODE_PROGRESS_STORAGE_PREFIX = 'videoEnglishAssistant.episodeProgress.';
 
@@ -55,16 +56,30 @@ const vocabularyLevels = {
     words: ['context', 'literal', 'phrase', 'subtitle'],
   },
   cet6: {
-    label: 'CET6',
+    label: 'CET-6 (6000)',
     extends: 'cet4',
     words: ['idiom', 'metaphor', 'nonliteral'],
   },
-  custom: {
-    label: '自定义词汇量',
-    extends: 'cet4',
+  tem4: {
+    label: 'TEM-4 (8000)',
+    extends: 'cet6',
+    words: [],
+  },
+  tem8: {
+    label: 'TEM-8 (12000)',
+    extends: 'tem4',
+    words: [],
+  },
+  gre: {
+    label: 'GRE (20000+)',
+    extends: 'tem8',
     words: [],
   },
 };
+
+vocabularyLevels.junior.label = 'Junior High (1500)';
+vocabularyLevels.senior.label = 'Senior High (3500)';
+vocabularyLevels.cet4.label = 'CET-4 (4500)';
 
 const wordDictionary = {
   lecture: {
@@ -334,6 +349,7 @@ let timelineRenderTimer = null;
 let activeHeatClusterKey = null;
 let activeDataSource = 'pending';
 let playbackRate = 1;
+let selectedVocabularyLevel = DEFAULT_VOCABULARY_LEVEL;
 
 const SEGMENT_DURATION_MS = 3600;
 const LEARNING_PAUSE_HINT_STORAGE_KEY = 'videoEnglishAssistant.learningPauseHintDismissed';
@@ -359,7 +375,10 @@ const obstacleBottomSheet = document.querySelector('#obstacleBottomSheet');
 const bottomSheetTitle = document.querySelector('#bottomSheetTitle');
 const bottomSheetContent = document.querySelector('#bottomSheetContent');
 const bottomSheetClose = document.querySelector('#bottomSheetClose');
-const playbackSpeedButtons = document.querySelectorAll('.playback-speed-button');
+const playbackSpeedButtons = typeof document.querySelectorAll === 'function'
+  ? document.querySelectorAll('.playback-speed-button')
+  : [];
+const levelSelect = document.querySelector('#levelSelect');
 
 
 
@@ -511,7 +530,25 @@ function validateComprehensionObstacle(row) {
 }
 
 function validateRuntimeObstacle(row) {
-  const type = normalizeObstacleType(row?.type || row?.kind);
+  const rawType = String(row?.type || row?.kind || '').trim().toLowerCase();
+  const type = normalizeObstacleType(rawType);
+
+  if (!['vocabulary', 'vocab', 'comprehension'].includes(rawType)) {
+    logInvalidRuntimeObstacle(row, type, 'type', 'unsupported obstacle type');
+    return false;
+  }
+
+  const priority = Number(row?.priority);
+
+  if (type === 'vocab' && priority !== 1) {
+    logInvalidRuntimeObstacle(row, type, 'priority', 'vocabulary obstacle priority must be 1');
+    return false;
+  }
+
+  if (type === 'comprehension' && priority !== 2) {
+    logInvalidRuntimeObstacle(row, type, 'priority', 'comprehension obstacle priority must be 2');
+    return false;
+  }
 
   if (type === 'vocab') {
     return validateVocabularyObstacle(row);
@@ -679,14 +716,23 @@ function normalizeObstacle(row, rowIndex = 0) {
 }
 
 function normalizeObstacles(rows) {
-  return rows
-    .filter((row) => validateRuntimeObstacle(row))
-    .map((row, rowIndex) => normalizeObstacle(row, rowIndex));
+  const invalidRowIndex = rows.findIndex((row) => !validateRuntimeObstacle(row));
+
+  if (invalidRowIndex >= 0) {
+    const invalidRow = rows[invalidRowIndex];
+    throw new Error(`Selected obstacle dataset violates the frozen runtime contract at row ${invalidRowIndex + 1}: ${invalidRow?.id || invalidRow?.word || invalidRow?.text || 'unknown obstacle'}`);
+  }
+
+  return rows.map((row, rowIndex) => normalizeObstacle(row, rowIndex));
 }
 
 function normalizeRealObstacleRows(payload) {
   const rows = Array.isArray(payload) ? payload : payload?.obstacles || [];
   return normalizeObstacles(rows);
+}
+
+function getLevelObstacleDataUrl(levelName = selectedVocabularyLevel) {
+  return `output_text/${REAL_EPISODE_ID}/${levelName}/v29a_obstacles.json`;
 }
 
 async function fetchJson(url) {
@@ -702,7 +748,7 @@ async function fetchJson(url) {
 async function loadRealEpisodeData() {
   const [subtitlePayload, obstaclePayload] = await Promise.all([
     fetchJson(REAL_SUBTITLE_DATA_URL),
-    fetchJson(REAL_OBSTACLE_DATA_URL),
+    fetchJson(getLevelObstacleDataUrl()),
   ]);
   const realSubtitleSegments = normalizeRealSubtitleRows(subtitlePayload);
 
@@ -713,7 +759,7 @@ async function loadRealEpisodeData() {
   subtitleSegments = realSubtitleSegments;
   obstacles = normalizeRealObstacleRows(obstaclePayload);
   activeDataSource = 'real';
-  currentEpisodeProgressKey = getEpisodeProgressKey(JSON.stringify({ source: 'real', subtitles: subtitleSegments.map((segment) => segment.text) }));
+  currentEpisodeProgressKey = getEpisodeProgressKey(JSON.stringify({ source: 'real', episode: REAL_EPISODE_ID, level: selectedVocabularyLevel, subtitles: subtitleSegments.map((segment) => segment.text) }));
   applyStoredEpisodeProgress(currentEpisodeProgressKey);
   saveEpisodeProgress();
   currentSegmentIndex = 0;
@@ -724,6 +770,40 @@ async function loadRealEpisodeData() {
   renderCards();
   syncPlaybackClock();
   return true;
+}
+
+async function reloadSelectedLevelObstacles() {
+  const obstaclePayload = await fetchJson(getLevelObstacleDataUrl());
+  obstacles = normalizeRealObstacleRows(obstaclePayload);
+  activeDataSource = 'real';
+  currentEpisodeProgressKey = getEpisodeProgressKey(JSON.stringify({ source: 'real', episode: REAL_EPISODE_ID, level: selectedVocabularyLevel, subtitles: subtitleSegments.map((segment) => segment.text) }));
+  applyStoredEpisodeProgress(currentEpisodeProgressKey);
+  saveEpisodeProgress();
+  selectedObstacleId = null;
+  streamMode = 'dynamic';
+  closeBottomSheet();
+  renderVideoState();
+  renderCards();
+}
+
+async function handleLevelSelection(event) {
+  const nextLevel = event.target.value;
+  const previousLevel = selectedVocabularyLevel;
+
+  if (!vocabularyLevels[nextLevel] || nextLevel === previousLevel) {
+    return;
+  }
+
+  selectedVocabularyLevel = nextLevel;
+
+  try {
+    await reloadSelectedLevelObstacles();
+  } catch (error) {
+    selectedVocabularyLevel = previousLevel;
+    event.target.value = previousLevel;
+    console.error('Selected level obstacle data failed to load.', error);
+    throw error;
+  }
 }
 
 function loadDemoEpisodeData() {
@@ -1778,7 +1858,9 @@ function createUnderstandingPrototype(obstacle) {
 function createObstacleItem(obstacle) {
   const item = document.createElement('article');
   item.className = 'obstacle-item';
-  item.dataset.obstacleId = obstacle.id;
+  if (item.dataset) {
+    item.dataset.obstacleId = obstacle.id;
+  }
 
   const content = document.createElement('div');
   content.className = 'card-content obstacle-item__content';
@@ -1816,7 +1898,9 @@ function createObstacleItem(obstacle) {
 function createObstacleGroup(type, groupObstacles) {
   const group = document.createElement('section');
   group.className = 'obstacle-card obstacle-group';
-  group.dataset.obstacleType = type;
+  if (group.dataset) {
+    group.dataset.obstacleType = type;
+  }
 
   const inner = document.createElement('div');
   inner.className = 'card-inner obstacle-group__inner';
@@ -1932,6 +2016,10 @@ if (bottomSheetClose) {
 if (bottomSheetBackdrop) {
   bottomSheetBackdrop.addEventListener('click', closeBottomSheet);
 }
+if (levelSelect) {
+  levelSelect.value = selectedVocabularyLevel;
+  levelSelect.addEventListener('change', handleLevelSelection);
+}
 playbackSpeedButtons.forEach((button) => {
   button.addEventListener('click', handlePlaybackSpeedSelection);
 });
@@ -1969,6 +2057,8 @@ window.ObstacleDetectionEngine = {
   pauseVideoForObstacle,
   getCurrentSegmentObstacles,
   moveToNextSubtitleSegment,
+  getSelectedVocabularyLevel: () => selectedVocabularyLevel,
+  reloadSelectedLevelObstacles,
   levels: Object.fromEntries(
     Object.entries(vocabularyLevels).map(([name, level]) => [name, level.label]),
   ),
