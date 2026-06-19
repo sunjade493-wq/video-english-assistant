@@ -587,6 +587,32 @@ def generate_comprehension_obstacles(rows: Iterable[SubtitleRow]) -> List[Dict[s
     return obstacles
 
 
+def get_episode_dedupe_key(obstacle: Dict[str, object]) -> str:
+    obstacle_type = str(obstacle.get("type", "")).strip().lower()
+
+    if obstacle_type == "vocabulary":
+        return f"vocabulary:{str(obstacle.get('lemma') or obstacle.get('baseForm') or obstacle.get('word') or obstacle.get('text') or '').strip().lower()}"
+
+    if obstacle_type == "comprehension":
+        return f"comprehension:{compact_for_phrase(str(obstacle.get('text') or ''))}"
+
+    return ""
+
+
+def dedupe_episode_learning_items(obstacles: Iterable[Dict[str, object]]) -> List[Dict[str, object]]:
+    seen_keys = set()
+    deduped: List[Dict[str, object]] = []
+
+    for obstacle in obstacles:
+        dedupe_key = get_episode_dedupe_key(obstacle)
+        if not dedupe_key or dedupe_key in seen_keys:
+            continue
+        seen_keys.add(dedupe_key)
+        deduped.append(obstacle)
+
+    return deduped
+
+
 def sort_obstacles(obstacles: List[Dict[str, object]]) -> List[Dict[str, object]]:
     return sorted(
         obstacles,
@@ -708,7 +734,7 @@ def validate_rule_libraries() -> None:
 def generate_obstacles(rows: Sequence[SubtitleRow]) -> List[Dict[str, object]]:
     obstacles = generate_vocabulary_obstacles(rows)
     obstacles.extend(generate_comprehension_obstacles(rows))
-    return sort_obstacles(obstacles)
+    return dedupe_episode_learning_items(sort_obstacles(obstacles))
 
 
 def main() -> int:
