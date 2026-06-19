@@ -159,6 +159,7 @@ button {
   min-height: 20px;
 }
 
+.level-card,
 .episode-card,
 .playback-speed-card {
   display: flex;
@@ -167,13 +168,23 @@ button {
   gap: 6px;
 }
 
+.level-card {
+  margin-left: auto;
+}
+
+.level-card,
 .episode-card {
   flex: 0 0 auto;
-  margin-left: auto;
 }
 
 .playback-speed-card {
   flex: 0 1 auto;
+}
+
+.level-card__label {
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 600;
 }
 
 .episode-card h2 {
@@ -192,6 +203,7 @@ button {
 
 
 .episode-select-button,
+.level-select,
 .speed-select-button {
   height: 28px;
   padding: 0 10px;
@@ -206,6 +218,8 @@ button {
 
 .episode-select-button:hover,
 .episode-select-button:focus-visible,
+.level-select:hover,
+.level-select:focus-visible,
 .speed-select-button:hover,
 .speed-select-button:focus-visible {
   border-color: rgba(37, 99, 235, 0.42);
