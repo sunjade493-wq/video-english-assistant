@@ -487,3 +487,26 @@ Frozen V2.6H scope:
 Forbidden regressions include the comprehension boundary, episode-level dedupe, nested comprehension cleanup, marker generation, Runtime read-only marker rendering, heat marker bracket style, and the V2.4A UI baseline.
 
 Next step remains P0 Real Episode Video after this freeze/tag.
+
+## 19. V2.6I Vocabulary Level Selector Contract Freeze
+
+Status: FROZEN
+
+Date: 2026-06-19
+
+Source: `docs/V26I_VOCABULARY_LEVEL_SELECTOR_CONTRACT_FREEZE.md`
+
+V2.6I freezes the Vocabulary Level Selector contract before P0 Real Episode Video work.
+
+This is documentation-only. It does not modify Runtime, UI, generator logic, `output_text` data files, or regenerated obstacles.
+
+Frozen V2.6I scope:
+
+- Vocabulary levels remain Junior High (1500), Senior High (3500), CET-4 (4500), CET-6 (6000), TEM-4 (8000), TEM-8 (12000), and GRE (20000+).
+- Vocabulary Level Selector belongs in video footer Row 1 using the order: Time / Level / Episode / Speed.
+- Changing Level should immediately reload the current episode's corresponding level-specific obstacle dataset and update obstacle count, right panel cards, subtitle dashed markers, heat timeline, and Bottom Sheet data.
+- Runtime remains a read-only consumer: it may read `selectedLevel`, load the corresponding level-specific obstacle dataset, and render returned obstacle data, but must not perform language-intelligence filtering or recompute obstacles.
+- Future Real Episode Video work should migrate toward episode + level scoped obstacle datasets such as `output_text/{episodeId}/{level}/v29a_obstacles.json`.
+- Vocabulary obstacles depend on selected Level; comprehension obstacles do not depend on vocabulary Level and should remain stable across Levels unless a later explicit freeze changes this.
+
+Next step remains P0 Real Episode Video after this freeze/tag.
