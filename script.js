@@ -300,8 +300,49 @@ function isIndexWithinRanges(index, ranges) {
   return ranges.some((range) => index >= range.start && index < range.end);
 }
 
+function normalizeDedupKeyPart(value) {
+  return String(value || '').trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+function pickComprehensionExpression(item) {
+  return item?.prototype || item?.normalizedText || item?.baseForm || item?.phrase || item?.text || '';
+}
+
+function makeVocabularyDedupKey(item) {
+  return [item?.word, item?.partOfSpeech, item?.sentenceMeaning].map(normalizeDedupKeyPart).join('|');
+}
+
+function makeComprehensionDedupKey(item) {
+  return normalizeDedupKeyPart(pickComprehensionExpression(item));
+}
+
+function makeObstacleDedupKey(obstacle) {
+  const type = normalizeObstacleType(obstacle?.type || obstacle?.kind);
+
+  if (type === 'vocab') {
+    return `vocab:${makeVocabularyDedupKey(obstacle)}`;
+  }
+
+  if (type === 'comprehension') {
+    return `comprehension:${makeComprehensionDedupKey(obstacle)}`;
+  }
+
+  return `other:${normalizeDedupKeyPart(obstacle?.id)}`;
+}
+
 function dedupeObstaclesById(obstaclesToDedupe) {
-  return obstaclesToDedupe;
+  const seenDedupKeys = new Set();
+
+  return obstaclesToDedupe.filter((obstacle) => {
+    const dedupKey = makeObstacleDedupKey(obstacle);
+
+    if (seenDedupKeys.has(dedupKey)) {
+      return false;
+    }
+
+    seenDedupKeys.add(dedupKey);
+    return true;
+  });
 }
 
 function analyzeSubtitleText(text, options = {}) {
@@ -679,9 +720,9 @@ function normalizeObstacle(row, rowIndex = 0) {
 }
 
 function normalizeObstacles(rows) {
-  return rows
+  return dedupeObstaclesById(rows
     .filter((row) => validateRuntimeObstacle(row))
-    .map((row, rowIndex) => normalizeObstacle(row, rowIndex));
+    .map((row, rowIndex) => normalizeObstacle(row, rowIndex)));
 }
 
 function normalizeRealObstacleRows(payload) {

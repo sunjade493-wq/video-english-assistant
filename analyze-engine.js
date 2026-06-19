@@ -104,6 +104,22 @@
     return String(text || '').match(/[A-Za-z]+(?:'[A-Za-z]+)?/g) || [];
   }
 
+  function normalizeDedupKeyPart(value) {
+    return String(value || '').trim().toLowerCase().replace(/\s+/g, ' ');
+  }
+
+  function pickComprehensionExpression(item) {
+    return item?.prototype || item?.normalizedText || item?.baseForm || item?.phrase || item?.text || '';
+  }
+
+  function makeVocabularyDedupKey(item) {
+    return [item?.word, item?.partOfSpeech, item?.sentenceMeaning].map(normalizeDedupKeyPart).join('|');
+  }
+
+  function makeComprehensionDedupKey(item) {
+    return normalizeDedupKeyPart(pickComprehensionExpression(item));
+  }
+
   function resolveVocabularyWords(levelName, customWords = []) {
     const level = vocabularyLevels[levelName] ? levelName : DEFAULT_VOCABULARY_LEVEL;
     const words = new Set(customWords.map(normalizeWord));
@@ -227,7 +243,12 @@
       }
 
       const entry = vocabularyMockEntries[baseForm] || createFallbackVocabEntry(baseForm);
-      const occurrenceKey = `vocab:${subtitleItem.id}:${baseForm}`;
+      const vocabularyDedupKey = makeVocabularyDedupKey({
+        word: baseForm,
+        partOfSpeech: entry.partOfSpeech,
+        sentenceMeaning: entry.sentenceMeaning,
+      });
+      const occurrenceKey = `vocab:${subtitleItem.id}:${vocabularyDedupKey}`;
       const occurrence = occurrenceCounts.get(occurrenceKey) || 0;
       occurrenceCounts.set(occurrenceKey, occurrence + 1);
       const start = subtitleItem.start + rawWordMatch.index;
@@ -267,7 +288,8 @@
         return result;
       }
 
-      const occurrenceKey = `comprehension:${subtitleItem.id}:${entry.baseForm}`;
+      const comprehensionDedupKey = makeComprehensionDedupKey(entry);
+      const occurrenceKey = `comprehension:${subtitleItem.id}:${comprehensionDedupKey}`;
       const occurrence = occurrenceCounts.get(occurrenceKey) || 0;
       occurrenceCounts.set(occurrenceKey, occurrence + 1);
       const start = subtitleItem.start + match.start;

@@ -462,3 +462,10 @@ Frozen generation rules:
 - A future Native Expressions / 本集地道表达 system may cover ordinary useful spoken patterns, but that system is deferred to V3 or a later version and is not part of the current MVP.
 
 This is a generation-rule freeze only. It does not require Runtime UI changes unless a later implementation task explicitly requests them.
+
+## V2.6G Follow-up Dedup Key Correction — 2026-06-19
+
+- Corrected vocabulary deduplication across `analyze-engine.js`, `script.js`, and `v29a_obstacle_generator.py` so vocabulary identity is now `word + partOfSpeech + sentenceMeaning`, not `baseForm` alone.
+- Added explicit `makeVocabularyDedupKey()` and `makeComprehensionDedupKey()` helpers to keep the dedup contract visible in the analyzer, runtime, and backend generator.
+- Comprehension dedup remains expression-based with priority `prototype > normalizedText > baseForm > phrase > text`; direct `surfaceText` dedup is not allowed for comprehension items.
+- Regenerated `output_text/v29a_obstacles.json`; recalculated `obstacle_count` is 59.
