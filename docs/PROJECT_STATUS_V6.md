@@ -462,3 +462,11 @@ Frozen generation rules:
 - A future Native Expressions / 本集地道表达 system may cover ordinary useful spoken patterns, but that system is deferred to V3 or a later version and is not part of the current MVP.
 
 This is a generation-rule freeze only. It does not require Runtime UI changes unless a later implementation task explicitly requests them.
+
+## 18. V2.6F Current Fixture Cleanup Implementation
+
+Status: IMPLEMENTED
+
+Date: 2026-06-19
+
+V2.6F comprehension exclusion guard is implemented in the Analyze Engine mock layer and the V29A obstacle generator. Current `output_text/v29a_obstacles.json` fixture data has been regenerated/cleaned under the V2.6F exclusion rule, so `Can you believe...?` no longer appears as a Comprehension Obstacle while `believe` remains available as a Vocabulary Obstacle.

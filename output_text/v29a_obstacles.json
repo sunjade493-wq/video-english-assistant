@@ -1,7 +1,7 @@
 {
   "version": "v29a",
   "input": "output_text/v28d_bilingual_subtitles.csv",
-  "obstacle_count": 59,
+  "obstacle_count": 58,
   "obstacles": [
     {
       "start": "6.0",
@@ -821,27 +821,6 @@
       "source_zh": "但你俩不能独处啊 我们在呢",
       "markerStart": 15,
       "markerEnd": 20
-    },
-    {
-      "start": "6.0",
-      "end": "10.0",
-      "type": "comprehension",
-      "priority": 2,
-      "text": "Can you believe",
-      "word": "",
-      "lemma": "",
-      "baseForm": "",
-      "phonetic": "",
-      "partOfSpeech": "",
-      "sentenceMeaning": "",
-      "translation": "",
-      "literal": "你能相信吗",
-      "actual": "表示惊讶、难以置信，相当于“你敢信吗？”",
-      "grammar": "Can you believe + 从句/名词短语；反问式口语开场，用来强化情绪。",
-      "source_en": "Can you believe our little lamb is finally getting married?",
-      "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
-      "markerStart": 0,
-      "markerEnd": 15
     },
     {
       "start": "47.5",
