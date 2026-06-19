@@ -462,3 +462,15 @@ Frozen generation rules:
 - A future Native Expressions / 本集地道表达 system may cover ordinary useful spoken patterns, but that system is deferred to V3 or a later version and is not part of the current MVP.
 
 This is a generation-rule freeze only. It does not require Runtime UI changes unless a later implementation task explicitly requests them.
+
+## 18. P0.5 Subtitle Marker Position Contract Freeze
+
+Status: FROZEN
+
+Date: 2026-06-19
+
+Source: `docs/P05_SUBTITLE_MARKER_POSITION_CONTRACT_FREEZE.md`
+
+P0.5 freezes the Subtitle Marker Position Contract before Real Episode Video integration. Runtime remains a marker-data reader only: it must not infer obstacle ranges, guess token coordinates, or add language-intelligence fallback behavior.
+
+Before connecting real episode video with burned-in subtitles, the pipeline must preserve the current MVP `source_en` + `markerStart` + `markerEnd` contract and evolve it toward backend-owned subtitle token position data / obstacle-to-token mapping.

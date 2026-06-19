@@ -1,60 +1,49 @@
-﻿start,end,type,priority,text,word,lemma,phonetic,partOfSpeech,sentenceMeaning,translation,literal,actual,grammar,source_en,source_zh
-6.0,10.0,vocabulary,1,believe,believe,believe,/bɪˈliːv/,vt./vi.,相信,相信；认为,,,,Can you believe our little lamb is finally getting married?,你能相信我们的小羊羔终于要嫁人了吗
-10.0,12.0,vocabulary,1,believe,believe,believe,/bɪˈliːv/,vt./vi.,相信,相信；认为,,,,He can't believe it.,他肯定不信
-47.5,49.5,vocabulary,1,believe,believe,believe,/bɪˈliːv/,vt./vi.,相信,相信；认为,,,,I can't believe we're actually married.,真不敢相信我们真的结婚了
-49.5,51.5,vocabulary,1,official,official,official,/əˈfɪʃəl/,adj./n.,正式的,官方的；正式的；官员,,,,"It's official. According to tradition,",正式完婚了 根据传统
-49.5,51.5,vocabulary,1,tradition,tradition,tradition,/trəˈdɪʃən/,n.,传统,传统；惯例,,,,"It's official. According to tradition,",正式完婚了 根据传统
-51.5,53.0,vocabulary,1,bedsheet,bedsheet,bedsheet,/ˈbedʃiːt/,n.,床单,床单,,,,we should hang the bedsheets outside,我们应该把床单挂在外面
-51.5,53.0,vocabulary,1,outside,outside,outside,/ˌaʊtˈsaɪd/,adv./adj./prep./n.,外面,在外面；外部,,,,we should hang the bedsheets outside,我们应该把床单挂在外面
-53.0,58.0,vocabulary,1,consummate,consummate,consummate,/ˈkɑːnsəmeɪt/,adj./vt.,圆房,圆房；完成；使圆满,,,,so the villagers can see that we consummated.,这样其他村民就能知道我们行过房了
-58.0,60.5,vocabulary,1,considering,considering,considering,/kənˈsɪdərɪŋ/,prep.,考虑到,考虑到；鉴于,,,,considering where we're starting our honeymoon.,毕竟我们是在这种地方开始我们的蜜月之旅
-58.0,60.5,vocabulary,1,honeymoon,honeymoon,honeymoon,/ˈhʌnimuːn/,n.,蜜月,蜜月,,,,considering where we're starting our honeymoon.,毕竟我们是在这种地方开始我们的蜜月之旅
-60.5,67.0,vocabulary,1,suppose,suppose,suppose,/səˈpoʊz/,vt./vi.,认为,认为；假设；料想,,,,"Well, I suppose you're right.",你说的有道理
-67.0,70.0,vocabulary,1,congress,congress,congress,/ˈkɑːŋɡrəs/,n.,圆房,国会；大会；交合（委婉/正式）,,,,Lego is the perfect metaphor for marital congress.,乐高有着形容夫妻房事的最完美隐喻呢
-67.0,70.0,vocabulary,1,marital,marital,marital,/ˈmærɪtl/,adj.,婚姻的,婚姻的；夫妻的,,,,Lego is the perfect metaphor for marital congress.,乐高有着形容夫妻房事的最完美隐喻呢
-67.0,70.0,vocabulary,1,metaphor,metaphor,metaphor,/ˈmetəfɔːr/,n.,比喻,隐喻；比喻,,,,Lego is the perfect metaphor for marital congress.,乐高有着形容夫妻房事的最完美隐喻呢
-67.0,70.0,vocabulary,1,perfect,perfect,perfect,/ˈpɜːrfɪkt/,adj.,完美的,完美的；完全的,,,,Lego is the perfect metaphor for marital congress.,乐高有着形容夫妻房事的最完美隐喻呢
-70.0,79.5,vocabulary,1,interlock,interlock,interlock,/ˌɪntərˈlɑːk/,vt./vi.,扣合,互锁；扣在一起；咬合,,,,Two pieces that interlock with a satisfying snap.,"两片乐高""合体""并带有爽度十足的咔哒声"
-70.0,79.5,vocabulary,1,satisfying,satisfying,satisfying,/ˈsætɪsfaɪɪŋ/,adj.,令人满足的,令人满足的；令人满意的,,,,Two pieces that interlock with a satisfying snap.,"两片乐高""合体""并带有爽度十足的咔哒声"
-70.0,79.5,vocabulary,1,snap,snap,snap,/snæp/,n.,咔哒声,咔哒声；猛然折断；迅速动作,,,,Two pieces that interlock with a satisfying snap.,"两片乐高""合体""并带有爽度十足的咔哒声"
-80.5,83.5,vocabulary,1,order,order,order,/ˈɔːrdər/,n./vi./vt.,点餐,命令；点餐；订购；顺序,,,,"While you were sleeping, I ordered room service.",在你睡觉的时候 我点了客房送餐
-80.5,83.5,vocabulary,1,room service,room service,room service,/ˈruːm ˌsɜːrvɪs/,n.,客房服务,客房送餐服务,,,,"While you were sleeping, I ordered room service.",在你睡觉的时候 我点了客房送餐
-80.5,83.5,vocabulary,1,sleep,sleep,sleep,/sliːp/,n./vi.,睡觉,睡觉；睡眠,,,,"While you were sleeping, I ordered room service.",在你睡觉的时候 我点了客房送餐
-92.0,95.0,vocabulary,1,dense,dense,dense,/dens/,adj.,稠密的,密集的；浓密的；难懂的,,,,"Our whole universe was in a hot, dense state",我们的宇宙曾经超热又超密
-92.0,95.0,vocabulary,1,hot,hot,hot,/hɑːt/,adj.,热的,热的；热门的,,,,"Our whole universe was in a hot, dense state",我们的宇宙曾经超热又超密
-92.0,95.0,vocabulary,1,state,state,state,/steɪt/,n.,状态,状态；州；陈述,,,,"Our whole universe was in a hot, dense state",我们的宇宙曾经超热又超密
-92.0,95.0,vocabulary,1,universe,universe,universe,/ˈjuːnɪvɜːrs/,n.,宇宙,宇宙；万物,,,,"Our whole universe was in a hot, dense state",我们的宇宙曾经超热又超密
-95.0,99.0,vocabulary,1,expansion,expansion,expansion,/ɪkˈspænʃən/,n.,膨胀,扩张；膨胀；展开,,,,Then nearly 14 billion years ago expansion started... Wait!,直到大约140亿年前的某一天宇宙膨胀开始了 等等
-95.0,99.0,vocabulary,1,start,start,start,/stɑːrt/,n./vi./vt.,开始,开始；开端,,,,Then nearly 14 billion years ago expansion started... Wait!,直到大约140亿年前的某一天宇宙膨胀开始了 等等
-101.0,104.0,vocabulary,1,autotroph,autotroph,autotroph,/ˈɔːtoʊtroʊf/,n.,自养生物,自养生物,,,,"The autotrophs began to drool, Neanderthals developed tools?",自养生物开始发育 尼安德塔人发明工具
-101.0,104.0,vocabulary,1,develop,develop,develop,/dɪˈveləp/,vt./vi.,发明,发展；发明；形成,,,,"The autotrophs began to drool, Neanderthals developed tools?",自养生物开始发育 尼安德塔人发明工具
-101.0,104.0,vocabulary,1,Neanderthal,Neanderthal,Neanderthal,/niˈændərˌtɑːl/,n.,尼安德特人,尼安德特人,,,,"The autotrophs began to drool, Neanderthals developed tools?",自养生物开始发育 尼安德塔人发明工具
-104.0,105.0,vocabulary,1,pyramid,pyramid,pyramid,/ˈpɪrəmɪd/,n.,金字塔,金字塔,,,,We built the Wall We built the pyramids,我们建了长城 我们建了金字塔
-105.0,106.0,vocabulary,1,mystery,mystery,mystery,/ˈmɪstəri/,n.,谜团,谜；神秘的事物,,,,"Math, Science, History, unraveling the mystery",数学 科学 历史 解开了谜团
-105.0,106.0,vocabulary,1,unravel,unravel,unravel,/ʌnˈrævəl/,vt./vi.,解开,解开；阐明；逐渐崩解,,,,"Math, Science, History, unraveling the mystery",数学 科学 历史 解开了谜团
-106.0,108.0,vocabulary,1,mystery,mystery,mystery,/ˈmɪstəri/,n.,谜团,谜；神秘的事物,,,,"♪ Math, Science, History, unraveling the mystery ♪",♪ 数学 科学 历史 解开了谜团 ♪
-106.0,108.0,vocabulary,1,unravel,unravel,unravel,/ʌnˈrævəl/,vt./vi.,解开,解开；阐明；逐渐崩解,,,,"♪ Math, Science, History, unraveling the mystery ♪",♪ 数学 科学 历史 解开了谜团 ♪
-108.0,110.0,vocabulary,1,start,start,start,/stɑːrt/,n./vi./vt.,开始,开始；开端,,,,That all started with a big bang,一切都始于大爆炸
-116.5,119.5,vocabulary,1,honeymoon,honeymoon,honeymoon,/ˈhʌnimuːn/,n.,蜜月,蜜月,,,,Is it nice having Sheldon and Amy away on their honeymoon?,谢尔顿跟艾米出去度蜜月你们是不是很爽啊
-119.5,122.5,vocabulary,1,alone,alone,alone,/əˈloʊn/,adj./adv.,独处的,独自；单独,,,,"Yeah, because now Leonard and I get all this alone time.",是啊 因为我跟莱纳德有大把的独处时间
-122.5,124.5,vocabulary,1,alone,alone,alone,/əˈloʊn/,adj./adv.,独处的,独自；单独,,,,But you're not alone. We're here.,但你俩不能独处啊 我们在呢
-6.0,10.0,comprehension,2,Can you believe,,,,,,,你能相信吗,表示惊讶、难以置信，相当于“你敢信吗？”,Can you believe + 从句/名词短语；反问式口语开场，用来强化情绪。,Can you believe our little lamb is finally getting married?,你能相信我们的小羊羔终于要嫁人了吗
-47.5,49.5,comprehension,2,I can't believe,,,,,,,我不能相信,我真不敢相信；强调说话人惊讶或不满。,I can't believe + 从句/宾语；否定情态动词表达强烈主观反应。,I can't believe we're actually married.,真不敢相信我们真的结婚了
-49.5,51.5,comprehension,2,According to tradition,,,,,,,根据传统,按习俗来说；引出某个传统规定或社会惯例。,According to + 名词；介词短语作状语，说明信息依据。,"It's official. According to tradition,",正式完婚了 根据传统
-51.5,53.0,comprehension,2,hang the bedsheets outside,,,,,,,把床单挂到外面,指按传统展示床单，语境里带有婚俗和尴尬的喜剧效果。,hang + 宾语 + 地点副词；祈使/不定式结构中常省略主语。,we should hang the bedsheets outside,我们应该把床单挂在外面
-53.0,58.0,comprehension,2,we consummated,,,,,,,我们完成了,委婉地说夫妻圆房、完成婚姻关系。,consummate 可作及物或不及物动词；过去式表示已完成的行为。,so the villagers can see that we consummated.,这样其他村民就能知道我们行过房了
-58.0,60.5,comprehension,2,where we're starting our honeymoon,,,,,,,我们开始蜜月的地方,说明蜜月旅程从哪里开始，where 引导地点从句。,where + 主语 + be + -ing；现在进行时表示计划中的近未来安排。,considering where we're starting our honeymoon.,毕竟我们是在这种地方开始我们的蜜月之旅
-60.5,67.0,comprehension,2,I suppose you're right,,,,,,,我假设你是对的,我想你说得对；带有让步、勉强同意的语气。,I suppose + 宾语从句；弱化语气，比 I think 更犹豫。,"Well, I suppose you're right.",你说的有道理
-67.0,70.0,comprehension,2,marital congress,,,,,,,婚姻大会/婚姻性交,非常正式或滑稽地指夫妻性行为。,形容词 marital 修饰名词 congress；congress 在此为委婉旧式用法。,Lego is the perfect metaphor for marital congress.,乐高有着形容夫妻房事的最完美隐喻呢
-67.0,70.0,comprehension,2,the perfect metaphor for,,,,,,,……的完美隐喻,用某物来非常贴切地象征另一件事。,metaphor for + 名词/动名词；for 标记隐喻指向的对象。,Lego is the perfect metaphor for marital congress.,乐高有着形容夫妻房事的最完美隐喻呢
-70.0,79.5,comprehension,2,interlock with a satisfying snap,,,,,,,带着令人满意的咔哒声互锁,形容两个部件严丝合缝地扣上，声音让人觉得到位。,interlock with + 名词短语；with 表示伴随方式或伴随结果。,Two pieces that interlock with a satisfying snap.,"两片乐高""合体""并带有爽度十足的咔哒声"
-70.0,79.5,comprehension,2,with a satisfying snap,,,,,,,伴随着令人满意的咔哒声,用声音说明动作完成得干脆、到位。,with + 名词短语作方式/伴随状语。,Two pieces that interlock with a satisfying snap.,"两片乐高""合体""并带有爽度十足的咔哒声"
-80.5,83.5,comprehension,2,ordered room service,,,,,,,点了客房服务,在酒店叫了送餐/客房服务。,order + 名词；order 在餐饮场景中表示“点餐/订购”。,"While you were sleeping, I ordered room service.",在你睡觉的时候 我点了客房送餐
-80.5,83.5,comprehension,2,While you were sleeping,,,,,,,当你正在睡觉的时候,趁你睡着时；说明另一件事发生的时间背景。,While + 主语 + 过去进行时；背景动作与主句动作同时发生。,"While you were sleeping, I ordered room service.",在你睡觉的时候 我点了客房送餐
-88.5,92.0,comprehension,2,you thought it was going to be food,,,,,,,你以为它将会是食物,制造反差：听者以为叫的是吃的，但实际不是。,thought + 宾语从句；was going to be 表示过去视角下的将来。,"You thought it was going to be food, didn't you?",你本来还以为是食物 对吧
-92.0,95.0,comprehension,2,"a hot, dense state",,,,,,,一个热而密集的状态,描述物理状态，不是日常“热闹”的意思。,冠词 + 并列形容词 + 名词；逗号连接同级形容词。,"Our whole universe was in a hot, dense state",我们的宇宙曾经超热又超密
-92.0,95.0,comprehension,2,"our whole universe was in a hot, dense state",,,,,,,我们的整个宇宙处于一个热而密集的状态,大爆炸理论开场，描述早期宇宙高温高密度状态。,be in a/an + 形容词 + state；state 表示抽象状态。,"Our whole universe was in a hot, dense state",我们的宇宙曾经超热又超密
-92.0,95.0,comprehension,2,whole universe,,,,,,,整个宇宙,强调整体范围，常见于科学解释或夸张表达。,whole 放在名词前表示“整个的”，常与 the/our 连用。,"Our whole universe was in a hot, dense state",我们的宇宙曾经超热又超密
-95.0,99.0,comprehension,2,expansion started,,,,,,,膨胀开始了,指宇宙开始扩张。,名词 + 不及物动词过去式；简洁叙述事件发生。,Then nearly 14 billion years ago expansion started... Wait!,直到大约140亿年前的某一天宇宙膨胀开始了 等等
-108.0,110.0,comprehension,2,That all started with,,,,,,,那一切都开始于,说明一连串事情的起点或原因。,start with + 名词/动名词；with 引出起点、开端或触发因素。,That all started with a big bang,一切都始于大爆炸
-119.5,122.5,comprehension,2,get all this alone time,,,,,,,得到所有这些独处时间,获得这么多二人/独处时间，语气通常带期待或调侃。,get + 名词短语；all this 修饰不可数/抽象时间，强调数量。,"Yeah, because now Leonard and I get all this alone time.",是啊 因为我跟莱纳德有大把的独处时间
+﻿start,end,type,priority,text,word,lemma,phonetic,partOfSpeech,sentenceMeaning,translation,literal,actual,grammar,source_en,source_zh,markerStart,markerEnd
+6.0,10.0,vocabulary,1,believe,believe,believe,/bɪˈliːv/,vt./vi.,相信,相信；认为,,,,Can you believe our little lamb is finally getting married?,你能相信我们的小羊羔终于要嫁人了吗,8,15
+49.5,51.5,vocabulary,1,official,official,official,/əˈfɪʃəl/,adj./n.,正式的,官方的；正式的；官员,,,,"It's official. According to tradition,",正式完婚了 根据传统,5,13
+49.5,51.5,vocabulary,1,tradition,tradition,tradition,/trəˈdɪʃən/,n.,传统,传统；惯例,,,,"It's official. According to tradition,",正式完婚了 根据传统,28,37
+51.5,53.0,vocabulary,1,bedsheet,bedsheet,bedsheet,/ˈbedʃiːt/,n.,床单,床单,,,,we should hang the bedsheets outside,我们应该把床单挂在外面,19,28
+51.5,53.0,vocabulary,1,outside,outside,outside,/ˌaʊtˈsaɪd/,adv./adj./prep./n.,外面,在外面；外部,,,,we should hang the bedsheets outside,我们应该把床单挂在外面,29,36
+53.0,58.0,vocabulary,1,consummate,consummate,consummate,/ˈkɑːnsəmeɪt/,adj./vt.,圆房,圆房；完成；使圆满,,,,so the villagers can see that we consummated.,这样其他村民就能知道我们行过房了,33,44
+58.0,60.5,vocabulary,1,considering,considering,considering,/kənˈsɪdərɪŋ/,prep.,考虑到,考虑到；鉴于,,,,considering where we're starting our honeymoon.,毕竟我们是在这种地方开始我们的蜜月之旅,0,11
+58.0,60.5,vocabulary,1,honeymoon,honeymoon,honeymoon,/ˈhʌnimuːn/,n.,蜜月,蜜月,,,,considering where we're starting our honeymoon.,毕竟我们是在这种地方开始我们的蜜月之旅,37,46
+60.5,67.0,vocabulary,1,suppose,suppose,suppose,/səˈpoʊz/,vt./vi.,认为,认为；假设；料想,,,,"Well, I suppose you're right.",你说的有道理,8,15
+67.0,70.0,vocabulary,1,congress,congress,congress,/ˈkɑːŋɡrəs/,n.,圆房,国会；大会；交合（委婉/正式）,,,,Lego is the perfect metaphor for marital congress.,乐高有着形容夫妻房事的最完美隐喻呢,41,49
+67.0,70.0,vocabulary,1,marital,marital,marital,/ˈmærɪtl/,adj.,婚姻的,婚姻的；夫妻的,,,,Lego is the perfect metaphor for marital congress.,乐高有着形容夫妻房事的最完美隐喻呢,33,40
+67.0,70.0,vocabulary,1,metaphor,metaphor,metaphor,/ˈmetəfɔːr/,n.,比喻,隐喻；比喻,,,,Lego is the perfect metaphor for marital congress.,乐高有着形容夫妻房事的最完美隐喻呢,20,28
+67.0,70.0,vocabulary,1,perfect,perfect,perfect,/ˈpɜːrfɪkt/,adj.,完美的,完美的；完全的,,,,Lego is the perfect metaphor for marital congress.,乐高有着形容夫妻房事的最完美隐喻呢,12,19
+70.0,79.5,vocabulary,1,interlock,interlock,interlock,/ˌɪntərˈlɑːk/,vt./vi.,扣合,互锁；扣在一起；咬合,,,,Two pieces that interlock with a satisfying snap.,"两片乐高""合体""并带有爽度十足的咔哒声",16,25
+70.0,79.5,vocabulary,1,satisfying,satisfying,satisfying,/ˈsætɪsfaɪɪŋ/,adj.,令人满足的,令人满足的；令人满意的,,,,Two pieces that interlock with a satisfying snap.,"两片乐高""合体""并带有爽度十足的咔哒声",33,43
+70.0,79.5,vocabulary,1,snap,snap,snap,/snæp/,n.,咔哒声,咔哒声；猛然折断；迅速动作,,,,Two pieces that interlock with a satisfying snap.,"两片乐高""合体""并带有爽度十足的咔哒声",44,48
+80.5,83.5,vocabulary,1,order,order,order,/ˈɔːrdər/,n./vi./vt.,点餐,命令；点餐；订购；顺序,,,,"While you were sleeping, I ordered room service.",在你睡觉的时候 我点了客房送餐,27,34
+80.5,83.5,vocabulary,1,room service,room service,room service,/ˈruːm ˌsɜːrvɪs/,n.,客房服务,客房送餐服务,,,,"While you were sleeping, I ordered room service.",在你睡觉的时候 我点了客房送餐,35,47
+80.5,83.5,vocabulary,1,sleep,sleep,sleep,/sliːp/,n./vi.,睡觉,睡觉；睡眠,,,,"While you were sleeping, I ordered room service.",在你睡觉的时候 我点了客房送餐,15,23
+92.0,95.0,vocabulary,1,dense,dense,dense,/dens/,adj.,稠密的,密集的；浓密的；难懂的,,,,"Our whole universe was in a hot, dense state",我们的宇宙曾经超热又超密,33,38
+92.0,95.0,vocabulary,1,hot,hot,hot,/hɑːt/,adj.,热的,热的；热门的,,,,"Our whole universe was in a hot, dense state",我们的宇宙曾经超热又超密,28,31
+92.0,95.0,vocabulary,1,state,state,state,/steɪt/,n.,状态,状态；州；陈述,,,,"Our whole universe was in a hot, dense state",我们的宇宙曾经超热又超密,39,44
+92.0,95.0,vocabulary,1,universe,universe,universe,/ˈjuːnɪvɜːrs/,n.,宇宙,宇宙；万物,,,,"Our whole universe was in a hot, dense state",我们的宇宙曾经超热又超密,10,18
+95.0,99.0,vocabulary,1,expansion,expansion,expansion,/ɪkˈspænʃən/,n.,膨胀,扩张；膨胀；展开,,,,Then nearly 14 billion years ago expansion started... Wait!,直到大约140亿年前的某一天宇宙膨胀开始了 等等,33,42
+95.0,99.0,vocabulary,1,start,start,start,/stɑːrt/,n./vi./vt.,开始,开始；开端,,,,Then nearly 14 billion years ago expansion started... Wait!,直到大约140亿年前的某一天宇宙膨胀开始了 等等,43,50
+101.0,104.0,vocabulary,1,autotroph,autotroph,autotroph,/ˈɔːtoʊtroʊf/,n.,自养生物,自养生物,,,,"The autotrophs began to drool, Neanderthals developed tools?",自养生物开始发育 尼安德塔人发明工具,4,14
+101.0,104.0,vocabulary,1,develop,develop,develop,/dɪˈveləp/,vt./vi.,发明,发展；发明；形成,,,,"The autotrophs began to drool, Neanderthals developed tools?",自养生物开始发育 尼安德塔人发明工具,44,53
+101.0,104.0,vocabulary,1,Neanderthal,Neanderthal,Neanderthal,/niˈændərˌtɑːl/,n.,尼安德特人,尼安德特人,,,,"The autotrophs began to drool, Neanderthals developed tools?",自养生物开始发育 尼安德塔人发明工具,31,43
+104.0,105.0,vocabulary,1,pyramid,pyramid,pyramid,/ˈpɪrəmɪd/,n.,金字塔,金字塔,,,,We built the Wall We built the pyramids,我们建了长城 我们建了金字塔,31,39
+105.0,106.0,vocabulary,1,mystery,mystery,mystery,/ˈmɪstəri/,n.,谜团,谜；神秘的事物,,,,"Math, Science, History, unraveling the mystery",数学 科学 历史 解开了谜团,39,46
+105.0,106.0,vocabulary,1,unravel,unravel,unravel,/ʌnˈrævəl/,vt./vi.,解开,解开；阐明；逐渐崩解,,,,"Math, Science, History, unraveling the mystery",数学 科学 历史 解开了谜团,24,34
+119.5,122.5,vocabulary,1,alone,alone,alone,/əˈloʊn/,adj./adv.,独处的,独自；单独,,,,"Yeah, because now Leonard and I get all this alone time.",是啊 因为我跟莱纳德有大把的独处时间,45,50
+47.5,49.5,comprehension,2,I can't believe,,,,,,,我不能相信,我真不敢相信；强调说话人惊讶或不满。,I can't believe + 从句/宾语；否定情态动词表达强烈主观反应。,I can't believe we're actually married.,真不敢相信我们真的结婚了,0,15
+49.5,51.5,comprehension,2,According to tradition,,,,,,,根据传统,按习俗来说；引出某个传统规定或社会惯例。,According to + 名词；介词短语作状语，说明信息依据。,"It's official. According to tradition,",正式完婚了 根据传统,15,37
+51.5,53.0,comprehension,2,hang the bedsheets outside,,,,,,,把床单挂到外面,指按传统展示床单，语境里带有婚俗和尴尬的喜剧效果。,hang + 宾语 + 地点副词；祈使/不定式结构中常省略主语。,we should hang the bedsheets outside,我们应该把床单挂在外面,10,36
+53.0,58.0,comprehension,2,we consummated,,,,,,,我们完成了,委婉地说夫妻圆房、完成婚姻关系。,consummate 可作及物或不及物动词；过去式表示已完成的行为。,so the villagers can see that we consummated.,这样其他村民就能知道我们行过房了,30,44
+58.0,60.5,comprehension,2,where we're starting our honeymoon,,,,,,,我们开始蜜月的地方,说明蜜月旅程从哪里开始，where 引导地点从句。,where + 主语 + be + -ing；现在进行时表示计划中的近未来安排。,considering where we're starting our honeymoon.,毕竟我们是在这种地方开始我们的蜜月之旅,12,46
+60.5,67.0,comprehension,2,I suppose you're right,,,,,,,我假设你是对的,我想你说得对；带有让步、勉强同意的语气。,I suppose + 宾语从句；弱化语气，比 I think 更犹豫。,"Well, I suppose you're right.",你说的有道理,6,28
+67.0,70.0,comprehension,2,marital congress,,,,,,,婚姻大会/婚姻性交,非常正式或滑稽地指夫妻性行为。,形容词 marital 修饰名词 congress；congress 在此为委婉旧式用法。,Lego is the perfect metaphor for marital congress.,乐高有着形容夫妻房事的最完美隐喻呢,33,49
+67.0,70.0,comprehension,2,the perfect metaphor for,,,,,,,……的完美隐喻,用某物来非常贴切地象征另一件事。,metaphor for + 名词/动名词；for 标记隐喻指向的对象。,Lego is the perfect metaphor for marital congress.,乐高有着形容夫妻房事的最完美隐喻呢,8,32
+70.0,79.5,comprehension,2,interlock with a satisfying snap,,,,,,,带着令人满意的咔哒声互锁,形容两个部件严丝合缝地扣上，声音让人觉得到位。,interlock with + 名词短语；with 表示伴随方式或伴随结果。,Two pieces that interlock with a satisfying snap.,"两片乐高""合体""并带有爽度十足的咔哒声",16,48
+80.5,83.5,comprehension,2,ordered room service,,,,,,,点了客房服务,在酒店叫了送餐/客房服务。,order + 名词；order 在餐饮场景中表示“点餐/订购”。,"While you were sleeping, I ordered room service.",在你睡觉的时候 我点了客房送餐,27,47
+80.5,83.5,comprehension,2,While you were sleeping,,,,,,,当你正在睡觉的时候,趁你睡着时；说明另一件事发生的时间背景。,While + 主语 + 过去进行时；背景动作与主句动作同时发生。,"While you were sleeping, I ordered room service.",在你睡觉的时候 我点了客房送餐,0,23
+88.5,92.0,comprehension,2,you thought it was going to be food,,,,,,,你以为它将会是食物,制造反差：听者以为叫的是吃的，但实际不是。,thought + 宾语从句；was going to be 表示过去视角下的将来。,"You thought it was going to be food, didn't you?",你本来还以为是食物 对吧,0,35
+92.0,95.0,comprehension,2,"our whole universe was in a hot, dense state",,,,,,,我们的整个宇宙处于一个热而密集的状态,大爆炸理论开场，描述早期宇宙高温高密度状态。,be in a/an + 形容词 + state；state 表示抽象状态。,"Our whole universe was in a hot, dense state",我们的宇宙曾经超热又超密,0,44
+95.0,99.0,comprehension,2,expansion started,,,,,,,膨胀开始了,指宇宙开始扩张。,名词 + 不及物动词过去式；简洁叙述事件发生。,Then nearly 14 billion years ago expansion started... Wait!,直到大约140亿年前的某一天宇宙膨胀开始了 等等,33,50
+108.0,110.0,comprehension,2,That all started with,,,,,,,那一切都开始于,说明一连串事情的起点或原因。,start with + 名词/动名词；with 引出起点、开端或触发因素。,That all started with a big bang,一切都始于大爆炸,0,21
+119.5,122.5,comprehension,2,get all this alone time,,,,,,,得到所有这些独处时间,获得这么多二人/独处时间，语气通常带期待或调侃。,get + 名词短语；all this 修饰不可数/抽象时间，强调数量。,"Yeah, because now Leonard and I get all this alone time.",是啊 因为我跟莱纳德有大把的独处时间,32,55
