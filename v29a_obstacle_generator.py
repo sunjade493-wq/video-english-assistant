@@ -45,6 +45,8 @@ OUTPUT_FIELDS = [
     "grammar",
     "source_en",
     "source_zh",
+    "markerStart",
+    "markerEnd",
 ]
 
 VOCAB_REQUIRED_FIELDS = (
@@ -355,6 +357,13 @@ COMPREHENSION_PATTERNS: List[Dict[str, str]] = [
     },
 ]
 
+# V2.6F expressions that should not be emitted as comprehension obstacles.
+# Nested comprehension cleanup is handled generically by marker containment below,
+# not by hard-coded text exclusions.
+EXCLUDED_COMPREHENSION_TEXTS = {
+    "can you believe",
+}
+
 
 @dataclass(frozen=True)
 class SubtitleRow:
@@ -487,6 +496,25 @@ def phrase_matches(pattern_text: str, source_en: str) -> bool:
     return re.search(regex, source_norm, re.IGNORECASE) is not None
 
 
+def find_phrase_marker_range(pattern_text: str, source_en: str) -> Tuple[int, int] | None:
+    """Return the source_en marker range for a matched comprehension phrase."""
+    phrase_words = compact_for_phrase(pattern_text).split()
+    if not phrase_words:
+        return None
+
+    source_matches = list(re.finditer(r"[A-Za-z0-9]+(?:'[A-Za-z0-9]+)?", source_en or ""))
+    source_words = [compact_for_phrase(match.group(0)) for match in source_matches]
+
+    for index in range(0, len(source_words) - len(phrase_words) + 1):
+        if source_words[index : index + len(phrase_words)] == phrase_words:
+            return (
+                source_matches[index].start(),
+                source_matches[index + len(phrase_words) - 1].end(),
+            )
+
+    return None
+
+
 def parse_sortable_time(value: str) -> Tuple[int, float, str]:
     """Return a stable sortable key for numeric, SRT-style, or blank times."""
     text = str(value or "").strip()
@@ -530,6 +558,8 @@ def blank_obstacle(row: SubtitleRow, obstacle_type: str, priority: int, text: st
         "grammar": "",
         "source_en": row.source_en,
         "source_zh": row.source_zh,
+        "markerStart": "",
+        "markerEnd": "",
     }
 
 
@@ -546,6 +576,7 @@ def generate_vocabulary_obstacles(rows: Iterable[SubtitleRow]) -> List[Dict[str,
             if entry["word"].lower() in seen_in_row:
                 continue
             if any(pattern.search(row.source_en) for pattern in patterns):
+                raw_match = next(pattern.search(row.source_en) for pattern in patterns if pattern.search(row.source_en))
                 seen_in_row.add(entry["word"].lower())
                 obstacle = blank_obstacle(row, "vocabulary", 1, entry["word"])
                 obstacle.update(
@@ -557,6 +588,8 @@ def generate_vocabulary_obstacles(rows: Iterable[SubtitleRow]) -> List[Dict[str,
                         "partOfSpeech": normalize_part_of_speech(entry),
                         "sentenceMeaning": entry["sentenceMeaning"],
                         "translation": entry["translation"],
+                        "markerStart": raw_match.start(),
+                        "markerEnd": raw_match.end(),
                     }
                 )
                 obstacles.append(obstacle)
@@ -571,9 +604,12 @@ def generate_comprehension_obstacles(rows: Iterable[SubtitleRow]) -> List[Dict[s
         for pattern in COMPREHENSION_PATTERNS:
             text = pattern["text"]
             key = compact_for_phrase(text)
+            if key in EXCLUDED_COMPREHENSION_TEXTS:
+                continue
             if key in seen_in_row:
                 continue
-            if phrase_matches(text, row.source_en):
+            marker_range = find_phrase_marker_range(text, row.source_en)
+            if marker_range or phrase_matches(text, row.source_en):
                 seen_in_row.add(key)
                 obstacle = blank_obstacle(row, "comprehension", 2, text)
                 obstacle.update(
@@ -581,10 +617,96 @@ def generate_comprehension_obstacles(rows: Iterable[SubtitleRow]) -> List[Dict[s
                         "literal": pattern["literal"],
                         "actual": pattern["actual"],
                         "grammar": pattern["grammar"],
+                        "markerStart": marker_range[0] if marker_range else "",
+                        "markerEnd": marker_range[1] if marker_range else "",
                     }
                 )
                 obstacles.append(obstacle)
     return obstacles
+
+
+def validate_marker_range(obstacle: Dict[str, object]) -> None:
+    marker_start = obstacle.get("markerStart")
+    marker_end = obstacle.get("markerEnd")
+    source_en = str(obstacle.get("source_en", ""))
+
+    if marker_start == "" or marker_end == "":
+        raise ValueError(f"Obstacle missing markerStart/markerEnd: {obstacle!r}")
+
+    try:
+        start = int(marker_start)
+        end = int(marker_end)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"Obstacle markerStart/markerEnd must be integers: {obstacle!r}") from exc
+
+    if start < 0 or end <= start or end > len(source_en):
+        raise ValueError(f"Obstacle markerStart/markerEnd out of bounds: {obstacle!r}")
+
+
+def validate_marker_ranges(obstacles: Iterable[Dict[str, object]]) -> None:
+    for obstacle in obstacles:
+        validate_marker_range(obstacle)
+
+
+def removeNestedComprehensionObstacles(obstacles: List[Dict[str, object]]) -> List[Dict[str, object]]:
+    """Remove child comprehension obstacles contained by a larger range in the same source_en."""
+    removed_indexes = set()
+
+    for index, obstacle in enumerate(obstacles):
+        if obstacle.get("type") != "comprehension":
+            continue
+        start = int(obstacle["markerStart"])
+        end = int(obstacle["markerEnd"])
+        source_en = obstacle.get("source_en", "")
+
+        for other_index, other in enumerate(obstacles):
+            if index == other_index or other.get("type") != "comprehension":
+                continue
+            if other.get("source_en", "") != source_en:
+                continue
+
+            other_start = int(other["markerStart"])
+            other_end = int(other["markerEnd"])
+            contains = other_start <= start and end <= other_end
+            strictly_larger = other_start < start or end < other_end
+            if contains and strictly_larger:
+                removed_indexes.add(index)
+                break
+
+    return [obstacle for index, obstacle in enumerate(obstacles) if index not in removed_indexes]
+
+
+def comprehension_dedupe_key(obstacle: Dict[str, object]) -> str:
+    for field in ("prototype", "normalizedText", "baseForm", "phrase", "text"):
+        value = compact_for_phrase(str(obstacle.get(field, "")))
+        if value:
+            return value
+    return compact_for_phrase(str(obstacle.get("source_en", "")))
+
+
+def dedupe_episode_obstacles(obstacles: List[Dict[str, object]]) -> List[Dict[str, object]]:
+    seen = set()
+    deduped = []
+
+    for obstacle in obstacles:
+        if obstacle.get("type") == "vocabulary":
+            key = (
+                "vocabulary",
+                compact_for_phrase(str(obstacle.get("word", ""))),
+                str(obstacle.get("partOfSpeech", "")).strip().lower(),
+                str(obstacle.get("sentenceMeaning", "")).strip().lower(),
+            )
+        elif obstacle.get("type") == "comprehension":
+            key = ("comprehension", comprehension_dedupe_key(obstacle))
+        else:
+            key = (str(obstacle.get("type", "")), compact_for_phrase(str(obstacle.get("text", ""))))
+
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(obstacle)
+
+    return deduped
 
 
 def sort_obstacles(obstacles: List[Dict[str, object]]) -> List[Dict[str, object]]:
@@ -619,6 +741,7 @@ def validate_vocab_obstacles(obstacles: Iterable[Dict[str, object]]) -> None:
 
 def write_json(path: Path, obstacles: List[Dict[str, object]]) -> None:
     validate_vocab_obstacles(obstacles)
+    validate_marker_ranges(obstacles)
     payload = {
         "version": VERSION,
         "input": str(INPUT_CSV),
@@ -633,6 +756,7 @@ def write_json(path: Path, obstacles: List[Dict[str, object]]) -> None:
 
 def write_csv(path: Path, obstacles: List[Dict[str, object]]) -> None:
     validate_vocab_obstacles(obstacles)
+    validate_marker_ranges(obstacles)
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8-sig", newline="") as file_obj:
         writer = csv.DictWriter(file_obj, fieldnames=OUTPUT_FIELDS, extrasaction="ignore", lineterminator="\n")
@@ -708,6 +832,8 @@ def validate_rule_libraries() -> None:
 def generate_obstacles(rows: Sequence[SubtitleRow]) -> List[Dict[str, object]]:
     obstacles = generate_vocabulary_obstacles(rows)
     obstacles.extend(generate_comprehension_obstacles(rows))
+    obstacles = removeNestedComprehensionObstacles(obstacles)
+    obstacles = dedupe_episode_obstacles(obstacles)
     return sort_obstacles(obstacles)
 
 
