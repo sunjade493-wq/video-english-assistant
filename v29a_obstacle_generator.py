@@ -45,6 +45,8 @@ OUTPUT_FIELDS = [
     "grammar",
     "source_en",
     "source_zh",
+    "markerStart",
+    "markerEnd",
 ]
 
 VOCAB_REQUIRED_FIELDS = (
@@ -229,16 +231,27 @@ VOCABULARY_DICTIONARY: List[Dict[str, str]] = [
 ]
 
 # ---------------------------------------------------------------------------
+# V2.6F Comprehension Exclusions
+# ---------------------------------------------------------------------------
+# These ordinary spoken patterns may still contain vocabulary obstacles, but
+# they must not be generated as comprehension obstacles in V2.6F.
+COMPREHENSION_EXCLUSION_PATTERNS: Tuple[str, ...] = (
+    "Can you believe",
+    "Are you serious",
+    "Would you mind",
+    "Do you know",
+    "I think so",
+    "I hope so",
+    "I guess so",
+    "Thank you",
+    "Good morning",
+)
+
+# ---------------------------------------------------------------------------
 # Comprehension Patterns
 # ---------------------------------------------------------------------------
 # Required shape for every entry: literal, actual, grammar.
 COMPREHENSION_PATTERNS: List[Dict[str, str]] = [
-    {
-        "text": "Can you believe",
-        "literal": "你能相信吗",
-        "actual": "表示惊讶、难以置信，相当于“你敢信吗？”",
-        "grammar": "Can you believe + 从句/名词短语；反问式口语开场，用来强化情绪。",
-    },
     {
         "text": "I can't believe",
         "literal": "我不能相信",
@@ -473,18 +486,23 @@ def word_pattern(word: str) -> re.Pattern[str]:
     return re.compile(rf"(?<![A-Za-z]){body}(?![A-Za-z])", re.IGNORECASE)
 
 
+def phrase_match_span(pattern_text: str, source_en: str) -> Tuple[int, int] | None:
+    """Return marker bounds for a comprehension pattern in the original subtitle."""
+    regex = r"(?<![A-Za-z0-9])" + r"[\s,.;:!?\-—–]+".join(re.escape(part) for part in normalize_text(pattern_text).split()) + r"(?![A-Za-z0-9])"
+    match = re.search(regex, source_en, re.IGNORECASE)
+    if match:
+        return match.start(), match.end()
+    return None
+
+
 def phrase_matches(pattern_text: str, source_en: str) -> bool:
     """Return True if a comprehension pattern appears in the English subtitle."""
-    pattern_norm = compact_for_phrase(pattern_text)
-    source_norm = compact_for_phrase(source_en)
-    if not pattern_norm or not source_norm:
-        return False
-    if pattern_norm in source_norm:
-        return True
+    return phrase_match_span(pattern_text, source_en) is not None
 
-    # Allow one or more spaces in the rule to match punctuation/pauses in the subtitle.
-    regex = r"(?<![a-z0-9])" + r"[\s,.;:!?\-—–]+".join(re.escape(p) for p in pattern_norm.split()) + r"(?![a-z0-9])"
-    return re.search(regex, source_norm, re.IGNORECASE) is not None
+
+def is_excluded_comprehension_obstacle(text: str) -> bool:
+    """Return True when text is frozen as a V2.6F non-obstacle."""
+    return any(phrase_matches(exclusion, text) for exclusion in COMPREHENSION_EXCLUSION_PATTERNS)
 
 
 def parse_sortable_time(value: str) -> Tuple[int, float, str]:
@@ -545,7 +563,8 @@ def generate_vocabulary_obstacles(rows: Iterable[SubtitleRow]) -> List[Dict[str,
         for entry, patterns in compiled:
             if entry["word"].lower() in seen_in_row:
                 continue
-            if any(pattern.search(row.source_en) for pattern in patterns):
+            matching_span = next((match.span() for pattern in patterns if (match := pattern.search(row.source_en))), None)
+            if matching_span:
                 seen_in_row.add(entry["word"].lower())
                 obstacle = blank_obstacle(row, "vocabulary", 1, entry["word"])
                 obstacle.update(
@@ -557,6 +576,8 @@ def generate_vocabulary_obstacles(rows: Iterable[SubtitleRow]) -> List[Dict[str,
                         "partOfSpeech": normalize_part_of_speech(entry),
                         "sentenceMeaning": entry["sentenceMeaning"],
                         "translation": entry["translation"],
+                        "markerStart": matching_span[0],
+                        "markerEnd": matching_span[1],
                     }
                 )
                 obstacles.append(obstacle)
@@ -573,7 +594,8 @@ def generate_comprehension_obstacles(rows: Iterable[SubtitleRow]) -> List[Dict[s
             key = compact_for_phrase(text)
             if key in seen_in_row:
                 continue
-            if phrase_matches(text, row.source_en):
+            matching_span = phrase_match_span(text, row.source_en)
+            if matching_span and not is_excluded_comprehension_obstacle(text):
                 seen_in_row.add(key)
                 obstacle = blank_obstacle(row, "comprehension", 2, text)
                 obstacle.update(
@@ -581,6 +603,8 @@ def generate_comprehension_obstacles(rows: Iterable[SubtitleRow]) -> List[Dict[s
                         "literal": pattern["literal"],
                         "actual": pattern["actual"],
                         "grammar": pattern["grammar"],
+                        "markerStart": matching_span[0],
+                        "markerEnd": matching_span[1],
                     }
                 )
                 obstacles.append(obstacle)
@@ -671,7 +695,6 @@ def validate_rule_libraries() -> None:
         raise RuntimeError(f"Vocabulary Dictionary missing required words: {', '.join(missing_vocab)}")
 
     required_patterns = {
-        "can you believe",
         "i can't believe",
         "according to tradition",
         "hang the bedsheets outside",

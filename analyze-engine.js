@@ -96,6 +96,22 @@
     },
   ];
 
+  const comprehensionExclusionPatterns = [
+    /\bcan\s+you\s+believe\b/i,
+    /\bare\s+you\s+serious\b/i,
+    /\bwould\s+you\s+mind\b/i,
+    /\bdo\s+you\s+know\b/i,
+    /\bi\s+think\s+so\b/i,
+    /\bi\s+hope\s+so\b/i,
+    /\bi\s+guess\s+so\b/i,
+    /\bthank\s+you\b/i,
+    /\bgood\s+morning\b/i,
+  ];
+
+  function isExcludedComprehensionObstacle(text) {
+    return comprehensionExclusionPatterns.some((pattern) => pattern.test(String(text || '')));
+  }
+
   function normalizeWord(word) {
     return String(word || '').toLowerCase().replace(/^'+|'+$/g, '');
   }
@@ -263,7 +279,7 @@
     return comprehensionMockEntries.reduce((result, entry) => {
       const match = findComprehensionMatch(subtitleItem.text, entry);
 
-      if (!match) {
+      if (!match || isExcludedComprehensionObstacle(match.surfaceText)) {
         return result;
       }
 
@@ -326,5 +342,7 @@
     levels: vocabularyLevels,
     vocabularyMockEntries,
     comprehensionMockEntries,
+    comprehensionExclusionPatterns,
+    isExcludedComprehensionObstacle,
   };
 }(typeof window !== 'undefined' ? window : globalThis));
