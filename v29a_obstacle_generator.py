@@ -21,7 +21,7 @@ import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, List, Sequence, Tuple
+from typing import Dict, Iterable, List, Optional, Sequence, Tuple
 
 VERSION = "v29a"
 INPUT_CSV = Path("output_text/v28d_bilingual_subtitles.csv")
@@ -473,18 +473,33 @@ def word_pattern(word: str) -> re.Pattern[str]:
     return re.compile(rf"(?<![A-Za-z]){body}(?![A-Za-z])", re.IGNORECASE)
 
 
-def phrase_matches(pattern_text: str, source_en: str) -> bool:
-    """Return True if a comprehension pattern appears in the English subtitle."""
+def phrase_match(pattern_text: str, source_en: str) -> Optional[re.Match[str]]:
+    """Return a comprehension match in the English subtitle when available."""
     pattern_norm = compact_for_phrase(pattern_text)
     source_norm = compact_for_phrase(source_en)
     if not pattern_norm or not source_norm:
-        return False
-    if pattern_norm in source_norm:
-        return True
+        return None
+
+    exact_pattern = re.compile(re.escape(pattern_text), re.IGNORECASE)
+    exact_match = exact_pattern.search(source_en)
+    if exact_match:
+        return exact_match
 
     # Allow one or more spaces in the rule to match punctuation/pauses in the subtitle.
     regex = r"(?<![a-z0-9])" + r"[\s,.;:!?\-—–]+".join(re.escape(p) for p in pattern_norm.split()) + r"(?![a-z0-9])"
-    return re.search(regex, source_norm, re.IGNORECASE) is not None
+    return re.search(regex, source_en, re.IGNORECASE)
+
+
+def phrase_matches(pattern_text: str, source_en: str) -> bool:
+    """Return True if a comprehension pattern appears in the English subtitle."""
+    return phrase_match(pattern_text, source_en) is not None
+
+
+def add_marker_bounds(obstacle: Dict[str, object], match: Optional[re.Match[str]]) -> None:
+    if not match:
+        return
+    obstacle["markerStart"] = match.start()
+    obstacle["markerEnd"] = match.end()
 
 
 def parse_sortable_time(value: str) -> Tuple[int, float, str]:
@@ -533,6 +548,25 @@ def blank_obstacle(row: SubtitleRow, obstacle_type: str, priority: int, text: st
     }
 
 
+
+def normalize_dedup_key_part(value: object) -> str:
+    return " ".join(str(value or "").strip().lower().split())
+
+
+def makeVocabularyDedupKey(item: Dict[str, object]) -> str:
+    return "|".join(
+        normalize_dedup_key_part(item.get(key))
+        for key in ("word", "partOfSpeech", "sentenceMeaning")
+    )
+
+
+def makeComprehensionDedupKey(item: Dict[str, object]) -> str:
+    for key in ("prototype", "normalizedText", "baseForm", "phrase", "text"):
+        value = normalize_dedup_key_part(item.get(key))
+        if value:
+            return value
+    return ""
+
 def generate_vocabulary_obstacles(rows: Iterable[SubtitleRow]) -> List[Dict[str, object]]:
     compiled = []
     for entry in VOCABULARY_DICTIONARY:
@@ -543,11 +577,17 @@ def generate_vocabulary_obstacles(rows: Iterable[SubtitleRow]) -> List[Dict[str,
     for row in rows:
         seen_in_row = set()
         for entry, patterns in compiled:
-            if entry["word"].lower() in seen_in_row:
+            vocab_dedup_key = makeVocabularyDedupKey({
+                **entry,
+                "partOfSpeech": normalize_part_of_speech(entry),
+            })
+            if vocab_dedup_key in seen_in_row:
                 continue
-            if any(pattern.search(row.source_en) for pattern in patterns):
-                seen_in_row.add(entry["word"].lower())
+            match = next((pattern.search(row.source_en) for pattern in patterns if pattern.search(row.source_en)), None)
+            if match:
+                seen_in_row.add(vocab_dedup_key)
                 obstacle = blank_obstacle(row, "vocabulary", 1, entry["word"])
+                add_marker_bounds(obstacle, match)
                 obstacle.update(
                     {
                         "word": entry["word"],
@@ -570,12 +610,14 @@ def generate_comprehension_obstacles(rows: Iterable[SubtitleRow]) -> List[Dict[s
         seen_in_row = set()
         for pattern in COMPREHENSION_PATTERNS:
             text = pattern["text"]
-            key = compact_for_phrase(text)
+            key = makeComprehensionDedupKey(pattern)
             if key in seen_in_row:
                 continue
-            if phrase_matches(text, row.source_en):
+            match = phrase_match(text, row.source_en)
+            if match:
                 seen_in_row.add(key)
                 obstacle = blank_obstacle(row, "comprehension", 2, text)
+                add_marker_bounds(obstacle, match)
                 obstacle.update(
                     {
                         "literal": pattern["literal"],
