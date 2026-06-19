@@ -462,3 +462,28 @@ Frozen generation rules:
 - A future Native Expressions / 本集地道表达 system may cover ordinary useful spoken patterns, but that system is deferred to V3 or a later version and is not part of the current MVP.
 
 This is a generation-rule freeze only. It does not require Runtime UI changes unless a later implementation task explicitly requests them.
+
+## 18. V2.6H Obstacle Data Contract Freeze
+
+Status: FROZEN
+
+Date: 2026-06-19
+
+Source: `docs/V26H_OBSTACLE_DATA_CONTRACT_FREEZE.md`
+
+V2.6H freezes the final obstacle data contract after the V2.6F / V2.6G merge and video validation, before P0 Real Episode Video work.
+
+This is documentation-only. It does not modify Runtime, UI, generator logic, `output_text` data files, or regenerated obstacles.
+
+Frozen V2.6H scope:
+
+- V2.6F comprehension obstacle boundary.
+- V2.6G episode-level learning-item dedupe.
+- Nested comprehension cleanup by same-subtitle marker containment.
+- Subtitle `markerStart` / `markerEnd` position contract.
+- Future burned-in subtitle token / bounding-box mapping direction.
+- Current validated baseline: `obstacle_count = 48`, `believe` appears once as vocabulary, `Can you believe` is absent as comprehension, nested child comprehension obstacles are removed, subtitle dashed underline markers are restored, and heat marker style remains pure text bracket labels.
+
+Forbidden regressions include the comprehension boundary, episode-level dedupe, nested comprehension cleanup, marker generation, Runtime read-only marker rendering, heat marker bracket style, and the V2.4A UI baseline.
+
+Next step remains P0 Real Episode Video after this freeze/tag.
