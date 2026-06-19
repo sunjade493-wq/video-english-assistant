@@ -590,13 +590,11 @@ function warnInvalidFrozenMarker(row, rowIndex, reason) {
 }
 
 function normalizeFrozenMarkerBounds(row, rowIndex, segment) {
-  const hasMarkerStart = row?.markerStart !== null && row?.markerStart !== undefined && row?.markerStart !== '';
-  const hasMarkerEnd = row?.markerEnd !== null && row?.markerEnd !== undefined && row?.markerEnd !== '';
-  const markerStart = Number(row?.markerStart);
-  const markerEnd = Number(row?.markerEnd);
+  const markerStart = row?.markerStart;
+  const markerEnd = row?.markerEnd;
 
-  if (!hasMarkerStart || !hasMarkerEnd || !Number.isFinite(markerStart) || !Number.isFinite(markerEnd)) {
-    warnInvalidFrozenMarker(row, rowIndex, 'markerStart/markerEnd are missing or not finite');
+  if (!Number.isInteger(markerStart) || !Number.isInteger(markerEnd)) {
+    warnInvalidFrozenMarker(row, rowIndex, 'markerStart/markerEnd are missing or not integers');
     return { markerStart: null, markerEnd: null };
   }
 
@@ -976,8 +974,8 @@ function getActiveSubtitleObstacles(segment = getCurrentSubtitleSegment()) {
 }
 
 function getMarkerRangeForObstacle(segment, obstacle) {
-  const markerStart = Number.isFinite(obstacle.markerStart) ? obstacle.markerStart : null;
-  const markerEnd = Number.isFinite(obstacle.markerEnd) ? obstacle.markerEnd : null;
+  const markerStart = Number.isInteger(obstacle.markerStart) ? obstacle.markerStart : null;
+  const markerEnd = Number.isInteger(obstacle.markerEnd) ? obstacle.markerEnd : null;
 
   if (markerStart === null || markerEnd === null || markerEnd <= markerStart) {
     return null;
