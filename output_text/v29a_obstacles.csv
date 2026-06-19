@@ -1,7 +1,5 @@
 ﻿start,end,type,priority,text,word,lemma,phonetic,partOfSpeech,sentenceMeaning,translation,literal,actual,grammar,source_en,source_zh
 6.0,10.0,vocabulary,1,believe,believe,believe,/bɪˈliːv/,vt./vi.,相信,相信；认为,,,,Can you believe our little lamb is finally getting married?,你能相信我们的小羊羔终于要嫁人了吗
-10.0,12.0,vocabulary,1,believe,believe,believe,/bɪˈliːv/,vt./vi.,相信,相信；认为,,,,He can't believe it.,他肯定不信
-47.5,49.5,vocabulary,1,believe,believe,believe,/bɪˈliːv/,vt./vi.,相信,相信；认为,,,,I can't believe we're actually married.,真不敢相信我们真的结婚了
 49.5,51.5,vocabulary,1,official,official,official,/əˈfɪʃəl/,adj./n.,正式的,官方的；正式的；官员,,,,"It's official. According to tradition,",正式完婚了 根据传统
 49.5,51.5,vocabulary,1,tradition,tradition,tradition,/trəˈdɪʃən/,n.,传统,传统；惯例,,,,"It's official. According to tradition,",正式完婚了 根据传统
 51.5,53.0,vocabulary,1,bedsheet,bedsheet,bedsheet,/ˈbedʃiːt/,n.,床单,床单,,,,we should hang the bedsheets outside,我们应该把床单挂在外面
@@ -32,13 +30,7 @@
 104.0,105.0,vocabulary,1,pyramid,pyramid,pyramid,/ˈpɪrəmɪd/,n.,金字塔,金字塔,,,,We built the Wall We built the pyramids,我们建了长城 我们建了金字塔
 105.0,106.0,vocabulary,1,mystery,mystery,mystery,/ˈmɪstəri/,n.,谜团,谜；神秘的事物,,,,"Math, Science, History, unraveling the mystery",数学 科学 历史 解开了谜团
 105.0,106.0,vocabulary,1,unravel,unravel,unravel,/ʌnˈrævəl/,vt./vi.,解开,解开；阐明；逐渐崩解,,,,"Math, Science, History, unraveling the mystery",数学 科学 历史 解开了谜团
-106.0,108.0,vocabulary,1,mystery,mystery,mystery,/ˈmɪstəri/,n.,谜团,谜；神秘的事物,,,,"♪ Math, Science, History, unraveling the mystery ♪",♪ 数学 科学 历史 解开了谜团 ♪
-106.0,108.0,vocabulary,1,unravel,unravel,unravel,/ʌnˈrævəl/,vt./vi.,解开,解开；阐明；逐渐崩解,,,,"♪ Math, Science, History, unraveling the mystery ♪",♪ 数学 科学 历史 解开了谜团 ♪
-108.0,110.0,vocabulary,1,start,start,start,/stɑːrt/,n./vi./vt.,开始,开始；开端,,,,That all started with a big bang,一切都始于大爆炸
-116.5,119.5,vocabulary,1,honeymoon,honeymoon,honeymoon,/ˈhʌnimuːn/,n.,蜜月,蜜月,,,,Is it nice having Sheldon and Amy away on their honeymoon?,谢尔顿跟艾米出去度蜜月你们是不是很爽啊
 119.5,122.5,vocabulary,1,alone,alone,alone,/əˈloʊn/,adj./adv.,独处的,独自；单独,,,,"Yeah, because now Leonard and I get all this alone time.",是啊 因为我跟莱纳德有大把的独处时间
-122.5,124.5,vocabulary,1,alone,alone,alone,/əˈloʊn/,adj./adv.,独处的,独自；单独,,,,But you're not alone. We're here.,但你俩不能独处啊 我们在呢
-6.0,10.0,comprehension,2,Can you believe,,,,,,,你能相信吗,表示惊讶、难以置信，相当于“你敢信吗？”,Can you believe + 从句/名词短语；反问式口语开场，用来强化情绪。,Can you believe our little lamb is finally getting married?,你能相信我们的小羊羔终于要嫁人了吗
 47.5,49.5,comprehension,2,I can't believe,,,,,,,我不能相信,我真不敢相信；强调说话人惊讶或不满。,I can't believe + 从句/宾语；否定情态动词表达强烈主观反应。,I can't believe we're actually married.,真不敢相信我们真的结婚了
 49.5,51.5,comprehension,2,According to tradition,,,,,,,根据传统,按习俗来说；引出某个传统规定或社会惯例。,According to + 名词；介词短语作状语，说明信息依据。,"It's official. According to tradition,",正式完婚了 根据传统
 51.5,53.0,comprehension,2,hang the bedsheets outside,,,,,,,把床单挂到外面,指按传统展示床单，语境里带有婚俗和尴尬的喜剧效果。,hang + 宾语 + 地点副词；祈使/不定式结构中常省略主语。,we should hang the bedsheets outside,我们应该把床单挂在外面

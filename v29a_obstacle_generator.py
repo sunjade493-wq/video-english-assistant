@@ -379,6 +379,67 @@ def compact_for_phrase(value: str) -> str:
     return re.sub(r"\s+", " ", value).strip()
 
 
+
+V26F_EXCLUDED_COMPREHENSION_OBSTACLES = {
+    compact_for_phrase(text)
+    for text in (
+        "Can you believe",
+        "Are you serious",
+        "Would you mind",
+        "Do you know",
+        "I think so",
+        "I hope so",
+        "I guess so",
+        "Thank you",
+        "Good morning",
+    )
+}
+
+
+def makeVocabularyDedupKey(obstacle: Dict[str, object]) -> Tuple[str, str, str]:
+    """Return the frozen episode-level vocabulary dedupe key."""
+    return (
+        normalize_text(str(obstacle.get("word", ""))).lower(),
+        normalize_text(str(obstacle.get("partOfSpeech", ""))).lower(),
+        normalize_text(str(obstacle.get("sentenceMeaning", ""))).lower(),
+    )
+
+
+def makeComprehensionDedupKey(obstacle: Dict[str, object]) -> str:
+    """Return the frozen episode-level comprehension dedupe key.
+
+    Prefer prototype, then normalizedText, baseForm, phrase, and finally text.
+    """
+    for field in ("prototype", "normalizedText", "baseForm", "phrase", "text"):
+        value = normalize_text(str(obstacle.get(field, "")))
+        if value:
+            return compact_for_phrase(value)
+    return ""
+
+
+def dedupeEpisodeLearningItems(obstacles: Iterable[Dict[str, object]]) -> List[Dict[str, object]]:
+    """Dedupe sorted episode learning items while preserving first occurrence."""
+    seen_vocabulary = set()
+    seen_comprehension = set()
+    deduped: List[Dict[str, object]] = []
+
+    for obstacle in obstacles:
+        obstacle_type = obstacle.get("type")
+        if obstacle_type == "vocabulary":
+            key = makeVocabularyDedupKey(obstacle)
+            if key in seen_vocabulary:
+                continue
+            seen_vocabulary.add(key)
+        elif obstacle_type == "comprehension":
+            key = makeComprehensionDedupKey(obstacle)
+            if key in seen_comprehension:
+                continue
+            seen_comprehension.add(key)
+        deduped.append(obstacle)
+
+    return deduped
+
+
 def field_value(row: Dict[str, str], candidates: Sequence[str]) -> str:
     """Return the first non-empty field from a flexible list of header names."""
     lower_map = {str(key).strip().lower(): value for key, value in row.items() if key is not None}
@@ -571,6 +632,8 @@ def generate_comprehension_obstacles(rows: Iterable[SubtitleRow]) -> List[Dict[s
         for pattern in COMPREHENSION_PATTERNS:
             text = pattern["text"]
             key = compact_for_phrase(text)
+            if key in V26F_EXCLUDED_COMPREHENSION_OBSTACLES:
+                continue
             if key in seen_in_row:
                 continue
             if phrase_matches(text, row.source_en):
@@ -708,7 +771,7 @@ def validate_rule_libraries() -> None:
 def generate_obstacles(rows: Sequence[SubtitleRow]) -> List[Dict[str, object]]:
     obstacles = generate_vocabulary_obstacles(rows)
     obstacles.extend(generate_comprehension_obstacles(rows))
-    return sort_obstacles(obstacles)
+    return dedupeEpisodeLearningItems(sort_obstacles(obstacles))
 
 
 def main() -> int:
