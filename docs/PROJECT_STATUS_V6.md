@@ -442,3 +442,23 @@ V2.4A MVP UI baseline is frozen as the currently accepted player-page state. The
 This is a documentation-only baseline record. It must not be treated as permission to change UI logic, styling, or obstacle data structures.
 
 Future work should avoid reworking these accepted modules unless an explicit unfreeze decision is made. Recommended next P0 work: real episode video, subtitle downward adjustment, episode selector, speed controls, and removal of demo-only workflow.
+
+## 17. V2.6F Comprehension Obstacle Generation Freeze
+
+Status: FROZEN
+
+Date: 2026-06-19
+
+Source: `docs/V26F_COMPREHENSION_OBSTACLE_GENERATION_FREEZE.md`
+
+V2.6F freezes the Comprehension Obstacle generation boundary as expressions where the learner may know every individual word but still likely misunderstands the expression.
+
+Frozen generation rules:
+
+- Comprehension Obstacles must be fixed, non-literal, idiomatic, slang, culturally loaded, phrasal-verb-like, or otherwise not directly derivable from individual words.
+- Ordinary tone patterns, politeness patterns, high-frequency spoken sentence patterns, and generally useful learnable sentences do not qualify by default.
+- `Can you believe...?`, `Are you serious?`, and `Would you mind...?` are temporarily classified as non-obstacles for V2.6F.
+- `Voila` / `voilà` should be treated as a Vocabulary Obstacle candidate with POS `interj.`, not as a Comprehension Obstacle.
+- A future Native Expressions / 本集地道表达 system may cover ordinary useful spoken patterns, but that system is deferred to V3 or a later version and is not part of the current MVP.
+
+This is a generation-rule freeze only. It does not require Runtime UI changes unless a later implementation task explicitly requests them.
