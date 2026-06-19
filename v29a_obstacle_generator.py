@@ -45,6 +45,8 @@ OUTPUT_FIELDS = [
     "grammar",
     "source_en",
     "source_zh",
+    "markerStart",
+    "markerEnd",
 ]
 
 VOCAB_REQUIRED_FIELDS = (
@@ -232,6 +234,11 @@ VOCABULARY_DICTIONARY: List[Dict[str, str]] = [
 # Comprehension Patterns
 # ---------------------------------------------------------------------------
 # Required shape for every entry: literal, actual, grammar.
+EXCLUDED_COMPREHENSION_TEXTS = {
+    "can you believe",
+    "with a satisfying snap",
+}
+
 COMPREHENSION_PATTERNS: List[Dict[str, str]] = [
     {
         "text": "Can you believe",
@@ -473,19 +480,26 @@ def word_pattern(word: str) -> re.Pattern[str]:
     return re.compile(rf"(?<![A-Za-z]){body}(?![A-Za-z])", re.IGNORECASE)
 
 
+def find_phrase_bounds(pattern_text: str, source_en: str) -> Tuple[int, int] | None:
+    """Return exact source_en character bounds for a normalized phrase match."""
+    pattern_tokens = compact_for_phrase(pattern_text).split()
+    if not pattern_tokens:
+        return None
+
+    token_pattern = r"[^a-z0-9']+".join(re.escape(token) for token in pattern_tokens)
+    match = re.search(rf"(?<![a-z0-9']){token_pattern}(?![a-z0-9'])", source_en, re.IGNORECASE)
+    if not match:
+        return None
+    return match.start(), match.end()
+
+
 def phrase_matches(pattern_text: str, source_en: str) -> bool:
-    """Return True if a comprehension pattern appears in the English subtitle."""
-    pattern_norm = compact_for_phrase(pattern_text)
-    source_norm = compact_for_phrase(source_en)
-    if not pattern_norm or not source_norm:
-        return False
-    if pattern_norm in source_norm:
-        return True
+    return find_phrase_bounds(pattern_text, source_en) is not None
 
-    # Allow one or more spaces in the rule to match punctuation/pauses in the subtitle.
-    regex = r"(?<![a-z0-9])" + r"[\s,.;:!?\-—–]+".join(re.escape(p) for p in pattern_norm.split()) + r"(?![a-z0-9])"
-    return re.search(regex, source_norm, re.IGNORECASE) is not None
 
+def assign_marker_bounds(obstacle: Dict[str, object], start: int, end: int) -> None:
+    obstacle["markerStart"] = start
+    obstacle["markerEnd"] = end
 
 def parse_sortable_time(value: str) -> Tuple[int, float, str]:
     """Return a stable sortable key for numeric, SRT-style, or blank times."""
@@ -545,7 +559,8 @@ def generate_vocabulary_obstacles(rows: Iterable[SubtitleRow]) -> List[Dict[str,
         for entry, patterns in compiled:
             if entry["word"].lower() in seen_in_row:
                 continue
-            if any(pattern.search(row.source_en) for pattern in patterns):
+            match = next((pattern.search(row.source_en) for pattern in patterns if pattern.search(row.source_en)), None)
+            if match:
                 seen_in_row.add(entry["word"].lower())
                 obstacle = blank_obstacle(row, "vocabulary", 1, entry["word"])
                 obstacle.update(
@@ -559,6 +574,7 @@ def generate_vocabulary_obstacles(rows: Iterable[SubtitleRow]) -> List[Dict[str,
                         "translation": entry["translation"],
                     }
                 )
+                assign_marker_bounds(obstacle, match.start(), match.end())
                 obstacles.append(obstacle)
     return obstacles
 
@@ -571,9 +587,10 @@ def generate_comprehension_obstacles(rows: Iterable[SubtitleRow]) -> List[Dict[s
         for pattern in COMPREHENSION_PATTERNS:
             text = pattern["text"]
             key = compact_for_phrase(text)
-            if key in seen_in_row:
+            if key in EXCLUDED_COMPREHENSION_TEXTS or key in seen_in_row:
                 continue
-            if phrase_matches(text, row.source_en):
+            bounds = find_phrase_bounds(text, row.source_en)
+            if bounds:
                 seen_in_row.add(key)
                 obstacle = blank_obstacle(row, "comprehension", 2, text)
                 obstacle.update(
@@ -583,6 +600,7 @@ def generate_comprehension_obstacles(rows: Iterable[SubtitleRow]) -> List[Dict[s
                         "grammar": pattern["grammar"],
                     }
                 )
+                assign_marker_bounds(obstacle, bounds[0], bounds[1])
                 obstacles.append(obstacle)
     return obstacles
 
@@ -612,13 +630,60 @@ def validate_vocab_obstacle(obstacle: Dict[str, object]) -> None:
         raise ValueError(f"Vocabulary obstacle has unsupported partOfSpeech: {obstacle!r}")
 
 
-def validate_vocab_obstacles(obstacles: Iterable[Dict[str, object]]) -> None:
+def validate_marker_bounds(obstacle: Dict[str, object]) -> None:
+    source_en = str(obstacle.get("source_en", ""))
+    marker_start = obstacle.get("markerStart")
+    marker_end = obstacle.get("markerEnd")
+
+    if not isinstance(marker_start, int):
+        raise ValueError(f"Obstacle markerStart missing or not int: {obstacle!r}")
+    if not isinstance(marker_end, int):
+        raise ValueError(f"Obstacle markerEnd missing or not int: {obstacle!r}")
+    if marker_start < 0 or marker_end <= marker_start or marker_end > len(source_en):
+        raise ValueError(f"Obstacle marker bounds invalid for source_en: {obstacle!r}")
+
+
+def validate_obstacles(obstacles: Iterable[Dict[str, object]]) -> None:
     for obstacle in obstacles:
         validate_vocab_obstacle(obstacle)
+        validate_marker_bounds(obstacle)
+
+
+def vocabulary_dedupe_key(obstacle: Dict[str, object]) -> Tuple[str, str, str]:
+    return (
+        compact_for_phrase(str(obstacle.get("word", ""))),
+        str(obstacle.get("partOfSpeech", "")).strip().lower(),
+        str(obstacle.get("sentenceMeaning", "")).strip().lower(),
+    )
+
+
+def comprehension_dedupe_key(obstacle: Dict[str, object]) -> str:
+    for field in ("prototype", "normalizedText", "baseForm", "phrase", "text"):
+        value = compact_for_phrase(str(obstacle.get(field, "")))
+        if value:
+            return value
+    return ""
+
+
+def dedupe_episode_obstacles(obstacles: Iterable[Dict[str, object]]) -> List[Dict[str, object]]:
+    seen = set()
+    deduped = []
+    for obstacle in obstacles:
+        if obstacle.get("type") == "vocabulary":
+            key = ("vocab",) + vocabulary_dedupe_key(obstacle)
+        elif obstacle.get("type") == "comprehension":
+            key = ("comprehension", comprehension_dedupe_key(obstacle))
+        else:
+            key = (str(obstacle.get("type", "")), str(obstacle.get("text", "")))
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(obstacle)
+    return deduped
 
 
 def write_json(path: Path, obstacles: List[Dict[str, object]]) -> None:
-    validate_vocab_obstacles(obstacles)
+    validate_obstacles(obstacles)
     payload = {
         "version": VERSION,
         "input": str(INPUT_CSV),
@@ -632,7 +697,7 @@ def write_json(path: Path, obstacles: List[Dict[str, object]]) -> None:
 
 
 def write_csv(path: Path, obstacles: List[Dict[str, object]]) -> None:
-    validate_vocab_obstacles(obstacles)
+    validate_obstacles(obstacles)
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8-sig", newline="") as file_obj:
         writer = csv.DictWriter(file_obj, fieldnames=OUTPUT_FIELDS, extrasaction="ignore", lineterminator="\n")
@@ -671,7 +736,6 @@ def validate_rule_libraries() -> None:
         raise RuntimeError(f"Vocabulary Dictionary missing required words: {', '.join(missing_vocab)}")
 
     required_patterns = {
-        "can you believe",
         "i can't believe",
         "according to tradition",
         "hang the bedsheets outside",
@@ -708,7 +772,7 @@ def validate_rule_libraries() -> None:
 def generate_obstacles(rows: Sequence[SubtitleRow]) -> List[Dict[str, object]]:
     obstacles = generate_vocabulary_obstacles(rows)
     obstacles.extend(generate_comprehension_obstacles(rows))
-    return sort_obstacles(obstacles)
+    return sort_obstacles(dedupe_episode_obstacles(obstacles))
 
 
 def main() -> int:

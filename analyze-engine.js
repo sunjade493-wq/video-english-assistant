@@ -205,6 +205,20 @@
     return `${type}-${subtitleId}-${safeBaseForm}-${start}-${occurrence}`;
   }
 
+  function getVocabularyDedupeKey(entry, baseForm) {
+    return [
+      normalizeWord(entry.word || baseForm),
+      String(entry.partOfSpeech || '').trim().toLowerCase(),
+      String(entry.sentenceMeaning || '').trim().toLowerCase(),
+    ].join('|');
+  }
+
+  function getComprehensionDedupeKey(entry) {
+    return [entry.prototype, entry.normalizedText, entry.baseForm, entry.phrase, entry.text]
+      .map((value) => normalizeText(value || ''))
+      .find(Boolean) || '';
+  }
+
   function createLegacyObstacleId(type, baseForm, occurrence) {
     const safeBaseForm = normalizeWord(baseForm).replace(/[^a-z0-9']+/g, '-').replace(/^-+|-+$/g, '');
 
@@ -227,7 +241,7 @@
       }
 
       const entry = vocabularyMockEntries[baseForm] || createFallbackVocabEntry(baseForm);
-      const occurrenceKey = `vocab:${subtitleItem.id}:${baseForm}`;
+      const occurrenceKey = `vocab:${subtitleItem.id}:${getVocabularyDedupeKey(entry, baseForm)}`;
       const occurrence = occurrenceCounts.get(occurrenceKey) || 0;
       occurrenceCounts.set(occurrenceKey, occurrence + 1);
       const start = subtitleItem.start + rawWordMatch.index;
@@ -267,7 +281,7 @@
         return result;
       }
 
-      const occurrenceKey = `comprehension:${subtitleItem.id}:${entry.baseForm}`;
+      const occurrenceKey = `comprehension:${subtitleItem.id}:${getComprehensionDedupeKey(entry)}`;
       const occurrence = occurrenceCounts.get(occurrenceKey) || 0;
       occurrenceCounts.set(occurrenceKey, occurrence + 1);
       const start = subtitleItem.start + match.start;
