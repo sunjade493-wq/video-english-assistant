@@ -3,6 +3,7 @@ const REAL_SUBTITLE_DATA_URL = 'output_text/v28d_bilingual_subtitles.json';
 const REAL_OBSTACLE_DATA_URL = 'output_text/v29a_obstacles.json';
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
 const EPISODE_PROGRESS_STORAGE_PREFIX = 'videoEnglishAssistant.episodeProgress.';
+const DEFAULT_VIDEO_SOURCE = 'assets/videos/TBBT_S12E01.mp4';
 
 const SUPPORTED_PART_OF_SPEECH_FORMATS = new Set([
   'n.',
@@ -332,7 +333,7 @@ function analyzeSubtitleText(text, options = {}) {
 
 let subtitleSegments = [];
 let currentSegmentIndex = 0;
-let isVideoPlaying = true;
+let isVideoPlaying = false;
 let playbackTimer = null;
 let obstacles = [];
 let hiddenObstacleIds = new Set();
@@ -362,6 +363,8 @@ const conqueredObstacleCount = document.querySelector('#conqueredObstacleCount')
 const remainingObstacleCount = document.querySelector('#remainingObstacleCount');
 const episodeUndoButton = document.querySelector('#episodeUndoButton');
 const currentSubtitleLine = document.querySelector('#currentSubtitleLine');
+const realVideo = document.querySelector('#realVideo');
+const videoPlaceholder = document.querySelector('#videoPlaceholder');
 const playIcon = document.querySelector('#playIcon');
 const videoStatusText = document.querySelector('#videoStatusText');
 const videoFrame = document.querySelector('.video-frame');
@@ -476,6 +479,9 @@ function handlePlaybackSpeedSelection(event) {
   }
 
   playbackRate = nextPlaybackRate;
+  if (realVideo) {
+    realVideo.playbackRate = playbackRate;
+  }
   renderPlaybackSpeedControls();
   closeFooterMenus();
 }
@@ -876,7 +882,28 @@ function getCurrentSubtitleSegment() {
   return subtitleSegments[currentSegmentIndex] || null;
 }
 
+function hasLoadedVideoMetadata() {
+  return Boolean(realVideo && Number.isFinite(realVideo.duration) && realVideo.duration > 0);
+}
+
+function getVideoCurrentTimeMs() {
+  if (!realVideo || !Number.isFinite(realVideo.currentTime)) {
+    return currentTimeMs;
+  }
+
+  return Math.max(0, realVideo.currentTime * 1000);
+}
+
+function syncRuntimeToVideoTime() {
+  currentTimeMs = clampTime(getVideoCurrentTimeMs());
+  currentSegmentIndex = getSegmentIndexForTime(currentTimeMs);
+}
+
 function getTotalDurationMs() {
+  if (hasLoadedVideoMetadata()) {
+    return Math.max(SEGMENT_DURATION_MS, realVideo.duration * 1000);
+  }
+
   const timedDuration = subtitleSegments.reduce((maxEndTime, segment) => (
     Number.isFinite(segment.endMs) ? Math.max(maxEndTime, segment.endMs) : maxEndTime
   ), 0);
@@ -1182,14 +1209,26 @@ function getLearningStateLabel() {
 }
 
 function renderVideoState() {
+  const canPlayVideo = hasLoadedVideoMetadata();
   playIcon.textContent = isVideoPlaying ? '⏸' : '▶';
 
   if (timelinePlayButton) {
     timelinePlayButton.textContent = isVideoPlaying ? '⏸（暂停）' : '▶（播放）';
     timelinePlayButton.setAttribute('aria-label', isVideoPlaying ? '暂停视频' : '播放视频');
+    timelinePlayButton.disabled = !canPlayVideo;
   }
 
-  videoStatusText.textContent = `V2.4A Obstacle Timeline · ${getLearningStateLabel()}`;
+  if (videoTimeline) {
+    videoTimeline.disabled = !canPlayVideo;
+  }
+
+  if (videoPlaceholder) {
+    videoPlaceholder.classList.toggle('is-hidden', canPlayVideo);
+  }
+
+  videoStatusText.textContent = canPlayVideo
+    ? `V2.4A Obstacle Timeline · ${getLearningStateLabel()}`
+    : `V2.4A Obstacle Timeline · Waiting for ${DEFAULT_VIDEO_SOURCE}`;
   renderSubtitleMarkers();
   renderTimelines();
 }
@@ -1220,6 +1259,12 @@ function updatePlaybackProgress() {
     return;
   }
 
+  if (hasLoadedVideoMetadata()) {
+    syncRuntimeToVideoTime();
+    renderVideoState();
+    return;
+  }
+
   const totalDuration = getTotalDurationMs();
   const elapsedMs = Date.now() - playbackStartedAt;
   const nextTimeMs = (playbackStartedTimeMs + elapsedMs) % totalDuration;
@@ -1244,7 +1289,7 @@ function startPlaybackTimer() {
 }
 
 function syncPlaybackClock() {
-  if (isVideoPlaying) {
+  if (isVideoPlaying && !hasLoadedVideoMetadata()) {
     if (!playbackTimer) {
       startPlaybackTimer();
     } else {
@@ -1261,6 +1306,10 @@ function syncPlaybackClock() {
 function seekToTime(timeMs) {
   const wasPlaying = isVideoPlaying;
   const nextTimeMs = clampTime(timeMs);
+
+  if (hasLoadedVideoMetadata()) {
+    realVideo.currentTime = nextTimeMs / 1000;
+  }
   const nextSegmentIndex = getSegmentIndexForTime(nextTimeMs >= getTotalDurationMs() ? 0 : nextTimeMs);
   const didSubtitleChange = nextSegmentIndex !== currentSegmentIndex;
 
@@ -1283,6 +1332,11 @@ function seekToTime(timeMs) {
 }
 
 function handleTimelineInput(event) {
+  if (!hasLoadedVideoMetadata()) {
+    renderTimelines();
+    return;
+  }
+
   const percent = Number(event.target.value) || 0;
   seekToTime((percent / 100) * getTotalDurationMs());
 }
@@ -1556,6 +1610,11 @@ function openBottomSheet(cluster) {
 let lastVideoActivationTime = 0;
 
 function toggleVideoPlayback() {
+  if (!hasLoadedVideoMetadata()) {
+    renderVideoState();
+    return;
+  }
+
   setVideoPlayback(!isVideoPlaying);
 }
 
@@ -1617,12 +1676,29 @@ function dismissLearningPauseHint(event) {
 }
 
 function setVideoPlayback(nextIsPlaying) {
+  if (!hasLoadedVideoMetadata()) {
+    isVideoPlaying = false;
+    renderVideoState();
+    renderCards();
+    return;
+  }
+
   if (isVideoPlaying && !nextIsPlaying) {
-    currentTimeMs = (playbackStartedTimeMs + (Date.now() - playbackStartedAt)) % getTotalDurationMs();
-    currentSegmentIndex = getSegmentIndexForTime(currentTimeMs);
+    syncRuntimeToVideoTime();
   }
 
   isVideoPlaying = Boolean(nextIsPlaying);
+
+  if (realVideo) {
+    if (isVideoPlaying) {
+      realVideo.play().catch(() => {
+        isVideoPlaying = false;
+        renderVideoState();
+      });
+    } else {
+      realVideo.pause();
+    }
+  }
 
   if (isVideoPlaying) {
     hideLearningPauseHint();
@@ -1995,6 +2071,62 @@ function setLearningTipsMode() {
 function analyzeAndRender(text, options = {}) {
   replaceObstacleStream(analyzeSubtitleText(text, options), text);
   return renderCards();
+}
+
+
+function handleRealVideoMetadataLoaded() {
+  if (!realVideo) {
+    return;
+  }
+
+  realVideo.playbackRate = playbackRate;
+  syncRuntimeToVideoTime();
+  renderVideoState();
+  renderCards();
+}
+
+function handleRealVideoTimeUpdate() {
+  const previousSegmentIndex = currentSegmentIndex;
+  syncRuntimeToVideoTime();
+  renderVideoState();
+
+  if (currentSegmentIndex !== previousSegmentIndex) {
+    renderCards();
+  }
+}
+
+function handleRealVideoPaused() {
+  if (realVideo && realVideo.ended) {
+    syncRuntimeToVideoTime();
+  }
+
+  isVideoPlaying = false;
+  renderVideoState();
+}
+
+function handleRealVideoPlaying() {
+  isVideoPlaying = true;
+  hideLearningPauseHint();
+  renderVideoState();
+}
+
+function handleRealVideoUnavailable() {
+  isVideoPlaying = false;
+  currentTimeMs = 0;
+  currentSegmentIndex = 0;
+  stopPlaybackTimer();
+  renderVideoState();
+}
+
+if (realVideo) {
+  realVideo.addEventListener('loadedmetadata', handleRealVideoMetadataLoaded);
+  realVideo.addEventListener('durationchange', handleRealVideoMetadataLoaded);
+  realVideo.addEventListener('timeupdate', handleRealVideoTimeUpdate);
+  realVideo.addEventListener('seeked', handleRealVideoTimeUpdate);
+  realVideo.addEventListener('playing', handleRealVideoPlaying);
+  realVideo.addEventListener('pause', handleRealVideoPaused);
+  realVideo.addEventListener('ended', handleRealVideoPaused);
+  realVideo.addEventListener('error', handleRealVideoUnavailable);
 }
 
 if (episodeUndoButton) {
