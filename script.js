@@ -59,6 +59,21 @@ const vocabularyLevels = {
     extends: 'cet4',
     words: ['idiom', 'metaphor', 'nonliteral'],
   },
+  tem4: {
+    label: 'TEM-4',
+    extends: 'cet6',
+    words: [],
+  },
+  tem8: {
+    label: 'TEM-8',
+    extends: 'tem4',
+    words: [],
+  },
+  gre: {
+    label: 'GRE',
+    extends: 'tem8',
+    words: [],
+  },
   custom: {
     label: '自定义词汇量',
     extends: 'cet4',
@@ -334,6 +349,8 @@ let timelineRenderTimer = null;
 let activeHeatClusterKey = null;
 let activeDataSource = 'pending';
 let playbackRate = 1;
+let currentVocabularyLevel = DEFAULT_VOCABULARY_LEVEL;
+let openFooterMenuName = null;
 
 const SEGMENT_DURATION_MS = 3600;
 const LEARNING_PAUSE_HINT_STORAGE_KEY = 'videoEnglishAssistant.learningPauseHintDismissed';
@@ -359,8 +376,85 @@ const obstacleBottomSheet = document.querySelector('#obstacleBottomSheet');
 const bottomSheetTitle = document.querySelector('#bottomSheetTitle');
 const bottomSheetContent = document.querySelector('#bottomSheetContent');
 const bottomSheetClose = document.querySelector('#bottomSheetClose');
+const levelMenuButton = document.querySelector('#levelMenuButton');
+const levelMenu = document.querySelector('#levelMenu');
+const episodeMenuButton = document.querySelector('#episodeMenuButton');
+const episodeMenu = document.querySelector('#episodeMenu');
+const speedMenuButton = document.querySelector('#speedMenuButton');
+const speedMenu = document.querySelector('#speedMenu');
+const levelMenuItems = document.querySelectorAll('[data-vocabulary-level]');
 const playbackSpeedButtons = document.querySelectorAll('.playback-speed-button');
 
+
+const footerMenus = [
+  { name: 'level', button: levelMenuButton, menu: levelMenu },
+  { name: 'episodes', button: episodeMenuButton, menu: episodeMenu },
+  { name: 'speed', button: speedMenuButton, menu: speedMenu },
+];
+
+function closeFooterMenus() {
+  openFooterMenuName = null;
+  footerMenus.forEach(({ button, menu }) => {
+    button?.setAttribute('aria-expanded', 'false');
+    menu?.classList.remove('is-open');
+  });
+}
+
+function openFooterMenu(menuName) {
+  openFooterMenuName = menuName;
+  footerMenus.forEach(({ name, button, menu }) => {
+    const isOpen = name === menuName;
+
+    button?.setAttribute('aria-expanded', String(isOpen));
+    menu?.classList.toggle('is-open', isOpen);
+  });
+}
+
+function toggleFooterMenu(menuName) {
+  if (openFooterMenuName === menuName) {
+    closeFooterMenus();
+    return;
+  }
+
+  openFooterMenu(menuName);
+}
+
+function isFooterMenuElement(target) {
+  return footerMenus.some(({ button, menu }) => button?.contains(target) || menu?.contains(target));
+}
+
+function renderVocabularyLevelControls() {
+  levelMenuItems.forEach((item) => {
+    const isSelected = item.dataset.vocabularyLevel === currentVocabularyLevel;
+
+    item.classList.toggle('is-selected', isSelected);
+    item.setAttribute('aria-checked', String(isSelected));
+  });
+}
+
+async function reloadCurrentVocabularyLevel() {
+  if (activeDataSource === 'real') {
+    await loadRealEpisodeData();
+    return;
+  }
+
+  const subtitleText = subtitleSegments.map((segment) => segment.text).join('\n\n') || DEFAULT_SUBTITLE_TEXT;
+  replaceObstacleStream(analyzeSubtitleText(subtitleText, { level: currentVocabularyLevel }), subtitleText);
+  renderCards();
+}
+
+async function handleVocabularyLevelSelection(event) {
+  const nextLevel = event.currentTarget.dataset.vocabularyLevel;
+
+  if (!nextLevel) {
+    return;
+  }
+
+  currentVocabularyLevel = nextLevel;
+  renderVocabularyLevelControls();
+  closeFooterMenus();
+  await reloadCurrentVocabularyLevel();
+}
 
 
 function renderPlaybackSpeedControls() {
@@ -370,6 +464,7 @@ function renderPlaybackSpeedControls() {
 
     button.classList.toggle('is-selected', isSelected);
     button.setAttribute('aria-pressed', String(isSelected));
+    button.setAttribute('aria-checked', String(isSelected));
   });
 }
 
@@ -382,6 +477,7 @@ function handlePlaybackSpeedSelection(event) {
 
   playbackRate = nextPlaybackRate;
   renderPlaybackSpeedControls();
+  closeFooterMenus();
 }
 
 function parseTimeToMs(value) {
@@ -728,7 +824,7 @@ async function loadRealEpisodeData() {
 
 function loadDemoEpisodeData() {
   subtitleSegments = parseSubtitleSegments(DEFAULT_SUBTITLE_TEXT);
-  obstacles = analyzeSubtitleText(DEFAULT_SUBTITLE_TEXT, { level: DEFAULT_VOCABULARY_LEVEL });
+  obstacles = analyzeSubtitleText(DEFAULT_SUBTITLE_TEXT, { level: currentVocabularyLevel });
   activeDataSource = 'demo';
   currentEpisodeProgressKey = getEpisodeProgressKey(DEFAULT_SUBTITLE_TEXT);
   applyStoredEpisodeProgress(currentEpisodeProgressKey);
@@ -1932,9 +2028,33 @@ if (bottomSheetClose) {
 if (bottomSheetBackdrop) {
   bottomSheetBackdrop.addEventListener('click', closeBottomSheet);
 }
+
+footerMenus.forEach(({ name, button, menu }) => {
+  button?.addEventListener('click', (event) => {
+    event.stopPropagation();
+    toggleFooterMenu(name);
+  });
+
+  menu?.addEventListener('click', stopMarkerEvent);
+  menu?.addEventListener('pointerup', stopMarkerEvent);
+});
+levelMenuItems.forEach((item) => {
+  item.addEventListener('click', handleVocabularyLevelSelection);
+});
+document.addEventListener('click', (event) => {
+  if (!isFooterMenuElement(event.target)) {
+    closeFooterMenus();
+  }
+});
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') {
+    closeFooterMenus();
+  }
+});
 playbackSpeedButtons.forEach((button) => {
   button.addEventListener('click', handlePlaybackSpeedSelection);
 });
+renderVocabularyLevelControls();
 renderPlaybackSpeedControls();
 initApp();
 
