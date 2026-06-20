@@ -1100,3 +1100,128 @@ button {
     padding-left: 16px;
   }
 }
+
+.footer-menu {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  align-items: center;
+}
+
+.level-card {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.episode-card {
+  margin-left: 0;
+}
+
+.footer-menu__button {
+  height: 28px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  color: var(--text);
+  background: rgba(15, 23, 42, 0.06);
+  cursor: pointer;
+  font-size: 0.84rem;
+  font-weight: 500;
+}
+
+.footer-menu__button:hover,
+.footer-menu__button:focus-visible {
+  color: var(--primary-dark);
+  outline: none;
+}
+
+.footer-menu__popup {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  z-index: 10;
+  min-width: 148px;
+  padding: 8px;
+  border: 1px solid rgba(219, 227, 239, 0.94);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.18);
+}
+
+.footer-menu__popup--episodes {
+  width: 326px;
+}
+
+.footer-menu__option {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 10px;
+  color: var(--text);
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.86rem;
+  text-align: left;
+}
+
+.footer-menu__option:hover,
+.footer-menu__option:focus-visible,
+.footer-menu__option.is-selected {
+  color: var(--primary-dark);
+  background: rgba(37, 99, 235, 0.1);
+  outline: none;
+}
+
+.episode-menu__title {
+  margin: 2px 4px 10px;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.episode-menu__grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.episode-menu__item {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 2px;
+  border: 1px solid rgba(219, 227, 239, 0.95);
+  border-radius: 10px;
+  color: var(--text);
+  background: var(--surface-muted);
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.episode-menu__item:hover,
+.episode-menu__item:focus-visible,
+.episode-menu__item.is-current {
+  border-color: rgba(37, 99, 235, 0.42);
+  color: var(--primary-dark);
+  background: rgba(37, 99, 235, 0.1);
+  outline: none;
+}
+
+.episode-menu__member-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 4px;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--primary);
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
