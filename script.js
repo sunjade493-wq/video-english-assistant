@@ -922,6 +922,28 @@ function clampTime(timeMs) {
   return Math.max(0, Math.min(timeMs, getTotalDurationMs()));
 }
 
+function hasSeekableRealVideoDuration() {
+  return Boolean(realVideo && Number.isFinite(realVideo.duration) && realVideo.duration > 0);
+}
+
+function getRealVideoSeekDurationMs() {
+  return hasSeekableRealVideoDuration() ? realVideo.duration * 1000 : 0;
+}
+
+function clampRealVideoSeekTimeMs(timeMs) {
+  if (!Number.isFinite(timeMs)) {
+    return null;
+  }
+
+  const durationMs = getRealVideoSeekDurationMs();
+
+  if (durationMs <= 0) {
+    return null;
+  }
+
+  return Math.max(0, Math.min(timeMs, durationMs));
+}
+
 function getTimeForSegmentIndex(segmentIndex) {
   const segment = subtitleSegments[Math.max(0, segmentIndex)];
 
@@ -984,7 +1006,8 @@ function getObstacleTimeMs(obstacle) {
 }
 
 function formatTimelineTime(timeMs) {
-  const totalSeconds = Math.floor(clampTime(timeMs) / 1000);
+  const safeTimeMs = Number.isFinite(timeMs) ? Math.max(0, timeMs) : 0;
+  const totalSeconds = Math.floor(safeTimeMs / 1000);
   const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
   const seconds = String(totalSeconds % 60).padStart(2, '0');
 
@@ -992,7 +1015,13 @@ function formatTimelineTime(timeMs) {
 }
 
 function getTimelinePercent(timeMs) {
-  return (clampTime(timeMs) / getTotalDurationMs()) * 100;
+  const durationMs = getRealVideoSeekDurationMs();
+
+  if (durationMs <= 0 || !Number.isFinite(timeMs)) {
+    return 0;
+  }
+
+  return (Math.max(0, Math.min(timeMs, durationMs)) / durationMs) * 100;
 }
 
 function getHeatAxisClusterThresholdPx() {
@@ -1288,15 +1317,18 @@ function syncPlaybackClock() {
 
 
 function seekToTime(timeMs) {
+  const nextTimeMs = clampRealVideoSeekTimeMs(timeMs);
+
+  if (nextTimeMs === null) {
+    return;
+  }
+
   const wasPlaying = isVideoPlaying;
-  const nextTimeMs = clampTime(timeMs);
-  const nextSegmentIndex = getSegmentIndexForTime(nextTimeMs >= getTotalDurationMs() ? 0 : nextTimeMs);
+  const nextSegmentIndex = getSegmentIndexForTime(nextTimeMs);
   const didSubtitleChange = nextSegmentIndex !== currentSegmentIndex;
 
-  currentTimeMs = nextTimeMs >= getTotalDurationMs() ? 0 : nextTimeMs;
-  if (realVideo) {
-    realVideo.currentTime = currentTimeMs / 1000;
-  }
+  currentTimeMs = nextTimeMs;
+  realVideo.currentTime = currentTimeMs / 1000;
   currentSegmentIndex = nextSegmentIndex;
 
   if (wasPlaying) {
@@ -1315,8 +1347,14 @@ function seekToTime(timeMs) {
 }
 
 function handleTimelineInput(event) {
-  const percent = Number(event.target.value) || 0;
-  seekToTime((percent / 100) * getTotalDurationMs());
+  const seekDurationMs = getRealVideoSeekDurationMs();
+
+  if (seekDurationMs <= 0) {
+    return;
+  }
+
+  const percent = Math.max(0, Math.min(100, Number(event.target.value) || 0));
+  seekToTime((percent / 100) * seekDurationMs);
 }
 
 function createTimedObstacleForSegment(obstacle, segmentIndex) {
@@ -1447,7 +1485,7 @@ function renderTimelines() {
   }
 
   if (timelineTimeText) {
-    timelineTimeText.textContent = `${formatTimelineTime(currentTimeMs)} / ${formatTimelineTime(getTotalDurationMs())}`;
+    timelineTimeText.textContent = `${formatTimelineTime(currentTimeMs)} / ${formatTimelineTime(getRealVideoSeekDurationMs())}`;
   }
 
   if (!obstacleHeatAxis) {
