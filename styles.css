@@ -119,6 +119,7 @@ button {
 
 .video-placeholder p,
 .playback-speed-card p,
+.level-card p,
 .eyebrow {
   margin: 0;
 }
@@ -159,6 +160,7 @@ button {
   min-height: 20px;
 }
 
+.level-card,
 .episode-card,
 .playback-speed-card {
   display: flex;
@@ -167,9 +169,13 @@ button {
   gap: 6px;
 }
 
-.episode-card {
+.level-card {
   flex: 0 0 auto;
   margin-left: auto;
+}
+
+.episode-card {
+  flex: 0 0 auto;
 }
 
 .playback-speed-card {
@@ -191,6 +197,7 @@ button {
 }
 
 
+.level-select-button,
 .episode-select-button,
 .speed-select-button {
   height: 28px;
@@ -204,6 +211,8 @@ button {
   font-weight: 500;
 }
 
+.level-select-button:hover,
+.level-select-button:focus-visible,
 .episode-select-button:hover,
 .episode-select-button:focus-visible,
 .speed-select-button:hover,
@@ -211,6 +220,94 @@ button {
   border-color: rgba(37, 99, 235, 0.42);
   color: var(--primary-dark);
   outline: none;
+}
+
+
+
+.player-menu {
+  position: absolute;
+  z-index: 20;
+  min-width: 170px;
+  padding: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.92);
+  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.32);
+  backdrop-filter: blur(18px);
+}
+
+.player-menu[hidden] {
+  display: none;
+}
+
+.player-menu__option,
+.episode-grid__option {
+  border: 0;
+  color: rgba(248, 250, 252, 0.92);
+  background: transparent;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.player-menu__option {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.player-menu__option:hover,
+.player-menu__option.is-current,
+.episode-grid__option:hover,
+.episode-grid__option.is-current {
+  background: rgba(37, 99, 235, 0.86);
+  color: #ffffff;
+}
+
+.episode-menu {
+  width: min(520px, calc(100vw - 32px));
+  padding: 14px;
+}
+
+.episode-menu__header {
+  margin: 0 0 12px;
+  color: rgba(248, 250, 252, 0.86);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.episode-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.episode-grid__option {
+  position: relative;
+  min-height: 48px;
+  padding: 8px 7px;
+  border-radius: 12px;
+  text-align: left;
+}
+
+.episode-grid__option.is-current::before {
+  content: "▶";
+  margin-right: 4px;
+  color: #bfdbfe;
+  font-size: 0.72rem;
+}
+
+.episode-grid__badge {
+  display: block;
+  width: fit-content;
+  margin-top: 4px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 0.68rem;
+  line-height: 1.35;
 }
 
 .episode-progress-summary__status-row {

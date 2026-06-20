@@ -361,6 +361,170 @@ const bottomSheetContent = document.querySelector('#bottomSheetContent');
 const bottomSheetClose = document.querySelector('#bottomSheetClose');
 const playbackSpeedButtons = document.querySelectorAll('.playback-speed-button');
 
+const levelSelectButton = document.querySelector('.level-select-button');
+const episodeSelectButton = document.querySelector('.episode-select-button');
+const speedSelectButton = document.querySelector('.speed-select-button');
+const playerMenuButtons = [levelSelectButton, episodeSelectButton, speedSelectButton].filter(Boolean);
+
+const frozenLevelOptions = [
+  'Junior High (1500)',
+  'Senior High (3500)',
+  'CET-4 (4500)',
+  'CET-6 (6000)',
+  'TEM-4 (8000)',
+  'TEM-8 (12000)',
+  'GRE (20000+)',
+];
+const frozenSpeedOptions = ['0.5x', '0.75x', '1.0x', '1.25x', '1.5x', '1.75x', '2.0x'];
+const episodeOptions = Array.from({ length: 24 }, (_, index) => index + 1);
+let selectedEpisodeNumber = 1;
+let openPlayerMenu = null;
+
+function closePlayerMenu() {
+  if (!openPlayerMenu) {
+    return;
+  }
+
+  openPlayerMenu.menu.hidden = true;
+  openPlayerMenu.button.setAttribute('aria-expanded', 'false');
+  openPlayerMenu = null;
+}
+
+function positionPlayerMenu(button, menu) {
+  const buttonRect = button.getBoundingClientRect();
+  const menuRect = menu.getBoundingClientRect();
+  const top = buttonRect.bottom + window.scrollY + 8;
+  const left = Math.max(12, Math.min(buttonRect.left + window.scrollX, window.innerWidth - menuRect.width - 12));
+  menu.style.top = `${top}px`;
+  menu.style.left = `${left}px`;
+}
+
+function openMenuForButton(button, menu) {
+  if (openPlayerMenu && openPlayerMenu.menu === menu) {
+    closePlayerMenu();
+    return;
+  }
+
+  closePlayerMenu();
+  menu.hidden = false;
+  button.setAttribute('aria-expanded', 'true');
+  positionPlayerMenu(button, menu);
+  openPlayerMenu = { button, menu };
+}
+
+function createTextMenu(button, options, onSelect) {
+  if (!button) {
+    return null;
+  }
+
+  const menu = document.createElement('div');
+  menu.className = 'player-menu';
+  menu.setAttribute('role', 'listbox');
+  menu.hidden = true;
+
+  options.forEach((option, index) => {
+    const optionButton = document.createElement('button');
+    optionButton.className = 'player-menu__option';
+    optionButton.type = 'button';
+    optionButton.setAttribute('role', 'option');
+    optionButton.textContent = option;
+    if (index === 0) {
+      optionButton.classList.add('is-current');
+      optionButton.setAttribute('aria-selected', 'true');
+    }
+    optionButton.addEventListener('click', () => {
+      menu.querySelectorAll('[role="option"]').forEach((item) => {
+        item.classList.toggle('is-current', item === optionButton);
+        item.setAttribute('aria-selected', item === optionButton ? 'true' : 'false');
+      });
+      onSelect(option);
+      closePlayerMenu();
+    });
+    menu.append(optionButton);
+  });
+
+  document.body.append(menu);
+  button.addEventListener('click', (event) => {
+    event.stopPropagation();
+    openMenuForButton(button, menu);
+  });
+  return menu;
+}
+
+function createEpisodeMenu() {
+  if (!episodeSelectButton) {
+    return null;
+  }
+
+  const menu = document.createElement('div');
+  menu.className = 'player-menu episode-menu';
+  menu.setAttribute('role', 'listbox');
+  menu.hidden = true;
+
+  const header = document.createElement('p');
+  header.className = 'episode-menu__header';
+  header.textContent = '第12季 · 共24集';
+  menu.append(header);
+
+  const grid = document.createElement('div');
+  grid.className = 'episode-grid';
+  episodeOptions.forEach((episodeNumber) => {
+    const optionButton = document.createElement('button');
+    optionButton.className = 'episode-grid__option';
+    optionButton.type = 'button';
+    optionButton.setAttribute('role', 'option');
+    optionButton.dataset.episodeNumber = String(episodeNumber);
+    optionButton.textContent = `第${episodeNumber}集`;
+    if (episodeNumber === selectedEpisodeNumber) {
+      optionButton.classList.add('is-current');
+      optionButton.setAttribute('aria-selected', 'true');
+    }
+    if (episodeNumber >= 2) {
+      const badge = document.createElement('span');
+      badge.className = 'episode-grid__badge';
+      badge.textContent = '会员';
+      optionButton.append(badge);
+    }
+    optionButton.addEventListener('click', () => {
+      selectedEpisodeNumber = episodeNumber;
+      grid.querySelectorAll('[role="option"]').forEach((item) => {
+        const isCurrent = Number(item.dataset.episodeNumber) === selectedEpisodeNumber;
+        item.classList.toggle('is-current', isCurrent);
+        item.setAttribute('aria-selected', isCurrent ? 'true' : 'false');
+      });
+      episodeSelectButton.innerHTML = `第${selectedEpisodeNumber}集 <span aria-hidden="true">▼</span>`;
+      closePlayerMenu();
+    });
+    grid.append(optionButton);
+  });
+
+  menu.append(grid);
+  document.body.append(menu);
+  episodeSelectButton.addEventListener('click', (event) => {
+    event.stopPropagation();
+    openMenuForButton(episodeSelectButton, menu);
+  });
+  return menu;
+}
+
+createTextMenu(levelSelectButton, frozenLevelOptions, (option) => {
+  levelSelectButton.innerHTML = `${option} <span aria-hidden="true">▼</span>`;
+});
+createEpisodeMenu();
+createTextMenu(speedSelectButton, frozenSpeedOptions, (option) => {
+  speedSelectButton.innerHTML = `${option} <span aria-hidden="true">▼</span>`;
+});
+
+document.addEventListener('click', closePlayerMenu);
+window.addEventListener('resize', closePlayerMenu);
+playerMenuButtons.forEach((button) => {
+  button.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closePlayerMenu();
+    }
+  });
+});
+
 
 
 function renderPlaybackSpeedControls() {
