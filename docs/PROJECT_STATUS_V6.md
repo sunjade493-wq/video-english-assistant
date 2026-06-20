@@ -510,3 +510,64 @@ Frozen V2.6I scope:
 - Vocabulary obstacles depend on selected Level; comprehension obstacles do not depend on vocabulary Level and should remain stable across Levels unless a later explicit freeze changes this.
 
 Next step remains P0 Real Episode Video after this freeze/tag.
+
+## P0-4F Footer Menu Final Verified
+
+Milestone:
+P0-4F Footer Menu Final Verified
+
+Status:
+Frozen ✅
+
+Video Verification:
+Passed ✅
+
+Merge Commit:
+b086bd3
+
+Feature Commit:
+aa85551
+
+Tag:
+p0-4f-footer-menu-final-verified
+
+Feature Freeze:
+
+* Episodes menu:
+
+  * 4×6 dark popup
+  * header: 第12季 · 共24集
+  * Episode 1 has no member badge
+  * Episodes 2–24 display blue 会员 badges
+
+* Level menu:
+
+  * dark blue popup
+  * white text
+  * blue selected state
+  * blue hover state
+  * seven frozen English levels:
+
+    * Junior High (1500)
+    * Senior High (3500)
+    * CET-4 (4500)
+    * CET-6 (6000)
+    * TEM-4 (8000)
+    * TEM-8 (12000)
+    * GRE (20000+)
+
+* Speed menu:
+
+  * dark blue popup
+  * white text
+  * blue selected state
+  * blue hover state
+  * includes:
+
+    * 0.5x
+    * 0.75x
+    * 1.0x
+    * 1.25x
+    * 1.5x
+    * 1.75x
+    * 2.0x

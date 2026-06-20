@@ -259,3 +259,72 @@ Codex may continue with:
 * documentation tasks
 * read-only investigations
 * code tasks that already have real files available
+
+## P0-4F Baseline Protection Rule
+
+Lessons learned from P0-4F:
+
+1. Always verify repository baseline before editing.
+
+Required checks:
+git branch --show-current
+git status --short
+git log --oneline -1
+
+2. Never assume file locations.
+
+Search implementation location first:
+findstr
+Select-String
+rg
+
+3. Small UI fixes must use minimal-scope edits.
+
+Do not rebuild menus.
+Do not refactor existing architecture.
+Do not introduce helper functions unless explicitly required.
+
+4. Every Codex task must specify:
+
+* exact branch when available
+* exact commit hash
+* allowed files
+* forbidden files
+* expected git diff scope
+
+5. UI work process:
+   Edit
+   → Video verification
+   → User acceptance
+   → Commit
+   → Tag
+   → Freeze
+
+Never commit before video verification.
+
+6. If Codex workspace baseline differs from the required repository baseline:
+   STOP.
+   Do not edit until branch, commit, and files are confirmed identical.
+   If branch name differs but HEAD commit matches the required commit, editing docs-only tasks is allowed.
+
+7. Search before instructing.
+   Before asking Codex to modify logic:
+
+* locate actual implementation file
+* paste evidence snippets
+* write modification instruction based on evidence
+
+Never write requirements based on assumptions.
+
+Protection rules:
+
+* Append only.
+* Do not recreate existing documents.
+* Do not modify previous frozen sections.
+* Deleted lines must be 0.
+* Keep diff minimal.
+
+Validation:
+git diff --stat docs/PROJECT_STATUS_V6.md docs/CODEX_WORKFLOW_FREEZE.md
+git diff docs/PROJECT_STATUS_V6.md
+git diff docs/CODEX_WORKFLOW_FREEZE.md
