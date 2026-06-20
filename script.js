@@ -347,6 +347,7 @@ let currentTimeMs = 0;
 let playbackStartedAt = 0;
 let playbackStartedTimeMs = 0;
 let timelineRenderTimer = null;
+let isTimelinePointerSeeking = false;
 let activeHeatClusterKey = null;
 let activeDataSource = 'pending';
 let playbackRate = 1;
@@ -1347,6 +1348,8 @@ function seekToTime(timeMs) {
 }
 
 function handleTimelineInput(event) {
+  stopMarkerEvent(event);
+
   const seekDurationMs = getRealVideoSeekDurationMs();
 
   if (seekDurationMs <= 0) {
@@ -1355,6 +1358,65 @@ function handleTimelineInput(event) {
 
   const percent = Math.max(0, Math.min(100, Number(event.target.value) || 0));
   seekToTime((percent / 100) * seekDurationMs);
+}
+
+function getTimelinePercentFromPointerEvent(event) {
+  if (!videoTimeline || typeof videoTimeline.getBoundingClientRect !== 'function') {
+    return null;
+  }
+
+  const rect = videoTimeline.getBoundingClientRect();
+
+  if (!rect || rect.width <= 0 || !Number.isFinite(event.clientX)) {
+    return null;
+  }
+
+  return Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100));
+}
+
+function seekTimelineToPointerEvent(event) {
+  stopMarkerEvent(event);
+
+  const seekDurationMs = getRealVideoSeekDurationMs();
+  const percent = getTimelinePercentFromPointerEvent(event);
+
+  if (seekDurationMs <= 0 || percent === null) {
+    return;
+  }
+
+  videoTimeline.value = String(percent);
+  seekToTime((percent / 100) * seekDurationMs);
+}
+
+function handleTimelinePointerDown(event) {
+  isTimelinePointerSeeking = true;
+  videoTimeline?.setPointerCapture?.(event.pointerId);
+  seekTimelineToPointerEvent(event);
+}
+
+function handleTimelinePointerMove(event) {
+  if (!isTimelinePointerSeeking) {
+    return;
+  }
+
+  seekTimelineToPointerEvent(event);
+}
+
+function handleTimelinePointerUp(event) {
+  if (isTimelinePointerSeeking) {
+    seekTimelineToPointerEvent(event);
+  } else {
+    stopMarkerEvent(event);
+  }
+
+  isTimelinePointerSeeking = false;
+  videoTimeline?.releasePointerCapture?.(event.pointerId);
+}
+
+function handleTimelinePointerCancel(event) {
+  stopMarkerEvent(event);
+  isTimelinePointerSeeking = false;
+  videoTimeline?.releasePointerCapture?.(event.pointerId);
 }
 
 function createTimedObstacleForSegment(obstacle, segmentIndex) {
@@ -2170,8 +2232,12 @@ if (timelinePlayButton) {
 }
 if (videoTimeline) {
   videoTimeline.addEventListener('input', handleTimelineInput);
-  videoTimeline.addEventListener('click', stopMarkerEvent);
-  videoTimeline.addEventListener('pointerup', stopMarkerEvent);
+  videoTimeline.addEventListener('change', handleTimelineInput);
+  videoTimeline.addEventListener('click', seekTimelineToPointerEvent);
+  videoTimeline.addEventListener('pointerdown', handleTimelinePointerDown);
+  videoTimeline.addEventListener('pointermove', handleTimelinePointerMove);
+  videoTimeline.addEventListener('pointerup', handleTimelinePointerUp);
+  videoTimeline.addEventListener('pointercancel', handleTimelinePointerCancel);
 }
 if (obstacleHeatAxis) {
   obstacleHeatAxis.addEventListener('click', stopMarkerEvent);
