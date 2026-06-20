@@ -900,6 +900,43 @@ function syncTimeFromRealVideo() {
   return true;
 }
 
+
+function logSeekDebug(source, details = {}) {
+  const snapshot = {
+    eventType: details.eventType,
+    videoTimelineValue: videoTimeline?.value,
+    percent: details.percent,
+    realVideoDuration: realVideo?.duration,
+    targetSeconds: details.targetSeconds,
+    realVideoCurrentTimeBefore: details.realVideoCurrentTimeBefore,
+    realVideoCurrentTimeAfter: details.realVideoCurrentTimeAfter,
+    currentTimeMs,
+    isVideoPlaying,
+  };
+
+  console.log('[P0-1D seek-debug]', source, snapshot);
+}
+
+function getTimelinePointerPercent(event) {
+  if (!videoTimeline || typeof videoTimeline.getBoundingClientRect !== 'function') {
+    return null;
+  }
+
+  const rect = videoTimeline.getBoundingClientRect();
+
+  if (!rect.width) {
+    return null;
+  }
+
+  const clientX = event.clientX ?? event.changedTouches?.[0]?.clientX ?? event.touches?.[0]?.clientX;
+
+  if (!Number.isFinite(clientX)) {
+    return null;
+  }
+
+  return Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+}
+
 function getTotalDurationMs() {
   const realVideoDuration = getRealVideoDurationMs();
 
@@ -1319,6 +1356,11 @@ function syncPlaybackClock() {
 function seekToTime(timeMs) {
   const nextTimeMs = clampRealVideoSeekTimeMs(timeMs);
 
+  logSeekDebug('seekToTime:start', {
+    targetSeconds: nextTimeMs === null ? null : nextTimeMs / 1000,
+    realVideoCurrentTimeBefore: realVideo?.currentTime,
+  });
+
   if (nextTimeMs === null) {
     return;
   }
@@ -1329,6 +1371,10 @@ function seekToTime(timeMs) {
 
   currentTimeMs = nextTimeMs;
   realVideo.currentTime = currentTimeMs / 1000;
+  logSeekDebug('seekToTime:after-currentTime-assignment', {
+    targetSeconds: currentTimeMs / 1000,
+    realVideoCurrentTimeAfter: realVideo?.currentTime,
+  });
   currentSegmentIndex = nextSegmentIndex;
 
   if (wasPlaying) {
@@ -1350,11 +1396,48 @@ function handleTimelineInput(event) {
   const seekDurationMs = getRealVideoSeekDurationMs();
 
   if (seekDurationMs <= 0) {
+    logSeekDebug('handleTimelineInput:no-duration', { eventType: event.type });
     return;
   }
 
   const percent = Math.max(0, Math.min(100, Number(event.target.value) || 0));
-  seekToTime((percent / 100) * seekDurationMs);
+  const targetMs = (percent / 100) * seekDurationMs;
+  logSeekDebug('handleTimelineInput', {
+    eventType: event.type,
+    percent,
+    targetSeconds: targetMs / 1000,
+    realVideoCurrentTimeBefore: realVideo?.currentTime,
+  });
+  seekToTime(targetMs);
+}
+
+function seekTimelineToPercent(percent, event) {
+  const seekDurationMs = getRealVideoSeekDurationMs();
+  const safePercent = Math.max(0, Math.min(100, Number(percent) || 0));
+  const targetMs = (safePercent / 100) * seekDurationMs;
+
+  logSeekDebug('seekTimelineToPercent', {
+    eventType: event?.type,
+    percent: safePercent,
+    targetSeconds: targetMs / 1000,
+    realVideoCurrentTimeBefore: realVideo?.currentTime,
+  });
+}
+
+function handleTimelinePointerSeek(event) {
+  const percent = getTimelinePointerPercent(event);
+  const targetSeconds = percent === null ? null : (percent / 100) * (getRealVideoSeekDurationMs() / 1000);
+
+  logSeekDebug('handleTimelinePointerSeek', {
+    eventType: event.type,
+    percent,
+    targetSeconds,
+    realVideoCurrentTimeBefore: realVideo?.currentTime,
+  });
+
+  if (percent !== null) {
+    seekTimelineToPercent(percent, event);
+  }
 }
 
 function createTimedObstacleForSegment(obstacle, segmentIndex) {
@@ -1480,8 +1563,16 @@ function createHeatClusterButton(cluster) {
 }
 
 function renderTimelines() {
+  const percent = getTimelinePercent(currentTimeMs);
+
+  logSeekDebug('renderTimelines', {
+    percent,
+    targetSeconds: currentTimeMs / 1000,
+    realVideoCurrentTimeBefore: realVideo?.currentTime,
+  });
+
   if (videoTimeline) {
-    videoTimeline.value = String(getTimelinePercent(currentTimeMs));
+    videoTimeline.value = String(percent);
   }
 
   if (timelineTimeText) {
@@ -1629,7 +1720,12 @@ function toggleVideoPlayback() {
   setVideoPlayback(!isVideoPlaying);
 }
 
-function handleVideoFrameActivation() {
+function handleVideoFrameActivation(event) {
+  logSeekDebug('handleVideoFrameActivation', {
+    eventType: event?.type,
+    realVideoCurrentTimeBefore: realVideo?.currentTime,
+  });
+
   const activationTime = Date.now();
 
   if (activationTime - lastVideoActivationTime < 350) {
@@ -1743,10 +1839,19 @@ function handleRealVideoMetadataLoaded() {
   renderVideoState();
 }
 
-function handleRealVideoTimeUpdate() {
+function handleRealVideoTimeUpdate(event) {
+  logSeekDebug('realVideo timeupdate:before-sync', {
+    eventType: event.type,
+    realVideoCurrentTimeBefore: realVideo?.currentTime,
+  });
+
   const previousSegmentIndex = currentSegmentIndex;
 
   syncTimeFromRealVideo();
+  logSeekDebug('realVideo timeupdate:after-sync', {
+    eventType: event.type,
+    realVideoCurrentTimeAfter: realVideo?.currentTime,
+  });
   renderVideoState();
 
   if (currentSegmentIndex !== previousSegmentIndex) {
@@ -2145,6 +2250,18 @@ if (realVideo) {
   realVideo.addEventListener('loadedmetadata', handleRealVideoMetadataLoaded);
   realVideo.addEventListener('loadeddata', renderRealVideoAvailability);
   realVideo.addEventListener('timeupdate', handleRealVideoTimeUpdate);
+  realVideo.addEventListener('seeking', (event) => {
+    logSeekDebug('realVideo seeking', {
+      eventType: event.type,
+      realVideoCurrentTimeBefore: realVideo?.currentTime,
+    });
+  });
+  realVideo.addEventListener('seeked', (event) => {
+    logSeekDebug('realVideo seeked', {
+      eventType: event.type,
+      realVideoCurrentTimeAfter: realVideo?.currentTime,
+    });
+  });
   realVideo.addEventListener('durationchange', handleRealVideoMetadataLoaded);
   realVideo.addEventListener('play', handleRealVideoPlay);
   realVideo.addEventListener('pause', handleRealVideoPause);
@@ -2170,7 +2287,12 @@ if (timelinePlayButton) {
 }
 if (videoTimeline) {
   videoTimeline.addEventListener('input', handleTimelineInput);
+  videoTimeline.addEventListener('change', handleTimelinePointerSeek);
+  videoTimeline.addEventListener('click', handleTimelinePointerSeek);
   videoTimeline.addEventListener('click', stopMarkerEvent);
+  videoTimeline.addEventListener('pointerdown', handleTimelinePointerSeek);
+  videoTimeline.addEventListener('pointermove', handleTimelinePointerSeek);
+  videoTimeline.addEventListener('pointerup', handleTimelinePointerSeek);
   videoTimeline.addEventListener('pointerup', stopMarkerEvent);
 }
 if (obstacleHeatAxis) {
