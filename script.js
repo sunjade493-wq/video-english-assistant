@@ -1174,6 +1174,10 @@ function stopMarkerEvent(event) {
   event.stopPropagation();
 }
 
+function stopTimelineInteractionEvent(event) {
+  event.stopPropagation();
+}
+
 function handleMarkerActivation(event, obstacleId) {
   stopMarkerEvent(event);
   pauseVideoForObstacle(obstacleId);
@@ -1346,15 +1350,60 @@ function seekToTime(timeMs) {
   }
 }
 
-function handleTimelineInput(event) {
+function seekTimelineToPercent(percent) {
   const seekDurationMs = getRealVideoSeekDurationMs();
 
   if (seekDurationMs <= 0) {
     return;
   }
 
-  const percent = Math.max(0, Math.min(100, Number(event.target.value) || 0));
-  seekToTime((percent / 100) * seekDurationMs);
+  const safePercent = Math.max(0, Math.min(100, Number(percent) || 0));
+  seekToTime((safePercent / 100) * seekDurationMs);
+}
+
+function getTimelinePointerPercent(event) {
+  if (!videoTimeline || typeof videoTimeline.getBoundingClientRect !== 'function') {
+    return null;
+  }
+
+  const clientX = event.clientX ?? event.changedTouches?.[0]?.clientX ?? event.touches?.[0]?.clientX;
+
+  if (!Number.isFinite(clientX)) {
+    return null;
+  }
+
+  const rect = videoTimeline.getBoundingClientRect();
+
+  if (!Number.isFinite(rect.width) || rect.width <= 0) {
+    return null;
+  }
+
+  return ((clientX - rect.left) / rect.width) * 100;
+}
+
+function handleTimelineInput(event) {
+  stopTimelineInteractionEvent(event);
+  seekTimelineToPercent(event.target.value);
+}
+
+function handleTimelinePointerSeek(event) {
+  stopTimelineInteractionEvent(event);
+
+  if (event.cancelable) {
+    event.preventDefault();
+  }
+
+  if (event.type === 'pointerdown' && typeof videoTimeline?.setPointerCapture === 'function') {
+    videoTimeline.setPointerCapture(event.pointerId);
+  }
+
+  const percent = getTimelinePointerPercent(event);
+
+  if (percent === null) {
+    return;
+  }
+
+  seekTimelineToPercent(percent);
 }
 
 function createTimedObstacleForSegment(obstacle, segmentIndex) {
@@ -2170,8 +2219,26 @@ if (timelinePlayButton) {
 }
 if (videoTimeline) {
   videoTimeline.addEventListener('input', handleTimelineInput);
-  videoTimeline.addEventListener('click', stopMarkerEvent);
-  videoTimeline.addEventListener('pointerup', stopMarkerEvent);
+  videoTimeline.addEventListener('change', handleTimelineInput);
+  videoTimeline.addEventListener('pointerdown', handleTimelinePointerSeek);
+  videoTimeline.addEventListener('pointermove', (event) => {
+    stopTimelineInteractionEvent(event);
+
+    if (event.buttons === 1) {
+      handleTimelinePointerSeek(event);
+    }
+  });
+  videoTimeline.addEventListener('pointerup', (event) => {
+    stopTimelineInteractionEvent(event);
+
+    if (typeof videoTimeline.releasePointerCapture === 'function' && typeof videoTimeline.hasPointerCapture === 'function' && videoTimeline.hasPointerCapture(event.pointerId)) {
+      videoTimeline.releasePointerCapture(event.pointerId);
+    }
+  });
+  videoTimeline.addEventListener('click', handleTimelinePointerSeek);
+  videoTimeline.addEventListener('touchstart', handleTimelinePointerSeek, { passive: false });
+  videoTimeline.addEventListener('touchmove', handleTimelinePointerSeek, { passive: false });
+  videoTimeline.addEventListener('touchend', stopTimelineInteractionEvent);
 }
 if (obstacleHeatAxis) {
   obstacleHeatAxis.addEventListener('click', stopMarkerEvent);
