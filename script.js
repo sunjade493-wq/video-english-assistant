@@ -59,6 +59,21 @@ const vocabularyLevels = {
     extends: 'cet4',
     words: ['idiom', 'metaphor', 'nonliteral'],
   },
+  tem4: {
+    label: 'TEM-4',
+    extends: 'cet6',
+    words: [],
+  },
+  tem8: {
+    label: 'TEM-8',
+    extends: 'tem4',
+    words: [],
+  },
+  gre: {
+    label: 'GRE',
+    extends: 'tem8',
+    words: [],
+  },
   custom: {
     label: '自定义词汇量',
     extends: 'cet4',
@@ -334,6 +349,8 @@ let timelineRenderTimer = null;
 let activeHeatClusterKey = null;
 let activeDataSource = 'pending';
 let playbackRate = 1;
+let selectedVocabularyLevel = DEFAULT_VOCABULARY_LEVEL;
+let currentEpisodeNumber = 1;
 
 const SEGMENT_DURATION_MS = 3600;
 const LEARNING_PAUSE_HINT_STORAGE_KEY = 'videoEnglishAssistant.learningPauseHintDismissed';
@@ -359,9 +376,215 @@ const obstacleBottomSheet = document.querySelector('#obstacleBottomSheet');
 const bottomSheetTitle = document.querySelector('#bottomSheetTitle');
 const bottomSheetContent = document.querySelector('#bottomSheetContent');
 const bottomSheetClose = document.querySelector('#bottomSheetClose');
+const levelMenuButton = document.querySelector('#levelMenuButton');
+const levelMenu = document.querySelector('#levelMenu');
+const episodeMenuButton = document.querySelector('#episodeMenuButton');
+const episodeMenu = document.querySelector('#episodeMenu');
+const speedMenuButton = document.querySelector('#speedMenuButton');
+const speedMenu = document.querySelector('#speedMenu');
 const playbackSpeedButtons = document.querySelectorAll('.playback-speed-button');
 
 
+const levelMenuOptions = [
+  { value: 'junior', label: 'Junior High (1500)' },
+  { value: 'senior', label: 'Senior High (3500)' },
+  { value: 'cet4', label: 'CET-4 (4500)' },
+  { value: 'cet6', label: 'CET-6 (6000)' },
+  { value: 'tem4', label: 'TEM-4 (8000)' },
+  { value: 'tem8', label: 'TEM-8 (12000)' },
+  { value: 'gre', label: 'GRE (20000+)' },
+];
+
+const speedMenuOptions = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+
+const episodes = Array.from({ length: 24 }, (_, index) => ({
+  episode: index + 1,
+  vip: index + 1 >= 3,
+}));
+
+function formatPlaybackRate(rate) {
+  return `${rate.toFixed(rate % 1 === 0 ? 1 : 2)}x`;
+}
+
+function getFooterMenuEntries() {
+  return [
+    { button: levelMenuButton, menu: levelMenu },
+    { button: episodeMenuButton, menu: episodeMenu },
+    { button: speedMenuButton, menu: speedMenu },
+  ].filter((entry) => entry.button && entry.menu);
+}
+
+function closeFooterMenu(menuToClose) {
+  const entry = getFooterMenuEntries().find((candidate) => candidate.menu === menuToClose);
+
+  if (!entry) return;
+
+  entry.button.setAttribute('aria-expanded', 'false');
+  entry.menu.classList.remove('is-open');
+  window.setTimeout(() => {
+    if (!entry.menu.classList.contains('is-open')) {
+      entry.menu.hidden = true;
+    }
+  }, 170);
+}
+
+function closeOtherFooterMenus(activeMenu = null) {
+  getFooterMenuEntries().forEach(({ menu }) => {
+    if (menu !== activeMenu) closeFooterMenu(menu);
+  });
+}
+
+function toggleFooterMenu(button, menu) {
+  const shouldOpen = menu.hidden || !menu.classList.contains('is-open');
+  closeOtherFooterMenus(menu);
+
+  if (!shouldOpen) {
+    closeFooterMenu(menu);
+    return;
+  }
+
+  menu.hidden = false;
+  button.setAttribute('aria-expanded', 'true');
+  window.requestAnimationFrame(() => menu.classList.add('is-open'));
+}
+
+function createMenuOption(label, isSelected, onClick) {
+  const button = document.createElement('button');
+  button.className = 'footer-popup__option';
+  button.type = 'button';
+  button.setAttribute('role', 'menuitemradio');
+  button.setAttribute('aria-checked', String(isSelected));
+
+  const check = document.createElement('span');
+  check.className = 'footer-popup__check';
+  check.textContent = isSelected ? '✓' : '';
+  check.setAttribute('aria-hidden', 'true');
+
+  const text = document.createElement('span');
+  text.textContent = label;
+
+  button.append(check, text);
+  button.addEventListener('click', onClick);
+  return button;
+}
+
+function renderLevelMenu() {
+  if (!levelMenu) return;
+
+  levelMenu.innerHTML = '';
+  levelMenuOptions.forEach((option) => {
+    const isSelected = option.value === selectedVocabularyLevel;
+    levelMenu.append(createMenuOption(option.label, isSelected, () => {
+      selectedVocabularyLevel = option.value;
+      renderLevelMenu();
+      closeFooterMenu(levelMenu);
+
+      if (activeDataSource === 'demo') {
+        analyzeAndRender(subtitleSegments.map((segment) => segment.text).join('\n\n'), { level: selectedVocabularyLevel });
+      }
+    }));
+  });
+}
+
+function renderSpeedMenu() {
+  if (!speedMenu) return;
+
+  speedMenu.innerHTML = '';
+  speedMenuOptions.forEach((rate) => {
+    const isSelected = rate === playbackRate;
+    speedMenu.append(createMenuOption(formatPlaybackRate(rate), isSelected, () => {
+      playbackRate = rate;
+      renderSpeedMenu();
+      renderPlaybackSpeedControls();
+      closeFooterMenu(speedMenu);
+    }));
+  });
+}
+
+function renderEpisodeMenu() {
+  if (!episodeMenu) return;
+
+  episodeMenu.innerHTML = '';
+
+  const header = document.createElement('h2');
+  header.className = 'episode-popup__header';
+  header.id = 'episodeMenuHeader';
+  header.textContent = `第12季 · 共${episodes.length}集`;
+
+  const grid = document.createElement('div');
+  grid.className = 'episode-popup__grid';
+
+  episodes.forEach((episode) => {
+    const card = document.createElement('button');
+    card.className = 'episode-popup__card';
+    card.type = 'button';
+    card.textContent = String(episode.episode);
+    card.setAttribute('aria-label', `Episode ${episode.episode}`);
+
+    if (episode.episode === currentEpisodeNumber) {
+      card.classList.add('is-current');
+      card.setAttribute('aria-current', 'true');
+      const playIconBadge = document.createElement('span');
+      playIconBadge.className = 'episode-popup__play-icon';
+      playIconBadge.textContent = '▶';
+      playIconBadge.setAttribute('aria-hidden', 'true');
+      card.append(playIconBadge);
+    }
+
+    if (episode.vip && episode.episode !== currentEpisodeNumber) {
+      const badge = document.createElement('span');
+      badge.className = 'episode-popup__vip-badge';
+      badge.textContent = '会员';
+      card.append(badge);
+    }
+
+    card.addEventListener('click', () => {
+      currentEpisodeNumber = episode.episode;
+      renderEpisodeMenu();
+      closeFooterMenu(episodeMenu);
+    });
+
+    grid.append(card);
+  });
+
+  episodeMenu.append(header, grid);
+}
+
+function initFooterMenus() {
+  renderLevelMenu();
+  renderEpisodeMenu();
+  renderSpeedMenu();
+
+  if (levelMenuButton && levelMenu) {
+    levelMenuButton.addEventListener('click', (event) => {
+      event.stopPropagation();
+      toggleFooterMenu(levelMenuButton, levelMenu);
+    });
+  }
+
+  if (episodeMenuButton && episodeMenu) {
+    episodeMenuButton.addEventListener('click', (event) => {
+      event.stopPropagation();
+      toggleFooterMenu(episodeMenuButton, episodeMenu);
+    });
+  }
+
+  if (speedMenuButton && speedMenu) {
+    speedMenuButton.addEventListener('click', (event) => {
+      event.stopPropagation();
+      toggleFooterMenu(speedMenuButton, speedMenu);
+    });
+  }
+
+  getFooterMenuEntries().forEach(({ menu }) => {
+    menu.addEventListener('click', (event) => event.stopPropagation());
+  });
+
+  document.addEventListener('click', () => closeOtherFooterMenus());
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeOtherFooterMenus();
+  });
+}
 
 function renderPlaybackSpeedControls() {
   playbackSpeedButtons.forEach((button) => {
@@ -1935,6 +2158,7 @@ if (bottomSheetBackdrop) {
 playbackSpeedButtons.forEach((button) => {
   button.addEventListener('click', handlePlaybackSpeedSelection);
 });
+initFooterMenus();
 renderPlaybackSpeedControls();
 initApp();
 
