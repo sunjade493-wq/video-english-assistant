@@ -168,6 +168,7 @@ button {
 }
 
 .episode-card {
+  position: relative;
   flex: 0 0 auto;
   margin-left: auto;
 }
@@ -211,6 +212,61 @@ button {
   border-color: rgba(37, 99, 235, 0.42);
   color: var(--primary-dark);
   outline: none;
+}
+
+.episode-menu {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 10px);
+  z-index: 15;
+  width: min(360px, 82vw);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: var(--shadow);
+}
+
+.episode-menu__header {
+  margin-bottom: 12px;
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.episode-menu__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.episode-menu__option {
+  display: grid;
+  min-height: 54px;
+  place-items: center;
+  gap: 4px;
+  border: 1px solid #e3e9f3;
+  border-radius: 12px;
+  color: var(--text);
+  background: var(--surface-muted);
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+.episode-menu__option.is-current {
+  border-color: rgba(37, 99, 235, 0.5);
+  color: var(--primary-dark);
+  background: rgba(37, 99, 235, 0.12);
+}
+
+.episode-menu__member-badge {
+  border-radius: 999px;
+  padding: 1px 6px;
+  color: #ffffff;
+  background: var(--primary);
+  font-size: 0.68rem;
+  line-height: 1.45;
 }
 
 .episode-progress-summary__status-row {
