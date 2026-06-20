@@ -1,6 +1,7 @@
 const DEFAULT_SUBTITLE_TEXT = `Demo subtitle unavailable.`;
 const REAL_SUBTITLE_DATA_URL = 'output_text/v28d_bilingual_subtitles.json';
 const REAL_OBSTACLE_DATA_URL = 'output_text/v29a_obstacles.json';
+const REAL_VIDEO_URL = 'assets/videos/TBBT_S12E01.mp4';
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
 const EPISODE_PROGRESS_STORAGE_PREFIX = 'videoEnglishAssistant.episodeProgress.';
 
@@ -332,7 +333,7 @@ function analyzeSubtitleText(text, options = {}) {
 
 let subtitleSegments = [];
 let currentSegmentIndex = 0;
-let isVideoPlaying = true;
+let isVideoPlaying = false;
 let playbackTimer = null;
 let obstacles = [];
 let hiddenObstacleIds = new Set();
@@ -365,6 +366,8 @@ const currentSubtitleLine = document.querySelector('#currentSubtitleLine');
 const playIcon = document.querySelector('#playIcon');
 const videoStatusText = document.querySelector('#videoStatusText');
 const videoFrame = document.querySelector('.video-frame');
+const realVideo = document.querySelector('#realVideo');
+const videoPlaceholder = document.querySelector('#videoPlaceholder');
 const learningPauseHint = document.querySelector('#learningPauseHint');
 const learningPauseHintDismiss = document.querySelector('#learningPauseHintDismiss');
 const timelinePlayButton = document.querySelector('#timelinePlayButton');
@@ -476,6 +479,9 @@ function handlePlaybackSpeedSelection(event) {
   }
 
   playbackRate = nextPlaybackRate;
+  if (realVideo) {
+    realVideo.playbackRate = playbackRate;
+  }
   renderPlaybackSpeedControls();
   closeFooterMenus();
 }
@@ -813,7 +819,7 @@ async function loadRealEpisodeData() {
   applyStoredEpisodeProgress(currentEpisodeProgressKey);
   saveEpisodeProgress();
   currentSegmentIndex = 0;
-  currentTimeMs = 0;
+  currentTimeMs = realVideo ? realVideo.currentTime * 1000 : 0;
   selectedObstacleId = null;
   streamMode = 'dynamic';
   renderVideoState();
@@ -830,7 +836,7 @@ function loadDemoEpisodeData() {
   applyStoredEpisodeProgress(currentEpisodeProgressKey);
   saveEpisodeProgress();
   currentSegmentIndex = 0;
-  currentTimeMs = 0;
+  currentTimeMs = realVideo ? realVideo.currentTime * 1000 : 0;
   selectedObstacleId = null;
   streamMode = 'dynamic';
   renderVideoState();
@@ -876,7 +882,31 @@ function getCurrentSubtitleSegment() {
   return subtitleSegments[currentSegmentIndex] || null;
 }
 
+function getRealVideoDurationMs() {
+  if (!realVideo || !Number.isFinite(realVideo.duration) || realVideo.duration <= 0) {
+    return 0;
+  }
+
+  return realVideo.duration * 1000;
+}
+
+function syncTimeFromRealVideo() {
+  if (!realVideo || !Number.isFinite(realVideo.currentTime)) {
+    return false;
+  }
+
+  currentTimeMs = realVideo.currentTime * 1000;
+  currentSegmentIndex = getSegmentIndexForTime(currentTimeMs);
+  return true;
+}
+
 function getTotalDurationMs() {
+  const realVideoDuration = getRealVideoDurationMs();
+
+  if (realVideoDuration > 0) {
+    return realVideoDuration;
+  }
+
   const timedDuration = subtitleSegments.reduce((maxEndTime, segment) => (
     Number.isFinite(segment.endMs) ? Math.max(maxEndTime, segment.endMs) : maxEndTime
   ), 0);
@@ -1220,27 +1250,25 @@ function updatePlaybackProgress() {
     return;
   }
 
-  const totalDuration = getTotalDurationMs();
-  const elapsedMs = Date.now() - playbackStartedAt;
-  const nextTimeMs = (playbackStartedTimeMs + elapsedMs) % totalDuration;
-  const nextSegmentIndex = getSegmentIndexForTime(nextTimeMs);
-  const didSubtitleChange = nextSegmentIndex !== currentSegmentIndex;
-
-  currentTimeMs = nextTimeMs;
-  currentSegmentIndex = nextSegmentIndex;
+  const previousSegmentIndex = currentSegmentIndex;
+  syncTimeFromRealVideo();
   renderVideoState();
 
-  if (didSubtitleChange) {
+  if (currentSegmentIndex !== previousSegmentIndex) {
     renderCards();
   }
 }
 
 function startPlaybackTimer() {
   stopPlaybackTimer();
+  syncTimeFromRealVideo();
   playbackStartedAt = Date.now();
   playbackStartedTimeMs = currentTimeMs;
   playbackTimer = window.setInterval(updatePlaybackProgress, 250);
-  timelineRenderTimer = window.setInterval(renderTimelines, 100);
+  timelineRenderTimer = window.setInterval(() => {
+    syncTimeFromRealVideo();
+    renderTimelines();
+  }, 100);
 }
 
 function syncPlaybackClock() {
@@ -1248,6 +1276,7 @@ function syncPlaybackClock() {
     if (!playbackTimer) {
       startPlaybackTimer();
     } else {
+      syncTimeFromRealVideo();
       playbackStartedAt = Date.now();
       playbackStartedTimeMs = currentTimeMs;
     }
@@ -1265,6 +1294,9 @@ function seekToTime(timeMs) {
   const didSubtitleChange = nextSegmentIndex !== currentSegmentIndex;
 
   currentTimeMs = nextTimeMs >= getTotalDurationMs() ? 0 : nextTimeMs;
+  if (realVideo) {
+    realVideo.currentTime = currentTimeMs / 1000;
+  }
   currentSegmentIndex = nextSegmentIndex;
 
   if (wasPlaying) {
@@ -1617,17 +1649,89 @@ function dismissLearningPauseHint(event) {
 }
 
 function setVideoPlayback(nextIsPlaying) {
-  if (isVideoPlaying && !nextIsPlaying) {
-    currentTimeMs = (playbackStartedTimeMs + (Date.now() - playbackStartedAt)) % getTotalDurationMs();
-    currentSegmentIndex = getSegmentIndexForTime(currentTimeMs);
+  isVideoPlaying = Boolean(nextIsPlaying);
+
+  if (!realVideo) {
+    syncPlaybackClock();
+    renderVideoState();
+    renderCards();
+    return;
   }
 
-  isVideoPlaying = Boolean(nextIsPlaying);
+  realVideo.playbackRate = playbackRate;
 
   if (isVideoPlaying) {
     hideLearningPauseHint();
+    const playPromise = realVideo.play();
+
+    if (playPromise && typeof playPromise.catch === 'function') {
+      playPromise.catch(() => {
+        isVideoPlaying = false;
+        syncPlaybackClock();
+        renderVideoState();
+        renderCards();
+      });
+    }
+  } else {
+    realVideo.pause();
+    syncTimeFromRealVideo();
   }
 
+  syncPlaybackClock();
+  renderVideoState();
+  renderCards();
+}
+
+
+function hasLoadedRealVideoFrame() {
+  return Boolean(
+    realVideo
+      && realVideo.readyState >= HTMLMediaElement.HAVE_METADATA
+      && realVideo.videoWidth > 0
+      && realVideo.videoHeight > 0,
+  );
+}
+
+function renderRealVideoAvailability() {
+  const hasRealVideoFrame = hasLoadedRealVideoFrame();
+
+  videoFrame?.classList.toggle('has-real-video', hasRealVideoFrame);
+  videoPlaceholder?.classList.toggle('is-hidden', hasRealVideoFrame);
+}
+
+function handleRealVideoMetadataLoaded() {
+  syncTimeFromRealVideo();
+  renderRealVideoAvailability();
+  renderVideoState();
+}
+
+function handleRealVideoTimeUpdate() {
+  const previousSegmentIndex = currentSegmentIndex;
+
+  syncTimeFromRealVideo();
+  renderVideoState();
+
+  if (currentSegmentIndex !== previousSegmentIndex) {
+    renderCards();
+  }
+}
+
+function handleRealVideoPlay() {
+  isVideoPlaying = true;
+  syncPlaybackClock();
+  renderVideoState();
+}
+
+function handleRealVideoPause() {
+  isVideoPlaying = false;
+  syncTimeFromRealVideo();
+  syncPlaybackClock();
+  renderVideoState();
+}
+
+function handleRealVideoEnded() {
+  isVideoPlaying = false;
+  syncTimeFromRealVideo();
   syncPlaybackClock();
   renderVideoState();
   renderCards();
@@ -1995,6 +2099,19 @@ function setLearningTipsMode() {
 function analyzeAndRender(text, options = {}) {
   replaceObstacleStream(analyzeSubtitleText(text, options), text);
   return renderCards();
+}
+
+if (realVideo) {
+  realVideo.src = REAL_VIDEO_URL;
+  realVideo.playbackRate = playbackRate;
+  realVideo.addEventListener('loadedmetadata', handleRealVideoMetadataLoaded);
+  realVideo.addEventListener('loadeddata', renderRealVideoAvailability);
+  realVideo.addEventListener('timeupdate', handleRealVideoTimeUpdate);
+  realVideo.addEventListener('durationchange', handleRealVideoMetadataLoaded);
+  realVideo.addEventListener('play', handleRealVideoPlay);
+  realVideo.addEventListener('pause', handleRealVideoPause);
+  realVideo.addEventListener('ended', handleRealVideoEnded);
+  renderRealVideoAvailability();
 }
 
 if (episodeUndoButton) {
