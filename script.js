@@ -3,6 +3,17 @@ const REAL_SUBTITLE_DATA_URL = 'output_text/v28d_bilingual_subtitles.json';
 const REAL_OBSTACLE_DATA_URL = 'output_text/v29a_obstacles.json';
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
 const EPISODE_PROGRESS_STORAGE_PREFIX = 'videoEnglishAssistant.episodeProgress.';
+const EPISODE_PANEL_HEADER = '第12季 · 共24集';
+const EPISODE_PANEL_METADATA = Array.from({ length: 24 }, (_, index) => {
+  const episodeNumber = index + 1;
+
+  return {
+    episodeNumber,
+    label: `第${episodeNumber}集`,
+    isCurrent: episodeNumber === 1,
+    isMember: episodeNumber >= 2,
+  };
+});
 
 const SUPPORTED_PART_OF_SPEECH_FORMATS = new Set([
   'n.',
@@ -359,7 +370,64 @@ const obstacleBottomSheet = document.querySelector('#obstacleBottomSheet');
 const bottomSheetTitle = document.querySelector('#bottomSheetTitle');
 const bottomSheetContent = document.querySelector('#bottomSheetContent');
 const bottomSheetClose = document.querySelector('#bottomSheetClose');
-const playbackSpeedButtons = document.querySelectorAll('.playback-speed-button');
+const episodeSelectButton = document.querySelector('.episode-select-button');
+const episodeMenu = document.querySelector('#episodeMenu');
+const playbackSpeedButtons = document.querySelectorAll ? document.querySelectorAll('.playback-speed-button') : [];
+
+function renderEpisodeMenu() {
+  if (!episodeMenu) {
+    return;
+  }
+
+  episodeMenu.innerHTML = '';
+
+  const header = document.createElement('div');
+  header.className = 'episode-menu__header';
+  header.textContent = EPISODE_PANEL_HEADER;
+  episodeMenu.append(header);
+
+  const grid = document.createElement('div');
+  grid.className = 'episode-menu__grid';
+
+  EPISODE_PANEL_METADATA.forEach((episode) => {
+    const option = document.createElement('button');
+    option.className = 'episode-menu__option';
+    option.type = 'button';
+    option.setAttribute('role', 'option');
+    option.setAttribute('aria-selected', String(episode.isCurrent));
+    option.setAttribute('data-episode-number', String(episode.episodeNumber));
+
+    if (episode.isCurrent) {
+      option.classList.add('is-current');
+    }
+
+    const label = document.createElement('span');
+    label.className = 'episode-menu__episode-label';
+    label.textContent = episode.label;
+    option.append(label);
+
+    if (episode.isMember) {
+      const badge = document.createElement('span');
+      badge.className = 'episode-menu__member-badge';
+      badge.textContent = '会员';
+      option.append(badge);
+    }
+
+    grid.append(option);
+  });
+
+  episodeMenu.append(grid);
+}
+
+function toggleEpisodeMenu() {
+  if (!episodeMenu || !episodeSelectButton) {
+    return;
+  }
+
+  const shouldOpen = episodeMenu.hidden;
+  episodeMenu.hidden = !shouldOpen;
+  episodeSelectButton.setAttribute('aria-expanded', String(shouldOpen));
+}
 
 
 
@@ -1932,9 +2000,13 @@ if (bottomSheetClose) {
 if (bottomSheetBackdrop) {
   bottomSheetBackdrop.addEventListener('click', closeBottomSheet);
 }
+if (episodeSelectButton) {
+  episodeSelectButton.addEventListener('click', toggleEpisodeMenu);
+}
 playbackSpeedButtons.forEach((button) => {
   button.addEventListener('click', handlePlaybackSpeedSelection);
 });
+renderEpisodeMenu();
 renderPlaybackSpeedControls();
 initApp();
 
@@ -1972,4 +2044,8 @@ window.ObstacleDetectionEngine = {
   levels: Object.fromEntries(
     Object.entries(vocabularyLevels).map(([name, level]) => [name, level.label]),
   ),
+  episodePanel: {
+    header: EPISODE_PANEL_HEADER,
+    episodes: EPISODE_PANEL_METADATA,
+  },
 };
