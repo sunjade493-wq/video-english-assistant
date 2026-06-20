@@ -360,7 +360,57 @@ const bottomSheetTitle = document.querySelector('#bottomSheetTitle');
 const bottomSheetContent = document.querySelector('#bottomSheetContent');
 const bottomSheetClose = document.querySelector('#bottomSheetClose');
 const playbackSpeedButtons = document.querySelectorAll('.playback-speed-button');
+const footerMenus = [
+  { button: document.querySelector('#levelMenuButton'), menu: document.querySelector('#levelMenu') },
+  { button: document.querySelector('#episodeMenuButton'), menu: document.querySelector('#episodeMenu') },
+  { button: document.querySelector('#speedMenuButton'), menu: document.querySelector('#speedMenu') },
+];
 
+function closeFooterMenus(exceptMenu = null) {
+  footerMenus.forEach(({ button, menu }) => {
+    if (!button || !menu || menu === exceptMenu) {
+      return;
+    }
+
+    menu.hidden = true;
+    button.setAttribute('aria-expanded', 'false');
+  });
+}
+
+function toggleFooterMenu(targetButton, targetMenu) {
+  if (!targetButton || !targetMenu) {
+    return;
+  }
+
+  const shouldOpen = targetMenu.hidden;
+  closeFooterMenus(targetMenu);
+  targetMenu.hidden = !shouldOpen;
+  targetButton.setAttribute('aria-expanded', String(shouldOpen));
+}
+
+function setupFooterMenus() {
+  footerMenus.forEach(({ button, menu }) => {
+    if (!button || !menu) {
+      return;
+    }
+
+    button.addEventListener('click', (event) => {
+      event.stopPropagation();
+      toggleFooterMenu(button, menu);
+    });
+
+    menu.addEventListener('click', (event) => {
+      event.stopPropagation();
+    });
+  });
+
+  document.addEventListener('click', () => closeFooterMenus());
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closeFooterMenus();
+    }
+  });
+}
 
 
 function renderPlaybackSpeedControls() {
@@ -370,6 +420,7 @@ function renderPlaybackSpeedControls() {
 
     button.classList.toggle('is-selected', isSelected);
     button.setAttribute('aria-pressed', String(isSelected));
+    button.setAttribute('aria-selected', String(isSelected));
   });
 }
 
@@ -1932,6 +1983,7 @@ if (bottomSheetClose) {
 if (bottomSheetBackdrop) {
   bottomSheetBackdrop.addEventListener('click', closeBottomSheet);
 }
+setupFooterMenus();
 playbackSpeedButtons.forEach((button) => {
   button.addEventListener('click', handlePlaybackSpeedSelection);
 });

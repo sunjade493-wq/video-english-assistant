@@ -32,13 +32,63 @@
       <section class="player-footer" aria-label="播放器控制区">
         <div class="player-footer__row player-footer__row--meta">
           <span class="timeline-time" id="timelineTimeText">00:00 / 00:14</span>
-          <div class="episode-card" aria-labelledby="episodeLabel">
-            <span class="eyebrow sr-only" id="episodeLabel">Episode</span>
-            <button class="episode-select-button" type="button" aria-haspopup="listbox" aria-expanded="false">Episodes <span aria-hidden="true">▼</span></button>
+          <div class="footer-menu level-card" aria-labelledby="levelLabel">
+            <span class="eyebrow sr-only" id="levelLabel">Level</span>
+            <button class="footer-menu__button" id="levelMenuButton" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="levelMenu">Level <span aria-hidden="true">▼</span></button>
+            <div class="footer-menu__popup footer-menu__popup--level" id="levelMenu" role="listbox" aria-labelledby="levelLabel" hidden>
+              <button class="footer-menu__option" type="button" role="option" aria-selected="true">初中</button>
+              <button class="footer-menu__option" type="button" role="option">高中</button>
+              <button class="footer-menu__option" type="button" role="option">CET4</button>
+              <button class="footer-menu__option" type="button" role="option">CET6</button>
+              <button class="footer-menu__option" type="button" role="option">考研</button>
+              <button class="footer-menu__option" type="button" role="option">托福</button>
+              <button class="footer-menu__option" type="button" role="option">自定义</button>
+            </div>
           </div>
-          <div class="playback-speed-card" aria-labelledby="playbackSpeedTitle">
+          <div class="footer-menu episode-card" aria-labelledby="episodeLabel">
+            <span class="eyebrow sr-only" id="episodeLabel">Episode</span>
+            <button class="footer-menu__button" id="episodeMenuButton" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="episodeMenu">Episodes <span aria-hidden="true">▼</span></button>
+            <div class="footer-menu__popup footer-menu__popup--episodes" id="episodeMenu" role="listbox" aria-labelledby="episodeMenuTitle" hidden>
+              <p class="episode-menu__title" id="episodeMenuTitle">第12季 · 共24集</p>
+              <div class="episode-menu__grid">
+                <button class="episode-menu__item is-current" type="button" role="option" aria-selected="true">1</button>
+                <button class="episode-menu__item" type="button" role="option">2 <span class="episode-menu__member-badge">会员</span></button>
+                <button class="episode-menu__item" type="button" role="option">3 <span class="episode-menu__member-badge">会员</span></button>
+                <button class="episode-menu__item" type="button" role="option">4 <span class="episode-menu__member-badge">会员</span></button>
+                <button class="episode-menu__item" type="button" role="option">5 <span class="episode-menu__member-badge">会员</span></button>
+                <button class="episode-menu__item" type="button" role="option">6 <span class="episode-menu__member-badge">会员</span></button>
+                <button class="episode-menu__item" type="button" role="option">7 <span class="episode-menu__member-badge">会员</span></button>
+                <button class="episode-menu__item" type="button" role="option">8 <span class="episode-menu__member-badge">会员</span></button>
+                <button class="episode-menu__item" type="button" role="option">9 <span class="episode-menu__member-badge">会员</span></button>
+                <button class="episode-menu__item" type="button" role="option">10 <span class="episode-menu__member-badge">会员</span></button>
+                <button class="episode-menu__item" type="button" role="option">11 <span class="episode-menu__member-badge">会员</span></button>
+                <button class="episode-menu__item" type="button" role="option">12 <span class="episode-menu__member-badge">会员</span></button>
+                <button class="episode-menu__item" type="button" role="option">13 <span class="episode-menu__member-badge">会员</span></button>
+                <button class="episode-menu__item" type="button" role="option">14 <span class="episode-menu__member-badge">会员</span></button>
+                <button class="episode-menu__item" type="button" role="option">15 <span class="episode-menu__member-badge">会员</span></button>
+                <button class="episode-menu__item" type="button" role="option">16 <span class="episode-menu__member-badge">会员</span></button>
+                <button class="episode-menu__item" type="button" role="option">17 <span class="episode-menu__member-badge">会员</span></button>
+                <button class="episode-menu__item" type="button" role="option">18 <span class="episode-menu__member-badge">会员</span></button>
+                <button class="episode-menu__item" type="button" role="option">19 <span class="episode-menu__member-badge">会员</span></button>
+                <button class="episode-menu__item" type="button" role="option">20 <span class="episode-menu__member-badge">会员</span></button>
+                <button class="episode-menu__item" type="button" role="option">21 <span class="episode-menu__member-badge">会员</span></button>
+                <button class="episode-menu__item" type="button" role="option">22 <span class="episode-menu__member-badge">会员</span></button>
+                <button class="episode-menu__item" type="button" role="option">23 <span class="episode-menu__member-badge">会员</span></button>
+                <button class="episode-menu__item" type="button" role="option">24 <span class="episode-menu__member-badge">会员</span></button>
+              </div>
+            </div>
+          </div>
+          <div class="footer-menu playback-speed-card" aria-labelledby="playbackSpeedTitle">
             <span class="eyebrow sr-only" id="playbackSpeedTitle">Playback Speed</span>
-            <button class="speed-select-button" type="button" aria-haspopup="listbox" aria-expanded="false">Speed <span aria-hidden="true">▼</span></button>
+            <button class="footer-menu__button" id="speedMenuButton" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="speedMenu">Speed <span aria-hidden="true">▼</span></button>
+            <div class="footer-menu__popup footer-menu__popup--speed" id="speedMenu" role="listbox" aria-labelledby="playbackSpeedTitle" hidden>
+              <button class="footer-menu__option playback-speed-button" type="button" role="option" data-playback-rate="0.5">0.5x</button>
+              <button class="footer-menu__option playback-speed-button" type="button" role="option" data-playback-rate="0.75">0.75x</button>
+              <button class="footer-menu__option playback-speed-button" type="button" role="option" data-playback-rate="1">1.0x</button>
+              <button class="footer-menu__option playback-speed-button" type="button" role="option" data-playback-rate="1.25">1.25x</button>
+              <button class="footer-menu__option playback-speed-button" type="button" role="option" data-playback-rate="1.5">1.5x</button>
+              <button class="footer-menu__option playback-speed-button" type="button" role="option" data-playback-rate="2">2.0x</button>
+            </div>
           </div>
         </div>
         <div class="player-footer__row player-footer__row--timeline">
