@@ -1211,3 +1211,36 @@ button {
     padding-left: 16px;
   }
 }
+
+/* P0-4F final: force Level and Speed popup style to match Episodes dark menu */
+.footer-menu--level .footer-menu__popup.footer-menu__popup--light,
+.footer-menu--speed .footer-menu__popup.footer-menu__popup--light {
+  border: 1px solid rgba(96, 165, 250, 0.16);
+  color: #ffffff;
+  background:
+    linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(15, 35, 62, 0.98));
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.34);
+}
+
+.footer-menu--level .footer-menu__popup.footer-menu__popup--light .footer-menu__item,
+.footer-menu--speed .footer-menu__popup.footer-menu__popup--light .footer-menu__item {
+  color: #ffffff;
+  background: transparent;
+}
+
+.footer-menu--level .footer-menu__popup.footer-menu__popup--light .footer-menu__item.is-selected,
+.footer-menu--speed .footer-menu__popup.footer-menu__popup--light .footer-menu__item.is-selected,
+.footer-menu--level .footer-menu__popup.footer-menu__popup--light .footer-menu__item[aria-checked="true"],
+.footer-menu--speed .footer-menu__popup.footer-menu__popup--light .footer-menu__item[aria-checked="true"] {
+  color: #ffffff;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.footer-menu--level .footer-menu__popup.footer-menu__popup--light .footer-menu__item:hover,
+.footer-menu--speed .footer-menu__popup.footer-menu__popup--light .footer-menu__item:hover,
+.footer-menu--level .footer-menu__popup.footer-menu__popup--light .footer-menu__item:focus-visible,
+.footer-menu--speed .footer-menu__popup.footer-menu__popup--light .footer-menu__item:focus-visible {
+  color: #ffffff;
+  background: rgba(37, 99, 235, 0.42);
+  outline: none;
+}
