@@ -896,6 +896,14 @@ function syncTimeFromRealVideo() {
   }
 
   currentTimeMs = realVideo.currentTime * 1000;
+  console.log(
+    "[P0-1F sync]",
+    {
+      realCurrentTime: realVideo.currentTime,
+      currentTimeMs,
+      isVideoPlaying
+    }
+  );
   currentSegmentIndex = getSegmentIndexForTime(currentTimeMs);
   return true;
 }
@@ -1279,6 +1287,13 @@ function updatePlaybackProgress() {
     return;
   }
 
+  console.log(
+    "[P0-1F playbackTimer]",
+    {
+      realCurrentTime: realVideo.currentTime,
+      currentTimeMs
+    }
+  );
   const previousSegmentIndex = currentSegmentIndex;
   syncTimeFromRealVideo();
   renderVideoState();
@@ -1295,6 +1310,13 @@ function startPlaybackTimer() {
   playbackStartedTimeMs = currentTimeMs;
   playbackTimer = window.setInterval(updatePlaybackProgress, 250);
   timelineRenderTimer = window.setInterval(() => {
+    console.log(
+      "[P0-1F timelineRenderTimer]",
+      {
+        realCurrentTime: realVideo.currentTime,
+        currentTimeMs
+      }
+    );
     syncTimeFromRealVideo();
     renderTimelines();
   }, 100);
@@ -1328,7 +1350,25 @@ function seekToTime(timeMs) {
   const didSubtitleChange = nextSegmentIndex !== currentSegmentIndex;
 
   currentTimeMs = nextTimeMs;
+  console.log(
+    "[P0-1F seek]",
+    {
+      targetTimeMs: nextTimeMs,
+      beforeCurrentTime: realVideo.currentTime,
+      duration: realVideo.duration,
+      readyState: realVideo.readyState,
+      networkState: realVideo.networkState
+    }
+  );
   realVideo.currentTime = currentTimeMs / 1000;
+  console.log(
+    "[P0-1F after-seek]",
+    {
+      currentTime: realVideo.currentTime,
+      duration: realVideo.duration,
+      readyState: realVideo.readyState
+    }
+  );
   currentSegmentIndex = nextSegmentIndex;
 
   if (wasPlaying) {
