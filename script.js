@@ -3,6 +3,7 @@ const REAL_SUBTITLE_DATA_URL = 'output_text/v28d_bilingual_subtitles.json';
 const REAL_OBSTACLE_DATA_URL = 'output_text/v29a_obstacles.json';
 const REAL_VIDEO_URL = 'assets/videos/TBBT_S12E01.mp4';
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
+const SHOW_GENERATED_SUBTITLE_OVERLAY = false;
 const EPISODE_PROGRESS_STORAGE_PREFIX = 'videoEnglishAssistant.episodeProgress.';
 
 const SUPPORTED_PART_OF_SPEECH_FORMATS = new Set([
@@ -1204,8 +1205,13 @@ function createSubtitleLanguageLine(className) {
 }
 
 function renderSubtitleMarkers() {
-  const segment = getCurrentSubtitleSegment();
   currentSubtitleLine.innerHTML = '';
+
+  if (!SHOW_GENERATED_SUBTITLE_OVERLAY) {
+    return;
+  }
+
+  const segment = getCurrentSubtitleSegment();
 
   if (!segment) {
     appendSubtitleText('暂无字幕');
