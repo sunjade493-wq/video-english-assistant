@@ -1,6 +1,7 @@
 const DEFAULT_SUBTITLE_TEXT = `Demo subtitle unavailable.`;
 const REAL_SUBTITLE_DATA_URL = 'output_text/v28d_bilingual_subtitles.json';
 const REAL_OBSTACLE_DATA_URL = 'output_text/v29a_obstacles.json';
+const REAL_VISUAL_MAPPING_DATA_URL = 'output_text/visual_mapping/TBBT_S12E01_word_boxes.json';
 const REAL_VIDEO_URL = 'assets/videos/TBBT_S12E01.mp4';
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
 const SHOW_GENERATED_SUBTITLE_OVERLAY = false;
@@ -341,6 +342,7 @@ let currentSegmentIndex = 0;
 let isVideoPlaying = false;
 let playbackTimer = null;
 let obstacles = [];
+const visualMappingByObstacleId = new Map();
 let hiddenObstacleIds = new Set();
 let dismissedObstacleHistory = [];
 let currentEpisodeProgressKey = '';
@@ -808,6 +810,27 @@ async function fetchJson(url) {
   return response.json();
 }
 
+async function loadVisualMapping() {
+  visualMappingByObstacleId.clear();
+
+  try {
+    const payload = await fetchJson(REAL_VISUAL_MAPPING_DATA_URL);
+    const wordBoxes = Array.isArray(payload?.wordBoxes) ? payload.wordBoxes : [];
+
+    wordBoxes.forEach((wordBox) => {
+      if (wordBox?.obstacleId && wordBox?.box) {
+        visualMappingByObstacleId.set(wordBox.obstacleId, {
+          ...wordBox,
+          coordinateSpace: payload.coordinateSpace,
+          runtimePolicy: payload.runtimePolicy,
+        });
+      }
+    });
+  } catch (error) {
+    console.warn('[subtitle-marker] Visual mapping unavailable; falling back to frozen marker ranges.', error);
+  }
+}
+
 async function loadRealEpisodeData() {
   const [subtitlePayload, obstaclePayload] = await Promise.all([
     fetchJson(REAL_SUBTITLE_DATA_URL),
@@ -821,6 +844,7 @@ async function loadRealEpisodeData() {
 
   subtitleSegments = realSubtitleSegments;
   obstacles = normalizeRealObstacleRows(obstaclePayload);
+  await loadVisualMapping();
   activeDataSource = 'real';
   currentEpisodeProgressKey = getEpisodeProgressKey(JSON.stringify({ source: 'real', subtitles: subtitleSegments.map((segment) => segment.text) }));
   applyStoredEpisodeProgress(currentEpisodeProgressKey);
@@ -1195,7 +1219,35 @@ function clearRealSubtitleMarkers() {
   subtitleMarkerOverlay.querySelectorAll('.subtitle-marker-overlay__marker').forEach((marker) => marker.remove());
 }
 
+function renderVisualMappingMarker(obstacle) {
+  const visualMapping = visualMappingByObstacleId.get(obstacle.id);
+  const box = visualMapping?.box;
+  const coordinateSpace = visualMapping?.coordinateSpace;
+
+  if (!box || !coordinateSpace?.width || !coordinateSpace?.height) {
+    return null;
+  }
+
+  const marker = document.createElement('span');
+  marker.className = 'subtitle-marker-overlay__marker subtitle-marker-overlay__marker--visual';
+  marker.textContent = '···';
+  marker.style.left = `${(box.x / coordinateSpace.width) * 100}%`;
+  marker.style.top = `${((box.y + box.height) / coordinateSpace.height) * 100}%`;
+  marker.style.width = `${(box.width / coordinateSpace.width) * 100}%`;
+  marker.setAttribute('data-obstacle-id', obstacle.id);
+  marker.setAttribute('data-visual-mapping', 'true');
+  marker.setAttribute('aria-hidden', 'true');
+
+  return marker;
+}
+
 function createRealSubtitleMarker(range, segment, lineLeftPercent, lineWidthPercent) {
+  const visualMarker = renderVisualMappingMarker(range.obstacle);
+
+  if (visualMarker) {
+    return visualMarker;
+  }
+
   const subtitleLength = segment.text.length;
   const relativeStart = Math.max(0, Math.min(1, range.start / subtitleLength));
   const relativeEnd = Math.max(relativeStart, Math.min(1, range.end / subtitleLength));
@@ -1208,6 +1260,7 @@ function createRealSubtitleMarker(range, segment, lineLeftPercent, lineWidthPerc
   marker.style.left = `${leftPercent}%`;
   marker.style.width = `${Math.min(widthPercent, lineLeftPercent + lineWidthPercent - leftPercent)}%`;
   marker.setAttribute('data-obstacle-id', range.obstacle.id);
+  marker.setAttribute('data-visual-mapping', 'false');
   marker.setAttribute('aria-hidden', 'true');
 
   return marker;

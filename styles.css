@@ -811,6 +811,12 @@ button {
   transform: translateY(50%);
 }
 
+
+.subtitle-marker-overlay__marker--visual {
+  bottom: auto;
+  height: 1em;
+}
+
 .subtitle-marker-overlay__test-marker {
   position: absolute;
   left: 50%;
