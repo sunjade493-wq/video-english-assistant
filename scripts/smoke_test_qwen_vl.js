@@ -3,15 +3,67 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const zlib = require('node:zlib');
 
 const ENDPOINT = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions';
 const MODEL = 'qwen-vl-plus';
 const PROMPT = 'Describe this image briefly. Return only JSON: {"ok": true, "description": "..."}';
 
-// 1x1 PNG with a red pixel. Generated from a fixed base64 literal so this
-// smoke test does not need production dependencies or image tooling.
-const TINY_RED_PNG_BASE64 =
-  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADUlEQVR42mP8z8BQDwAFgwJ/lZK3ygAAAABJRU5ErkJggg==';
+const SMOKE_TEST_IMAGE_SIZE = 64;
+
+function crc32(buffer) {
+  let crc = 0xffffffff;
+  for (const byte of buffer) {
+    crc ^= byte;
+    for (let bit = 0; bit < 8; bit += 1) {
+      crc = (crc >>> 1) ^ (crc & 1 ? 0xedb88320 : 0);
+    }
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+function pngChunk(type, data) {
+  const typeBuffer = Buffer.from(type, 'ascii');
+  const length = Buffer.alloc(4);
+  const crc = Buffer.alloc(4);
+
+  length.writeUInt32BE(data.length, 0);
+  crc.writeUInt32BE(crc32(Buffer.concat([typeBuffer, data])), 0);
+
+  return Buffer.concat([length, typeBuffer, data, crc]);
+}
+
+// 64x64 PNG generated with Node built-ins so the smoke test remains
+// dependency-free while satisfying qwen-vl-plus image size restrictions.
+function createSmokeTestPngBase64(size = SMOKE_TEST_IMAGE_SIZE) {
+  const header = Buffer.alloc(13);
+  header.writeUInt32BE(size, 0);
+  header.writeUInt32BE(size, 4);
+  header[8] = 8; // Bit depth.
+  header[9] = 2; // Truecolor RGB.
+  header[10] = 0; // Compression method.
+  header[11] = 0; // Filter method.
+  header[12] = 0; // No interlace.
+
+  const row = Buffer.alloc(1 + size * 3);
+  row[0] = 0; // No filter for this scanline.
+  for (let x = 0; x < size; x += 1) {
+    const offset = 1 + x * 3;
+    row[offset] = 255;
+    row[offset + 1] = x % 2 === 0 ? 0 : 96;
+    row[offset + 2] = 0;
+  }
+
+  const imageData = Buffer.concat(Array.from({ length: size }, () => row));
+  const compressed = zlib.deflateSync(imageData);
+
+  return Buffer.concat([
+    Buffer.from('89504e470d0a1a0a', 'hex'),
+    pngChunk('IHDR', header),
+    pngChunk('IDAT', compressed),
+    pngChunk('IEND', Buffer.alloc(0)),
+  ]).toString('base64');
+}
 
 function maskApiKey(apiKey) {
   if (!apiKey) return '(missing)';
@@ -49,10 +101,11 @@ async function main() {
 
   const tmpDir = path.join(process.cwd(), 'tmp');
   const imagePath = path.join(tmpDir, 'qwen_vl_smoke_test.png');
+  const smokeTestPngBase64 = createSmokeTestPngBase64();
   fs.mkdirSync(tmpDir, { recursive: true });
-  fs.writeFileSync(imagePath, Buffer.from(TINY_RED_PNG_BASE64, 'base64'));
+  fs.writeFileSync(imagePath, Buffer.from(smokeTestPngBase64, 'base64'));
 
-  const imageDataUrl = `data:image/png;base64,${TINY_RED_PNG_BASE64}`;
+  const imageDataUrl = `data:image/png;base64,${smokeTestPngBase64}`;
   const body = {
     model: MODEL,
     messages: [
