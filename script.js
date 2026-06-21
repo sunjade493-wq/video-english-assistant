@@ -3,6 +3,7 @@ const REAL_SUBTITLE_DATA_URL = 'output_text/v28d_bilingual_subtitles.json';
 const REAL_OBSTACLE_DATA_URL = 'output_text/v29a_obstacles.json';
 const REAL_VIDEO_URL = 'assets/videos/TBBT_S12E01.mp4';
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
+const SHOW_GENERATED_SUBTITLE_OVERLAY = false;
 const EPISODE_PROGRESS_STORAGE_PREFIX = 'videoEnglishAssistant.episodeProgress.';
 
 const SUPPORTED_PART_OF_SPEECH_FORMATS = new Set([
@@ -363,6 +364,7 @@ const conqueredObstacleCount = document.querySelector('#conqueredObstacleCount')
 const remainingObstacleCount = document.querySelector('#remainingObstacleCount');
 const episodeUndoButton = document.querySelector('#episodeUndoButton');
 const currentSubtitleLine = document.querySelector('#currentSubtitleLine');
+const subtitleOverlay = currentSubtitleLine?.closest('.subtitle-overlay') || null;
 const playIcon = document.querySelector('#playIcon');
 const videoStatusText = document.querySelector('#videoStatusText');
 const videoFrame = document.querySelector('.video-frame');
@@ -1206,6 +1208,17 @@ function createSubtitleLanguageLine(className) {
 function renderSubtitleMarkers() {
   const segment = getCurrentSubtitleSegment();
   currentSubtitleLine.innerHTML = '';
+
+  if (!SHOW_GENERATED_SUBTITLE_OVERLAY) {
+    if (subtitleOverlay) {
+      subtitleOverlay.hidden = true;
+    }
+    return;
+  }
+
+  if (subtitleOverlay) {
+    subtitleOverlay.hidden = false;
+  }
 
   if (!segment) {
     appendSubtitleText('暂无字幕');
