@@ -571,3 +571,17 @@ Feature Freeze:
     * 1.5x
     * 1.75x
     * 2.0x
+
+## P0-2 Burned Subtitle Overlay Architecture Freeze
+
+Status:
+Frozen and accepted.
+
+Source:
+docs/P0_2_BURNED_SUBTITLE_OVERLAY_ARCHITECTURE_FREEZE.md
+
+Summary:
+P0-2 freezes the subtitle display strategy after real video import. The video’s built-in burned white subtitle is the default visible subtitle source. The generated yellow full-sentence Overlay subtitle is disabled by default and retained only as inactive fallback capability. Existing subtitle JSON and obstacle JSON remain the learning synchronization data source for right obstacle cards and the bottom obstacle heat axis. Precise marker alignment on real burned subtitles is deferred to P0-3. P0-2 does not change obstacle data, Level Runtime, Episode Runtime, Speed behavior, footer layout, right panel behavior, or video visual treatment.
+
+Validation:
+Real-video validation must use Live Server at http://127.0.0.1:5500.
