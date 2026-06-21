@@ -679,3 +679,44 @@ Initial marker validation color is yellow, but final marker color remains subjec
 P0-3 explicitly does not require OCR, text selection, word selection, pixel-perfect alignment, fixing subtitle timing drift, burned-subtitle OCR alignment, or pixel-level mapping between generated subtitle JSON and burned subtitle text.
 
 The goal of P0-3 is discoverability of learning points associated with the burned subtitle area, not exact subtitle annotation.
+
+## P0-3B-Reframe Subtitle Visual Mapping Layer Required Frozen
+
+Milestone:
+P0-3B-Reframe Subtitle Visual Mapping Layer Required
+
+Source:
+`docs/P0_3B_SUBTITLE_VISUAL_MAPPING_LAYER_REQUIRED_FREEZE.md`
+
+Status:
+Frozen and accepted as an architecture reframe.
+
+P0-3B character-ratio marker positioning is not accepted and must not be tagged as the accepted marker architecture.
+
+Character-ratio marker positioning is not reliable for burned subtitles because burned white English subtitles are pixels inside the MP4, not DOM text.
+
+Runtime currently knows obstacle text ranges through `markerStart` / `markerEnd`, but it does not know the real visual `x` / `y` coordinates of burned English subtitle words.
+
+Burned subtitle marker alignment requires a text-to-visual-coordinate mapping layer that connects subtitle text, obstacle `markerStart` / `markerEnd`, and real burned English subtitle visual coordinates.
+
+Runtime must remain a read-only consumer and must not perform real-time OCR or real-time AI inference during playback.
+
+OCR / AI coordinate extraction, if used, belongs to an offline preprocessing pipeline, and generated subtitle visual mapping data must be exported as read-only JSON consumed by Runtime.
+
+The architecture intentionally does not freeze a specific OCR engine or AI model. Acceptable approaches include OCR-based extraction, vision-language-model-assisted extraction, hybrid extraction pipelines, and human-assisted verification workflows.
+
+Generated coordinate data may eventually be stored as read-only data such as:
+
+* `output_text/visual_mapping/TBBT_S12E01_word_boxes.json`
+
+Future marker rendering should prefer visual mapping coordinates when available.
+
+Character-ratio positioning may remain only as a fallback or debugging aid, but must not be considered the accepted production approach for burned subtitle markers.
+
+P0-3C should be a small prototype for the current TBBT S12E01 video, first 2 minutes only, because the first minute contains too few learning obstacles to evaluate the architecture.
+
+P0-3C should generate or simulate subtitle visual mapping data for the first two minutes and allow Runtime to render markers using the mapping layer.
+
+P0-3C validation examples should include obstacles such as `believe`, `bedsheets`, `outside`, and any other available obstacles within the first two minutes.
+
+P0-3C success criteria include markers appearing below the burned white English subtitle line, aligning visually to the corresponding word or phrase better than character-ratio positioning, not misleading the learner, keeping Runtime read-only, preserving the existing obstacle count of 48, and not modifying generated subtitle JSON or obstacle JSON.
