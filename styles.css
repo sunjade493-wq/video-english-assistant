@@ -811,6 +811,16 @@ button {
   transform: translateY(50%);
 }
 
+.subtitle-marker-overlay__marker--visual {
+  bottom: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(0.72rem, 1.05vw, 1rem);
+  letter-spacing: 0.045em;
+  transform: none;
+}
+
 .subtitle-marker-overlay__test-marker {
   position: absolute;
   left: 50%;
