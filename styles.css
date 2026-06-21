@@ -784,6 +784,36 @@ button {
   pointer-events: none;
 }
 
+.subtitle-marker-overlay {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  pointer-events: none;
+}
+
+.subtitle-marker-overlay__test-marker {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(42px, 8%, 72px);
+  display: none;
+  padding: 0 0.18em;
+  color: #ffd84d;
+  font-size: clamp(1.45rem, 2.4vw, 2rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-shadow:
+    -1px -1px 0 rgba(0, 0, 0, 0.78),
+    1px -1px 0 rgba(0, 0, 0, 0.78),
+    -1px 1px 0 rgba(0, 0, 0, 0.78),
+    1px 1px 0 rgba(0, 0, 0, 0.78);
+  transform: translateX(-50%);
+}
+
+.subtitle-marker-overlay.has-test-marker .subtitle-marker-overlay__test-marker {
+  display: block;
+}
+
 .subtitle-line {
   display: inline-flex;
   flex-direction: column;

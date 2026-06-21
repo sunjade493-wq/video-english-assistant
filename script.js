@@ -4,6 +4,7 @@ const REAL_OBSTACLE_DATA_URL = 'output_text/v29a_obstacles.json';
 const REAL_VIDEO_URL = 'assets/videos/TBBT_S12E01.mp4';
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
 const SHOW_GENERATED_SUBTITLE_OVERLAY = false;
+const SHOW_SUBTITLE_MARKER_OVERLAY_TEST_MARKER = new URLSearchParams(window.location.search).get('debugSubtitleMarker') === '1';
 const EPISODE_PROGRESS_STORAGE_PREFIX = 'videoEnglishAssistant.episodeProgress.';
 
 const SUPPORTED_PART_OF_SPEECH_FORMATS = new Set([
@@ -365,6 +366,7 @@ const remainingObstacleCount = document.querySelector('#remainingObstacleCount')
 const episodeUndoButton = document.querySelector('#episodeUndoButton');
 const currentSubtitleLine = document.querySelector('#currentSubtitleLine');
 const subtitleOverlay = currentSubtitleLine?.closest('.subtitle-overlay') || null;
+const subtitleMarkerOverlay = document.querySelector('#subtitleMarkerOverlay');
 const playIcon = document.querySelector('#playIcon');
 const videoStatusText = document.querySelector('#videoStatusText');
 const videoFrame = document.querySelector('.video-frame');
@@ -1245,6 +1247,60 @@ function renderSubtitleMarkers() {
   currentSubtitleLine.append(englishLine, chineseLine);
 }
 
+function getContainedVideoRect() {
+  if (!videoFrame || !hasLoadedRealVideoFrame()) {
+    return null;
+  }
+
+  const frameRect = videoFrame.getBoundingClientRect();
+  const frameWidth = frameRect.width;
+  const frameHeight = frameRect.height;
+  const frameRatio = frameWidth / frameHeight;
+  const videoRatio = realVideo.videoWidth / realVideo.videoHeight;
+
+  if (!Number.isFinite(frameRatio) || !Number.isFinite(videoRatio) || frameWidth <= 0 || frameHeight <= 0) {
+    return null;
+  }
+
+  if (frameRatio > videoRatio) {
+    const width = frameHeight * videoRatio;
+    return {
+      width,
+      height: frameHeight,
+      left: (frameWidth - width) / 2,
+      top: 0,
+    };
+  }
+
+  const height = frameWidth / videoRatio;
+  return {
+    width: frameWidth,
+    height,
+    left: 0,
+    top: (frameHeight - height) / 2,
+  };
+}
+
+function syncSubtitleMarkerOverlayBounds() {
+  if (!subtitleMarkerOverlay) {
+    return;
+  }
+
+  const videoRect = getContainedVideoRect();
+  subtitleMarkerOverlay.classList.toggle('has-test-marker', SHOW_SUBTITLE_MARKER_OVERLAY_TEST_MARKER);
+
+  if (!videoRect) {
+    subtitleMarkerOverlay.hidden = true;
+    return;
+  }
+
+  subtitleMarkerOverlay.hidden = false;
+  subtitleMarkerOverlay.style.left = `${videoRect.left}px`;
+  subtitleMarkerOverlay.style.top = `${videoRect.top}px`;
+  subtitleMarkerOverlay.style.width = `${videoRect.width}px`;
+  subtitleMarkerOverlay.style.height = `${videoRect.height}px`;
+}
+
 function getLearningStateLabel() {
   if (isVideoPlaying) {
     return 'Playing';
@@ -1822,6 +1878,7 @@ function renderRealVideoAvailability() {
 
   videoFrame?.classList.toggle('has-real-video', hasRealVideoFrame);
   videoPlaceholder?.classList.toggle('is-hidden', hasRealVideoFrame);
+  syncSubtitleMarkerOverlayBounds();
 }
 
 function handleRealVideoMetadataLoaded() {
@@ -2238,6 +2295,14 @@ if (realVideo) {
   realVideo.addEventListener('ended', handleRealVideoEnded);
   renderRealVideoAvailability();
 }
+
+if (videoFrame && typeof ResizeObserver === 'function') {
+  const subtitleMarkerOverlayResizeObserver = new ResizeObserver(syncSubtitleMarkerOverlayBounds);
+  subtitleMarkerOverlayResizeObserver.observe(videoFrame);
+}
+
+window.addEventListener('resize', syncSubtitleMarkerOverlayBounds);
+document.addEventListener('fullscreenchange', syncSubtitleMarkerOverlayBounds);
 
 if (episodeUndoButton) {
   episodeUndoButton.addEventListener('click', undoLastDismissedObstacle);
