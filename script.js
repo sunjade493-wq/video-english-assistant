@@ -5,6 +5,9 @@ const REAL_VIDEO_URL = 'assets/videos/TBBT_S12E01.mp4';
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
 const SHOW_GENERATED_SUBTITLE_OVERLAY = false;
 const SHOW_SUBTITLE_MARKER_OVERLAY_TEST_MARKER = new URLSearchParams(window.location.search).get('debugSubtitleMarker') === '1';
+const SUBTITLE_MARKER_TIMING_TOLERANCE_MS = 160;
+const BURNED_ENGLISH_LINE_WIDTH_RATIO = 0.82;
+const BURNED_ENGLISH_MARKER_BOTTOM_RATIO = 0.135;
 const EPISODE_PROGRESS_STORAGE_PREFIX = 'videoEnglishAssistant.episodeProgress.';
 
 const SUPPORTED_PART_OF_SPEECH_FORMATS = new Set([
@@ -1163,6 +1166,75 @@ function getMarkerRangesForSegment(segment) {
     .sort((firstRange, secondRange) => firstRange.start - secondRange.start);
 }
 
+
+function getActiveSubtitleSegmentForMarkers() {
+  const currentSegment = getCurrentSubtitleSegment();
+
+  if (currentSegment && Number.isFinite(currentSegment.startMs) && Number.isFinite(currentSegment.endMs)) {
+    const startsWithinTolerance = currentTimeMs >= currentSegment.startMs - SUBTITLE_MARKER_TIMING_TOLERANCE_MS;
+    const endsWithinTolerance = currentTimeMs < currentSegment.endMs + SUBTITLE_MARKER_TIMING_TOLERANCE_MS;
+
+    if (startsWithinTolerance && endsWithinTolerance) {
+      return currentSegment;
+    }
+  }
+
+  return subtitleSegments.find((segment) => (
+    Number.isFinite(segment.startMs)
+    && Number.isFinite(segment.endMs)
+    && currentTimeMs >= segment.startMs - SUBTITLE_MARKER_TIMING_TOLERANCE_MS
+    && currentTimeMs < segment.endMs + SUBTITLE_MARKER_TIMING_TOLERANCE_MS
+  )) || currentSegment;
+}
+
+function clearRealSubtitleMarkers() {
+  if (!subtitleMarkerOverlay) {
+    return;
+  }
+
+  subtitleMarkerOverlay.querySelectorAll('.subtitle-marker-overlay__marker').forEach((marker) => marker.remove());
+}
+
+function createRealSubtitleMarker(range, segment, lineLeftPercent, lineWidthPercent) {
+  const subtitleLength = segment.text.length;
+  const relativeStart = Math.max(0, Math.min(1, range.start / subtitleLength));
+  const relativeEnd = Math.max(relativeStart, Math.min(1, range.end / subtitleLength));
+  const marker = document.createElement('span');
+  const leftPercent = lineLeftPercent + (relativeStart * lineWidthPercent);
+  const widthPercent = Math.max(0.01, (relativeEnd - relativeStart) * lineWidthPercent);
+
+  marker.className = 'subtitle-marker-overlay__marker';
+  marker.textContent = '···';
+  marker.style.left = `${leftPercent}%`;
+  marker.style.width = `${Math.min(widthPercent, lineLeftPercent + lineWidthPercent - leftPercent)}%`;
+  marker.setAttribute('data-obstacle-id', range.obstacle.id);
+  marker.setAttribute('aria-hidden', 'true');
+
+  return marker;
+}
+
+function renderRealSubtitleMarkers() {
+  if (!subtitleMarkerOverlay) {
+    return;
+  }
+
+  clearRealSubtitleMarkers();
+
+  const segment = getActiveSubtitleSegmentForMarkers();
+  const ranges = segment ? getMarkerRangesForSegment(segment) : [];
+
+  if (!segment || !segment.text || ranges.length === 0) {
+    return;
+  }
+
+  const lineWidthPercent = BURNED_ENGLISH_LINE_WIDTH_RATIO * 100;
+  const lineLeftPercent = (100 - lineWidthPercent) / 2;
+
+  ranges.forEach((range) => {
+    subtitleMarkerOverlay.append(createRealSubtitleMarker(range, segment, lineLeftPercent, lineWidthPercent));
+  });
+}
+
 function appendSubtitleText(text, targetLine = currentSubtitleLine) {
   if (!text) {
     return;
@@ -1295,6 +1367,8 @@ function syncSubtitleMarkerOverlayBounds() {
   }
 
   subtitleMarkerOverlay.hidden = false;
+  subtitleMarkerOverlay.style.setProperty('--burned-english-marker-bottom', `${BURNED_ENGLISH_MARKER_BOTTOM_RATIO * 100}%`);
+  renderRealSubtitleMarkers();
   subtitleMarkerOverlay.style.left = `${videoRect.left}px`;
   subtitleMarkerOverlay.style.top = `${videoRect.top}px`;
   subtitleMarkerOverlay.style.width = `${videoRect.width}px`;
@@ -1319,6 +1393,7 @@ function renderVideoState() {
 
   videoStatusText.textContent = `V2.4A Obstacle Timeline · ${getLearningStateLabel()}`;
   renderSubtitleMarkers();
+  renderRealSubtitleMarkers();
   renderTimelines();
 }
 
