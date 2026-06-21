@@ -571,3 +571,47 @@ Feature Freeze:
     * 1.5x
     * 1.75x
     * 2.0x
+
+## Development Environment Rule
+
+For features involving:
+
+* real MP4 playback
+* timeline seeking
+* subtitle synchronization
+* playback speed
+* HTML5 media events
+
+Validation must use Live Server:
+
+http://127.0.0.1:5500
+
+because `py -m http.server` can behave differently for HTML5 video interactions and may produce misleading seek/playback behavior during development.
+
+`py -m http.server` may still be used for:
+
+* ordinary static page development
+* simple UI work
+* non-media testing
+
+but it must not be used as the validation environment for real-video playback and seeking behavior.
+
+Status:
+Frozen and accepted.
+
+## P0-1 Real Episode Video Validation Environment Frozen
+
+Milestone:
+P0-1 Real Episode Video
+
+Validation environment:
+
+Live Server
+http://127.0.0.1:5500
+
+Reason:
+
+Real MP4 playback, seeking, subtitle synchronization, playback speed, and HTML5 media event validation must be performed under Live Server because `py -m http.server` may produce misleading behavior for real-video interactions.
+
+Status:
+Frozen and accepted.
