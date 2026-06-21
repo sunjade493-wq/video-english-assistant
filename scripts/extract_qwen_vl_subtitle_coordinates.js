@@ -69,8 +69,8 @@ function fail(message) {
 }
 
 function commandExists(command) {
-  const result = spawnSync('bash', ['-lc', `command -v ${command}`], { encoding: 'utf8' });
-  return result.status === 0 ? result.stdout.trim() : '';
+  const result = spawnSync(command, ['-version'], { encoding: 'utf8' });
+  return result.status === 0;
 }
 
 function run(command, args) {
