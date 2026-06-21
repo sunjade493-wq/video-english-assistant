@@ -615,3 +615,31 @@ Real MP4 playback, seeking, subtitle synchronization, playback speed, and HTML5 
 
 Status:
 Frozen and accepted.
+
+## P0-2 Burned Subtitle Overlay Architecture Frozen
+
+Milestone:
+P0-2 Burned Subtitle Overlay Architecture
+
+Source:
+`docs/P0_2_BURNED_SUBTITLE_OVERLAY_ARCHITECTURE_FREEZE.md`
+
+Status:
+Frozen and accepted.
+
+P0-2 freezes a burned-subtitle-first runtime architecture for real episode video playback.
+
+The MP4 built-in burned subtitle remains the visible primary sentence subtitle during P0-2.
+
+The generated yellow full-sentence subtitle Overlay must be disabled through configuration or rendering logic, but the implementation must not be physically removed during P0-2.
+
+Existing generated JSON files remain read-only learning synchronization data:
+
+* `output_text/v28d_bilingual_subtitles.json`
+* `output_text/v29a_obstacles.json`
+
+P0-2 must not regenerate subtitles or obstacles and must not modify those JSON files.
+
+Temporary timing differences between the burned subtitle and generated JSON timing are acceptable during P0-2 when obstacle cards, bottom obstacle heat axis, and learning synchronization remain functional.
+
+Precise subtitle-marker alignment remains a P0-3 responsibility.
