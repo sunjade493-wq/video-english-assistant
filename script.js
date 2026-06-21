@@ -1,6 +1,7 @@
 const DEFAULT_SUBTITLE_TEXT = `Demo subtitle unavailable.`;
 const REAL_SUBTITLE_DATA_URL = 'output_text/v28d_bilingual_subtitles.json';
 const REAL_OBSTACLE_DATA_URL = 'output_text/v29a_obstacles.json';
+const REAL_VISUAL_MAPPING_DATA_URL = 'output_text/visual_mapping/TBBT_S12E01_word_boxes.json';
 const REAL_VIDEO_URL = 'assets/videos/TBBT_S12E01.mp4';
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
 const SHOW_GENERATED_SUBTITLE_OVERLAY = false;
@@ -341,6 +342,7 @@ let currentSegmentIndex = 0;
 let isVideoPlaying = false;
 let playbackTimer = null;
 let obstacles = [];
+let visualMappingByObstacleId = new Map();
 let hiddenObstacleIds = new Set();
 let dismissedObstacleHistory = [];
 let currentEpisodeProgressKey = '';
@@ -808,6 +810,71 @@ async function fetchJson(url) {
   return response.json();
 }
 
+function isFiniteBox(box) {
+  return box
+    && Number.isFinite(Number(box.x1))
+    && Number.isFinite(Number(box.x2))
+    && Number.isFinite(Number(box.y1))
+    && Number.isFinite(Number(box.y2))
+    && Number(box.x2) > Number(box.x1)
+    && Number(box.y2) > Number(box.y1);
+}
+
+function normalizeVisualMappingPayload(payload) {
+  const coordinateSpace = payload?.coordinateSpace || {};
+  const coordinateWidth = Number(coordinateSpace.width);
+  const coordinateHeight = Number(coordinateSpace.height);
+
+  if (!Number.isFinite(coordinateWidth) || !Number.isFinite(coordinateHeight) || coordinateWidth <= 0 || coordinateHeight <= 0) {
+    console.warn('[subtitle-marker] Visual mapping JSON skipped: invalid coordinateSpace.');
+    return new Map();
+  }
+
+  const mappedObstacles = new Map();
+  const subtitleRows = Array.isArray(payload?.subtitles) ? payload.subtitles : [];
+
+  subtitleRows.forEach((subtitleRow) => {
+    const wordBoxes = Array.isArray(subtitleRow?.wordBoxes) ? subtitleRow.wordBoxes : [];
+
+    wordBoxes.forEach((wordBox) => {
+      const obstacleId = String(wordBox?.obstacleId || '');
+      const markerBox = wordBox?.markerBox || wordBox?.box;
+
+      if (!obstacleId || !isFiniteBox(markerBox)) {
+        return;
+      }
+
+      mappedObstacles.set(obstacleId, {
+        obstacleId,
+        subtitleId: subtitleRow?.subtitleId || '',
+        text: wordBox?.text || '',
+        confidence: Number(wordBox?.confidence ?? subtitleRow?.confidence ?? 0),
+        sourceMethod: wordBox?.sourceMethod || subtitleRow?.sourceMethod || payload?.sourceMethod || 'unknown',
+        coordinateWidth,
+        coordinateHeight,
+        markerBox: {
+          x1: Number(markerBox.x1),
+          x2: Number(markerBox.x2),
+          y1: Number(markerBox.y1),
+          y2: Number(markerBox.y2),
+        },
+      });
+    });
+  });
+
+  return mappedObstacles;
+}
+
+async function loadVisualMappingData() {
+  try {
+    visualMappingByObstacleId = normalizeVisualMappingPayload(await fetchJson(REAL_VISUAL_MAPPING_DATA_URL));
+    console.info(`[subtitle-marker] Loaded ${visualMappingByObstacleId.size} visual mapping marker boxes.`);
+  } catch (error) {
+    visualMappingByObstacleId = new Map();
+    console.info('[subtitle-marker] Visual mapping JSON unavailable; using character-ratio fallback markers.', error);
+  }
+}
+
 async function loadRealEpisodeData() {
   const [subtitlePayload, obstaclePayload] = await Promise.all([
     fetchJson(REAL_SUBTITLE_DATA_URL),
@@ -821,6 +888,7 @@ async function loadRealEpisodeData() {
 
   subtitleSegments = realSubtitleSegments;
   obstacles = normalizeRealObstacleRows(obstaclePayload);
+  await loadVisualMappingData();
   activeDataSource = 'real';
   currentEpisodeProgressKey = getEpisodeProgressKey(JSON.stringify({ source: 'real', subtitles: subtitleSegments.map((segment) => segment.text) }));
   applyStoredEpisodeProgress(currentEpisodeProgressKey);
@@ -838,6 +906,7 @@ async function loadRealEpisodeData() {
 function loadDemoEpisodeData() {
   subtitleSegments = parseSubtitleSegments(DEFAULT_SUBTITLE_TEXT);
   obstacles = analyzeSubtitleText(DEFAULT_SUBTITLE_TEXT, { level: currentVocabularyLevel });
+  visualMappingByObstacleId = new Map();
   activeDataSource = 'demo';
   currentEpisodeProgressKey = getEpisodeProgressKey(DEFAULT_SUBTITLE_TEXT);
   applyStoredEpisodeProgress(currentEpisodeProgressKey);
@@ -1213,6 +1282,27 @@ function createRealSubtitleMarker(range, segment, lineLeftPercent, lineWidthPerc
   return marker;
 }
 
+function createVisualMappingSubtitleMarker(range, visualMapping) {
+  const marker = document.createElement('span');
+  const leftPercent = (visualMapping.markerBox.x1 / visualMapping.coordinateWidth) * 100;
+  const topPercent = (visualMapping.markerBox.y1 / visualMapping.coordinateHeight) * 100;
+  const widthPercent = ((visualMapping.markerBox.x2 - visualMapping.markerBox.x1) / visualMapping.coordinateWidth) * 100;
+  const heightPercent = ((visualMapping.markerBox.y2 - visualMapping.markerBox.y1) / visualMapping.coordinateHeight) * 100;
+
+  marker.className = 'subtitle-marker-overlay__marker subtitle-marker-overlay__marker--visual';
+  marker.textContent = '···';
+  marker.style.left = `${leftPercent}%`;
+  marker.style.top = `${topPercent}%`;
+  marker.style.width = `${Math.max(0.5, widthPercent)}%`;
+  marker.style.height = `${Math.max(1, heightPercent)}%`;
+  marker.setAttribute('data-obstacle-id', range.obstacle.id);
+  marker.setAttribute('data-subtitle-id', visualMapping.subtitleId);
+  marker.setAttribute('data-visual-mapping-source', visualMapping.sourceMethod);
+  marker.setAttribute('aria-hidden', 'true');
+
+  return marker;
+}
+
 function renderRealSubtitleMarkers() {
   if (!subtitleMarkerOverlay) {
     return;
@@ -1231,7 +1321,11 @@ function renderRealSubtitleMarkers() {
   const lineLeftPercent = (100 - lineWidthPercent) / 2;
 
   ranges.forEach((range) => {
-    subtitleMarkerOverlay.append(createRealSubtitleMarker(range, segment, lineLeftPercent, lineWidthPercent));
+    const visualMapping = visualMappingByObstacleId.get(range.obstacle.id);
+    const marker = visualMapping
+      ? createVisualMappingSubtitleMarker(range, visualMapping)
+      : createRealSubtitleMarker(range, segment, lineLeftPercent, lineWidthPercent);
+    subtitleMarkerOverlay.append(marker);
   });
 }
 
