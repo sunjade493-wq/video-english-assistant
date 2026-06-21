@@ -896,14 +896,6 @@ function syncTimeFromRealVideo() {
   }
 
   currentTimeMs = realVideo.currentTime * 1000;
-  console.log(
-    "[P0-1F sync]",
-    {
-      realCurrentTime: realVideo.currentTime,
-      currentTimeMs,
-      isVideoPlaying
-    }
-  );
   currentSegmentIndex = getSegmentIndexForTime(currentTimeMs);
   return true;
 }
@@ -1287,13 +1279,6 @@ function updatePlaybackProgress() {
     return;
   }
 
-  console.log(
-    "[P0-1F playbackTimer]",
-    {
-      realCurrentTime: realVideo.currentTime,
-      currentTimeMs
-    }
-  );
   const previousSegmentIndex = currentSegmentIndex;
   syncTimeFromRealVideo();
   renderVideoState();
@@ -1310,13 +1295,6 @@ function startPlaybackTimer() {
   playbackStartedTimeMs = currentTimeMs;
   playbackTimer = window.setInterval(updatePlaybackProgress, 250);
   timelineRenderTimer = window.setInterval(() => {
-    console.log(
-      "[P0-1F timelineRenderTimer]",
-      {
-        realCurrentTime: realVideo.currentTime,
-        currentTimeMs
-      }
-    );
     syncTimeFromRealVideo();
     renderTimelines();
   }, 100);
@@ -1350,25 +1328,7 @@ function seekToTime(timeMs) {
   const didSubtitleChange = nextSegmentIndex !== currentSegmentIndex;
 
   currentTimeMs = nextTimeMs;
-  console.log(
-    "[P0-1F seek]",
-    {
-      targetTimeMs: nextTimeMs,
-      beforeCurrentTime: realVideo.currentTime,
-      duration: realVideo.duration,
-      readyState: realVideo.readyState,
-      networkState: realVideo.networkState
-    }
-  );
   realVideo.currentTime = currentTimeMs / 1000;
-  console.log(
-    "[P0-1F after-seek]",
-    {
-      currentTime: realVideo.currentTime,
-      duration: realVideo.duration,
-      readyState: realVideo.readyState
-    }
-  );
   currentSegmentIndex = nextSegmentIndex;
 
   if (wasPlaying) {
@@ -1386,15 +1346,89 @@ function seekToTime(timeMs) {
   }
 }
 
-function handleTimelineInput(event) {
+let isTimelineDragging = false;
+
+function getTimelinePercentFromClientX(clientX) {
+  if (!videoTimeline) {
+    return null;
+  }
+
+  const rect = videoTimeline.getBoundingClientRect();
+
+  if (rect.width <= 0) {
+    return null;
+  }
+
+  return Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+}
+
+function seekTimelineToPercent(percent) {
   const seekDurationMs = getRealVideoSeekDurationMs();
 
-  if (seekDurationMs <= 0) {
+  if (seekDurationMs <= 0 || !Number.isFinite(percent)) {
     return;
   }
 
-  const percent = Math.max(0, Math.min(100, Number(event.target.value) || 0));
-  seekToTime((percent / 100) * seekDurationMs);
+  if (videoTimeline) {
+    videoTimeline.value = String(Math.max(0, Math.min(100, percent)));
+  }
+
+  seekToTime((Math.max(0, Math.min(100, percent)) / 100) * seekDurationMs);
+}
+
+function stopTimelineEvent(event) {
+  event.stopPropagation();
+}
+
+function handleTimelinePointerEvent(event) {
+  stopTimelineEvent(event);
+
+  if (event.type === 'pointermove' && !isTimelineDragging) {
+    return;
+  }
+
+  if (event.cancelable) {
+    event.preventDefault();
+  }
+
+  const percent = getTimelinePercentFromClientX(event.clientX);
+
+  if (percent === null) {
+    return;
+  }
+
+  seekTimelineToPercent(percent);
+}
+
+function handleTimelinePointerDown(event) {
+  isTimelineDragging = true;
+  handleTimelinePointerEvent(event);
+
+  if (videoTimeline && typeof videoTimeline.setPointerCapture === 'function') {
+    videoTimeline.setPointerCapture(event.pointerId);
+  }
+}
+
+function handleTimelinePointerUp(event) {
+  handleTimelinePointerEvent(event);
+  isTimelineDragging = false;
+
+  if (
+    videoTimeline
+    && typeof videoTimeline.releasePointerCapture === 'function'
+    && (!videoTimeline.hasPointerCapture || videoTimeline.hasPointerCapture(event.pointerId))
+  ) {
+    videoTimeline.releasePointerCapture(event.pointerId);
+  }
+}
+
+function handleTimelineClick(event) {
+  handleTimelinePointerEvent(event);
+}
+
+function handleTimelineInput(event) {
+  stopTimelineEvent(event);
+  seekTimelineToPercent(Number(event.target.value) || 0);
 }
 
 function createTimedObstacleForSegment(obstacle, segmentIndex) {
@@ -2209,9 +2243,13 @@ if (timelinePlayButton) {
   });
 }
 if (videoTimeline) {
+  videoTimeline.disabled = false;
+  videoTimeline.addEventListener('pointerdown', handleTimelinePointerDown);
+  videoTimeline.addEventListener('pointermove', handleTimelinePointerEvent);
+  videoTimeline.addEventListener('pointerup', handleTimelinePointerUp);
+  videoTimeline.addEventListener('click', handleTimelineClick);
   videoTimeline.addEventListener('input', handleTimelineInput);
-  videoTimeline.addEventListener('click', stopMarkerEvent);
-  videoTimeline.addEventListener('pointerup', stopMarkerEvent);
+  videoTimeline.addEventListener('change', handleTimelineInput);
 }
 if (obstacleHeatAxis) {
   obstacleHeatAxis.addEventListener('click', stopMarkerEvent);
