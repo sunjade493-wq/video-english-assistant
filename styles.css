@@ -791,6 +791,26 @@ button {
   pointer-events: none;
 }
 
+.subtitle-marker-overlay__marker {
+  position: absolute;
+  bottom: calc(var(--burned-english-marker-bottom, 13.5%) - 0.9em);
+  display: block;
+  overflow: hidden;
+  color: #ffd84d;
+  font-size: clamp(1.2rem, 2vw, 1.7rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-align: center;
+  white-space: nowrap;
+  text-shadow:
+    -1px -1px 0 rgba(0, 0, 0, 0.78),
+    1px -1px 0 rgba(0, 0, 0, 0.78),
+    -1px 1px 0 rgba(0, 0, 0, 0.78),
+    1px 1px 0 rgba(0, 0, 0, 0.78);
+  transform: translateY(50%);
+}
+
 .subtitle-marker-overlay__test-marker {
   position: absolute;
   left: 50%;
