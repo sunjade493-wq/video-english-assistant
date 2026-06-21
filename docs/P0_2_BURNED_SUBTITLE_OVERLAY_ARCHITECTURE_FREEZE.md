@@ -1,3 +1,23 @@
+# P0-2 Burned Subtitle Overlay Architecture Freeze
+
+Status: Frozen
+
+Scope: Documentation-only architecture freeze for P0-2.
+
+No runtime code changes.
+
+## P0-2 Architecture Freeze
+
+P0-2 freezes the burned-subtitle-first runtime architecture for real episode video playback.
+
+The built-in burned subtitle in the MP4 remains the visible primary sentence subtitle during P0-2.
+
+Generated learning JSON remains the source for learning synchronization data, including obstacle cards and the bottom obstacle heat axis.
+
+Runtime must preserve the existing generated learning data baseline and must not regenerate or mutate subtitle or obstacle JSON as part of P0-2.
+
+---
+
 ## P0-2 Timing Clarification
 
 P0-2 accepts temporary timing differences between the built-in burned subtitle and the generated JSON timing, provided that:
