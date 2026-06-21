@@ -643,3 +643,39 @@ P0-2 must not regenerate subtitles or obstacles and must not modify those JSON f
 Temporary timing differences between the burned subtitle and generated JSON timing are acceptable during P0-2 when obstacle cards, bottom obstacle heat axis, and learning synchronization remain functional.
 
 Precise subtitle-marker alignment remains a P0-3 responsibility.
+
+## P0-3 Subtitle Marker On Real Subtitle Architecture Frozen
+
+Milestone:
+P0-3 Subtitle Marker On Real Subtitle Architecture
+
+Source:
+`docs/P0_3_SUBTITLE_MARKER_ON_REAL_SUBTITLE_ARCHITECTURE_FREEZE.md`
+
+Status:
+Frozen and accepted.
+
+P0-3 freezes lightweight approximate learning markers associated with the burned subtitle area.
+
+Built-in white burned subtitles remain the only visible sentence subtitle source.
+
+The generated yellow full-sentence subtitle overlay remains disabled by default and must not be physically removed from the codebase.
+
+Runtime remains a read-only consumer of existing generated learning data and must not regenerate or modify:
+
+* `output_text/v28d_bilingual_subtitles.json`
+* `output_text/v29a_obstacles.json`
+
+P0-3 markers use the visual style `···`, are placed below the burned subtitle area, and each obstacle gets one marker.
+
+Multiple obstacles in the same subtitle render as multiple separate `···` markers.
+
+Clicking a marker pauses video and opens the existing Learning Tips / Learning Pause flow.
+
+Marker timing may use a small tolerance window to better match burned subtitle perception.
+
+Initial marker validation color is yellow, but final marker color remains subject to video validation.
+
+P0-3 explicitly does not require OCR, text selection, word selection, pixel-perfect alignment, fixing subtitle timing drift, burned-subtitle OCR alignment, or pixel-level mapping between generated subtitle JSON and burned subtitle text.
+
+The goal of P0-3 is discoverability of learning points associated with the burned subtitle area, not exact subtitle annotation.
