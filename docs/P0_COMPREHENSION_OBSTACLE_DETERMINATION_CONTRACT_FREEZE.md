@@ -42,6 +42,14 @@ Chinese definition:
 但表达的真实含义无法立即理解，
 判定为理解障碍。
 
+### Meaning-Level Principle
+
+Comprehension Obstacles are meaning-level obstacles rather than vocabulary-level obstacles.
+
+Chinese:
+
+理解障碍是意义层面的障碍，而不是词汇层面的障碍。
+
 ## 2. Product-Level Rationale
 
 Comprehension obstacles exist because knowing individual words does not guarantee understanding the expression.
@@ -134,6 +142,14 @@ The following should not automatically become comprehension obstacles:
 - Expressions selected only because they are interesting or nice to learn
 
 A sentence or expression should become a Comprehension Obstacle only when it creates a real understanding barrier for learners at the selected level.
+
+### Usefulness Is Not Enough Principle
+
+Usefulness alone does not justify creating a Comprehension Obstacle.
+
+Chinese:
+
+仅因为表达有学习价值，并不能成为生成理解障碍的理由。
 
 ## 5. Relationship With Vocabulary Obstacles
 

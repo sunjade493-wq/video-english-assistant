@@ -851,6 +851,8 @@ Frozen core definition:
 
 - Even if every individual word is known, if the real meaning of the expression cannot be immediately understood, it shall be classified as a Comprehension Obstacle.
 - Chinese definition: 即使认识所有单词，但表达的真实含义无法立即理解，判定为理解障碍。
+- Meaning-Level Principle: Comprehension Obstacles are meaning-level obstacles rather than vocabulary-level obstacles.
+- Chinese principle: 理解障碍是意义层面的障碍，而不是词汇层面的障碍。
 
 Frozen priority recognition targets:
 
@@ -868,6 +870,8 @@ Frozen boundaries:
 - Not every useful sentence is a Comprehension Obstacle.
 - Ordinary literal sentences, simple grammar patterns, common tone or politeness patterns, directly understandable sentences, broadly useful expressions, or interesting expressions should not automatically become comprehension obstacles.
 - A sentence or expression should become a Comprehension Obstacle only when it creates a real understanding barrier for learners at the selected level.
+- Usefulness Is Not Enough Principle: usefulness alone does not justify creating a Comprehension Obstacle.
+- Chinese principle: 仅因为表达有学习价值，并不能成为生成理解障碍的理由。
 
 Frozen relationship with Vocabulary Obstacles:
 
