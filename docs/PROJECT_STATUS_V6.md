@@ -963,3 +963,47 @@ Draft boundary:
 - Only Human Review, Script Validation, and Freeze Approval may promote data to `output_text/v29a_obstacles_pilot.json`.
 
 Stable ordering is frozen as `subtitleIndex`, then `markerStart`, then `type` with vocabulary before comprehension when tied, then alphabetical `text`.
+
+## P0-4A Pilot Asset Contract Freeze
+
+Status: FROZEN
+
+Date: 2026-06-22
+
+Source: `docs/P0_4A_PILOT_ASSET_CONTRACT_FREEZE.md`
+
+P0-4A freezes the pilot asset scope and data boundaries for the AI-assisted Analyze Pipeline Pilot.
+
+Frozen pilot processing scope:
+
+```text
+00:00:00
+~
+00:02:00
+```
+
+Only the first two minutes of `assets/videos/TBBT_S12E01.mp4` may be processed. The pilot must not process the full episode or any other episode.
+
+Frozen read-only inputs:
+
+- `assets/videos/TBBT_S12E01.mp4`
+- `output_text/v28d_bilingual_subtitles.json`
+
+P0-4A must not modify, crop, regenerate, rewrite, or retime these input assets. It must not generate new video assets or temporary pilot videos.
+
+Permitted generated draft files:
+
+- `output_text/drafts/p0_4a_analyze_input_pilot.json`
+- `output_text/drafts/p0_4a_obstacles_pilot_draft.json`
+
+The draft obstacle output must keep `reviewStatus` as `draft`, requires Human Review and Script Validation, and must never be consumed by Runtime.
+
+Only after Human Review, Script Validation, and Freeze Approval may the draft become:
+
+- `output_text/v29a_obstacles_pilot.json`
+
+The frozen obstacle output must use `reviewStatus: frozen`. Runtime may consume only this frozen pilot obstacle file and must never read `output_text/drafts/*`.
+
+Explicit P0-4A non-goals include processing beyond the first two minutes, generating coordinates or marker positions, calling Qwen-VL, performing OCR, generating visual mappings, modifying Runtime files, modifying `script.js`, modifying `styles.css`, modifying existing obstacle or subtitle JSON, and generating Marker rendering logic.
+
+P0-4A is an obstacle-generation pilot only. Its responsibility ends at Draft Obstacle Generation, Human Review, Script Validation, and Frozen Obstacle JSON. Qwen coordinate extraction belongs to P0-4B, and Runtime marker rendering belongs to P0-4C.
