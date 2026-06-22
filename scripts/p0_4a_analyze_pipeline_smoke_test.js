@@ -11,8 +11,9 @@ const SMOKE_OUTPUT_PATH = path.join(DRAFT_DIR, 'p0_4a_obstacles_pilot_draft_smok
 const DEBUG_DIR = path.join(REPO_ROOT, 'tmp', 'p0_4a_analyze_debug', 'smoke');
 
 const EPISODE_ID = 'tbbt-s12e01';
-const SMOKE_START_INDEX = 12;
-const SMOKE_END_INDEX = 16;
+const DEFAULT_SMOKE_START_INDEX = 12;
+const DEFAULT_SMOKE_END_INDEX = 16;
+const PROMPT_CONTRACT_VERSION = 'p0-analyze-prompt-contract-v1';
 const ANALYZER_VERSION = 'p0-4a-2a-ai-draft-smoke-v1';
 const TYPE_ORDER = { vocabulary: 0, comprehension: 1 };
 const ALLOWED_TYPES = new Set(['vocabulary', 'comprehension']);
@@ -36,6 +37,31 @@ function writeJson(filePath, value) {
   fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
 }
 
+function parseSmokeRange(argv) {
+  const range = {
+    start: DEFAULT_SMOKE_START_INDEX,
+    end: DEFAULT_SMOKE_END_INDEX,
+  };
+
+  for (const arg of argv) {
+    const match = arg.match(/^--(start|end)=(\d+)$/);
+    if (!match) {
+      throw new Error(`Unsupported argument: ${arg}. Use --start=12 --end=16.`);
+    }
+    range[match[1]] = Number(match[2]);
+  }
+
+  if (!Number.isInteger(range.start) || !Number.isInteger(range.end)) {
+    throw new Error('Smoke range must use integer subtitle indexes.');
+  }
+
+  if (range.start > range.end) {
+    throw new Error(`Invalid smoke range: --start=${range.start} is greater than --end=${range.end}.`);
+  }
+
+  return range;
+}
+
 function getAiConfig() {
   const apiKey = process.env.OPENAI_API_KEY;
   const model = process.env.OPENAI_MODEL || process.env.P0_4A_ANALYZE_MODEL;
@@ -43,18 +69,19 @@ function getAiConfig() {
   return { apiKey, model };
 }
 
-function getSmokeItems(analyzeInput) {
+function getSmokeItems(analyzeInput, range) {
   if (!Array.isArray(analyzeInput.items)) {
     throw new Error('Analyze input must contain an items array.');
   }
 
   const items = analyzeInput.items.filter((item) => (
-    Number(item.subtitleIndex) >= SMOKE_START_INDEX
-    && Number(item.subtitleIndex) <= SMOKE_END_INDEX
+    Number(item.subtitleIndex) >= range.start
+    && Number(item.subtitleIndex) <= range.end
   ));
 
   const indexes = items.map((item) => Number(item.subtitleIndex));
-  const expected = [12, 13, 14, 15, 16];
+  const expected = [];
+  for (let index = range.start; index <= range.end; index += 1) expected.push(index);
   if (indexes.length !== expected.length || indexes.some((value, index) => value !== expected[index])) {
     throw new Error(`Smoke slice must contain subtitleIndex ${expected.join(', ')}; found ${indexes.join(', ')}.`);
   }
@@ -62,8 +89,8 @@ function getSmokeItems(analyzeInput) {
   return items;
 }
 
-function buildSmokeAnalyzeInput(analyzeInput) {
-  const items = getSmokeItems(analyzeInput);
+function buildSmokeAnalyzeInput(analyzeInput, range) {
+  const items = getSmokeItems(analyzeInput, range);
   return {
     ...analyzeInput,
     analyzerVersion: ANALYZER_VERSION,
@@ -71,8 +98,8 @@ function buildSmokeAnalyzeInput(analyzeInput) {
     runtimeMayConsume: false,
     smokeScope: {
       sourceAnalyzeInputPath: 'output_text/drafts/p0_4a_analyze_input_pilot.json',
-      subtitleIndexStart: SMOKE_START_INDEX,
-      subtitleIndexEnd: SMOKE_END_INDEX,
+      subtitleIndexStart: range.start,
+      subtitleIndexEnd: range.end,
       note: 'P0-4A-2A smoke test slice only. Runtime must not consume this output.',
     },
     items: items.map((item) => ({
@@ -82,12 +109,12 @@ function buildSmokeAnalyzeInput(analyzeInput) {
   };
 }
 
-function buildPrompt(smokeAnalyzeInput, model) {
+function buildPrompt(smokeAnalyzeInput, model, range) {
   return {
     role: 'P0-4A-2A offline Analyze Engine smoke-test draft generator',
     instruction: [
       'Return valid JSON only. Do not use markdown fences.',
-      'Generate draft Vocabulary Obstacles and Comprehension Obstacles for the provided five subtitle items only: subtitleIndex 12 through 16.',
+      `Generate draft Vocabulary Obstacles and Comprehension Obstacles for the provided subtitle items only: subtitleIndex ${range.start} through ${range.end}.`,
       'This is a smoke test of the draft generation path, not final pilot generation and not quality tuning.',
       'Follow the frozen contracts: P0 Product Positioning & Learning Philosophy Freeze; P0 Vocabulary Level Determination Contract Freeze; P0 Comprehension Obstacle Determination Contract Freeze; P0 Analyze Prompt Contract Freeze; P0-4A Pilot Asset Contract Freeze.',
       'Respect the P0 philosophy: exam labels are entry points; real-world comprehension and usage difficulty decide obstacles.',
@@ -99,6 +126,7 @@ function buildPrompt(smokeAnalyzeInput, model) {
     requiredOutput: {
       schemaVersion: 'p0-4a-obstacles-draft-smoke-v1',
       smokeTest: true,
+      promptContractVersion: PROMPT_CONTRACT_VERSION,
       runtimeMayConsume: false,
       reviewStatus: 'draft',
       reviewDecisionForEveryObstacle: 'pending',
@@ -106,7 +134,7 @@ function buildPrompt(smokeAnalyzeInput, model) {
       model,
       analyzerVersion: ANALYZER_VERSION,
       generatedAt: 'ISO-8601 timestamp',
-      obstacles: 'array for subtitleIndex 12-16 only, sorted by subtitleIndex, markerStart, type with vocabulary before comprehension, text alphabetical order',
+      obstacles: `array for subtitleIndex ${range.start}-${range.end} only, sorted by subtitleIndex, markerStart, type with vocabulary before comprehension, text alphabetical order`,
       obstacleIdFormat: 'tbbt-s12e01-obstacle-NNNNNN',
     },
     obstacleContract: {
@@ -139,7 +167,7 @@ function deriveTextOffset(obstacle, field, fallback) {
   return field === 'markerEnd' ? start + text.length : start;
 }
 
-function normalizeObstacleDraft(parsed, smokeAnalyzeInput, model) {
+function normalizeObstacleDraft(parsed, smokeAnalyzeInput, model, range) {
   const smokeItemsByIndex = new Map(smokeAnalyzeInput.items.map((item) => [Number(item.subtitleIndex), item]));
   const obstacles = Array.isArray(parsed.obstacles) ? parsed.obstacles : [];
 
@@ -147,6 +175,7 @@ function normalizeObstacleDraft(parsed, smokeAnalyzeInput, model) {
     schemaVersion: parsed.schemaVersion || 'p0-4a-obstacles-draft-smoke-v1',
     smokeTest: true,
     runtimeMayConsume: false,
+    promptContractVersion: PROMPT_CONTRACT_VERSION,
     reviewStatus: 'draft',
     episodeId: EPISODE_ID,
     learnerLevel: smokeAnalyzeInput.learnerLevel,
@@ -155,8 +184,8 @@ function normalizeObstacleDraft(parsed, smokeAnalyzeInput, model) {
     generatedAt: new Date().toISOString(),
     sourceAnalyzeInputPath: 'output_text/drafts/p0_4a_analyze_input_pilot.json',
     smokeScope: {
-      subtitleIndexStart: SMOKE_START_INDEX,
-      subtitleIndexEnd: SMOKE_END_INDEX,
+      subtitleIndexStart: range.start,
+      subtitleIndexEnd: range.end,
     },
     obstacles: [],
   };
@@ -221,12 +250,20 @@ async function callAi(prompt, config) {
   });
 
   const raw = await response.text();
-  if (!response.ok) throw new Error(`OpenAI API error ${response.status}: ${raw}`);
   const envelope = JSON.parse(raw);
-  return envelope.choices?.[0]?.message?.content || '';
+  if (!response.ok) {
+    const error = new Error(`OpenAI API error ${response.status}: ${raw}`);
+    error.responseEnvelope = envelope;
+    throw error;
+  }
+  return {
+    envelope,
+    content: envelope.choices?.[0]?.message?.content || '',
+  };
 }
 
 async function main() {
+  const range = parseSmokeRange(process.argv.slice(2));
   const config = getAiConfig();
   if (!config) {
     console.log('P0-4A-2A smoke test skipped: set OPENAI_API_KEY and OPENAI_MODEL (or P0_4A_ANALYZE_MODEL) to call AI. No draft obstacles were generated.');
@@ -239,20 +276,23 @@ async function main() {
   ensureDir(DEBUG_DIR);
 
   const analyzeInput = readJson(ANALYZE_INPUT_PATH);
-  const smokeAnalyzeInput = buildSmokeAnalyzeInput(analyzeInput);
-  const prompt = buildPrompt(smokeAnalyzeInput, config.model);
+  const smokeAnalyzeInput = buildSmokeAnalyzeInput(analyzeInput, range);
+  const prompt = buildPrompt(smokeAnalyzeInput, config.model, range);
   writeJson(path.join(DEBUG_DIR, 'prompt.json'), prompt);
 
   let rawResponse = '';
   try {
-    rawResponse = await callAi(prompt, config);
+    const aiResponse = await callAi(prompt, config);
+    rawResponse = aiResponse.content;
+    writeJson(path.join(DEBUG_DIR, 'response_envelope.json'), aiResponse.envelope);
     fs.writeFileSync(path.join(DEBUG_DIR, 'raw_response.txt'), rawResponse, 'utf8');
     const parsed = extractJson(rawResponse);
     writeJson(path.join(DEBUG_DIR, 'parsed_response.json'), parsed);
-    const normalized = normalizeObstacleDraft(parsed, smokeAnalyzeInput, config.model);
+    const normalized = normalizeObstacleDraft(parsed, smokeAnalyzeInput, config.model, range);
     writeJson(SMOKE_OUTPUT_PATH, normalized);
     console.log(`Wrote smoke draft obstacles: ${path.relative(REPO_ROOT, SMOKE_OUTPUT_PATH)} (${normalized.obstacles.length} obstacles)`);
   } catch (error) {
+    if (error.responseEnvelope) writeJson(path.join(DEBUG_DIR, 'response_envelope.json'), error.responseEnvelope);
     if (rawResponse) fs.writeFileSync(path.join(DEBUG_DIR, 'raw_response.txt'), rawResponse, 'utf8');
     fs.writeFileSync(path.join(DEBUG_DIR, 'parse_error.txt'), `${error.stack || error.message}\n`, 'utf8');
     console.error('P0-4A-2A smoke test failed. Raw response and parse_error.txt were preserved; no partial smoke draft should be used.');
