@@ -775,3 +775,26 @@ Current implementation constraints:
 - Do not continue implementing P0-3D-C for now.
 - Do not modify marker rendering logic further until P0-4A / P0-4B outputs are available.
 - Do not write P0-4A implementation code as part of this documentation-only adjustment.
+
+## P0 Vocabulary Level Determination Contract Freeze
+
+Status: FROZEN
+
+Date: 2026-06-22
+
+Source: `docs/P0_VOCABULARY_LEVEL_DETERMINATION_CONTRACT_FREEZE.md`
+
+P0 freezes the Vocabulary Engine difficulty determination contract as a hierarchical, deterministic, and explainable system.
+
+Frozen priority order:
+
+- Layer 1: Frozen Vocabulary Lists are the source of truth and use familiar exam-based levels: Junior High, Senior High, CET-4, CET-6, TEM-4, TEM-8, and GRE.
+- Layer 2: Expression Knowledge Base handles fixed expressions, phrasal verbs, reduced forms, collocations, and multi-word expressions whose difficulty may differ from isolated words.
+- Layer 3: Frequency Dictionaries, including COCA and SUBTLEX-US, provide recommendations only when the item is absent from higher-priority resources.
+- Layer 4: AI Assistance is the lowest-priority recommendation layer and may only assist when higher-priority resources are absent, insufficient, or semantic disambiguation is required.
+
+Higher-priority layers always override lower-priority layers. AI must never automatically override frozen vocabulary lists or expression knowledge.
+
+The Vocabulary Engine is not a simple vocabulary-list lookup system. It determines which words or expressions are most likely to hinder comprehension and usage for learners at the selected level, using frozen lists, expression knowledge, real-world frequency, contextual meaning, and practical usage difficulty.
+
+Runtime remains a read-only consumer and must not perform vocabulary level determination, query vocabulary resources, call AI for difficulty judgment, or override generated obstacle levels.
