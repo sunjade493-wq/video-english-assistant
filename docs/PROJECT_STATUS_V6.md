@@ -889,6 +889,15 @@ Frozen AI and review role:
 - AI output remains draft until human review and script validation are complete.
 - Human review must confirm the obstacle is a real understanding barrier, not merely a useful sentence, uses a meaningful minimal boundary, answers WHY rather than only WHAT, has the correct type, removes false positives, and adds or flags obvious false negatives.
 
+Refinement entry — constitutional-level guardrails added before P0-4A AI-assisted Analyze Pipeline implementation:
+
+- Context-Dependent Principle: comprehension obstacles depend on actual meaning in context.
+- Meaning Bottleneck Principle: obstacles represent meaning bottlenecks, not mere learning opportunities.
+- Comprehension Impact Principle: obstacles should materially affect surrounding sentence understanding.
+- Minimum Necessary Principle: generate only the minimum necessary obstacles and avoid excessive, overlapping, equivalent, or low-value obstacles.
+- Progressive Difficulty Principle: obstacle generation should reflect learner-level progression and contextual, idiomatic, cultural, misunderstanding, and comprehension-impact factors.
+- Constitutional Principles Summary: the frozen principles guide Analyze Prompt Design, AI Draft Generation, Human Review, Script Validation, False Positive Detection, and Future Model Replacement.
+
 Frozen Runtime boundary:
 
 - Runtime is read-only.

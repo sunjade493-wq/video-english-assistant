@@ -265,7 +265,117 @@ Human review should confirm:
 6. False positives are removed.
 7. Obvious false negatives are added or flagged for revision.
 
-## 11. Runtime Boundary
+## 11. Context-Dependent Principle
+
+Comprehension Obstacles are context-dependent.
+
+The same expression may or may not become a comprehension obstacle in different contexts.
+
+Chinese principle:
+
+理解障碍具有上下文依赖性。
+
+同一个表达，在不同语境下，
+可能是理解障碍，也可能不是理解障碍。
+
+Examples:
+
+- The plane took off.
+- Take off your shoes.
+- Her career really took off.
+
+Expression difficulty must be evaluated according to actual meaning in context.
+
+## 12. Meaning Bottleneck Principle
+
+Comprehension Obstacles should represent meaning bottlenecks rather than learning opportunities.
+
+Chinese principle:
+
+理解障碍代表意义理解瓶颈，
+而不是单纯值得学习的表达。
+
+Useful expressions are not automatically comprehension obstacles.
+
+The engine should identify expressions that block understanding rather than expressions that are merely interesting or worth learning.
+
+## 13. Comprehension Impact Principle
+
+A Comprehension Obstacle should materially affect understanding of the surrounding sentence.
+
+Chinese principle:
+
+理解障碍应当对句子的整体理解产生实质性影响。
+
+If misunderstanding an expression does not significantly affect understanding of the sentence, it should generally not become a comprehension obstacle.
+
+The engine should prioritize obstacles that cause meaningful comprehension failure.
+
+## 14. Minimum Necessary Principle
+
+Generate the minimum number of comprehension obstacles necessary to explain the material.
+
+Chinese principle:
+
+仅生成理解材料所必需的最少理解障碍。
+
+The Comprehension Engine should avoid excessive obstacle generation.
+
+The goal is to reduce learning burden rather than create additional learning burden.
+
+Avoid:
+
+- Overlapping comprehension obstacles
+- Multiple equivalent obstacles
+- Obstacles with minimal explanatory value
+
+## 15. Progressive Difficulty Principle
+
+Comprehension obstacles should reflect learner-level progression.
+
+Chinese principle:
+
+理解障碍的生成应当体现等级渐进性。
+
+The same expression may be:
+
+- A comprehension obstacle for Junior High learners
+- Not a comprehension obstacle for CET-6 learners
+- Potentially still a comprehension obstacle in specific contexts for advanced learners
+
+Comprehension difficulty should consider:
+
+- learner level
+- expression transparency
+- idiomaticity
+- contextual dependence
+- cultural dependence
+- likelihood of misunderstanding
+- impact on comprehension and usage
+
+## 16. Constitutional Principles Summary
+
+The Comprehension Engine shall follow the following constitutional principles:
+
+1. Known words but meaning not immediately understandable.
+2. Meaning-level obstacles rather than vocabulary-level obstacles.
+3. Usefulness alone does not justify creating a comprehension obstacle.
+4. Comprehension obstacles are context-dependent.
+5. Comprehension obstacles should represent meaning bottlenecks rather than learning opportunities.
+6. A comprehension obstacle should materially affect surrounding sentence understanding.
+7. Generate the minimum number of comprehension obstacles necessary.
+8. Comprehension obstacles should reflect learner-level progression.
+
+These principles are considered constitutional-level guidance for:
+
+- Analyze Prompt Design
+- AI Draft Generation
+- Human Review
+- Script Validation
+- False Positive Detection
+- Future Model Replacement
+
+## 17. Runtime Boundary
 
 Runtime is read-only.
 
