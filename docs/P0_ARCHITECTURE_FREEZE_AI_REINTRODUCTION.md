@@ -274,3 +274,61 @@ AI determines WHAT should be learned.
 Qwen-VL determines WHERE it appears.
 
 Runtime only determines HOW to render it.
+
+
+========================================
+P0 Pilot Roadmap Dependency Adjustment
+========================================
+
+Status: Frozen roadmap adjustment
+Date: 2026-06-22
+
+Completed work remains valid and must be kept:
+
+- Fix ffmpeg detection
+  - Status: Infrastructure Ready
+- Qwen coordinate extraction
+  - Status: Prototype Verified
+- AI architecture freeze
+  - Status: Frozen
+
+P0-3D-C Marker Rendering is paused.
+
+Reason:
+
+Marker rendering is downstream work. Before finalizing runtime marker positioning, sizing, and binding rules, the project must first freeze:
+
+1. AI obstacle identification
+2. Frozen obstacle JSON generation
+3. Coordinate extraction based on frozen obstacles
+
+Previous marker rendering work is retained as prototype / spike validation only. It must not be treated as the final marker-rendering implementation contract.
+
+New dependency order:
+
+```text
+P0-4A
+AI-assisted Analyze Pipeline Pilot (2 min)
+
+↓
+
+P0-4B
+Qwen Coordinate Extraction Pilot (2 min)
+
+↓
+
+P0-4C
+Runtime Marker Rendering Pilot (2 min)
+
+↓
+
+P0-5
+Expand From Pilot To Full Episode
+```
+
+Implementation constraints for the next phase:
+
+- Do not continue implementing P0-3D-C for now.
+- Do not modify marker rendering logic further until P0-4A and P0-4B outputs are frozen enough to consume.
+- Do not write P0-4A implementation code as part of this roadmap adjustment.
+- First update architecture documents and project status only.

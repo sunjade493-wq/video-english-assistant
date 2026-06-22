@@ -734,4 +734,44 @@ Status:
 Planned
 
 Depends on:
-P0-3D-C Coordinate Filtering & Marker Freeze
+This roadmap adjustment. P0-4A now precedes P0-4B coordinate extraction and P0-4C marker rendering.
+
+## 20. P0 Pilot Roadmap Dependency Adjustment
+
+Status: FROZEN ROADMAP ADJUSTMENT
+
+Date: 2026-06-22
+
+Source: `docs/P0_ARCHITECTURE_FREEZE_AI_REINTRODUCTION.md`
+
+Completed work remains valid and must be kept:
+
+- Fix ffmpeg detection — Infrastructure Ready.
+- Qwen coordinate extraction — Prototype Verified.
+- AI architecture freeze — Frozen.
+
+P0-3D-C Marker Rendering is paused because marker rendering is downstream of frozen analyze-pipeline outputs. Previous marker rendering work is retained as prototype / spike validation only and must not be treated as the final marker-rendering implementation contract.
+
+Before finalizing marker positioning, sizing, or binding rules, the project must first freeze:
+
+1. AI obstacle identification.
+2. Frozen obstacle JSON generation.
+3. Coordinate extraction based on frozen obstacles.
+
+New P0 pilot dependency order:
+
+```text
+P0-4A AI-assisted Analyze Pipeline Pilot (2 min)
+↓
+P0-4B Qwen Coordinate Extraction Pilot (2 min)
+↓
+P0-4C Runtime Marker Rendering Pilot (2 min)
+↓
+P0-5 Expand From Pilot To Full Episode
+```
+
+Current implementation constraints:
+
+- Do not continue implementing P0-3D-C for now.
+- Do not modify marker rendering logic further until P0-4A / P0-4B outputs are available.
+- Do not write P0-4A implementation code as part of this documentation-only adjustment.
