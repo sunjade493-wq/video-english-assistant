@@ -720,3 +720,18 @@ P0-3C should generate or simulate subtitle visual mapping data for the first two
 P0-3C validation examples should include obstacles such as `believe`, `bedsheets`, `outside`, and any other available obstacles within the first two minutes.
 
 P0-3C success criteria include markers appearing below the burned white English subtitle line, aligning visually to the corresponding word or phrase better than character-ratio positioning, not misleading the learner, keeping Runtime read-only, preserving the existing obstacle count of 48, and not modifying generated subtitle JSON or obstacle JSON.
+
+## P0-4A AI-assisted Offline Analyze Architecture Freeze
+
+Milestone:
+P0-4A
+AI-assisted Offline Analyze Architecture Freeze
+
+Source:
+`docs/P0_ARCHITECTURE_FREEZE_AI_REINTRODUCTION.md`
+
+Status:
+Planned
+
+Depends on:
+P0-3D-C Coordinate Filtering & Marker Freeze
