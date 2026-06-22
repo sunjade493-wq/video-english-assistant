@@ -45,7 +45,9 @@ Vocabulary Engine
 Comprehension Engine
 ( AI-driven + Rule Validation )
 ↓
-Generate Draft Obstacle JSON
+Generate Draft Obstacles
+↓
+output_text/drafts/p0_4a_obstacles_pilot_draft.json
 ↓
 Human Review
 +
@@ -53,7 +55,7 @@ Script Validation
 ↓
 Freeze
 ↓
-v29a_obstacles.json
+output_text/v29a_obstacles_pilot.json
 ↓
 Qwen-VL Visual Mapping Engine
 ↓
@@ -252,7 +254,7 @@ Obstacle
 +
 Coordinate
 
-Only obstacleIds existing in v29a_obstacles.json may generate markers.
+Only obstacleIds existing in `output_text/v29a_obstacles_pilot.json` may generate markers during the pilot.
 
 Qwen-VL may provide coordinates only for existing obstacles.
 
@@ -339,13 +341,51 @@ P0-4A Pilot Contract Addendum
 
 P0-4A freezes the AI-assisted analyze pipeline pilot for the first two minutes of `assets/videos/TBBT_S12E01.mp4`.
 
-P0-4A output freezes to:
+P0-4A draft output freezes to the draft path until review is complete:
+
+```text
+output_text/drafts/p0_4a_obstacles_pilot_draft.json
+```
+
+P0-4A frozen output freezes to:
 
 ```text
 output_text/v29a_obstacles_pilot.json
 ```
 
 P0-4A is documentation and contract work only. It must not generate obstacles, call Qwen-VL, create cropped video assets, or modify Runtime marker rendering files.
+
+
+P0-4A obstacle IDs are product data, not milestone data. The frozen obstacle ID format is:
+
+```text
+tbbt-s12e01-obstacle-NNNNNN
+```
+
+Rules:
+
+- Prefix must be lowercase.
+- `NNNNNN` must be a six-digit zero-padded integer.
+- Numbering starts at `000001`.
+- IDs must be deterministic and unique within the frozen obstacle file.
+- Runtime must never generate obstacle IDs.
+- IDs must remain independent of milestone names such as P0, P1, or P2.
+
+The top-level `reviewStatus` values are:
+
+- `draft`: AI-generated candidate obstacle set that still requires review.
+- `frozen`: human-reviewed and script-validated obstacle set approved for downstream consumption.
+
+Only frozen obstacle files may be consumed by Qwen Coordinate Extraction, Runtime, and Marker Rendering. Runtime may consume only `output_text/v29a_obstacles_pilot.json` and must never consume `output_text/drafts/p0_4a_obstacles_pilot_draft.json`.
+
+Final frozen ordering is deterministic by:
+
+1. `subtitleIndex`
+2. `markerStart`
+3. `type`, with `vocabulary` before `comprehension` when positions tie
+4. `text`, alphabetically
+
+The same subtitle input, learner level, and analyzer version must generate the same obstacle ordering and therefore the same obstacle IDs.
 
 The detailed P0-4A prompt contract, input schema, output schema, obstacleId naming rules, human review workflow, script validation rules, and pilot file naming conventions are frozen in:
 
