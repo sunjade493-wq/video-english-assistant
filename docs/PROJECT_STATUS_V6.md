@@ -798,3 +798,41 @@ Higher-priority layers always override lower-priority layers. AI must never auto
 The Vocabulary Engine is not a simple vocabulary-list lookup system. It determines which words or expressions are most likely to hinder comprehension and usage for learners at the selected level, using frozen lists, expression knowledge, real-world frequency, contextual meaning, and practical usage difficulty.
 
 Runtime remains a read-only consumer and must not perform vocabulary level determination, query vocabulary resources, call AI for difficulty judgment, or override generated obstacle levels.
+
+## P0 Product Positioning & Learning Philosophy Freeze
+
+Status: FROZEN
+
+Date: 2026-06-22
+
+Source: `docs/P0_PRODUCT_POSITIONING_AND_LEARNING_PHILOSOPHY_FREEZE.md`
+
+P0 freezes the highest-level product positioning, learning philosophy, and North Star principles for Video English Assistant.
+
+Frozen positioning:
+
+- Video English Assistant is an AI-powered English learning assistant primarily designed for exam-oriented learners.
+- Primary user-facing levels are Junior High, Senior High, CET-4, CET-6, TEM-4, TEM-8, and GRE.
+- The product improves examination performance by strengthening real-world English comprehension and usage ability.
+- Examination performance and real-world language ability reinforce each other rather than compete with each other.
+
+Frozen learning philosophy:
+
+- Improving English performance comes primarily from improving language understanding ability rather than memorizing isolated knowledge points.
+- Memorization remains important, but understanding determines whether knowledge can be correctly recognized, transferred, and used.
+- The product focuses on understanding, usage, transferable language ability, and long-term language acquisition.
+
+Frozen obstacle identification principle:
+
+- Obstacle identification is based on real-world English comprehension and usage difficulty for learners at the selected level.
+- The system must not reduce obstacle identification to asking whether a word appears inside a particular exam vocabulary list.
+- The system asks which expressions are most likely to hinder comprehension, understanding, and usage for a learner at the selected level.
+
+Frozen North Star:
+
+- Product entry uses familiar exam-based level labels.
+- Product goal is to improve examination learning efficiency.
+- Core capability is to discover and solve real language obstacles that affect comprehension and usage.
+- Long-term mission is to help learners move from memorizing English to understanding English, using English, and ultimately thinking in English.
+
+This freeze is upper-level guidance for the Vocabulary Engine, Comprehension Engine, AI prompt design, human review, script validation, obstacle generation, and Runtime read-only boundary unless explicitly unfrozen.
