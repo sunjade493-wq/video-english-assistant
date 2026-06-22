@@ -96,18 +96,56 @@ function imageSizeFromPng(buffer) {
 }
 
 function extractJson(text) {
-  const cleaned = String(text || '').trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '');
+  const cleaned = stripMarkdownFences(text);
   try {
-    return JSON.parse(cleaned);
+    return normalizeNumericJsonFields(JSON.parse(cleaned));
   } catch (_) {
     const match = cleaned.match(/\{[\s\S]*\}/);
     if (!match) return null;
+    const jsonText = match[0];
     try {
-      return JSON.parse(match[0]);
+      return normalizeNumericJsonFields(JSON.parse(jsonText));
     } catch (__) {
-      return null;
+      const repaired = repairObservedQwenJson(jsonText);
+      try {
+        return normalizeNumericJsonFields(JSON.parse(repaired));
+      } catch (___) {
+        return null;
+      }
     }
   }
+}
+
+function stripMarkdownFences(text) {
+  return String(text || '')
+    .trim()
+    .replace(/^```(?:json)?\s*/i, '')
+    .replace(/\s*```$/i, '')
+    .trim();
+}
+
+function repairObservedQwenJson(jsonText) {
+  const numericKeys = ['x1', 'y1', 'x2', 'y2', 'confidence'];
+  const numericKeyPattern = numericKeys.join('|');
+  return String(jsonText).replace(
+    new RegExp(`"(${numericKeyPattern})\\s*=\\s*"?(-?\\d+(?:\\.\\d+)?)"?`, 'g'),
+    '"$1":$2',
+  );
+}
+
+function normalizeNumericJsonFields(value) {
+  const numericKeys = new Set(['x1', 'y1', 'x2', 'y2', 'confidence']);
+  if (Array.isArray(value)) return value.map(normalizeNumericJsonFields);
+  if (!value || typeof value !== 'object') return value;
+  const normalized = {};
+  for (const [key, item] of Object.entries(value)) {
+    if (numericKeys.has(key) && typeof item === 'string' && /^-?\d+(?:\.\d+)?$/.test(item.trim())) {
+      normalized[key] = Number(item);
+    } else {
+      normalized[key] = normalizeNumericJsonFields(item);
+    }
+  }
+  return normalized;
 }
 
 function normalizeText(value) {
@@ -132,8 +170,33 @@ function buildPrompt(target) {
     `Return bounding boxes for these exact target words or phrases if visible: ${targetList}`,
     'Coordinates must be pixel coordinates in the provided image, origin top-left.',
     'Do not estimate from character counts. Use only the visible subtitle glyph positions in the image.',
-    'Return strict JSON only, with no markdown, comments, or extra text, in this shape:',
-    '{"subtitleText":"...","englishLineBox":{"x1":0,"y1":0,"x2":0,"y2":0},"wordBoxes":[{"text":"believe","x1":0,"y1":0,"x2":0,"y2":0,"confidence":0.0}]}',
+    'Return valid JSON only.',
+    'Use colon ":" after every key. Never use equals sign "=".',
+    'All keys must be quoted.',
+    'Numeric values must be numbers, not strings.',
+    'No explanations. No comments. No markdown fences.',
+    'Return exactly this JSON shape:',
+    [
+      '{',
+      '  "subtitleText": "...",',
+      '  "englishLineBox": {',
+      '    "x1": 0,',
+      '    "y1": 0,',
+      '    "x2": 0,',
+      '    "y2": 0',
+      '  },',
+      '  "wordBoxes": [',
+      '    {',
+      '      "text": "believe",',
+      '      "x1": 0,',
+      '      "y1": 0,',
+      '      "x2": 0,',
+      '      "y2": 0,',
+      '      "confidence": 0.0',
+      '    }',
+      '  ]',
+      '}',
+    ].join('\n'),
   ].join('\n');
 }
 
