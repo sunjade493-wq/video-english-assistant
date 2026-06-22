@@ -9,6 +9,9 @@ const SHOW_SUBTITLE_MARKER_OVERLAY_TEST_MARKER = new URLSearchParams(window.loca
 const SUBTITLE_MARKER_TIMING_TOLERANCE_MS = 160;
 const BURNED_ENGLISH_LINE_WIDTH_RATIO = 0.82;
 const BURNED_ENGLISH_MARKER_BOTTOM_RATIO = 0.135;
+const VISUAL_MARKER_GAP_PX = 8;
+const VOCABULARY_MARKER_MAX_WIDTH_PX = 42;
+const DEBUG_FROZEN_RANGE_MARKER_FALLBACK = new URLSearchParams(window.location.search).get('debugFrozenMarkerFallback') === '1';
 const EPISODE_PROGRESS_STORAGE_PREFIX = 'videoEnglishAssistant.episodeProgress.';
 
 const SUPPORTED_PART_OF_SPEECH_FORMATS = new Set([
@@ -810,24 +813,59 @@ async function fetchJson(url) {
   return response.json();
 }
 
+function getVisualMappingWordBoxes(payload) {
+  const rootWordBoxes = Array.isArray(payload?.wordBoxes) ? payload.wordBoxes : [];
+  const subtitleWordBoxes = Array.isArray(payload?.subtitles)
+    ? payload.subtitles.flatMap((subtitle) => (Array.isArray(subtitle?.wordBoxes) ? subtitle.wordBoxes : []))
+    : [];
+
+  return [...rootWordBoxes, ...subtitleWordBoxes];
+}
+
+function hasUsableVisualBox(wordBox, coordinateSpace) {
+  const box = wordBox?.box;
+
+  return Boolean(
+    wordBox?.obstacleId
+    && box
+    && Number.isFinite(Number(box.x))
+    && Number.isFinite(Number(box.y))
+    && Number.isFinite(Number(box.width))
+    && Number.isFinite(Number(box.height))
+    && Number.isFinite(Number(coordinateSpace?.width))
+    && Number.isFinite(Number(coordinateSpace?.height))
+    && Number(box.width) > 0
+    && Number(box.height) > 0
+    && Number(coordinateSpace.width) > 0
+    && Number(coordinateSpace.height) > 0,
+  );
+}
+
 async function loadVisualMapping() {
   visualMappingByObstacleId.clear();
 
   try {
     const payload = await fetchJson(REAL_VISUAL_MAPPING_DATA_URL);
-    const wordBoxes = Array.isArray(payload?.wordBoxes) ? payload.wordBoxes : [];
+    const coordinateSpace = payload?.coordinateSpace;
+    const currentObstacleIds = new Set(obstacles.map((obstacle) => obstacle.id));
 
-    wordBoxes.forEach((wordBox) => {
-      if (wordBox?.obstacleId && wordBox?.box) {
-        visualMappingByObstacleId.set(wordBox.obstacleId, {
-          ...wordBox,
-          coordinateSpace: payload.coordinateSpace,
-          runtimePolicy: payload.runtimePolicy,
-        });
+    getVisualMappingWordBoxes(payload).forEach((wordBox) => {
+      if (!hasUsableVisualBox(wordBox, coordinateSpace)) {
+        return;
       }
+
+      if (!currentObstacleIds.has(wordBox.obstacleId) || visualMappingByObstacleId.has(wordBox.obstacleId)) {
+        return;
+      }
+
+      visualMappingByObstacleId.set(wordBox.obstacleId, {
+        ...wordBox,
+        coordinateSpace,
+        runtimePolicy: payload.runtimePolicy,
+      });
     });
   } catch (error) {
-    console.warn('[subtitle-marker] Visual mapping unavailable; falling back to frozen marker ranges.', error);
+    console.warn('[subtitle-marker] Visual mapping unavailable; production markers without coordinates will stay hidden.', error);
   }
 }
 
@@ -1219,33 +1257,55 @@ function clearRealSubtitleMarkers() {
   subtitleMarkerOverlay.querySelectorAll('.subtitle-marker-overlay__marker').forEach((marker) => marker.remove());
 }
 
+function getObstacleMarkerVisualType(obstacle) {
+  return obstacle?.kind === 'word' || obstacle?.type === 'vocab' ? 'vocabulary' : 'comprehension';
+}
+
+function getVisualMarkerTopPercent(box, coordinateSpace, visualType) {
+  const gapPx = visualType === 'vocabulary'
+    ? VISUAL_MARKER_GAP_PX
+    : VISUAL_MARKER_GAP_PX + 14;
+
+  return ((Number(box.y) + Number(box.height) + gapPx) / Number(coordinateSpace.height)) * 100;
+}
+
 function renderVisualMappingMarker(obstacle) {
   const visualMapping = visualMappingByObstacleId.get(obstacle.id);
   const box = visualMapping?.box;
   const coordinateSpace = visualMapping?.coordinateSpace;
 
-  if (!box || !coordinateSpace?.width || !coordinateSpace?.height) {
+  if (!hasUsableVisualBox(visualMapping, coordinateSpace)) {
     return null;
   }
 
+  const visualType = getObstacleMarkerVisualType(obstacle);
   const marker = document.createElement('span');
-  marker.className = 'subtitle-marker-overlay__marker subtitle-marker-overlay__marker--visual';
-  marker.textContent = '···';
-  marker.style.left = `${(box.x / coordinateSpace.width) * 100}%`;
-  marker.style.top = `${((box.y + box.height) / coordinateSpace.height) * 100}%`;
-  marker.style.width = `${(box.width / coordinateSpace.width) * 100}%`;
+  const boxLeftPercent = (Number(box.x) / Number(coordinateSpace.width)) * 100;
+  const boxWidthPercent = (Number(box.width) / Number(coordinateSpace.width)) * 100;
+
+  marker.className = `subtitle-marker-overlay__marker subtitle-marker-overlay__marker--visual subtitle-marker-overlay__marker--${visualType}`;
+  marker.textContent = visualType === 'vocabulary' ? '···' : '';
+  marker.style.left = `${boxLeftPercent}%`;
+  marker.style.top = `${getVisualMarkerTopPercent(box, coordinateSpace, visualType)}%`;
+  marker.style.width = visualType === 'vocabulary'
+    ? `${Math.min(Number(box.width), VOCABULARY_MARKER_MAX_WIDTH_PX)}px`
+    : `${boxWidthPercent}%`;
   marker.setAttribute('data-obstacle-id', obstacle.id);
+  marker.setAttribute('data-marker-type', visualType);
   marker.setAttribute('data-visual-mapping', 'true');
   marker.setAttribute('aria-hidden', 'true');
+
+  if (visualType === 'vocabulary') {
+    marker.style.transform = 'translateX(-50%)';
+    marker.style.left = `${boxLeftPercent + (boxWidthPercent / 2)}%`;
+  }
 
   return marker;
 }
 
-function createRealSubtitleMarker(range, segment, lineLeftPercent, lineWidthPercent) {
-  const visualMarker = renderVisualMappingMarker(range.obstacle);
-
-  if (visualMarker) {
-    return visualMarker;
+function createDebugFrozenRangeMarker(range, segment, lineLeftPercent, lineWidthPercent) {
+  if (!DEBUG_FROZEN_RANGE_MARKER_FALLBACK) {
+    return null;
   }
 
   const subtitleLength = segment.text.length;
@@ -1254,16 +1314,24 @@ function createRealSubtitleMarker(range, segment, lineLeftPercent, lineWidthPerc
   const marker = document.createElement('span');
   const leftPercent = lineLeftPercent + (relativeStart * lineWidthPercent);
   const widthPercent = Math.max(0.01, (relativeEnd - relativeStart) * lineWidthPercent);
+  const visualType = getObstacleMarkerVisualType(range.obstacle);
 
-  marker.className = 'subtitle-marker-overlay__marker';
-  marker.textContent = '···';
+  marker.className = `subtitle-marker-overlay__marker subtitle-marker-overlay__marker--debug-fallback subtitle-marker-overlay__marker--${visualType}`;
+  marker.textContent = visualType === 'vocabulary' ? '···' : '';
   marker.style.left = `${leftPercent}%`;
   marker.style.width = `${Math.min(widthPercent, lineLeftPercent + lineWidthPercent - leftPercent)}%`;
   marker.setAttribute('data-obstacle-id', range.obstacle.id);
+  marker.setAttribute('data-marker-type', visualType);
   marker.setAttribute('data-visual-mapping', 'false');
+  marker.setAttribute('data-debug-fallback', 'true');
   marker.setAttribute('aria-hidden', 'true');
 
   return marker;
+}
+
+function createRealSubtitleMarker(range, segment, lineLeftPercent, lineWidthPercent) {
+  return renderVisualMappingMarker(range.obstacle)
+    || createDebugFrozenRangeMarker(range, segment, lineLeftPercent, lineWidthPercent);
 }
 
 function renderRealSubtitleMarkers() {
@@ -1284,7 +1352,11 @@ function renderRealSubtitleMarkers() {
   const lineLeftPercent = (100 - lineWidthPercent) / 2;
 
   ranges.forEach((range) => {
-    subtitleMarkerOverlay.append(createRealSubtitleMarker(range, segment, lineLeftPercent, lineWidthPercent));
+    const marker = createRealSubtitleMarker(range, segment, lineLeftPercent, lineWidthPercent);
+
+    if (marker) {
+      subtitleMarkerOverlay.append(marker);
+    }
   });
 }
 
