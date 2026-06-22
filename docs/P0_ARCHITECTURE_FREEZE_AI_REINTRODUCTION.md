@@ -332,3 +332,23 @@ Implementation constraints for the next phase:
 - Do not modify marker rendering logic further until P0-4A and P0-4B outputs are frozen enough to consume.
 - Do not write P0-4A implementation code as part of this roadmap adjustment.
 - First update architecture documents and project status only.
+
+========================================
+P0-4A Pilot Contract Addendum
+========================================
+
+P0-4A freezes the AI-assisted analyze pipeline pilot for the first two minutes of `assets/videos/TBBT_S12E01.mp4`.
+
+P0-4A output freezes to:
+
+```text
+output_text/v29a_obstacles_pilot.json
+```
+
+P0-4A is documentation and contract work only. It must not generate obstacles, call Qwen-VL, create cropped video assets, or modify Runtime marker rendering files.
+
+The detailed P0-4A prompt contract, input schema, output schema, obstacleId naming rules, human review workflow, script validation rules, and pilot file naming conventions are frozen in:
+
+```text
+docs/P0_4A_ANALYZE_PIPELINE_PILOT_CONTRACT_FREEZE.md
+```
