@@ -1007,3 +1007,82 @@ The frozen obstacle output must use `reviewStatus: frozen`. Runtime may consume 
 Explicit P0-4A non-goals include processing beyond the first two minutes, generating coordinates or marker positions, calling Qwen-VL, performing OCR, generating visual mappings, modifying Runtime files, modifying `script.js`, modifying `styles.css`, modifying existing obstacle or subtitle JSON, and generating Marker rendering logic.
 
 P0-4A is an obstacle-generation pilot only. Its responsibility ends at Draft Obstacle Generation, Human Review, Script Validation, and Frozen Obstacle JSON. Qwen coordinate extraction belongs to P0-4B, and Runtime marker rendering belongs to P0-4C.
+
+## P0-4B-4 Runtime Pilot Controlled Opt-in Contract
+
+Status: FROZEN CONTRACT
+
+Date: 2026-06-23
+
+Source tag: `p0-4b-3b-runtime-pilot-selection-shadow-probe-verified`
+
+P0-4B-4 freezes the controlled opt-in contract for future Runtime Pilot UI consumption. This is a contract-only status entry; controlled opt-in implementation is not authorized by this task.
+
+Verified prior runtime pilot status:
+
+- Runtime pilot obstacles load.
+- Runtime pilot candidates are available.
+- Runtime pilot normalization succeeds.
+- Runtime pilot shadow comparison succeeds.
+- Runtime pilot read-only selection adapter exists.
+- Runtime pilot selection shadow comparison succeeds.
+
+Frozen controlled opt-in contract:
+
+1. Default behavior must remain Production Flow.
+2. Runtime Pilot Flow must never activate unless the explicit opt-in query parameter is present.
+3. The opt-in query parameter is `runtimePilot=1`.
+4. Runtime Pilot opt-in is developer/test-only.
+5. Runtime Pilot opt-in must be fail-closed.
+6. If runtime pilot data fails to load, validate, normalize, or adapt, the app must fall back to Production Flow.
+7. No AI, OCR, Qwen, or Qwen-VL calls are allowed at runtime.
+8. Runtime must remain read-only.
+9. Runtime Pilot must not write files.
+10. Runtime Pilot must not modify source obstacle JSON files.
+11. Runtime Pilot must not modify subtitle JSON files.
+12. Runtime Pilot must not modify visual mapping JSON files.
+13. Production obstacle flow must remain the default source for the right panel, subtitle markers, heatmap, timeline, bottom sheet, and progress counts.
+14. Controlled opt-in implementation is not authorized in this task.
+15. This task freezes the contract only.
+
+Intended future implementation shape:
+
+```text
+Default:
+Production Flow → UI
+
+Opt-in:
+?runtimePilot=1 → Runtime Pilot Flow → UI
+
+Failure:
+Runtime Pilot unavailable → Production Flow → UI
+```
+
+Default URL:
+
+```text
+http://127.0.0.1:5500/
+```
+
+The default URL must continue using Production Flow.
+
+Development opt-in URL:
+
+```text
+http://127.0.0.1:5500/?runtimePilot=1
+```
+
+The development opt-in URL may later allow Runtime Pilot Flow to drive UI only after this frozen contract and only after future implementation is explicitly authorized.
+
+Explicit non-goals:
+
+- Do not replace Production Flow by default.
+- Do not enable Runtime Pilot for normal users.
+- Do not introduce UI redesign.
+- Do not introduce a visible toggle yet.
+- Do not call AI, OCR, Qwen, or Qwen-VL.
+- Do not change marker rendering rules in this contract.
+
+Merge gate:
+
+Yes, merge only if only `docs/PROJECT_STATUS_V6.md` changed, no code files changed, no `output_text` files changed, the contract clearly states default Production Flow remains unchanged, `runtimePilot=1` is documented as future developer-only opt-in, and fail-closed fallback to Production Flow is documented.
