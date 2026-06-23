@@ -21,6 +21,7 @@ const OUTPUT_PATH_ABSOLUTE = path.join(REPO_ROOT, OUTPUT_PATH);
 
 const EXPECTED_DRAFT_SCHEMA_VERSION = 'p0-4a-obstacles-draft-smoke-v1';
 const EXPECTED_REVIEW_RESULTS_SCHEMA_VERSION = 'p0-4a-review-results-v1';
+const EXPECTED_REVIEW_RESULTS_FIXTURE_SCHEMA_VERSION = 'p0-4a-review-results-fixture-v1';
 const OUTPUT_SCHEMA_VERSION = 'p0-4a-frozen-obstacles-pilot-v1';
 const FROZEN_SOURCE = 'p0-4a-3a-reviewed-draft-promotion';
 const ALLOWED_HUMAN_DECISIONS = new Set(['approved', 'rejected', 'pending']);
@@ -87,6 +88,25 @@ function validateDraft(draft) {
   return errors;
 }
 
+function isFixtureReviewResultsPath() {
+  if (!process.env.P0_4A_REVIEW_RESULTS_PATH) return false;
+
+  const normalizedPath = SOURCE_REVIEW_RESULTS_PATH.replace(/[\\/]+/g, '/');
+  return normalizedPath.includes('output_text/fixtures/');
+}
+
+function getReviewResultsInputKind(reviewResults) {
+  if (reviewResults.schemaVersion === EXPECTED_REVIEW_RESULTS_SCHEMA_VERSION) {
+    return 'review_results';
+  }
+
+  if (reviewResults.schemaVersion === EXPECTED_REVIEW_RESULTS_FIXTURE_SCHEMA_VERSION && isFixtureReviewResultsPath()) {
+    return 'fixture';
+  }
+
+  return null;
+}
+
 function validateReviewResults(reviewResults) {
   const errors = [];
 
@@ -94,8 +114,13 @@ function validateReviewResults(reviewResults) {
     return ['Review results root must be a JSON object.'];
   }
 
-  if (reviewResults.schemaVersion !== EXPECTED_REVIEW_RESULTS_SCHEMA_VERSION) {
-    errors.push(`Review results schemaVersion must be ${JSON.stringify(EXPECTED_REVIEW_RESULTS_SCHEMA_VERSION)}; found ${JSON.stringify(reviewResults.schemaVersion)}.`);
+  if (!getReviewResultsInputKind(reviewResults)) {
+    const allowedSchemaVersions = [EXPECTED_REVIEW_RESULTS_SCHEMA_VERSION];
+    if (isFixtureReviewResultsPath()) {
+      allowedSchemaVersions.push(EXPECTED_REVIEW_RESULTS_FIXTURE_SCHEMA_VERSION);
+    }
+
+    errors.push(`Review results schemaVersion must be ${allowedSchemaVersions.map((schemaVersion) => JSON.stringify(schemaVersion)).join(' or ')}; found ${JSON.stringify(reviewResults.schemaVersion)}.`);
   }
 
   if (reviewResults.runtimeMayConsume !== false) {
@@ -196,7 +221,7 @@ function validateMatchesAndBuildResultMap(draft, reviewResults) {
   return resultsByObstacleId;
 }
 
-function buildFrozenOutput(draft, resultsByObstacleId) {
+function buildFrozenOutput(draft, reviewResults, resultsByObstacleId) {
   const frozenAt = new Date().toISOString();
   let approvedCount = 0;
   let rejectedCount = 0;
@@ -226,6 +251,7 @@ function buildFrozenOutput(draft, resultsByObstacleId) {
     schemaVersion: OUTPUT_SCHEMA_VERSION,
     sourceDraftPath: SOURCE_DRAFT_PATH,
     sourceReviewResultsPath: SOURCE_REVIEW_RESULTS_PATH,
+    reviewResultsInputKind: getReviewResultsInputKind(reviewResults),
     sourceReviewReportPath: SOURCE_REVIEW_REPORT_PATH,
     generatedAt: frozenAt,
     frozenStatus: 'frozen_pilot',
@@ -262,7 +288,7 @@ function main() {
     }
 
     const resultsByObstacleId = validateMatchesAndBuildResultMap(draft, reviewResults);
-    const frozenOutput = buildFrozenOutput(draft, resultsByObstacleId);
+    const frozenOutput = buildFrozenOutput(draft, reviewResults, resultsByObstacleId);
     writeJsonAtomic(OUTPUT_PATH_ABSOLUTE, frozenOutput);
 
     console.log('P0-4A-3A frozen pilot obstacles generated.');
