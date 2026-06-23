@@ -13,17 +13,12 @@ const DEBUG_DIR = path.join(REPO_ROOT, 'tmp', 'p0_4a_analyze_debug', 'smoke');
 const EPISODE_ID = 'tbbt-s12e01';
 const DEFAULT_SMOKE_START_INDEX = 12;
 const DEFAULT_SMOKE_END_INDEX = 16;
+const ANALYZER_VERSION = 'p0-4a-2b-real-ai-draft-generation-v1';
+const SCHEMA_VERSION = 'p0-4a-obstacles-draft-smoke-v1';
 const PROMPT_CONTRACT_VERSION = 'p0-analyze-prompt-contract-v1';
-const ANALYZER_VERSION = 'p0-4a-2a-ai-draft-smoke-v1';
 const TYPE_ORDER = { vocabulary: 0, comprehension: 1 };
 const ALLOWED_TYPES = new Set(['vocabulary', 'comprehension']);
-const ALLOWED_DECISION_SOURCES = new Set([
-  'frozen_vocabulary_list',
-  'expression_knowledge_base',
-  'frequency_dictionary',
-  'ai_assisted',
-  'ai_comprehension',
-]);
+const SOURCE_ANALYZE_INPUT_PATH = 'output_text/drafts/p0_4a_analyze_input_pilot.json';
 
 function ensureDir(dirPath) {
   fs.mkdirSync(dirPath, { recursive: true });
@@ -65,8 +60,12 @@ function parseSmokeRange(argv) {
 function getAiConfig() {
   const apiKey = process.env.OPENAI_API_KEY;
   const model = process.env.OPENAI_MODEL || process.env.P0_4A_ANALYZE_MODEL;
+  const baseUrl =
+    process.env.OPENAI_BASE_URL ||
+    'https://api.openai.com/v1';
+
   if (!apiKey || !model) return null;
-  return { apiKey, model };
+  return { apiKey, model, baseUrl };
 }
 
 function getSmokeItems(analyzeInput, range) {
@@ -82,6 +81,7 @@ function getSmokeItems(analyzeInput, range) {
   const indexes = items.map((item) => Number(item.subtitleIndex));
   const expected = [];
   for (let index = range.start; index <= range.end; index += 1) expected.push(index);
+
   if (indexes.length !== expected.length || indexes.some((value, index) => value !== expected[index])) {
     throw new Error(`Smoke slice must contain subtitleIndex ${expected.join(', ')}; found ${indexes.join(', ')}.`);
   }
@@ -97,10 +97,10 @@ function buildSmokeAnalyzeInput(analyzeInput, range) {
     smokeTest: true,
     runtimeMayConsume: false,
     smokeScope: {
-      sourceAnalyzeInputPath: 'output_text/drafts/p0_4a_analyze_input_pilot.json',
+      sourceAnalyzeInputPath: SOURCE_ANALYZE_INPUT_PATH,
       subtitleIndexStart: range.start,
       subtitleIndexEnd: range.end,
-      note: 'P0-4A-2A smoke test slice only. Runtime must not consume this output.',
+      note: 'P0-4A-2B smoke test slice only. Runtime must not consume this output.',
     },
     items: items.map((item) => ({
       ...item,
@@ -111,7 +111,7 @@ function buildSmokeAnalyzeInput(analyzeInput, range) {
 
 function buildPrompt(smokeAnalyzeInput, model, range) {
   return {
-    role: 'P0-4A-2A offline Analyze Engine smoke-test draft generator',
+    role: 'P0-4A-2B offline Analyze Engine smoke-test draft generator',
     instruction: [
       'Return valid JSON only. Do not use markdown fences.',
       `Generate draft Vocabulary Obstacles and Comprehension Obstacles for the provided subtitle items only: subtitleIndex ${range.start} through ${range.end}.`,
@@ -124,7 +124,7 @@ function buildPrompt(smokeAnalyzeInput, model, range) {
       'Forbidden: coordinates, visual markers, Qwen-VL calls, OCR, Runtime integration, subtitle JSON changes, existing obstacle JSON changes, frozen output generation, full-episode processing, non-JSON explanations.',
     ],
     requiredOutput: {
-      schemaVersion: 'p0-4a-obstacles-draft-smoke-v1',
+      schemaVersion: SCHEMA_VERSION,
       smokeTest: true,
       promptContractVersion: PROMPT_CONTRACT_VERSION,
       runtimeMayConsume: false,
@@ -139,10 +139,12 @@ function buildPrompt(smokeAnalyzeInput, model, range) {
     },
     obstacleContract: {
       allowedTypes: ['vocabulary', 'comprehension'],
-      requiredCommonFields: ['type', 'subtitleIndex', 'startTime', 'endTime', 'source_en', 'source_zh', 'text', 'decisionSource', 'confidence'],
-      optionalTextOffsets: ['markerStart', 'markerEnd'],
-      vocabularyFields: ['word', 'lemma', 'phonetic', 'partOfSpeech', 'sentenceMeaning', 'translation', 'difficultyLevel', 'difficultyEvidence'],
-      comprehensionFields: ['phrase', 'literal', 'actual', 'grammar', 'explanationWhy', 'transferableUsage', 'comprehensionCategory'],
+      requiredCommonFields: ['type', 'subtitleIndex', 'text', 'decisionSource', 'confidence', 'markerStart', 'markerEnd'],
+      requiredTextOffsets: ['markerStart', 'markerEnd'],
+      requiredVocabularyFields: ['word', 'lemma', 'phonetic', 'partOfSpeech', 'sentenceMeaning', 'translation', 'difficultyLevel', 'difficultyEvidence'],
+      requiredComprehensionFields: ['phrase', 'literal', 'actual', 'grammar', 'explanationWhy', 'transferableUsage', 'comprehensionCategory'],
+      markerValidation: '0 <= markerStart < markerEnd <= source_en.length',
+      sourceFieldsAreAuthoritative: ['source_en', 'source_zh', 'startTime', 'endTime'],
     },
     analyzeInput: smokeAnalyzeInput,
   };
@@ -158,21 +160,71 @@ function extractJson(text) {
   }
 }
 
-function deriveTextOffset(obstacle, field, fallback) {
-  if (Number.isFinite(Number(obstacle[field]))) return Number(obstacle[field]);
-  const source = String(obstacle.source_en || '');
-  const text = String(obstacle.text || obstacle.word || obstacle.phrase || '');
-  const start = source.indexOf(text);
-  if (start === -1) return fallback;
-  return field === 'markerEnd' ? start + text.length : start;
+function normalizeConfidence(value) {
+  const confidence = Number(value);
+  if (Number.isFinite(confidence) && confidence >= 0 && confidence <= 1) return confidence;
+  return 0.5;
+}
+
+function normalizeMarker(value) {
+  const marker = Number(value);
+  if (!Number.isInteger(marker)) return null;
+  return marker;
+}
+
+function fallbackDecisionSource(type, decisionSource) {
+  if (typeof decisionSource === 'string' && decisionSource.trim()) return decisionSource.trim();
+  return type === 'vocabulary' ? 'ai_assisted' : 'ai_comprehension';
 }
 
 function normalizeObstacleDraft(parsed, smokeAnalyzeInput, model, range) {
   const smokeItemsByIndex = new Map(smokeAnalyzeInput.items.map((item) => [Number(item.subtitleIndex), item]));
   const obstacles = Array.isArray(parsed.obstacles) ? parsed.obstacles : [];
 
-  const output = {
-    schemaVersion: parsed.schemaVersion || 'p0-4a-obstacles-draft-smoke-v1',
+  const normalizedObstacles = obstacles
+    .filter((obstacle) => ALLOWED_TYPES.has(obstacle?.type))
+    .filter((obstacle) => smokeItemsByIndex.has(Number(obstacle.subtitleIndex)))
+    .map((obstacle) => {
+      const subtitleIndex = Number(obstacle.subtitleIndex);
+      const subtitle = smokeItemsByIndex.get(subtitleIndex);
+      return {
+        ...obstacle,
+        type: obstacle.type,
+        subtitleIndex,
+        startTime: subtitle.startTime,
+        endTime: subtitle.endTime,
+        source_en: subtitle.source_en,
+        source_zh: subtitle.source_zh,
+        text: String(obstacle.text || obstacle.word || obstacle.phrase || '').trim(),
+        markerStart: normalizeMarker(obstacle.markerStart),
+        markerEnd: normalizeMarker(obstacle.markerEnd),
+        decisionSource: fallbackDecisionSource(obstacle.type, obstacle.decisionSource),
+        confidence: normalizeConfidence(obstacle.confidence),
+        reviewDecision: 'pending',
+      };
+    })
+    .filter((obstacle) => obstacle.text.length > 0)
+    .filter((obstacle) => (
+      Number.isInteger(obstacle.markerStart)
+      && Number.isInteger(obstacle.markerEnd)
+      && obstacle.markerStart >= 0
+      && obstacle.markerStart < obstacle.markerEnd
+      && obstacle.markerEnd <= String(obstacle.source_en || '').length
+    ))
+    .sort((a, b) => (
+      a.subtitleIndex - b.subtitleIndex
+      || a.markerStart - b.markerStart
+      || TYPE_ORDER[a.type] - TYPE_ORDER[b.type]
+      || a.text.localeCompare(b.text, 'en')
+    ))
+    .map((obstacle, index) => ({
+      ...obstacle,
+      obstacleId: `${EPISODE_ID}-obstacle-${String(index + 1).padStart(6, '0')}`,
+      reviewDecision: 'pending',
+    }));
+
+  return {
+    schemaVersion: SCHEMA_VERSION,
     smokeTest: true,
     runtimeMayConsume: false,
     promptContractVersion: PROMPT_CONTRACT_VERSION,
@@ -182,58 +234,18 @@ function normalizeObstacleDraft(parsed, smokeAnalyzeInput, model, range) {
     model,
     analyzerVersion: ANALYZER_VERSION,
     generatedAt: new Date().toISOString(),
-    sourceAnalyzeInputPath: 'output_text/drafts/p0_4a_analyze_input_pilot.json',
+    sourceAnalyzeInputPath: SOURCE_ANALYZE_INPUT_PATH,
     smokeScope: {
       subtitleIndexStart: range.start,
       subtitleIndexEnd: range.end,
     },
-    obstacles: [],
+    obstacles: normalizedObstacles,
   };
-
-  output.obstacles = obstacles
-    .filter((obstacle) => ALLOWED_TYPES.has(obstacle.type))
-    .filter((obstacle) => smokeItemsByIndex.has(Number(obstacle.subtitleIndex)))
-    .map((obstacle) => {
-      const subtitle = smokeItemsByIndex.get(Number(obstacle.subtitleIndex));
-      const withSubtitle = {
-        ...obstacle,
-        subtitleIndex: Number(obstacle.subtitleIndex),
-        startTime: subtitle.startTime,
-        endTime: subtitle.endTime,
-        source_en: subtitle.source_en,
-        source_zh: subtitle.source_zh,
-        text: String(obstacle.text || obstacle.word || obstacle.phrase || '').trim(),
-        reviewDecision: 'pending',
-      };
-      const markerStart = deriveTextOffset(withSubtitle, 'markerStart', 0);
-      const markerEnd = deriveTextOffset(withSubtitle, 'markerEnd', markerStart + withSubtitle.text.length);
-      return {
-        ...withSubtitle,
-        markerStart,
-        markerEnd,
-      };
-    })
-    .filter((obstacle) => obstacle.text.length > 0)
-    .sort((a, b) => (
-      a.subtitleIndex - b.subtitleIndex
-      || Number(a.markerStart) - Number(b.markerStart)
-      || TYPE_ORDER[a.type] - TYPE_ORDER[b.type]
-      || String(a.text).localeCompare(String(b.text), 'en')
-    ))
-    .map((obstacle, index) => ({
-      ...obstacle,
-      obstacleId: `${EPISODE_ID}-obstacle-${String(index + 1).padStart(6, '0')}`,
-      decisionSource: ALLOWED_DECISION_SOURCES.has(obstacle.decisionSource)
-        ? obstacle.decisionSource
-        : (obstacle.type === 'comprehension' ? 'ai_comprehension' : 'ai_assisted'),
-      reviewDecision: 'pending',
-    }));
-
-  return output;
 }
 
 async function callAi(prompt, config) {
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  const { baseUrl } = config;
+  const response = await fetch(`${baseUrl}/chat/completions`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${config.apiKey}`,
@@ -242,6 +254,7 @@ async function callAi(prompt, config) {
     body: JSON.stringify({
       model: config.model,
       temperature: 0,
+      response_format: { type: 'json_object' },
       messages: [
         { role: 'system', content: 'You are a deterministic JSON-only Analyze Engine smoke-test draft generator.' },
         { role: 'user', content: JSON.stringify(prompt, null, 2) },
@@ -250,12 +263,19 @@ async function callAi(prompt, config) {
   });
 
   const raw = await response.text();
-  const envelope = JSON.parse(raw);
+  let envelope = null;
+  try {
+    envelope = JSON.parse(raw);
+  } catch (_) {
+    envelope = { raw };
+  }
+
   if (!response.ok) {
-    const error = new Error(`OpenAI API error ${response.status}: ${raw}`);
+    const error = new Error(`OpenAI-compatible API error ${response.status}: ${raw}`);
     error.responseEnvelope = envelope;
     throw error;
   }
+
   return {
     envelope,
     content: envelope.choices?.[0]?.message?.content || '',
@@ -266,12 +286,13 @@ async function main() {
   const range = parseSmokeRange(process.argv.slice(2));
   const config = getAiConfig();
   if (!config) {
-    console.log('P0-4A-2A smoke test skipped: set OPENAI_API_KEY and OPENAI_MODEL (or P0_4A_ANALYZE_MODEL) to call AI. No draft obstacles were generated.');
+    console.log('P0-4A-2B smoke test skipped: set OPENAI_API_KEY and OPENAI_MODEL (or P0_4A_ANALYZE_MODEL) to call AI. No draft obstacles were generated.');
     return;
   }
 
   console.log('API key detected.');
   console.log(`Using model: ${config.model}`);
+  console.log(`Using OpenAI-compatible base URL: ${config.baseUrl}`);
 
   ensureDir(DEBUG_DIR);
 
@@ -295,7 +316,7 @@ async function main() {
     if (error.responseEnvelope) writeJson(path.join(DEBUG_DIR, 'response_envelope.json'), error.responseEnvelope);
     if (rawResponse) fs.writeFileSync(path.join(DEBUG_DIR, 'raw_response.txt'), rawResponse, 'utf8');
     fs.writeFileSync(path.join(DEBUG_DIR, 'parse_error.txt'), `${error.stack || error.message}\n`, 'utf8');
-    console.error('P0-4A-2A smoke test failed. Raw response and parse_error.txt were preserved; no partial smoke draft should be used.');
+    console.error('P0-4A-2B smoke test failed. Raw response and parse_error.txt were preserved; no partial smoke draft should be used.');
     process.exitCode = 1;
   }
 }
