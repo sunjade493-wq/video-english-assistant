@@ -1099,6 +1099,39 @@ function activateRuntimePilotOptInIfEnabled() {
   return true;
 }
 
+function getCurrentProgressKeyScope() {
+  if (activeDataSource === 'runtime-pilot') {
+    return 'runtime-pilot';
+  }
+
+  if (activeDataSource === 'real') {
+    return 'production';
+  }
+
+  return 'unknown';
+}
+
+function logRuntimePilotExitIsolationVerification() {
+  const progressCounts = getEpisodeProgressCounts();
+  const hiddenObstacleIdsCount = hiddenObstacleIds instanceof Set ? hiddenObstacleIds.size : 0;
+  const dismissedObstacleHistoryCount = Array.isArray(dismissedObstacleHistory) ? dismissedObstacleHistory.length : 0;
+
+  console.info([
+    'P0-4B-4B exit/isolation verification:',
+    `runtime pilot opt-in enabled: ${isRuntimePilotOptInEnabled()}`,
+    `active data source: ${activeDataSource}`,
+    `obstacle count: ${Array.isArray(obstacles) ? obstacles.length : 0}`,
+    `pending obstacle count: ${getPendingObstacles().length}`,
+    `progress total: ${progressCounts.total}`,
+    `progress conquered: ${progressCounts.conquered}`,
+    `progress remaining: ${progressCounts.remaining}`,
+    `currentEpisodeProgressKey: ${currentEpisodeProgressKey || ''}`,
+    `progress key scope: ${getCurrentProgressKeyScope()}`,
+    `hidden obstacle ids count: ${hiddenObstacleIdsCount}`,
+    `dismissed obstacle history count: ${dismissedObstacleHistoryCount}`,
+  ].join('\n'));
+}
+
 function buildRuntimePilotSelectionShadowComparison() {
   const emptyComparison = {
     currentSegmentProductionCount: 0,
@@ -1250,6 +1283,7 @@ async function initApp() {
     logRuntimePilotReadOnlySelectionCandidatesAvailable();
     logRuntimePilotSelectionShadowComparison();
     activateRuntimePilotOptInIfEnabled();
+    logRuntimePilotExitIsolationVerification();
     return;
   } catch (error) {
     console.warn('Real episode data failed to load. Falling back to demo data.', error);
