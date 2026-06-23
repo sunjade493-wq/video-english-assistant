@@ -897,9 +897,24 @@ async function loadRuntimePilotObstacles() {
   }
 }
 
+function getRuntimePilotObstacleCandidates() {
+  if (!Array.isArray(runtimeObstacles) || runtimeObstacles.length === 0) {
+    return [];
+  }
+
+  try {
+    runtimeObstacles.forEach(validateRuntimePilotObstacle);
+    return runtimeObstacles;
+  } catch (error) {
+    console.warn('P0-4B-2A runtime pilot obstacle candidates unavailable:', error?.message || error);
+    return [];
+  }
+}
+
 function initializeRuntimePilotObstacles() {
   loadRuntimePilotObstacles().then((loadedObstacles) => {
     runtimeObstacles = loadedObstacles;
+    console.info(`P0-4B-2A runtime pilot obstacle candidates available: ${getRuntimePilotObstacleCandidates().length}`);
   });
 }
 
