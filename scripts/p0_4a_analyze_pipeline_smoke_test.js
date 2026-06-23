@@ -140,9 +140,10 @@ function buildPrompt(smokeAnalyzeInput, model, range) {
     obstacleContract: {
       allowedTypes: ['vocabulary', 'comprehension'],
       requiredCommonFields: ['type', 'subtitleIndex', 'startTime', 'endTime', 'source_en', 'source_zh', 'text', 'decisionSource', 'confidence'],
-      optionalTextOffsets: ['markerStart', 'markerEnd'],
-      vocabularyFields: ['word', 'lemma', 'phonetic', 'partOfSpeech', 'sentenceMeaning', 'translation', 'difficultyLevel', 'difficultyEvidence'],
-      comprehensionFields: ['phrase', 'literal', 'actual', 'grammar', 'explanationWhy', 'transferableUsage', 'comprehensionCategory'],
+      requiredTextOffsets: ['markerStart', 'markerEnd'],
+      markerValidation: '0 <= markerStart < markerEnd <= source_en.length',
+      requiredVocabularyFields: ['word', 'lemma', 'phonetic', 'partOfSpeech', 'sentenceMeaning', 'translation', 'difficultyLevel', 'difficultyEvidence'],
+      requiredComprehensionFields: ['phrase', 'literal', 'actual', 'grammar', 'explanationWhy', 'transferableUsage', 'comprehensionCategory'],
     },
     analyzeInput: smokeAnalyzeInput,
   };
@@ -165,6 +166,30 @@ function deriveTextOffset(obstacle, field, fallback) {
   const start = source.indexOf(text);
   if (start === -1) return fallback;
   return field === 'markerEnd' ? start + text.length : start;
+}
+
+function normalizeDecisionSource(type, decisionSource) {
+  if (ALLOWED_DECISION_SOURCES.has(decisionSource)) return decisionSource;
+  return type === 'comprehension' ? 'ai_comprehension' : 'ai_assisted';
+}
+
+function normalizeConfidence(confidence) {
+  const numericConfidence = Number(confidence);
+  if (Number.isFinite(numericConfidence) && numericConfidence >= 0 && numericConfidence <= 1) {
+    return numericConfidence;
+  }
+  return 0.5;
+}
+
+function hasValidMarkerBounds(obstacle) {
+  const markerStart = Number(obstacle.markerStart);
+  const markerEnd = Number(obstacle.markerEnd);
+  const sourceLength = String(obstacle.source_en || '').length;
+  return Number.isInteger(markerStart)
+    && Number.isInteger(markerEnd)
+    && markerStart >= 0
+    && markerStart < markerEnd
+    && markerEnd <= sourceLength;
 }
 
 function normalizeObstacleDraft(parsed, smokeAnalyzeInput, model, range) {
@@ -203,6 +228,8 @@ function normalizeObstacleDraft(parsed, smokeAnalyzeInput, model, range) {
         source_en: subtitle.source_en,
         source_zh: subtitle.source_zh,
         text: String(obstacle.text || obstacle.word || obstacle.phrase || '').trim(),
+        decisionSource: normalizeDecisionSource(obstacle.type, obstacle.decisionSource),
+        confidence: normalizeConfidence(obstacle.confidence),
         reviewDecision: 'pending',
       };
       const markerStart = deriveTextOffset(withSubtitle, 'markerStart', 0);
@@ -214,6 +241,7 @@ function normalizeObstacleDraft(parsed, smokeAnalyzeInput, model, range) {
       };
     })
     .filter((obstacle) => obstacle.text.length > 0)
+    .filter(hasValidMarkerBounds)
     .sort((a, b) => (
       a.subtitleIndex - b.subtitleIndex
       || Number(a.markerStart) - Number(b.markerStart)
@@ -223,9 +251,8 @@ function normalizeObstacleDraft(parsed, smokeAnalyzeInput, model, range) {
     .map((obstacle, index) => ({
       ...obstacle,
       obstacleId: `${EPISODE_ID}-obstacle-${String(index + 1).padStart(6, '0')}`,
-      decisionSource: ALLOWED_DECISION_SOURCES.has(obstacle.decisionSource)
-        ? obstacle.decisionSource
-        : (obstacle.type === 'comprehension' ? 'ai_comprehension' : 'ai_assisted'),
+      decisionSource: normalizeDecisionSource(obstacle.type, obstacle.decisionSource),
+      confidence: normalizeConfidence(obstacle.confidence),
       reviewDecision: 'pending',
     }));
 
