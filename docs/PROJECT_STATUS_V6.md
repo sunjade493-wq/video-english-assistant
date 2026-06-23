@@ -1285,3 +1285,177 @@ Allowed future implementation shape:
 Merge gate:
 
 Yes, merge only if only `docs/PROJECT_STATUS_V6.md` changed, no code files changed, no `output_text` files changed, the contract preserves Production as default, the contract preserves Runtime Pilot as developer-only, the contract preserves progress/localStorage isolation, the contract preserves fail-closed fallback, the contract states AI generation is offline-only, and the contract states draft AI output must never be consumed directly by Runtime.
+
+## P0-5B-1 30-obstacle Offline Analyze Scope Expansion Contract
+
+Status: FROZEN CONTRACT
+
+Date: 2026-06-23
+
+Source tag:
+
+- `p0-5a-ai-assisted-offline-analyze-expansion-contract`
+
+P0-5B-1 freezes the scope and workflow contract for expanding Runtime Pilot obstacle data from the current 10-obstacle pilot to a 30-obstacle offline analyze pilot. This is a documentation-only contract; it does not authorize obstacle generation, Analyze script changes, Runtime changes, output file changes, or production behavior changes.
+
+Expansion target:
+
+- Current Runtime Pilot obstacle count: 10.
+- Next target Runtime Pilot obstacle count: 30.
+- This is a pilot expansion, not full-episode production.
+
+Production safety:
+
+- Default Production Flow must remain unchanged.
+- Default URL must remain:
+
+  ```text
+  http://127.0.0.1:5500/
+  ```
+
+- Production obstacle count remains 48.
+- Runtime Pilot must not become default.
+- Runtime Pilot must remain developer-only through:
+
+  ```text
+  http://127.0.0.1:5500/?runtimePilot=1
+  ```
+
+Input scope:
+
+- The 30-obstacle expansion may extend the offline analyze input beyond the previous 10-obstacle pilot scope.
+- The exact subtitle/time range for the 30-obstacle pilot must be determined by offline input generation, not by Runtime.
+- Runtime must not decide expansion scope.
+- Runtime must not call AI to fill missing obstacles.
+- Runtime must not infer missing obstacles.
+
+Selection principle:
+
+- The 30 obstacles should be selected by the offline Analyze pipeline according to the frozen product philosophy, vocabulary level determination contract, comprehension obstacle determination contract, and analyze prompt contract.
+- The 30-obstacle set should preserve real learning value and avoid padding low-value obstacles just to reach 30.
+- If fewer than 30 high-quality obstacles are found in the selected scope, the pipeline should report the count instead of fabricating weak obstacles.
+- False positives are worse than having fewer than 30 obstacles.
+
+Required pipeline gates:
+
+The 30-obstacle expansion must pass:
+
+- AI draft generation.
+- draft validation gate.
+- human review decision.
+- human review apply.
+- frozen promotion.
+- runtime promotion.
+- developer opt-in Runtime verification.
+
+Draft boundary:
+
+- Draft AI output must remain draft.
+- Draft AI output must not be consumed directly by Runtime.
+- Draft files must remain under `output_text/drafts/`.
+- Runtime must not read `output_text/drafts/*`.
+
+Frozen promotion boundary:
+
+- Only reviewed and approved data may be promoted to frozen.
+- Frozen data must retain `reviewStatus: frozen`.
+- Frozen data must not be silently overwritten without validation and review evidence.
+
+Runtime promotion boundary:
+
+- Runtime may consume only runtime-promoted data.
+- Runtime-promoted data must remain under:
+
+  ```text
+  output_text/runtime/p0_4a_obstacles_pilot_runtime.json
+  ```
+
+  unless a future path change is explicitly frozen first.
+- Runtime promotion must preserve normalized display-ready fields.
+- Runtime promotion must preserve `runtimeMayConsume: true`.
+- Runtime promotion must preserve `schemaVersion` expectations.
+
+Runtime verification:
+
+Under:
+
+```text
+http://127.0.0.1:5500/?runtimePilot=1
+```
+
+Expected after future implementation:
+
+- Runtime Pilot obstacle total should be 30 if exactly 30 approved obstacles are promoted.
+- UI should consume Runtime Pilot data only under opt-in.
+- Progress total should reflect Runtime Pilot count.
+- No crash.
+- No direct AI/OCR/Qwen/Qwen-VL calls.
+
+Under:
+
+```text
+http://127.0.0.1:5500/
+```
+
+Expected:
+
+- Production Flow remains active.
+- Production obstacle total remains 48.
+- Runtime Pilot does not take over UI.
+
+Isolation rules:
+
+- Runtime Pilot 30-obstacle progress must remain isolated from Production progress.
+- Runtime Pilot `hiddenObstacleIds` must remain isolated from Production `hiddenObstacleIds`.
+- Runtime Pilot `dismissedObstacleHistory` must remain isolated from Production `dismissedObstacleHistory`.
+- Runtime Pilot localStorage/progress key must remain isolated from Production progress key.
+- Exit from `?runtimePilot=1` back to `/` must restore Production Flow.
+
+Fail-closed boundary:
+
+- If Runtime Pilot load, validation, normalization, candidate preparation, promotion validation, or activation fails, Production Flow must remain active.
+- Failure must not blank the UI.
+- Failure must not overwrite Production obstacles, subtitle JSON, visual mapping JSON, or runtime-promoted data.
+- Failure must not require clearing cache or localStorage to return to Production Flow.
+
+Runtime read-only boundaries:
+
+- No AI calls at runtime.
+- No OCR calls at runtime.
+- No Qwen calls at runtime.
+- No Qwen-VL calls at runtime.
+- No runtime file writes.
+- No runtime obstacle generation.
+- No runtime subtitle JSON modification.
+- No runtime production obstacle JSON modification.
+- No runtime visual mapping JSON modification.
+
+Explicit non-goals:
+
+- Do not generate 30 obstacles in this task.
+- Do not modify Analyze scripts in this task.
+- Do not modify Runtime in this task.
+- Do not modify Qwen/Qwen-VL pipeline in this task.
+- Do not modify `output_text` files in this task.
+- Do not process the full episode in this task.
+- Do not expand to 100 obstacles in this task.
+- Do not promote Runtime Pilot to default Production.
+- Do not enable Runtime Pilot for normal users.
+- Do not introduce a visible UI toggle.
+- Do not redesign UI.
+- Do not change marker rendering rules.
+
+Recommended next implementation after this contract:
+
+1. P0-5B-2 30-obstacle Offline Analyze Input Expansion.
+2. P0-5B-3 30-obstacle AI Draft Generation.
+3. P0-5B-4 Draft Validation Gate.
+4. P0-5B-5 Human Review Decision.
+5. P0-5B-6 Human Review Apply.
+6. P0-5B-7 Frozen Promotion.
+7. P0-5B-8 Runtime Promotion.
+8. P0-5B-9 Runtime Opt-in Verification.
+
+Merge gate:
+
+Yes, merge only if only `docs/PROJECT_STATUS_V6.md` changed, no code files changed, no `output_text` files changed, the contract freezes 30-obstacle expansion scope, the contract preserves Production default 48, the contract preserves Runtime Pilot developer-only opt-in, the contract requires validation, human review, frozen promotion, and runtime promotion, the contract says draft AI output must never be consumed directly by Runtime, and the contract preserves Runtime read-only and fail-closed boundaries.
