@@ -1176,3 +1176,112 @@ Future allowed direction after this freeze:
 Merge gate:
 
 Yes, merge only if only `docs/PROJECT_STATUS_V6.md` changed, no code files changed, no `output_text` files changed, the freeze documents default Production Flow as 48 obstacles, the freeze documents developer opt-in Runtime Pilot Flow as 10 obstacles for the current pilot, the freeze documents exit/isolation behavior, the freeze documents separate progress/localStorage scope, the freeze documents fail-closed fallback to Production Flow, and the freeze explicitly says Runtime Pilot is not default and not enabled for normal users.
+
+## P0-5A AI-assisted Offline Analyze Engine Expansion Contract
+
+Status: FROZEN CONTRACT
+
+Date: 2026-06-23
+
+Source tags:
+
+- `p0-4b-5-runtime-pilot-controlled-opt-in-polish-contract-freeze`
+- `p0-4b-5-runtime-pilot-controlled-opt-in-polish-verified`
+
+P0-5A freezes the expansion contract for the AI-assisted Offline Analyze Engine before increasing Runtime Pilot obstacle scope beyond the current 10-obstacle pilot.
+
+Current Runtime Pilot scope:
+
+- 10 Runtime Pilot obstacles.
+
+Next allowed expansion stages:
+
+1. 30-obstacle pilot.
+2. 100-obstacle pilot.
+3. Full episode pilot.
+4. Future multi-episode expansion.
+
+Frozen expansion rules:
+
+1. Production Flow must remain default at:
+
+   ```text
+   http://127.0.0.1:5500/
+   ```
+
+2. Runtime Pilot expansion must remain accessible only through:
+
+   ```text
+   http://127.0.0.1:5500/?runtimePilot=1
+   ```
+
+3. Runtime Pilot expansion must not replace Production by default.
+4. Runtime Pilot expansion must continue to use isolated progress/localStorage scope.
+5. Runtime Pilot expansion must continue to use isolated `hiddenObstacleIds` and `dismissedObstacleHistory`.
+6. Runtime Pilot expansion must fail closed to Production Flow if:
+   - runtime data fails to load
+   - validation fails
+   - normalization fails
+   - candidate preparation fails
+   - activation fails
+7. Runtime must remain read-only:
+   - no AI calls
+   - no OCR calls
+   - no Qwen calls
+   - no Qwen-VL calls
+   - no file writes
+   - no runtime obstacle generation
+   - no subtitle JSON modification
+   - no production obstacle JSON modification
+   - no visual mapping JSON modification
+8. AI-assisted obstacle generation must remain offline-only.
+9. Draft AI output must never be consumed directly by Runtime.
+10. Expansion data must pass:
+    - draft generation
+    - validation gate
+    - human review
+    - frozen promotion
+    - runtime promotion
+    before Runtime may consume it.
+11. Runtime Pilot expanded data must continue to use:
+
+    ```text
+    output_text/runtime/p0_4a_obstacles_pilot_runtime.json
+    ```
+
+    or a future explicitly frozen runtime path.
+12. Any future path change must be documented before implementation.
+13. Expansion must not redesign UI.
+14. Expansion must not change marker rendering rules.
+15. Expansion must not change the default Production obstacle count or source.
+16. Expansion must not remove existing P0-4B probe logs unless a later cleanup contract explicitly authorizes it.
+
+Explicit non-goals:
+
+- Do not generate 30/100/full-episode obstacles in this task.
+- Do not modify Analyze scripts in this task.
+- Do not modify Runtime in this task.
+- Do not modify Qwen/Qwen-VL pipeline in this task.
+- Do not process full episode in this task.
+- Do not promote Runtime Pilot to default Production.
+- Do not enable Runtime Pilot for normal users.
+- Do not introduce a visible UI toggle.
+
+Recommended next implementation after this contract:
+
+P0-5B 30-obstacle AI Draft Expansion
+
+Allowed future implementation shape:
+
+- Extend offline analyze input scope only after contract freeze.
+- Generate draft output only.
+- Validate draft output.
+- Require human review.
+- Promote only approved/frozen data.
+- Regenerate runtime pilot output only after promotion.
+- Verify under `?runtimePilot=1`.
+- Verify default `/` remains Production 48.
+
+Merge gate:
+
+Yes, merge only if only `docs/PROJECT_STATUS_V6.md` changed, no code files changed, no `output_text` files changed, the contract preserves Production as default, the contract preserves Runtime Pilot as developer-only, the contract preserves progress/localStorage isolation, the contract preserves fail-closed fallback, the contract states AI generation is offline-only, and the contract states draft AI output must never be consumed directly by Runtime.
