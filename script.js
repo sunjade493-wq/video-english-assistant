@@ -911,11 +911,24 @@ function getRuntimePilotObstacleCandidates() {
   }
 }
 
+function getNormalizedRuntimePilotObstacleCandidates() {
+  try {
+    return normalizeObstacles(getRuntimePilotObstacleCandidates());
+  } catch (error) {
+    console.warn('P0-4B-2B normalized runtime pilot obstacle candidates unavailable:', error?.message || error);
+    return [];
+  }
+}
+
 function initializeRuntimePilotObstacles() {
-  loadRuntimePilotObstacles().then((loadedObstacles) => {
+  return loadRuntimePilotObstacles().then((loadedObstacles) => {
     runtimeObstacles = loadedObstacles;
     console.info(`P0-4B-2A runtime pilot obstacle candidates available: ${getRuntimePilotObstacleCandidates().length}`);
   });
+}
+
+function logNormalizedRuntimePilotObstacleCandidatesAvailable() {
+  console.info(`P0-4B-2B normalized runtime pilot obstacle candidates available: ${getNormalizedRuntimePilotObstacleCandidates().length}`);
 }
 
 async function loadVisualMapping() {
@@ -991,9 +1004,12 @@ function loadDemoEpisodeData() {
 }
 
 async function initApp() {
-  initializeRuntimePilotObstacles();
+  const runtimePilotObstacleLoad = initializeRuntimePilotObstacles();
+
   try {
     await loadRealEpisodeData();
+    await runtimePilotObstacleLoad;
+    logNormalizedRuntimePilotObstacleCandidatesAvailable();
     return;
   } catch (error) {
     console.warn('Real episode data failed to load. Falling back to demo data.', error);
