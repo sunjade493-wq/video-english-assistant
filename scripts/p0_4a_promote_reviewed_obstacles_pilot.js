@@ -7,12 +7,15 @@ const path = require('path');
 const REPO_ROOT = path.resolve(__dirname, '..');
 
 const SOURCE_DRAFT_PATH = 'output_text/drafts/p0_4a_obstacles_pilot_draft_smoke.json';
-const SOURCE_REVIEW_RESULTS_PATH = 'output_text/drafts/p0_4a_obstacles_pilot_review_results.json';
+const DEFAULT_SOURCE_REVIEW_RESULTS_PATH = 'output_text/drafts/p0_4a_obstacles_pilot_review_results.json';
+const SOURCE_REVIEW_RESULTS_PATH = process.env.P0_4A_REVIEW_RESULTS_PATH || DEFAULT_SOURCE_REVIEW_RESULTS_PATH;
 const SOURCE_REVIEW_REPORT_PATH = 'output_text/drafts/p0_4a_obstacles_pilot_draft_review_report.json';
 const OUTPUT_PATH = 'output_text/frozen/p0_4a_obstacles_pilot_frozen.json';
 
 const DRAFT_PATH_ABSOLUTE = path.join(REPO_ROOT, SOURCE_DRAFT_PATH);
-const REVIEW_RESULTS_PATH_ABSOLUTE = path.join(REPO_ROOT, SOURCE_REVIEW_RESULTS_PATH);
+const REVIEW_RESULTS_PATH_ABSOLUTE = path.isAbsolute(SOURCE_REVIEW_RESULTS_PATH)
+  ? SOURCE_REVIEW_RESULTS_PATH
+  : path.join(REPO_ROOT, SOURCE_REVIEW_RESULTS_PATH);
 const REVIEW_REPORT_PATH_ABSOLUTE = path.join(REPO_ROOT, SOURCE_REVIEW_REPORT_PATH);
 const OUTPUT_PATH_ABSOLUTE = path.join(REPO_ROOT, OUTPUT_PATH);
 
