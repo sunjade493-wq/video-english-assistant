@@ -920,6 +920,36 @@ function getNormalizedRuntimePilotObstacleCandidates() {
   }
 }
 
+function getRuntimePilotReadOnlySelectionCandidates() {
+  try {
+    const normalizedRuntimePilotCandidates = getNormalizedRuntimePilotObstacleCandidates();
+
+    if (!Array.isArray(normalizedRuntimePilotCandidates) || normalizedRuntimePilotCandidates.length === 0) {
+      return [];
+    }
+
+    return normalizedRuntimePilotCandidates.map((candidate) => ({
+      id: candidate?.id,
+      type: candidate?.type,
+      kind: candidate?.kind,
+      index: candidate?.index,
+      end: candidate?.end,
+      markerStart: candidate?.markerStart,
+      markerEnd: candidate?.markerEnd,
+      source: candidate?.source,
+      sourceZh: candidate?.sourceZh,
+      timeMs: candidate?.timeMs,
+      endTimeMs: candidate?.endTimeMs,
+      word: candidate?.word,
+      phrase: candidate?.phrase,
+      prototype: candidate?.prototype,
+    }));
+  } catch (error) {
+    console.warn('P0-4B-3A runtime pilot read-only selection candidates unavailable:', error?.message || error);
+    return [];
+  }
+}
+
 function initializeRuntimePilotObstacles() {
   return loadRuntimePilotObstacles().then((loadedObstacles) => {
     runtimeObstacles = loadedObstacles;
@@ -1012,6 +1042,10 @@ function logRuntimePilotShadowComparison() {
   ].join('\n'));
 }
 
+function logRuntimePilotReadOnlySelectionCandidatesAvailable() {
+  console.info(`P0-4B-3A runtime pilot read-only selection candidates available: ${getRuntimePilotReadOnlySelectionCandidates().length}`);
+}
+
 async function loadVisualMapping() {
   visualMappingByObstacleId.clear();
 
@@ -1092,6 +1126,7 @@ async function initApp() {
     await runtimePilotObstacleLoad;
     logNormalizedRuntimePilotObstacleCandidatesAvailable();
     logRuntimePilotShadowComparison();
+    logRuntimePilotReadOnlySelectionCandidatesAvailable();
     return;
   } catch (error) {
     console.warn('Real episode data failed to load. Falling back to demo data.', error);
