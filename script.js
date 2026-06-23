@@ -1,6 +1,7 @@
 const DEFAULT_SUBTITLE_TEXT = `Demo subtitle unavailable.`;
 const REAL_SUBTITLE_DATA_URL = 'output_text/v28d_bilingual_subtitles.json';
 const REAL_OBSTACLE_DATA_URL = 'output_text/v29a_obstacles.json';
+const RUNTIME_PILOT_OBSTACLE_DATA_URL = 'output_text/runtime/p0_4a_obstacles_pilot_runtime.json';
 const REAL_VISUAL_MAPPING_DATA_URL = 'output_text/visual_mapping/TBBT_S12E01_word_boxes.json';
 const REAL_VIDEO_URL = 'assets/videos/TBBT_S12E01.mp4';
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
@@ -345,6 +346,7 @@ let currentSegmentIndex = 0;
 let isVideoPlaying = false;
 let playbackTimer = null;
 let obstacles = [];
+let runtimeObstacles = [];
 const visualMappingByObstacleId = new Map();
 let hiddenObstacleIds = new Set();
 let dismissedObstacleHistory = [];
@@ -841,6 +843,66 @@ function hasUsableVisualBox(wordBox, coordinateSpace) {
   );
 }
 
+
+function validateRuntimePilotObstacle(row, rowIndex) {
+  const type = row?.type;
+
+  if (!['vocabulary', 'comprehension'].includes(type)) {
+    throw new Error(`obstacle ${rowIndex + 1} has unsupported type: ${type}`);
+  }
+
+  const sourceEn = row?.source_en;
+  const markerStart = Number(row?.markerStart);
+  const markerEnd = Number(row?.markerEnd);
+
+  if (typeof sourceEn !== 'string') {
+    throw new Error(`obstacle ${rowIndex + 1} has invalid source_en`);
+  }
+
+  if (!Number.isFinite(markerStart) || !Number.isFinite(markerEnd)) {
+    throw new Error(`obstacle ${rowIndex + 1} has non-finite marker bounds`);
+  }
+
+  if (markerStart < 0 || markerStart >= markerEnd || markerEnd > sourceEn.length) {
+    throw new Error(`obstacle ${rowIndex + 1} marker bounds are outside source_en`);
+  }
+}
+
+function validateRuntimePilotObstaclePayload(payload) {
+  if (payload?.schemaVersion !== 'p0-4a-runtime-obstacles-pilot-v1') {
+    throw new Error('schemaVersion mismatch');
+  }
+
+  if (payload?.runtimeMayConsume !== true) {
+    throw new Error('runtimeMayConsume is not true');
+  }
+
+  if (!Array.isArray(payload?.obstacles)) {
+    throw new Error('obstacles is not an array');
+  }
+
+  payload.obstacles.forEach(validateRuntimePilotObstacle);
+  return payload.obstacles;
+}
+
+async function loadRuntimePilotObstacles() {
+  try {
+    const payload = await fetchJson(RUNTIME_PILOT_OBSTACLE_DATA_URL);
+    const loadedObstacles = validateRuntimePilotObstaclePayload(payload);
+    console.log(`P0-4B-1 runtime pilot obstacles loaded: ${loadedObstacles.length}`);
+    return loadedObstacles;
+  } catch (error) {
+    console.warn('P0-4B-1 runtime pilot obstacle load skipped:', error?.message || error);
+    return [];
+  }
+}
+
+function initializeRuntimePilotObstacles() {
+  loadRuntimePilotObstacles().then((loadedObstacles) => {
+    runtimeObstacles = loadedObstacles;
+  });
+}
+
 async function loadVisualMapping() {
   visualMappingByObstacleId.clear();
 
@@ -914,6 +976,7 @@ function loadDemoEpisodeData() {
 }
 
 async function initApp() {
+  initializeRuntimePilotObstacles();
   try {
     await loadRealEpisodeData();
     return;
