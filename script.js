@@ -15,6 +15,10 @@ const VOCABULARY_MARKER_MAX_WIDTH_PX = 42;
 const DEBUG_FROZEN_RANGE_MARKER_FALLBACK = new URLSearchParams(window.location.search).get('debugFrozenMarkerFallback') === '1';
 const EPISODE_PROGRESS_STORAGE_PREFIX = 'videoEnglishAssistant.episodeProgress.';
 
+function isRuntimePilotOptInEnabled() {
+  return new URLSearchParams(window.location.search).get('runtimePilot') === '1';
+}
+
 const SUPPORTED_PART_OF_SPEECH_FORMATS = new Set([
   'n.',
   'pron.',
@@ -1046,6 +1050,55 @@ function logRuntimePilotReadOnlySelectionCandidatesAvailable() {
   console.info(`P0-4B-3A runtime pilot read-only selection candidates available: ${getRuntimePilotReadOnlySelectionCandidates().length}`);
 }
 
+function failClosedRuntimePilotOptIn(reason) {
+  console.warn(`P0-4B-4A runtime pilot opt-in unavailable; production flow retained: ${reason}`);
+  return false;
+}
+
+function hasUsableRuntimePilotCandidateId(candidate) {
+  return typeof candidate?.id === 'string' && candidate.id.trim() !== '';
+}
+
+function activateRuntimePilotOptInIfEnabled() {
+  if (!isRuntimePilotOptInEnabled()) {
+    console.log('P0-4B-4A runtime pilot opt-in inactive; production flow active');
+    return false;
+  }
+
+  let normalizedRuntimePilotCandidates;
+
+  try {
+    normalizedRuntimePilotCandidates = getNormalizedRuntimePilotObstacleCandidates();
+  } catch (error) {
+    return failClosedRuntimePilotOptIn(error?.message || error);
+  }
+
+  if (!Array.isArray(normalizedRuntimePilotCandidates) || normalizedRuntimePilotCandidates.length === 0) {
+    return failClosedRuntimePilotOptIn('normalized runtime pilot candidates are unavailable or empty');
+  }
+
+  if (!normalizedRuntimePilotCandidates.every(hasUsableRuntimePilotCandidateId)) {
+    return failClosedRuntimePilotOptIn('normalized runtime pilot candidates include unusable ids');
+  }
+
+  obstacles = normalizedRuntimePilotCandidates;
+  activeDataSource = 'runtime-pilot';
+  selectedObstacleId = null;
+  streamMode = 'dynamic';
+  currentEpisodeProgressKey = getEpisodeProgressKey(JSON.stringify({
+    source: 'runtime-pilot',
+    subtitles: subtitleSegments.map((segment) => segment.text),
+    obstacles: normalizedRuntimePilotCandidates.map((candidate) => candidate.id),
+  }));
+  applyStoredEpisodeProgress(currentEpisodeProgressKey);
+  saveEpisodeProgress();
+  renderVideoState();
+  renderCards();
+  syncPlaybackClock();
+  console.log(`P0-4B-4A runtime pilot opt-in active: ${normalizedRuntimePilotCandidates.length} obstacles`);
+  return true;
+}
+
 function buildRuntimePilotSelectionShadowComparison() {
   const emptyComparison = {
     currentSegmentProductionCount: 0,
@@ -1196,6 +1249,7 @@ async function initApp() {
     logRuntimePilotShadowComparison();
     logRuntimePilotReadOnlySelectionCandidatesAvailable();
     logRuntimePilotSelectionShadowComparison();
+    activateRuntimePilotOptInIfEnabled();
     return;
   } catch (error) {
     console.warn('Real episode data failed to load. Falling back to demo data.', error);
