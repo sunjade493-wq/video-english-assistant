@@ -14,7 +14,7 @@ const EPISODE_ID = 'tbbt-s12e01';
 const DEFAULT_SMOKE_START_INDEX = 12;
 const DEFAULT_SMOKE_END_INDEX = 16;
 const PROMPT_CONTRACT_VERSION = 'p0-analyze-prompt-contract-v1';
-const ANALYZER_VERSION = 'p0-4a-2a-ai-draft-smoke-v1';
+const ANALYZER_VERSION = 'p0-4a-2b-real-ai-draft-generation-v1';
 const TYPE_ORDER = { vocabulary: 0, comprehension: 1 };
 const ALLOWED_TYPES = new Set(['vocabulary', 'comprehension']);
 const ALLOWED_DECISION_SOURCES = new Set([
@@ -100,7 +100,7 @@ function buildSmokeAnalyzeInput(analyzeInput, range) {
       sourceAnalyzeInputPath: 'output_text/drafts/p0_4a_analyze_input_pilot.json',
       subtitleIndexStart: range.start,
       subtitleIndexEnd: range.end,
-      note: 'P0-4A-2A smoke test slice only. Runtime must not consume this output.',
+      note: 'P0-4A-2B smoke test slice only. Runtime must not consume this output.',
     },
     items: items.map((item) => ({
       ...item,
@@ -111,7 +111,7 @@ function buildSmokeAnalyzeInput(analyzeInput, range) {
 
 function buildPrompt(smokeAnalyzeInput, model, range) {
   return {
-    role: 'P0-4A-2A offline Analyze Engine smoke-test draft generator',
+    role: 'P0-4A-2B real AI Analyze Engine smoke-test draft generator',
     instruction: [
       'Return valid JSON only. Do not use markdown fences.',
       `Generate draft Vocabulary Obstacles and Comprehension Obstacles for the provided subtitle items only: subtitleIndex ${range.start} through ${range.end}.`,
@@ -140,9 +140,9 @@ function buildPrompt(smokeAnalyzeInput, model, range) {
     obstacleContract: {
       allowedTypes: ['vocabulary', 'comprehension'],
       requiredCommonFields: ['type', 'subtitleIndex', 'startTime', 'endTime', 'source_en', 'source_zh', 'text', 'decisionSource', 'confidence'],
-      optionalTextOffsets: ['markerStart', 'markerEnd'],
-      vocabularyFields: ['word', 'lemma', 'phonetic', 'partOfSpeech', 'sentenceMeaning', 'translation', 'difficultyLevel', 'difficultyEvidence'],
-      comprehensionFields: ['phrase', 'literal', 'actual', 'grammar', 'explanationWhy', 'transferableUsage', 'comprehensionCategory'],
+      requiredTextOffsets: ['markerStart', 'markerEnd'],
+      requiredVocabularyFields: ['word', 'lemma', 'phonetic', 'partOfSpeech', 'sentenceMeaning', 'translation', 'difficultyLevel', 'difficultyEvidence'],
+      requiredComprehensionFields: ['phrase', 'literal', 'actual', 'grammar', 'explanationWhy', 'transferableUsage', 'comprehensionCategory'],
     },
     analyzeInput: smokeAnalyzeInput,
   };
@@ -214,6 +214,13 @@ function normalizeObstacleDraft(parsed, smokeAnalyzeInput, model, range) {
       };
     })
     .filter((obstacle) => obstacle.text.length > 0)
+    .filter((obstacle) => (
+      Number.isInteger(Number(obstacle.markerStart))
+      && Number.isInteger(Number(obstacle.markerEnd))
+      && Number(obstacle.markerStart) >= 0
+      && Number(obstacle.markerStart) < Number(obstacle.markerEnd)
+      && Number(obstacle.markerEnd) <= String(obstacle.source_en || '').length
+    ))
     .sort((a, b) => (
       a.subtitleIndex - b.subtitleIndex
       || Number(a.markerStart) - Number(b.markerStart)
@@ -226,6 +233,7 @@ function normalizeObstacleDraft(parsed, smokeAnalyzeInput, model, range) {
       decisionSource: ALLOWED_DECISION_SOURCES.has(obstacle.decisionSource)
         ? obstacle.decisionSource
         : (obstacle.type === 'comprehension' ? 'ai_comprehension' : 'ai_assisted'),
+      confidence: Number.isFinite(Number(obstacle.confidence)) ? Number(obstacle.confidence) : 0.5,
       reviewDecision: 'pending',
     }));
 
@@ -242,6 +250,7 @@ async function callAi(prompt, config) {
     body: JSON.stringify({
       model: config.model,
       temperature: 0,
+      response_format: { type: 'json_object' },
       messages: [
         { role: 'system', content: 'You are a deterministic JSON-only Analyze Engine smoke-test draft generator.' },
         { role: 'user', content: JSON.stringify(prompt, null, 2) },
@@ -266,7 +275,7 @@ async function main() {
   const range = parseSmokeRange(process.argv.slice(2));
   const config = getAiConfig();
   if (!config) {
-    console.log('P0-4A-2A smoke test skipped: set OPENAI_API_KEY and OPENAI_MODEL (or P0_4A_ANALYZE_MODEL) to call AI. No draft obstacles were generated.');
+    console.log('P0-4A-2B smoke test skipped: set OPENAI_API_KEY and OPENAI_MODEL (or P0_4A_ANALYZE_MODEL) to call AI. No draft obstacles were generated.');
     return;
   }
 
@@ -295,7 +304,7 @@ async function main() {
     if (error.responseEnvelope) writeJson(path.join(DEBUG_DIR, 'response_envelope.json'), error.responseEnvelope);
     if (rawResponse) fs.writeFileSync(path.join(DEBUG_DIR, 'raw_response.txt'), rawResponse, 'utf8');
     fs.writeFileSync(path.join(DEBUG_DIR, 'parse_error.txt'), `${error.stack || error.message}\n`, 'utf8');
-    console.error('P0-4A-2A smoke test failed. Raw response and parse_error.txt were preserved; no partial smoke draft should be used.');
+    console.error('P0-4A-2B smoke test failed. Raw response and parse_error.txt were preserved; no partial smoke draft should be used.');
     process.exitCode = 1;
   }
 }
