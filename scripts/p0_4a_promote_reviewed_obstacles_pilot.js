@@ -24,6 +24,7 @@ const EXPECTED_REVIEW_RESULTS_SCHEMA_VERSION = 'p0-4a-review-results-v1';
 const EXPECTED_REVIEW_RESULTS_FIXTURE_SCHEMA_VERSION = 'p0-4a-review-results-fixture-v1';
 const OUTPUT_SCHEMA_VERSION = 'p0-4a-frozen-obstacles-pilot-v1';
 const FROZEN_SOURCE = 'p0-4a-3a-reviewed-draft-promotion';
+const DISALLOWED_FROZEN_OBSTACLE_FIELDS = ['reviewDecision'];
 const ALLOWED_HUMAN_DECISIONS = new Set(['approved', 'rejected', 'pending']);
 
 function readJson(filePath, label) {
@@ -221,6 +222,32 @@ function validateMatchesAndBuildResultMap(draft, reviewResults) {
   return resultsByObstacleId;
 }
 
+function omitDisallowedFrozenObstacleFields(obstacle) {
+  const frozenObstacle = { ...obstacle };
+
+  for (const field of DISALLOWED_FROZEN_OBSTACLE_FIELDS) {
+    delete frozenObstacle[field];
+  }
+
+  return frozenObstacle;
+}
+
+function validateFrozenOutputHasNoDisallowedFields(frozenOutput) {
+  const errors = [];
+
+  frozenOutput.obstacles.forEach((obstacle, index) => {
+    for (const field of DISALLOWED_FROZEN_OBSTACLE_FIELDS) {
+      if (hasOwn(obstacle, field)) {
+        errors.push(`obstacles[${index}] obstacleId ${JSON.stringify(obstacle.obstacleId)} contains forbidden top-level field ${JSON.stringify(field)}.`);
+      }
+    }
+  });
+
+  if (errors.length > 0) {
+    throw new Error(`Frozen pilot promotion output validation failed; refusing to write ${OUTPUT_PATH}:\n- ${errors.join('\n- ')}`);
+  }
+}
+
 function buildFrozenOutput(draft, reviewResults, resultsByObstacleId) {
   const frozenAt = new Date().toISOString();
   let approvedCount = 0;
@@ -233,7 +260,7 @@ function buildFrozenOutput(draft, reviewResults, resultsByObstacleId) {
     if (reviewResult.humanDecision === 'approved') {
       approvedCount += 1;
       obstacles.push({
-        ...obstacle,
+        ...omitDisallowedFrozenObstacleFields(obstacle),
         reviewStatus: 'approved',
         humanDecision: 'approved',
         reviewer: reviewResult.reviewer,
@@ -289,6 +316,7 @@ function main() {
 
     const resultsByObstacleId = validateMatchesAndBuildResultMap(draft, reviewResults);
     const frozenOutput = buildFrozenOutput(draft, reviewResults, resultsByObstacleId);
+    validateFrozenOutputHasNoDisallowedFields(frozenOutput);
     writeJsonAtomic(OUTPUT_PATH_ABSOLUTE, frozenOutput);
 
     console.log('P0-4A-3A frozen pilot obstacles generated.');
