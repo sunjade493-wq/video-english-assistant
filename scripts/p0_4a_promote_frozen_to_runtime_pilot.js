@@ -78,6 +78,28 @@ const COMPREHENSION_FIELDS = [
   'comprehensionCategory',
 ];
 
+
+const PART_OF_SPEECH_DISPLAY_MAP = new Map([
+  ['noun', 'n.'],
+  ['adverb', 'adv.'],
+  ['adjective', 'adj.'],
+  ['verb', 'vt./vi.'],
+  ['preposition', 'prep.'],
+  ['conjunction', 'conj.'],
+  ['interjection', 'interj.'],
+  ['pronoun', 'pron.'],
+  ['determiner', 'det.'],
+  ['numeral', 'num.'],
+]);
+
+function normalizeRuntimePartOfSpeech(value) {
+  if (typeof value !== 'string') return value;
+
+  const trimmedValue = value.trim();
+  const normalizedValue = PART_OF_SPEECH_DISPLAY_MAP.get(trimmedValue.toLowerCase());
+  return normalizedValue || trimmedValue;
+}
+
 const FORBIDDEN_OBSTACLE_FIELDS = [
   'reviewDecision',
   'humanDecision',
@@ -174,10 +196,16 @@ function copyFields(source, fields) {
 
 function buildRuntimeObstacle(frozenObstacle) {
   const typeSpecificFields = frozenObstacle.type === 'vocabulary' ? VOCABULARY_FIELDS : COMPREHENSION_FIELDS;
-  return {
+  const runtimeObstacle = {
     ...copyFields(frozenObstacle, COMMON_RUNTIME_FIELDS),
     ...copyFields(frozenObstacle, typeSpecificFields),
   };
+
+  if (runtimeObstacle.type === 'vocabulary' && hasOwn(runtimeObstacle, 'partOfSpeech')) {
+    runtimeObstacle.partOfSpeech = normalizeRuntimePartOfSpeech(runtimeObstacle.partOfSpeech);
+  }
+
+  return runtimeObstacle;
 }
 
 function validateFrozenObstaclesAndBuildRuntime(frozenObstacles) {
