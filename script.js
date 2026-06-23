@@ -911,10 +911,32 @@ function getRuntimePilotObstacleCandidates() {
   }
 }
 
+function getNormalizedRuntimePilotObstacleCandidates() {
+  const candidates = getRuntimePilotObstacleCandidates();
+
+  if (candidates.length === 0) {
+    return [];
+  }
+
+  try {
+    const normalizedCandidates = normalizeObstacles(candidates);
+
+    if (normalizedCandidates.length !== candidates.length) {
+      throw new Error('one or more candidates failed normalization');
+    }
+
+    return normalizedCandidates;
+  } catch (error) {
+    console.warn('P0-4B-2B normalized runtime pilot obstacle candidates unavailable:', error?.message || error);
+    return [];
+  }
+}
+
 function initializeRuntimePilotObstacles() {
   loadRuntimePilotObstacles().then((loadedObstacles) => {
     runtimeObstacles = loadedObstacles;
     console.info(`P0-4B-2A runtime pilot obstacle candidates available: ${getRuntimePilotObstacleCandidates().length}`);
+    console.info(`P0-4B-2B normalized runtime pilot obstacle candidates available: ${getNormalizedRuntimePilotObstacleCandidates().length}`);
   });
 }
 
