@@ -931,6 +931,87 @@ function logNormalizedRuntimePilotObstacleCandidatesAvailable() {
   console.info(`P0-4B-2B normalized runtime pilot obstacle candidates available: ${getNormalizedRuntimePilotObstacleCandidates().length}`);
 }
 
+function hasRuntimePilotFieldValue(value) {
+  return value !== null && value !== undefined && value !== '';
+}
+
+function hasAnyRuntimePilotFieldValue(row, fields) {
+  return fields.some((field) => hasRuntimePilotFieldValue(row?.[field]));
+}
+
+function hasCompleteRuntimePilotRequiredFields(row) {
+  const hasCommonRequiredFields = hasAnyRuntimePilotFieldValue(row, ['obstacleId', 'id'])
+    && hasRuntimePilotFieldValue(row?.type)
+    && hasRuntimePilotFieldValue(row?.subtitleIndex)
+    && hasRuntimePilotFieldValue(row?.source_en)
+    && hasRuntimePilotFieldValue(row?.markerStart)
+    && hasRuntimePilotFieldValue(row?.markerEnd);
+
+  if (!hasCommonRequiredFields) {
+    return false;
+  }
+
+  if (row?.type === 'vocabulary') {
+    return hasRuntimePilotFieldValue(row?.word)
+      && hasRuntimePilotFieldValue(row?.phonetic)
+      && hasRuntimePilotFieldValue(row?.partOfSpeech)
+      && hasRuntimePilotFieldValue(row?.sentenceMeaning);
+  }
+
+  if (row?.type === 'comprehension') {
+    return hasAnyRuntimePilotFieldValue(row, ['phrase', 'prototype', 'text'])
+      && hasRuntimePilotFieldValue(row?.literal)
+      && hasRuntimePilotFieldValue(row?.actual)
+      && hasRuntimePilotFieldValue(row?.grammar);
+  }
+
+  return false;
+}
+
+function buildRuntimePilotShadowComparison() {
+  try {
+    const rawRuntimePilotCandidates = getRuntimePilotObstacleCandidates();
+    const normalizedRuntimePilotCandidates = getNormalizedRuntimePilotObstacleCandidates();
+
+    return {
+      productionObstacleCount: Array.isArray(obstacles) ? obstacles.length : 0,
+      runtimePilotRawCount: rawRuntimePilotCandidates.length,
+      runtimePilotNormalizedCount: normalizedRuntimePilotCandidates.length,
+      subtitleIndexPresentCount: rawRuntimePilotCandidates.filter((row) => hasRuntimePilotFieldValue(row?.subtitleIndex)).length,
+      markerStartPresentCount: rawRuntimePilotCandidates.filter((row) => hasRuntimePilotFieldValue(row?.markerStart)).length,
+      markerEndPresentCount: rawRuntimePilotCandidates.filter((row) => hasRuntimePilotFieldValue(row?.markerEnd)).length,
+      requiredFieldsCompleteCount: rawRuntimePilotCandidates.filter(hasCompleteRuntimePilotRequiredFields).length,
+    };
+  } catch (error) {
+    console.warn('P0-4B-2C shadow comparison unavailable:', error?.message || error);
+    return {
+      productionObstacleCount: 0,
+      runtimePilotRawCount: 0,
+      runtimePilotNormalizedCount: 0,
+      subtitleIndexPresentCount: 0,
+      markerStartPresentCount: 0,
+      markerEndPresentCount: 0,
+      requiredFieldsCompleteCount: 0,
+    };
+  }
+}
+
+function logRuntimePilotShadowComparison() {
+  const comparison = buildRuntimePilotShadowComparison();
+  const rawCount = comparison.runtimePilotRawCount;
+
+  console.info([
+    'P0-4B-2C shadow comparison:',
+    `production obstacle count: ${comparison.productionObstacleCount}`,
+    `runtime pilot raw count: ${comparison.runtimePilotRawCount}`,
+    `runtime pilot normalized count: ${comparison.runtimePilotNormalizedCount}`,
+    `runtime subtitleIndex present: ${comparison.subtitleIndexPresentCount}/${rawCount}`,
+    `runtime markerStart present: ${comparison.markerStartPresentCount}/${rawCount}`,
+    `runtime markerEnd present: ${comparison.markerEndPresentCount}/${rawCount}`,
+    `runtime required fields complete: ${comparison.requiredFieldsCompleteCount}/${rawCount}`,
+  ].join('\n'));
+}
+
 async function loadVisualMapping() {
   visualMappingByObstacleId.clear();
 
@@ -1010,6 +1091,7 @@ async function initApp() {
     await loadRealEpisodeData();
     await runtimePilotObstacleLoad;
     logNormalizedRuntimePilotObstacleCandidatesAvailable();
+    logRuntimePilotShadowComparison();
     return;
   } catch (error) {
     console.warn('Real episode data failed to load. Falling back to demo data.', error);
