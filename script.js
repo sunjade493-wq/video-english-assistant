@@ -1046,6 +1046,74 @@ function logRuntimePilotReadOnlySelectionCandidatesAvailable() {
   console.info(`P0-4B-3A runtime pilot read-only selection candidates available: ${getRuntimePilotReadOnlySelectionCandidates().length}`);
 }
 
+function buildRuntimePilotSelectionShadowComparison() {
+  const emptyComparison = {
+    currentSegmentProductionCount: 0,
+    currentSegmentRuntimePilotCount: 0,
+    productionSelectedSegmentCount: 0,
+    runtimePilotSelectedSegmentCount: 0,
+    productionTotalSelectableCount: 0,
+    runtimePilotTotalSelectableCount: 0,
+    currentSegmentProductionIds: [],
+    currentSegmentRuntimePilotIds: [],
+  };
+
+  try {
+    if (!Array.isArray(subtitleSegments) || subtitleSegments.length === 0) {
+      return emptyComparison;
+    }
+
+    const productionSelectableCandidates = Array.isArray(obstacles)
+      ? getPendingObstacles()
+      : [];
+    const runtimePilotSelectableCandidates = getRuntimePilotReadOnlySelectionCandidates();
+    const safeRuntimePilotSelectableCandidates = Array.isArray(runtimePilotSelectableCandidates)
+      ? runtimePilotSelectableCandidates
+      : [];
+    const currentSegment = getCurrentSubtitleSegment();
+    const currentSegmentProductionCandidates = sortObstaclesForLearningTips(
+      getObstaclesInSegment(currentSegment, productionSelectableCandidates),
+    );
+    const currentSegmentRuntimePilotCandidates = sortObstaclesForLearningTips(
+      getObstaclesInSegment(currentSegment, safeRuntimePilotSelectableCandidates),
+    );
+
+    return {
+      currentSegmentProductionCount: currentSegmentProductionCandidates.length,
+      currentSegmentRuntimePilotCount: currentSegmentRuntimePilotCandidates.length,
+      productionSelectedSegmentCount: subtitleSegments.filter((segment) => (
+        getObstaclesInSegment(segment, productionSelectableCandidates).length > 0
+      )).length,
+      runtimePilotSelectedSegmentCount: subtitleSegments.filter((segment) => (
+        getObstaclesInSegment(segment, safeRuntimePilotSelectableCandidates).length > 0
+      )).length,
+      productionTotalSelectableCount: productionSelectableCandidates.length,
+      runtimePilotTotalSelectableCount: safeRuntimePilotSelectableCandidates.length,
+      currentSegmentProductionIds: currentSegmentProductionCandidates.map((obstacle) => obstacle.id),
+      currentSegmentRuntimePilotIds: currentSegmentRuntimePilotCandidates.map((obstacle) => obstacle.id),
+    };
+  } catch (error) {
+    console.warn('P0-4B-3B selection shadow comparison unavailable:', error?.message || error);
+    return emptyComparison;
+  }
+}
+
+function logRuntimePilotSelectionShadowComparison() {
+  const comparison = buildRuntimePilotSelectionShadowComparison();
+
+  console.info([
+    'P0-4B-3B selection shadow comparison:',
+    `current segment production selected: ${comparison.currentSegmentProductionCount}`,
+    `current segment runtime pilot selected: ${comparison.currentSegmentRuntimePilotCount}`,
+    `production selectable total: ${comparison.productionTotalSelectableCount}`,
+    `runtime pilot selectable total: ${comparison.runtimePilotTotalSelectableCount}`,
+    `production selected segment count: ${comparison.productionSelectedSegmentCount}`,
+    `runtime pilot selected segment count: ${comparison.runtimePilotSelectedSegmentCount}`,
+    `current segment production ids: ${comparison.currentSegmentProductionIds.join(', ')}`,
+    `current segment runtime pilot ids: ${comparison.currentSegmentRuntimePilotIds.join(', ')}`,
+  ].join('\n'));
+}
+
 async function loadVisualMapping() {
   visualMappingByObstacleId.clear();
 
@@ -1127,6 +1195,7 @@ async function initApp() {
     logNormalizedRuntimePilotObstacleCandidatesAvailable();
     logRuntimePilotShadowComparison();
     logRuntimePilotReadOnlySelectionCandidatesAvailable();
+    logRuntimePilotSelectionShadowComparison();
     return;
   } catch (error) {
     console.warn('Real episode data failed to load. Falling back to demo data.', error);
