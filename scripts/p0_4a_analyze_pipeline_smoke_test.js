@@ -14,16 +14,11 @@ const EPISODE_ID = 'tbbt-s12e01';
 const DEFAULT_SMOKE_START_INDEX = 12;
 const DEFAULT_SMOKE_END_INDEX = 16;
 const PROMPT_CONTRACT_VERSION = 'p0-analyze-prompt-contract-v1';
-const ANALYZER_VERSION = 'p0-4a-2a-ai-draft-smoke-v1';
+const SCHEMA_VERSION = 'p0-4a-obstacles-draft-smoke-v1';
+const ANALYZER_VERSION = 'p0-4a-2b-real-ai-draft-generation-v1';
+const SOURCE_ANALYZE_INPUT_PATH = 'output_text/drafts/p0_4a_analyze_input_pilot.json';
 const TYPE_ORDER = { vocabulary: 0, comprehension: 1 };
 const ALLOWED_TYPES = new Set(['vocabulary', 'comprehension']);
-const ALLOWED_DECISION_SOURCES = new Set([
-  'frozen_vocabulary_list',
-  'expression_knowledge_base',
-  'frequency_dictionary',
-  'ai_assisted',
-  'ai_comprehension',
-]);
 
 function ensureDir(dirPath) {
   fs.mkdirSync(dirPath, { recursive: true });
@@ -79,157 +74,89 @@ function getSmokeItems(analyzeInput, range) {
     && Number(item.subtitleIndex) <= range.end
   ));
 
-  const indexes = items.map((item) => Number(item.subtitleIndex));
   const expected = [];
   for (let index = range.start; index <= range.end; index += 1) expected.push(index);
-  if (indexes.length !== expected.length || indexes.some((value, index) => value !== expected[index])) {
-    throw new Error(`Smoke slice must contain subtitleIndex ${expected.join(', ')}; found ${indexes.join(', ')}.`);
+  const actual = items.map((item) => Number(item.subtitleIndex));
+
+  if (actual.length !== expected.length || actual.some((value, index) => value !== expected[index])) {
+    throw new Error(`Smoke slice must contain subtitleIndex ${expected.join(', ')}; found ${actual.join(', ')}.`);
   }
 
   return items;
 }
 
 function buildSmokeAnalyzeInput(analyzeInput, range) {
-  const items = getSmokeItems(analyzeInput, range);
   return {
-    ...analyzeInput,
+    schemaVersion: analyzeInput.schemaVersion,
+    episodeId: EPISODE_ID,
+    learnerLevel: analyzeInput.learnerLevel,
     analyzerVersion: ANALYZER_VERSION,
     smokeTest: true,
     runtimeMayConsume: false,
     smokeScope: {
-      sourceAnalyzeInputPath: 'output_text/drafts/p0_4a_analyze_input_pilot.json',
+      sourceAnalyzeInputPath: SOURCE_ANALYZE_INPUT_PATH,
       subtitleIndexStart: range.start,
       subtitleIndexEnd: range.end,
-      note: 'P0-4A-2A smoke test slice only. Runtime must not consume this output.',
+      note: 'Smoke test slice only. Runtime must not consume this output.',
     },
-    items: items.map((item) => ({
-      ...item,
-      analyzerVersion: ANALYZER_VERSION,
+    items: getSmokeItems(analyzeInput, range).map((item) => ({
+      subtitleIndex: Number(item.subtitleIndex),
+      startTime: item.startTime,
+      endTime: item.endTime,
+      source_en: item.source_en,
+      source_zh: item.source_zh,
+      learnerLevel: item.learnerLevel || analyzeInput.learnerLevel,
+      contextBefore: item.contextBefore || [],
+      contextAfter: item.contextAfter || [],
     })),
   };
 }
 
 function buildPrompt(smokeAnalyzeInput, model, range) {
   return {
-    role: 'P0-4A-2A offline Analyze Engine smoke-test draft generator',
+    role: 'P0-4A-2B real AI Analyze Engine smoke-test draft generator',
     instruction: [
-      'Return valid JSON only. Do not use markdown fences.',
-      `Generate draft Vocabulary Obstacles and Comprehension Obstacles for the provided subtitle items only: subtitleIndex ${range.start} through ${range.end}.`,
-      'This is a smoke test of the draft generation path, not final pilot generation and not quality tuning.',
-      'Follow the frozen contracts: P0 Product Positioning & Learning Philosophy Freeze; P0 Vocabulary Level Determination Contract Freeze; P0 Comprehension Obstacle Determination Contract Freeze; P0 Analyze Prompt Contract Freeze; P0-4A Pilot Asset Contract Freeze.',
-      'Respect the P0 philosophy: exam labels are entry points; real-world comprehension and usage difficulty decide obstacles.',
-      'Vocabulary authority order: frozen vocabulary lists, expression knowledge base, frequency dictionaries, AI assistance. AI recommendations remain draft and reviewable.',
-      'Comprehension obstacles are meaning-level bottlenecks where known words may still not produce immediate real meaning. Usefulness alone is not enough.',
-      'Choose minimal meaningful text boundaries from source_en whenever possible and deduplicate equivalent obstacles.',
-      'Forbidden: coordinates, visual markers, Qwen-VL calls, OCR, Runtime integration, subtitle JSON changes, existing obstacle JSON changes, frozen output generation, full-episode processing, non-JSON explanations.',
+      'Return exactly one valid JSON object and no markdown, prose, comments, or code fences.',
+      `Analyze only subtitleIndex ${range.start} through ${range.end} from the provided analyzeInput.items array.`,
+      'Generate draft vocabulary and comprehension obstacles only when they are real learner bottlenecks for the stated learnerLevel.',
+      'Use minimal meaningful text spans copied from source_en whenever possible.',
+      'Do not generate coordinates, marker visuals, OCR results, Qwen-VL output, Runtime data, frozen output, production obstacle JSON, or subtitle JSON.',
+      'Do not process any subtitles outside the selected smoke range.',
+      'If no obstacles are warranted, return an empty obstacles array.',
     ],
-    requiredOutput: {
-      schemaVersion: 'p0-4a-obstacles-draft-smoke-v1',
+    requiredJsonShape: {
+      obstacles: [
+        {
+          type: 'vocabulary or comprehension',
+          subtitleIndex: 'integer from selected range only',
+          text: 'non-empty English span from source_en when possible',
+          markerStart: 'optional integer character start in source_en',
+          markerEnd: 'optional integer character end in source_en',
+          reason: 'brief draft rationale',
+          vocabularyFields: 'optional fields such as word, lemma, partOfSpeech, sentenceMeaning, translation, difficultyLevel, difficultyEvidence',
+          comprehensionFields: 'optional fields such as phrase, literal, actual, grammar, explanationWhy, transferableUsage, comprehensionCategory',
+        },
+      ],
+    },
+    normalizationOwnedByScript: {
+      schemaVersion: SCHEMA_VERSION,
       smokeTest: true,
-      promptContractVersion: PROMPT_CONTRACT_VERSION,
       runtimeMayConsume: false,
+      promptContractVersion: PROMPT_CONTRACT_VERSION,
       reviewStatus: 'draft',
-      reviewDecisionForEveryObstacle: 'pending',
       episodeId: EPISODE_ID,
+      learnerLevel: smokeAnalyzeInput.learnerLevel,
       model,
       analyzerVersion: ANALYZER_VERSION,
-      generatedAt: 'ISO-8601 timestamp',
-      obstacles: `array for subtitleIndex ${range.start}-${range.end} only, sorted by subtitleIndex, markerStart, type with vocabulary before comprehension, text alphabetical order`,
-      obstacleIdFormat: 'tbbt-s12e01-obstacle-NNNNNN',
-    },
-    obstacleContract: {
-      allowedTypes: ['vocabulary', 'comprehension'],
-      requiredCommonFields: ['type', 'subtitleIndex', 'startTime', 'endTime', 'source_en', 'source_zh', 'text', 'decisionSource', 'confidence'],
-      optionalTextOffsets: ['markerStart', 'markerEnd'],
-      vocabularyFields: ['word', 'lemma', 'phonetic', 'partOfSpeech', 'sentenceMeaning', 'translation', 'difficultyLevel', 'difficultyEvidence'],
-      comprehensionFields: ['phrase', 'literal', 'actual', 'grammar', 'explanationWhy', 'transferableUsage', 'comprehensionCategory'],
+      generatedAt: 'script-owned',
+      sourceAnalyzeInputPath: SOURCE_ANALYZE_INPUT_PATH,
+      smokeScope: 'script-owned',
+      deterministicOrdering: 'script-owned',
+      deterministicObstacleIds: 'script-owned',
+      reviewDecision: 'pending',
     },
     analyzeInput: smokeAnalyzeInput,
   };
-}
-
-function extractJson(text) {
-  try {
-    return JSON.parse(text);
-  } catch (_) {
-    const match = text.match(/\{[\s\S]*\}/);
-    if (!match) throw new Error('AI response did not contain a JSON object.');
-    return JSON.parse(match[0]);
-  }
-}
-
-function deriveTextOffset(obstacle, field, fallback) {
-  if (Number.isFinite(Number(obstacle[field]))) return Number(obstacle[field]);
-  const source = String(obstacle.source_en || '');
-  const text = String(obstacle.text || obstacle.word || obstacle.phrase || '');
-  const start = source.indexOf(text);
-  if (start === -1) return fallback;
-  return field === 'markerEnd' ? start + text.length : start;
-}
-
-function normalizeObstacleDraft(parsed, smokeAnalyzeInput, model, range) {
-  const smokeItemsByIndex = new Map(smokeAnalyzeInput.items.map((item) => [Number(item.subtitleIndex), item]));
-  const obstacles = Array.isArray(parsed.obstacles) ? parsed.obstacles : [];
-
-  const output = {
-    schemaVersion: parsed.schemaVersion || 'p0-4a-obstacles-draft-smoke-v1',
-    smokeTest: true,
-    runtimeMayConsume: false,
-    promptContractVersion: PROMPT_CONTRACT_VERSION,
-    reviewStatus: 'draft',
-    episodeId: EPISODE_ID,
-    learnerLevel: smokeAnalyzeInput.learnerLevel,
-    model,
-    analyzerVersion: ANALYZER_VERSION,
-    generatedAt: new Date().toISOString(),
-    sourceAnalyzeInputPath: 'output_text/drafts/p0_4a_analyze_input_pilot.json',
-    smokeScope: {
-      subtitleIndexStart: range.start,
-      subtitleIndexEnd: range.end,
-    },
-    obstacles: [],
-  };
-
-  output.obstacles = obstacles
-    .filter((obstacle) => ALLOWED_TYPES.has(obstacle.type))
-    .filter((obstacle) => smokeItemsByIndex.has(Number(obstacle.subtitleIndex)))
-    .map((obstacle) => {
-      const subtitle = smokeItemsByIndex.get(Number(obstacle.subtitleIndex));
-      const withSubtitle = {
-        ...obstacle,
-        subtitleIndex: Number(obstacle.subtitleIndex),
-        startTime: subtitle.startTime,
-        endTime: subtitle.endTime,
-        source_en: subtitle.source_en,
-        source_zh: subtitle.source_zh,
-        text: String(obstacle.text || obstacle.word || obstacle.phrase || '').trim(),
-        reviewDecision: 'pending',
-      };
-      const markerStart = deriveTextOffset(withSubtitle, 'markerStart', 0);
-      const markerEnd = deriveTextOffset(withSubtitle, 'markerEnd', markerStart + withSubtitle.text.length);
-      return {
-        ...withSubtitle,
-        markerStart,
-        markerEnd,
-      };
-    })
-    .filter((obstacle) => obstacle.text.length > 0)
-    .sort((a, b) => (
-      a.subtitleIndex - b.subtitleIndex
-      || Number(a.markerStart) - Number(b.markerStart)
-      || TYPE_ORDER[a.type] - TYPE_ORDER[b.type]
-      || String(a.text).localeCompare(String(b.text), 'en')
-    ))
-    .map((obstacle, index) => ({
-      ...obstacle,
-      obstacleId: `${EPISODE_ID}-obstacle-${String(index + 1).padStart(6, '0')}`,
-      decisionSource: ALLOWED_DECISION_SOURCES.has(obstacle.decisionSource)
-        ? obstacle.decisionSource
-        : (obstacle.type === 'comprehension' ? 'ai_comprehension' : 'ai_assisted'),
-      reviewDecision: 'pending',
-    }));
-
-  return output;
 }
 
 async function callAi(prompt, config) {
@@ -242,60 +169,169 @@ async function callAi(prompt, config) {
     body: JSON.stringify({
       model: config.model,
       temperature: 0,
+      response_format: { type: 'json_object' },
       messages: [
-        { role: 'system', content: 'You are a deterministic JSON-only Analyze Engine smoke-test draft generator.' },
+        {
+          role: 'system',
+          content: 'You are a deterministic JSON-only subtitle analysis engine. Return valid JSON only.',
+        },
         { role: 'user', content: JSON.stringify(prompt, null, 2) },
       ],
     }),
   });
 
-  const raw = await response.text();
-  const envelope = JSON.parse(raw);
+  const rawEnvelope = await response.text();
+  let envelope;
+  try {
+    envelope = JSON.parse(rawEnvelope);
+  } catch (_) {
+    envelope = { nonJsonEnvelope: rawEnvelope };
+  }
+
   if (!response.ok) {
-    const error = new Error(`OpenAI API error ${response.status}: ${raw}`);
+    const error = new Error(`OpenAI API error ${response.status}: ${rawEnvelope}`);
     error.responseEnvelope = envelope;
     throw error;
   }
+
   return {
     envelope,
     content: envelope.choices?.[0]?.message?.content || '',
   };
 }
 
+function parseAiJson(rawResponse) {
+  return JSON.parse(rawResponse);
+}
+
+function isValidInteger(value) {
+  return Number.isInteger(value) || (typeof value === 'string' && /^-?\d+$/.test(value));
+}
+
+function safeText(obstacle) {
+  return String(obstacle.text || obstacle.word || obstacle.phrase || '').trim();
+}
+
+function normalizeMarkers(obstacle, sourceEn, text) {
+  const sourceLength = sourceEn.length;
+  const aiStart = isValidInteger(obstacle.markerStart) ? Number(obstacle.markerStart) : null;
+  const aiEnd = isValidInteger(obstacle.markerEnd) ? Number(obstacle.markerEnd) : null;
+
+  if (
+    aiStart !== null
+    && aiEnd !== null
+    && aiStart >= 0
+    && aiEnd >= aiStart
+    && aiEnd <= sourceLength
+  ) {
+    return { markerStart: aiStart, markerEnd: aiEnd };
+  }
+
+  const derivedStart = sourceEn.indexOf(text);
+  if (derivedStart >= 0) {
+    return { markerStart: derivedStart, markerEnd: derivedStart + text.length };
+  }
+
+  return { markerStart: 0, markerEnd: Math.min(text.length, sourceLength) };
+}
+
+function normalizeObstacleDraft(parsed, smokeAnalyzeInput, model, range) {
+  const smokeItemsByIndex = new Map(smokeAnalyzeInput.items.map((item) => [Number(item.subtitleIndex), item]));
+  const aiObstacles = Array.isArray(parsed.obstacles) ? parsed.obstacles : [];
+
+  const obstacles = aiObstacles
+    .filter((obstacle) => ALLOWED_TYPES.has(obstacle.type))
+    .filter((obstacle) => smokeItemsByIndex.has(Number(obstacle.subtitleIndex)))
+    .map((obstacle) => {
+      const subtitleIndex = Number(obstacle.subtitleIndex);
+      const subtitle = smokeItemsByIndex.get(subtitleIndex);
+      const text = safeText(obstacle);
+      if (!text) return null;
+
+      const sourceEn = String(subtitle.source_en || '');
+      const markers = normalizeMarkers(obstacle, sourceEn, text);
+
+      return {
+        ...obstacle,
+        obstacleId: undefined,
+        type: obstacle.type,
+        subtitleIndex,
+        startTime: subtitle.startTime,
+        endTime: subtitle.endTime,
+        source_en: subtitle.source_en,
+        source_zh: subtitle.source_zh,
+        text,
+        markerStart: markers.markerStart,
+        markerEnd: markers.markerEnd,
+        reviewDecision: 'pending',
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => (
+      a.subtitleIndex - b.subtitleIndex
+      || a.markerStart - b.markerStart
+      || TYPE_ORDER[a.type] - TYPE_ORDER[b.type]
+      || a.text.localeCompare(b.text, 'en')
+    ))
+    .map((obstacle, index) => ({
+      ...obstacle,
+      obstacleId: `${EPISODE_ID}-obstacle-${String(index + 1).padStart(6, '0')}`,
+      reviewDecision: 'pending',
+    }));
+
+  return {
+    schemaVersion: SCHEMA_VERSION,
+    smokeTest: true,
+    runtimeMayConsume: false,
+    promptContractVersion: PROMPT_CONTRACT_VERSION,
+    reviewStatus: 'draft',
+    episodeId: EPISODE_ID,
+    learnerLevel: smokeAnalyzeInput.learnerLevel,
+    model,
+    analyzerVersion: ANALYZER_VERSION,
+    generatedAt: new Date().toISOString(),
+    sourceAnalyzeInputPath: SOURCE_ANALYZE_INPUT_PATH,
+    smokeScope: {
+      subtitleIndexStart: range.start,
+      subtitleIndexEnd: range.end,
+    },
+    obstacles,
+  };
+}
+
 async function main() {
   const range = parseSmokeRange(process.argv.slice(2));
   const config = getAiConfig();
+
   if (!config) {
-    console.log('P0-4A-2A smoke test skipped: set OPENAI_API_KEY and OPENAI_MODEL (or P0_4A_ANALYZE_MODEL) to call AI. No draft obstacles were generated.');
+    console.log('P0-4A-2B smoke test skipped: missing AI config. Set OPENAI_API_KEY and OPENAI_MODEL (or P0_4A_ANALYZE_MODEL) to call the real OpenAI API. No fake obstacles generated; no draft output written.');
     return;
   }
-
-  console.log('API key detected.');
-  console.log(`Using model: ${config.model}`);
 
   ensureDir(DEBUG_DIR);
 
   const analyzeInput = readJson(ANALYZE_INPUT_PATH);
   const smokeAnalyzeInput = buildSmokeAnalyzeInput(analyzeInput, range);
   const prompt = buildPrompt(smokeAnalyzeInput, config.model, range);
-  writeJson(path.join(DEBUG_DIR, 'prompt.json'), prompt);
 
   let rawResponse = '';
   try {
     const aiResponse = await callAi(prompt, config);
     rawResponse = aiResponse.content;
+
     writeJson(path.join(DEBUG_DIR, 'response_envelope.json'), aiResponse.envelope);
     fs.writeFileSync(path.join(DEBUG_DIR, 'raw_response.txt'), rawResponse, 'utf8');
-    const parsed = extractJson(rawResponse);
-    writeJson(path.join(DEBUG_DIR, 'parsed_response.json'), parsed);
+
+    const parsed = parseAiJson(rawResponse);
     const normalized = normalizeObstacleDraft(parsed, smokeAnalyzeInput, config.model, range);
     writeJson(SMOKE_OUTPUT_PATH, normalized);
-    console.log(`Wrote smoke draft obstacles: ${path.relative(REPO_ROOT, SMOKE_OUTPUT_PATH)} (${normalized.obstacles.length} obstacles)`);
+
+    console.log(`Wrote real AI smoke draft obstacles: ${path.relative(REPO_ROOT, SMOKE_OUTPUT_PATH)} (${normalized.obstacles.length} obstacles).`);
   } catch (error) {
     if (error.responseEnvelope) writeJson(path.join(DEBUG_DIR, 'response_envelope.json'), error.responseEnvelope);
     if (rawResponse) fs.writeFileSync(path.join(DEBUG_DIR, 'raw_response.txt'), rawResponse, 'utf8');
     fs.writeFileSync(path.join(DEBUG_DIR, 'parse_error.txt'), `${error.stack || error.message}\n`, 'utf8');
-    console.error('P0-4A-2A smoke test failed. Raw response and parse_error.txt were preserved; no partial smoke draft should be used.');
+    console.error('P0-4A-2B smoke test failed. Debug artifacts were preserved; no partial obstacle output was written.');
     process.exitCode = 1;
   }
 }
