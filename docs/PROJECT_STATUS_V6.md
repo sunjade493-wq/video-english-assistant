@@ -1086,3 +1086,93 @@ Explicit non-goals:
 Merge gate:
 
 Yes, merge only if only `docs/PROJECT_STATUS_V6.md` changed, no code files changed, no `output_text` files changed, the contract clearly states default Production Flow remains unchanged, `runtimePilot=1` is documented as future developer-only opt-in, and fail-closed fallback to Production Flow is documented.
+
+## P0-4B-5 Runtime Pilot Controlled Opt-in Polish / Contract Freeze
+
+Status: FROZEN
+
+Date: 2026-06-23
+
+Source tag: `p0-4b-4-runtime-pilot-controlled-opt-in-contract`
+
+P0-4B-5 freezes the verified Runtime Pilot controlled opt-in behavior and isolation rules before any Runtime Pilot data scope expansion. Runtime Pilot is not default Production, is not enabled for normal users, and may drive the existing UI only under explicit developer opt-in.
+
+Frozen default URL behavior:
+
+```text
+http://127.0.0.1:5500/
+```
+
+The default URL must use Production Flow.
+
+Frozen default Production Flow contract:
+
+- `activeDataSource` must be `real`.
+- Obstacle total must be the Production count: 48.
+- Progress total must be 48.
+- Progress key scope must be `production`.
+- Runtime Pilot must not take over the UI.
+
+Frozen developer opt-in URL behavior:
+
+```text
+http://127.0.0.1:5500/?runtimePilot=1
+```
+
+The developer opt-in URL may use Runtime Pilot Flow.
+
+Frozen Runtime Pilot Flow contract:
+
+- `activeDataSource` must be `runtime-pilot`.
+- Obstacle total must be the Runtime Pilot count for the current pilot: 10.
+- Progress total must be 10 for the current pilot.
+- Progress key scope must be `runtime-pilot`.
+- Runtime Pilot may drive the existing UI only under explicit opt-in.
+- No visible UI toggle is introduced.
+
+Frozen exit and isolation behavior:
+
+- Removing `?runtimePilot=1` and refreshing must restore Production Flow.
+- Runtime Pilot progress must not affect Production progress.
+- Runtime Pilot `hiddenObstacleIds` must not affect Production `hiddenObstacleIds`.
+- Runtime Pilot `dismissedObstacleHistory` must not affect Production `dismissedObstacleHistory`.
+- Runtime Pilot localStorage/progress key must remain separate from the Production localStorage/progress key.
+- `activeDataSource` must return to `real` after exiting opt-in.
+
+Frozen fail-closed rule:
+
+- If Runtime Pilot load, validation, normalization, candidate preparation, or activation fails, Production Flow must remain active.
+- Failure must not blank the UI.
+- Failure must not overwrite Production obstacles.
+- Failure must not mutate source JSON.
+- Failure must not require clearing cache or localStorage to return to Production Flow.
+
+Frozen Runtime read-only boundaries:
+
+- No AI/OCR/Qwen/Qwen-VL runtime calls.
+- No file writes.
+- No modification to `output_text` files.
+- No modification to production obstacle JSON.
+- No modification to subtitle JSON.
+- No modification to visual mapping JSON.
+
+Explicit non-goals:
+
+- Do not expand Runtime Pilot obstacle count in this task.
+- Do not process the full episode in this task.
+- Do not promote Runtime Pilot to default Production.
+- Do not enable Runtime Pilot for normal users.
+- Do not introduce a visible user-facing toggle.
+- Do not redesign UI.
+- Do not change marker rendering rules.
+- Do not remove existing P0-4B probe logs yet.
+
+Future allowed direction after this freeze:
+
+- Controlled expansion of Runtime Pilot data scope may begin only after this freeze.
+- Runtime Pilot expansion must keep default Production Flow unchanged.
+- Any future Runtime Pilot full-episode expansion must preserve progress/localStorage isolation and fail-closed fallback.
+
+Merge gate:
+
+Yes, merge only if only `docs/PROJECT_STATUS_V6.md` changed, no code files changed, no `output_text` files changed, the freeze documents default Production Flow as 48 obstacles, the freeze documents developer opt-in Runtime Pilot Flow as 10 obstacles for the current pilot, the freeze documents exit/isolation behavior, the freeze documents separate progress/localStorage scope, the freeze documents fail-closed fallback to Production Flow, and the freeze explicitly says Runtime Pilot is not default and not enabled for normal users.
