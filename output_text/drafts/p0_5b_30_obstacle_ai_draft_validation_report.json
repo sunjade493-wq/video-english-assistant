@@ -1,0 +1,1670 @@
+{
+  "schemaVersion": "p0-5b-30-obstacle-draft-validation-report.v1",
+  "stage": "P0-5B-5",
+  "inputDraftPath": "output_text/drafts/p0_5b_30_obstacle_ai_draft.json",
+  "inputAnalyzePath": "output_text/drafts/p0_5b_30_obstacle_analyze_input.json",
+  "status": "failed",
+  "summary": {
+    "targetObstacleCount": 30,
+    "actualObstacleCount": 30,
+    "vocabularyCount": 21,
+    "comprehensionCount": 9,
+    "subtitleCoverageCount": 27,
+    "invalidCount": 34,
+    "warningCount": 0
+  },
+  "checks": [
+    {
+      "name": "top-level schemaVersion is expected draft schema",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "top-level reviewStatus is draft",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "top-level runtimeMayConsume is false",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "top-level targetObstacleCount is 30",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacles is an array",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle count is within target and non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "no runtimeMayConsume true anywhere recursively",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "no frozen reviewStatus or approved/rejected reviewDecision anywhere",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000001 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000001 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000001 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000001 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000001 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000001 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000001 required fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000001 partOfSpeech uses frozen display format",
+      "status": "failed",
+      "details": [
+        "Unsupported partOfSpeech adverb"
+      ]
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000001 sentenceMeaning is concise",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000002 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000002 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000002 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000002 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000002 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000002 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000002 required fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000002 partOfSpeech uses frozen display format",
+      "status": "failed",
+      "details": [
+        "Unsupported partOfSpeech noun"
+      ]
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000002 sentenceMeaning is concise",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000003 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000003 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000003 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000003 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000003 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000003 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000003 required fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000003 partOfSpeech uses frozen display format",
+      "status": "failed",
+      "details": [
+        "Unsupported partOfSpeech adjective"
+      ]
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000003 sentenceMeaning is concise",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000004 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000004 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000004 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000004 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000004 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000004 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000004 required fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000004 partOfSpeech uses frozen display format",
+      "status": "failed",
+      "details": [
+        "Unsupported partOfSpeech proper noun"
+      ]
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000004 sentenceMeaning is concise",
+      "status": "failed",
+      "details": [
+        "sentenceMeaning is too long (0 Chinese chars, 89 total chars)"
+      ]
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000005 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000005 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000005 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000005 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000005 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000005 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000005 required fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000005 partOfSpeech uses frozen display format",
+      "status": "failed",
+      "details": [
+        "Unsupported partOfSpeech verb"
+      ]
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000005 sentenceMeaning is concise",
+      "status": "failed",
+      "details": [
+        "sentenceMeaning is too long (0 Chinese chars, 85 total chars)"
+      ]
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000006 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000006 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000006 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000006 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000006 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000006 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000006 required fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000006 partOfSpeech uses frozen display format",
+      "status": "failed",
+      "details": [
+        "Unsupported partOfSpeech noun"
+      ]
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000006 sentenceMeaning is concise",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000007 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000007 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000007 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000007 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000007 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000007 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000007 has a title field",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000007 explanation fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000007 explanation fields are not placeholders",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000008 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000008 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000008 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000008 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000008 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000008 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000008 required fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000008 partOfSpeech uses frozen display format",
+      "status": "failed",
+      "details": [
+        "Unsupported partOfSpeech adverb"
+      ]
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000008 sentenceMeaning is concise",
+      "status": "failed",
+      "details": [
+        "sentenceMeaning is too long (0 Chinese chars, 85 total chars)"
+      ]
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000009 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000009 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000009 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000009 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000009 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000009 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000009 required fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000009 partOfSpeech uses frozen display format",
+      "status": "failed",
+      "details": [
+        "Unsupported partOfSpeech adjective"
+      ]
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000009 sentenceMeaning is concise",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000010 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000010 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000010 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000010 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000010 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000010 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000010 required fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000010 partOfSpeech uses frozen display format",
+      "status": "failed",
+      "details": [
+        "Unsupported partOfSpeech noun"
+      ]
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000010 sentenceMeaning is concise",
+      "status": "failed",
+      "details": [
+        "sentenceMeaning is too long (0 Chinese chars, 95 total chars)"
+      ]
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000011 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000011 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000011 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000011 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000011 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000011 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000011 has a title field",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000011 explanation fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000011 explanation fields are not placeholders",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000012 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000012 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000012 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000012 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000012 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000012 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000012 required fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000012 partOfSpeech uses frozen display format",
+      "status": "failed",
+      "details": [
+        "Unsupported partOfSpeech noun"
+      ]
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000012 sentenceMeaning is concise",
+      "status": "failed",
+      "details": [
+        "sentenceMeaning is too long (0 Chinese chars, 90 total chars)"
+      ]
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000013 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000013 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000013 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000013 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000013 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000013 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000013 has a title field",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000013 explanation fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000013 explanation fields are not placeholders",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000014 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000014 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000014 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000014 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000014 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000014 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000014 required fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000014 partOfSpeech uses frozen display format",
+      "status": "failed",
+      "details": [
+        "Unsupported partOfSpeech noun"
+      ]
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000014 sentenceMeaning is concise",
+      "status": "failed",
+      "details": [
+        "sentenceMeaning is too long (0 Chinese chars, 134 total chars)"
+      ]
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000015 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000015 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000015 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000015 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000015 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000015 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000015 required fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000015 partOfSpeech uses frozen display format",
+      "status": "failed",
+      "details": [
+        "Unsupported partOfSpeech noun"
+      ]
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000015 sentenceMeaning is concise",
+      "status": "failed",
+      "details": [
+        "sentenceMeaning is too long (0 Chinese chars, 89 total chars)"
+      ]
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000016 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000016 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000016 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000016 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000016 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000016 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000016 has a title field",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000016 explanation fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000016 explanation fields are not placeholders",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000017 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000017 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000017 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000017 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000017 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000017 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000017 required fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000017 partOfSpeech uses frozen display format",
+      "status": "failed",
+      "details": [
+        "Unsupported partOfSpeech adjective"
+      ]
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000017 sentenceMeaning is concise",
+      "status": "failed",
+      "details": [
+        "sentenceMeaning is too long (0 Chinese chars, 81 total chars)"
+      ]
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000018 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000018 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000018 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000018 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000018 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000018 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000018 required fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000018 partOfSpeech uses frozen display format",
+      "status": "failed",
+      "details": [
+        "Unsupported partOfSpeech verb"
+      ]
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000018 sentenceMeaning is concise",
+      "status": "failed",
+      "details": [
+        "sentenceMeaning is too long (0 Chinese chars, 111 total chars)"
+      ]
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000019 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000019 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000019 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000019 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000019 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000019 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000019 required fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000019 partOfSpeech uses frozen display format",
+      "status": "failed",
+      "details": [
+        "Unsupported partOfSpeech noun"
+      ]
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000019 sentenceMeaning is concise",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000020 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000020 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000020 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000020 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000020 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000020 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000020 has a title field",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000020 explanation fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000020 explanation fields are not placeholders",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000021 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000021 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000021 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000021 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000021 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000021 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000021 has a title field",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000021 explanation fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000021 explanation fields are not placeholders",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000022 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000022 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000022 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000022 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000022 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000022 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000022 required fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000022 partOfSpeech uses frozen display format",
+      "status": "failed",
+      "details": [
+        "Unsupported partOfSpeech adjective"
+      ]
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000022 sentenceMeaning is concise",
+      "status": "failed",
+      "details": [
+        "sentenceMeaning is too long (0 Chinese chars, 93 total chars)"
+      ]
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000023 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000023 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000023 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000023 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000023 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000023 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000023 required fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000023 partOfSpeech uses frozen display format",
+      "status": "failed",
+      "details": [
+        "Unsupported partOfSpeech noun"
+      ]
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000023 sentenceMeaning is concise",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000024 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000024 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000024 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000024 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000024 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000024 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000024 required fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000024 partOfSpeech uses frozen display format",
+      "status": "failed",
+      "details": [
+        "Unsupported partOfSpeech verb"
+      ]
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000024 sentenceMeaning is concise",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000025 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000025 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000025 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000025 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000025 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000025 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000025 required fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000025 partOfSpeech uses frozen display format",
+      "status": "failed",
+      "details": [
+        "Unsupported partOfSpeech noun"
+      ]
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000025 sentenceMeaning is concise",
+      "status": "failed",
+      "details": [
+        "sentenceMeaning is too long (0 Chinese chars, 108 total chars)"
+      ]
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000026 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000026 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000026 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000026 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000026 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000026 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000026 required fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000026 partOfSpeech uses frozen display format",
+      "status": "failed",
+      "details": [
+        "Unsupported partOfSpeech noun"
+      ]
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000026 sentenceMeaning is concise",
+      "status": "failed",
+      "details": [
+        "sentenceMeaning is too long (0 Chinese chars, 106 total chars)"
+      ]
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000027 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000027 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000027 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000027 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000027 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000027 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000027 has a title field",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000027 explanation fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000027 explanation fields are not placeholders",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000028 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000028 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000028 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000028 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000028 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000028 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000028 has a title field",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000028 explanation fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000028 explanation fields are not placeholders",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000029 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000029 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000029 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000029 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000029 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000029 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000029 required fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000029 partOfSpeech uses frozen display format",
+      "status": "failed",
+      "details": [
+        "Unsupported partOfSpeech noun"
+      ]
+    },
+    {
+      "name": "vocabulary tbbt-s12e01-p0-5b-obstacle-000029 sentenceMeaning is concise",
+      "status": "failed",
+      "details": [
+        "sentenceMeaning is too long (0 Chinese chars, 122 total chars)"
+      ]
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000030 allowed type",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000030 draft review state",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000030 source matches analyze input",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000030 marker span is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000030 confidence is valid",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacle tbbt-s12e01-p0-5b-obstacle-000030 decisionSource is non-empty",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000030 has a title field",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000030 explanation fields are present",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "comprehension tbbt-s12e01-p0-5b-obstacle-000030 explanation fields are not placeholders",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "obstacleId sequence is stable and gapless",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "duplicate obstacleId is forbidden",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "duplicate learning item warning",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "same subtitle nested comprehension warning",
+      "status": "passed",
+      "details": []
+    }
+  ],
+  "invalidObstacles": [
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000001",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000001 partOfSpeech uses frozen display format",
+      "detail": "Unsupported partOfSpeech adverb"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000002",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000002 partOfSpeech uses frozen display format",
+      "detail": "Unsupported partOfSpeech noun"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000003",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000003 partOfSpeech uses frozen display format",
+      "detail": "Unsupported partOfSpeech adjective"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000004",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000004 partOfSpeech uses frozen display format",
+      "detail": "Unsupported partOfSpeech proper noun"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000004",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000004 sentenceMeaning is concise",
+      "detail": "sentenceMeaning is too long (0 Chinese chars, 89 total chars)"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000005",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000005 partOfSpeech uses frozen display format",
+      "detail": "Unsupported partOfSpeech verb"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000005",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000005 sentenceMeaning is concise",
+      "detail": "sentenceMeaning is too long (0 Chinese chars, 85 total chars)"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000006",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000006 partOfSpeech uses frozen display format",
+      "detail": "Unsupported partOfSpeech noun"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000008",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000008 partOfSpeech uses frozen display format",
+      "detail": "Unsupported partOfSpeech adverb"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000008",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000008 sentenceMeaning is concise",
+      "detail": "sentenceMeaning is too long (0 Chinese chars, 85 total chars)"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000009",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000009 partOfSpeech uses frozen display format",
+      "detail": "Unsupported partOfSpeech adjective"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000010",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000010 partOfSpeech uses frozen display format",
+      "detail": "Unsupported partOfSpeech noun"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000010",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000010 sentenceMeaning is concise",
+      "detail": "sentenceMeaning is too long (0 Chinese chars, 95 total chars)"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000012",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000012 partOfSpeech uses frozen display format",
+      "detail": "Unsupported partOfSpeech noun"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000012",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000012 sentenceMeaning is concise",
+      "detail": "sentenceMeaning is too long (0 Chinese chars, 90 total chars)"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000014",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000014 partOfSpeech uses frozen display format",
+      "detail": "Unsupported partOfSpeech noun"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000014",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000014 sentenceMeaning is concise",
+      "detail": "sentenceMeaning is too long (0 Chinese chars, 134 total chars)"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000015",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000015 partOfSpeech uses frozen display format",
+      "detail": "Unsupported partOfSpeech noun"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000015",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000015 sentenceMeaning is concise",
+      "detail": "sentenceMeaning is too long (0 Chinese chars, 89 total chars)"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000017",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000017 partOfSpeech uses frozen display format",
+      "detail": "Unsupported partOfSpeech adjective"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000017",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000017 sentenceMeaning is concise",
+      "detail": "sentenceMeaning is too long (0 Chinese chars, 81 total chars)"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000018",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000018 partOfSpeech uses frozen display format",
+      "detail": "Unsupported partOfSpeech verb"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000018",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000018 sentenceMeaning is concise",
+      "detail": "sentenceMeaning is too long (0 Chinese chars, 111 total chars)"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000019",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000019 partOfSpeech uses frozen display format",
+      "detail": "Unsupported partOfSpeech noun"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000022",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000022 partOfSpeech uses frozen display format",
+      "detail": "Unsupported partOfSpeech adjective"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000022",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000022 sentenceMeaning is concise",
+      "detail": "sentenceMeaning is too long (0 Chinese chars, 93 total chars)"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000023",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000023 partOfSpeech uses frozen display format",
+      "detail": "Unsupported partOfSpeech noun"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000024",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000024 partOfSpeech uses frozen display format",
+      "detail": "Unsupported partOfSpeech verb"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000025",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000025 partOfSpeech uses frozen display format",
+      "detail": "Unsupported partOfSpeech noun"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000025",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000025 sentenceMeaning is concise",
+      "detail": "sentenceMeaning is too long (0 Chinese chars, 108 total chars)"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000026",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000026 partOfSpeech uses frozen display format",
+      "detail": "Unsupported partOfSpeech noun"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000026",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000026 sentenceMeaning is concise",
+      "detail": "sentenceMeaning is too long (0 Chinese chars, 106 total chars)"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000029",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000029 partOfSpeech uses frozen display format",
+      "detail": "Unsupported partOfSpeech noun"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000029",
+      "check": "vocabulary tbbt-s12e01-p0-5b-obstacle-000029 sentenceMeaning is concise",
+      "detail": "sentenceMeaning is too long (0 Chinese chars, 122 total chars)"
+    }
+  ],
+  "warnings": [],
+  "nextStageAllowed": false
+}
