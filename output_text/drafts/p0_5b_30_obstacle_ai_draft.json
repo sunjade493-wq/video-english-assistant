@@ -1,0 +1,894 @@
+{
+  "schemaVersion": "p0-5b-30-obstacle-ai-draft.v1",
+  "episodeId": "tbbt-s12e01",
+  "learnerLevel": "CET-4",
+  "targetObstacleCount": 30,
+  "reviewStatus": "draft",
+  "runtimeMayConsume": false,
+  "sourceInputPath": "output_text/drafts/p0_5b_30_obstacle_analyze_input.json",
+  "generator": {
+    "stage": "P0-5B-4",
+    "model": "qwen-plus",
+    "temperature": 0
+  },
+  "obstacles": [
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000001",
+      "type": "vocabulary",
+      "subtitleIndex": 0,
+      "startTime": "2.0",
+      "endTime": "6.0",
+      "source_en": "Previously on The Big Bang Theory...",
+      "source_zh": "《生活大爆炸》前情提要",
+      "text": "Previously",
+      "markerStart": 0,
+      "markerEnd": 10,
+      "decisionSource": "vocabulary-level-analysis",
+      "confidence": 0.98,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "word": "Previously",
+      "lemma": "previously",
+      "phonetic": "/ˈpriːviəsli/",
+      "partOfSpeech": "adverb",
+      "sentenceMeaning": "used to introduce a summary of events that happened before the current scene",
+      "translation": "先前，此前",
+      "contextBefore": [],
+      "contextAfter": [
+        "Can you believe our little lamb is finally getting married?",
+        "He can't believe it."
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000002",
+      "type": "vocabulary",
+      "subtitleIndex": 1,
+      "startTime": "6.0",
+      "endTime": "10.0",
+      "source_en": "Can you believe our little lamb is finally getting married?",
+      "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+      "text": "lamb",
+      "markerStart": 27,
+      "markerEnd": 31,
+      "decisionSource": "vocabulary-level-analysis",
+      "confidence": 0.97,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "word": "lamb",
+      "lemma": "lamb",
+      "phonetic": "/læm/",
+      "partOfSpeech": "noun",
+      "sentenceMeaning": "a gentle, innocent person — used affectionately or ironically here for an adult",
+      "translation": "羔羊；（喻）天真无邪的人",
+      "contextBefore": [
+        "Previously on The Big Bang Theory..."
+      ],
+      "contextAfter": [
+        "He can't believe it.",
+        "And neither can I."
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000003",
+      "type": "vocabulary",
+      "subtitleIndex": 5,
+      "startTime": "20.5",
+      "endTime": "23.0",
+      "source_en": "Then by the power vested in me...",
+      "source_zh": "我以\"连你都能证婚网\"",
+      "text": "vested",
+      "markerStart": 18,
+      "markerEnd": 24,
+      "decisionSource": "vocabulary-level-analysis",
+      "confidence": 0.96,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "word": "vested",
+      "lemma": "vest",
+      "phonetic": "/vest/",
+      "partOfSpeech": "adjective",
+      "sentenceMeaning": "formally given or assigned (a legal right or authority)",
+      "translation": "被授予的，被赋予的",
+      "contextBefore": [
+        "And neither can I.",
+        "Hi, Dad. How you doing?"
+      ],
+      "contextAfter": [
+        "by EvenYouCanPerformWeddings.Com...",
+        "...I now pronounce you husband and wife."
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000004",
+      "type": "vocabulary",
+      "subtitleIndex": 6,
+      "startTime": "23.0",
+      "endTime": "28.5",
+      "source_en": "by EvenYouCanPerformWeddings.Com...",
+      "source_zh": "所赋予我的合法权利",
+      "text": "EvenYouCanPerformWeddings.Com",
+      "markerStart": 3,
+      "markerEnd": 32,
+      "decisionSource": "vocabulary-level-analysis",
+      "confidence": 0.95,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "word": "EvenYouCanPerformWeddings.Com",
+      "lemma": "evenyoucanperformweddings.com",
+      "phonetic": "/ˌiːvən ju kæn pərˈfɔːm ˈwɛdɪŋz dɒt kɒm/",
+      "partOfSpeech": "proper noun",
+      "sentenceMeaning": "a fictional satirical website name implying absurdly low barriers to officiating weddings",
+      "translation": "连你都能证婚网（虚构网站名）",
+      "contextBefore": [
+        "Hi, Dad. How you doing?",
+        "Then by the power vested in me..."
+      ],
+      "contextAfter": [
+        "...I now pronounce you husband and wife.",
+        "You may kiss the bride."
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000005",
+      "type": "vocabulary",
+      "subtitleIndex": 7,
+      "startTime": "28.5",
+      "endTime": "30.5",
+      "source_en": "...I now pronounce you husband and wife.",
+      "source_zh": "我现在宣布你们正式结为合法夫妻",
+      "text": "pronounce",
+      "markerStart": 9,
+      "markerEnd": 18,
+      "decisionSource": "vocabulary-level-analysis",
+      "confidence": 0.99,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "word": "pronounce",
+      "lemma": "pronounce",
+      "phonetic": "/prəˈnaʊns/",
+      "partOfSpeech": "verb",
+      "sentenceMeaning": "to officially declare something formally, especially in a legal or ceremonial context",
+      "translation": "宣布，宣告",
+      "contextBefore": [
+        "Then by the power vested in me...",
+        "by EvenYouCanPerformWeddings.Com..."
+      ],
+      "contextAfter": [
+        "You may kiss the bride.",
+        "and now..."
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000006",
+      "type": "vocabulary",
+      "subtitleIndex": 8,
+      "startTime": "30.5",
+      "endTime": "36.5",
+      "source_en": "You may kiss the bride.",
+      "source_zh": "你可以吻新娘了",
+      "text": "bride",
+      "markerStart": 17,
+      "markerEnd": 22,
+      "decisionSource": "vocabulary-level-analysis",
+      "confidence": 0.98,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "word": "bride",
+      "lemma": "bride",
+      "phonetic": "/braɪd/",
+      "partOfSpeech": "noun",
+      "sentenceMeaning": "a woman who is about to be married or has just been married",
+      "translation": "新娘",
+      "contextBefore": [
+        "by EvenYouCanPerformWeddings.Com...",
+        "...I now pronounce you husband and wife."
+      ],
+      "contextAfter": [
+        "and now...",
+        "Good morning, wife."
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000007",
+      "type": "comprehension",
+      "subtitleIndex": 9,
+      "startTime": "36.5",
+      "endTime": "40.5",
+      "source_en": "and now...",
+      "source_zh": "时至今日",
+      "text": "and now...",
+      "markerStart": 0,
+      "markerEnd": 10,
+      "decisionSource": "comprehension-barrier-analysis",
+      "confidence": 0.94,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "prototype": "temporal transition marker with ellipsis",
+      "literal": "and at this present moment...",
+      "actual": "a dramatic pause signaling narrative shift from wedding ceremony to newlywed domestic life",
+      "grammar": "elliptical clause functioning as discourse connector, not syntactically complete sentence",
+      "contextBefore": [
+        "...I now pronounce you husband and wife.",
+        "You may kiss the bride."
+      ],
+      "contextAfter": [
+        "Good morning, wife.",
+        "Good morning, husband."
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000008",
+      "type": "vocabulary",
+      "subtitleIndex": 12,
+      "startTime": "47.5",
+      "endTime": "49.5",
+      "source_en": "I can't believe we're actually married.",
+      "source_zh": "真不敢相信我们真的结婚了",
+      "text": "actually",
+      "markerStart": 22,
+      "markerEnd": 30,
+      "decisionSource": "vocabulary-level-analysis",
+      "confidence": 0.97,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "word": "actually",
+      "lemma": "actually",
+      "phonetic": "/ˈæktʃuəli/",
+      "partOfSpeech": "adverb",
+      "sentenceMeaning": "used for emphasis to stress reality or truth, often contrasting expectation with fact",
+      "translation": "事实上，真的",
+      "contextBefore": [
+        "Good morning, wife.",
+        "Good morning, husband."
+      ],
+      "contextAfter": [
+        "It's official. According to tradition,",
+        "we should hang the bedsheets outside"
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000009",
+      "type": "vocabulary",
+      "subtitleIndex": 13,
+      "startTime": "49.5",
+      "endTime": "51.5",
+      "source_en": "It's official. According to tradition,",
+      "source_zh": "正式完婚了 根据传统",
+      "text": "official",
+      "markerStart": 5,
+      "markerEnd": 13,
+      "decisionSource": "vocabulary-level-analysis",
+      "confidence": 0.96,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "word": "official",
+      "lemma": "official",
+      "phonetic": "/əˈfɪʃl/",
+      "partOfSpeech": "adjective",
+      "sentenceMeaning": "having formal approval, recognition, or authorization",
+      "translation": "正式的，官方认可的",
+      "contextBefore": [
+        "Good morning, husband.",
+        "I can't believe we're actually married."
+      ],
+      "contextAfter": [
+        "we should hang the bedsheets outside",
+        "so the villagers can see that we consummated."
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000010",
+      "type": "vocabulary",
+      "subtitleIndex": 14,
+      "startTime": "51.5",
+      "endTime": "53.0",
+      "source_en": "we should hang the bedsheets outside",
+      "source_zh": "我们应该把床单挂在外面",
+      "text": "bedsheets",
+      "markerStart": 19,
+      "markerEnd": 28,
+      "decisionSource": "vocabulary-level-analysis",
+      "confidence": 0.95,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "word": "bedsheets",
+      "lemma": "bedsheet",
+      "phonetic": "/ˈbedʃiːt/",
+      "partOfSpeech": "noun",
+      "sentenceMeaning": "large rectangular cloths used to cover a bed; culturally symbolic here as proof of consummation",
+      "translation": "床单",
+      "contextBefore": [
+        "I can't believe we're actually married.",
+        "It's official. According to tradition,"
+      ],
+      "contextAfter": [
+        "so the villagers can see that we consummated.",
+        "considering where we're starting our honeymoon."
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000011",
+      "type": "comprehension",
+      "subtitleIndex": 15,
+      "startTime": "53.0",
+      "endTime": "58.0",
+      "source_en": "so the villagers can see that we consummated.",
+      "source_zh": "这样其他村民就能知道我们行过房了",
+      "text": "consummated",
+      "markerStart": 33,
+      "markerEnd": 44,
+      "decisionSource": "comprehension-barrier-analysis",
+      "confidence": 0.93,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "prototype": "euphemism for sexual intercourse in marital context",
+      "literal": "completed, fulfilled (esp. a contract or agreement)",
+      "actual": "engaged in sexual intercourse, specifically to validate marriage under traditional custom",
+      "grammar": "past participle used adjectivally after 'that we' — requires understanding of cultural/legal register",
+      "contextBefore": [
+        "It's official. According to tradition,",
+        "we should hang the bedsheets outside"
+      ],
+      "contextAfter": [
+        "considering where we're starting our honeymoon.",
+        "Well, I suppose you're right."
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000012",
+      "type": "vocabulary",
+      "subtitleIndex": 16,
+      "startTime": "58.0",
+      "endTime": "60.5",
+      "source_en": "considering where we're starting our honeymoon.",
+      "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅",
+      "text": "honeymoon",
+      "markerStart": 37,
+      "markerEnd": 46,
+      "decisionSource": "vocabulary-level-analysis",
+      "confidence": 0.98,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "word": "honeymoon",
+      "lemma": "honeymoon",
+      "phonetic": "/ˈhʌnimuːn/",
+      "partOfSpeech": "noun",
+      "sentenceMeaning": "the holiday taken by a newly married couple; carries cultural weight beyond literal travel",
+      "translation": "蜜月",
+      "contextBefore": [
+        "we should hang the bedsheets outside",
+        "so the villagers can see that we consummated."
+      ],
+      "contextAfter": [
+        "Well, I suppose you're right.",
+        "Lego is the perfect metaphor for marital congress."
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000013",
+      "type": "comprehension",
+      "subtitleIndex": 17,
+      "startTime": "60.5",
+      "endTime": "67.0",
+      "source_en": "Well, I suppose you're right.",
+      "source_zh": "你说的有道理",
+      "text": "Well, I suppose you're right.",
+      "markerStart": 0,
+      "markerEnd": 29,
+      "decisionSource": "comprehension-barrier-analysis",
+      "confidence": 0.92,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "prototype": "hedged agreement marker",
+      "literal": "I tentatively accept your claim as correct",
+      "actual": "polite, reluctant concession masking underlying skepticism or irony",
+      "grammar": "discourse particle 'Well' + epistemic verb 'suppose' + subject complement — signals pragmatic softening",
+      "contextBefore": [
+        "so the villagers can see that we consummated.",
+        "considering where we're starting our honeymoon."
+      ],
+      "contextAfter": [
+        "Lego is the perfect metaphor for marital congress.",
+        "Two pieces that interlock with a satisfying snap."
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000014",
+      "type": "vocabulary",
+      "subtitleIndex": 18,
+      "startTime": "67.0",
+      "endTime": "70.0",
+      "source_en": "Lego is the perfect metaphor for marital congress.",
+      "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+      "text": "metaphor",
+      "markerStart": 20,
+      "markerEnd": 28,
+      "decisionSource": "vocabulary-level-analysis",
+      "confidence": 0.97,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "word": "metaphor",
+      "lemma": "metaphor",
+      "phonetic": "/ˈmetəfər/",
+      "partOfSpeech": "noun",
+      "sentenceMeaning": "a figure of speech in which a word or phrase is applied to something to which it is not literally applicable, to suggest a resemblance",
+      "translation": "隐喻，比喻",
+      "contextBefore": [
+        "considering where we're starting our honeymoon.",
+        "Well, I suppose you're right."
+      ],
+      "contextAfter": [
+        "Two pieces that interlock with a satisfying snap.",
+        "Oh, I almost forgot."
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000015",
+      "type": "vocabulary",
+      "subtitleIndex": 18,
+      "startTime": "67.0",
+      "endTime": "70.0",
+      "source_en": "Lego is the perfect metaphor for marital congress.",
+      "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+      "text": "congress",
+      "markerStart": 41,
+      "markerEnd": 49,
+      "decisionSource": "vocabulary-level-analysis",
+      "confidence": 0.91,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "word": "congress",
+      "lemma": "congress",
+      "phonetic": "/ˈkɒŋɡrəs/",
+      "partOfSpeech": "noun",
+      "sentenceMeaning": "a formal, archaic, or euphemistic term for sexual intercourse, especially within marriage",
+      "translation": "（尤指婚姻内的）性交",
+      "contextBefore": [
+        "considering where we're starting our honeymoon.",
+        "Well, I suppose you're right."
+      ],
+      "contextAfter": [
+        "Two pieces that interlock with a satisfying snap.",
+        "Oh, I almost forgot."
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000016",
+      "type": "comprehension",
+      "subtitleIndex": 19,
+      "startTime": "70.0",
+      "endTime": "79.5",
+      "source_en": "Two pieces that interlock with a satisfying snap.",
+      "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+      "text": "interlock",
+      "markerStart": 16,
+      "markerEnd": 25,
+      "decisionSource": "comprehension-barrier-analysis",
+      "confidence": 0.9,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "prototype": "mechanical verb with sexual connotation",
+      "literal": "to fit or lock together tightly, like puzzle pieces",
+      "actual": "deliberate double meaning: physical Lego connection + implied sexual coupling",
+      "grammar": "present tense verb with adverbial phrase 'with a satisfying snap' — requires recognizing intentional innuendo",
+      "contextBefore": [
+        "Well, I suppose you're right.",
+        "Lego is the perfect metaphor for marital congress."
+      ],
+      "contextAfter": [
+        "Oh, I almost forgot.",
+        "While you were sleeping, I ordered room service."
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000017",
+      "type": "vocabulary",
+      "subtitleIndex": 19,
+      "startTime": "70.0",
+      "endTime": "79.5",
+      "source_en": "Two pieces that interlock with a satisfying snap.",
+      "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+      "text": "satisfying",
+      "markerStart": 33,
+      "markerEnd": 43,
+      "decisionSource": "vocabulary-level-analysis",
+      "confidence": 0.96,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "word": "satisfying",
+      "lemma": "satisfy",
+      "phonetic": "/ˈsætɪsfaɪɪŋ/",
+      "partOfSpeech": "adjective",
+      "sentenceMeaning": "giving pleasure and fulfillment, especially through sensory or emotional response",
+      "translation": "令人满足的，令人愉悦的",
+      "contextBefore": [
+        "Well, I suppose you're right.",
+        "Lego is the perfect metaphor for marital congress."
+      ],
+      "contextAfter": [
+        "Oh, I almost forgot.",
+        "While you were sleeping, I ordered room service."
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000018",
+      "type": "vocabulary",
+      "subtitleIndex": 20,
+      "startTime": "79.5",
+      "endTime": "80.5",
+      "source_en": "Oh, I almost forgot.",
+      "source_zh": "我差点就忘了",
+      "text": "forgot",
+      "markerStart": 13,
+      "markerEnd": 19,
+      "decisionSource": "vocabulary-level-analysis",
+      "confidence": 0.95,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "word": "forgot",
+      "lemma": "forget",
+      "phonetic": "/fəˈɡɒt/",
+      "partOfSpeech": "verb",
+      "sentenceMeaning": "past tense of 'forget' — indicates lapse in memory, often used idiomatically before introducing new information",
+      "translation": "忘记",
+      "contextBefore": [
+        "Lego is the perfect metaphor for marital congress.",
+        "Two pieces that interlock with a satisfying snap."
+      ],
+      "contextAfter": [
+        "While you were sleeping, I ordered room service.",
+        "Really?"
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000019",
+      "type": "vocabulary",
+      "subtitleIndex": 21,
+      "startTime": "80.5",
+      "endTime": "83.5",
+      "source_en": "While you were sleeping, I ordered room service.",
+      "source_zh": "在你睡觉的时候 我点了客房送餐",
+      "text": "room service",
+      "markerStart": 35,
+      "markerEnd": 47,
+      "decisionSource": "vocabulary-level-analysis",
+      "confidence": 0.97,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "word": "room service",
+      "lemma": "room service",
+      "phonetic": "/ruːm ˈsɜːvɪs/",
+      "partOfSpeech": "noun",
+      "sentenceMeaning": "a hotel service providing food and drink delivered to guests' rooms",
+      "translation": "客房送餐服务",
+      "contextBefore": [
+        "Two pieces that interlock with a satisfying snap.",
+        "Oh, I almost forgot."
+      ],
+      "contextAfter": [
+        "Really?",
+        "Voila!"
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000020",
+      "type": "comprehension",
+      "subtitleIndex": 23,
+      "startTime": "85.5",
+      "endTime": "88.5",
+      "source_en": "Voila!",
+      "source_zh": "请看",
+      "text": "Voila!",
+      "markerStart": 0,
+      "markerEnd": 6,
+      "decisionSource": "comprehension-barrier-analysis",
+      "confidence": 0.94,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "prototype": "French loanword used as English interjection",
+      "literal": "there it is! (French)",
+      "actual": "performative utterance marking reveal or presentation — culturally marked, not literal French usage",
+      "grammar": "exclamatory particle, no grammatical function in English clause structure",
+      "contextBefore": [
+        "While you were sleeping, I ordered room service.",
+        "Really?"
+      ],
+      "contextAfter": [
+        "You thought it was going to be food, didn't you?",
+        "Our whole universe was in a hot, dense state"
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000021",
+      "type": "comprehension",
+      "subtitleIndex": 24,
+      "startTime": "88.5",
+      "endTime": "92.0",
+      "source_en": "You thought it was going to be food, didn't you?",
+      "source_zh": "你本来还以为是食物 对吧",
+      "text": "didn't you?",
+      "markerStart": 37,
+      "markerEnd": 48,
+      "decisionSource": "comprehension-barrier-analysis",
+      "confidence": 0.93,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "prototype": "tag question seeking confirmation",
+      "literal": "negative auxiliary + subject pronoun",
+      "actual": "rhetorical device expressing speaker's confident assumption — implies shared knowledge or prior expectation",
+      "grammar": "inverted tag question attached to past-tense declarative clause; pragmatically functions as assertion",
+      "contextBefore": [
+        "Really?",
+        "Voila!"
+      ],
+      "contextAfter": [
+        "Our whole universe was in a hot, dense state",
+        "Then nearly 14 billion years ago expansion started... Wait!"
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000022",
+      "type": "vocabulary",
+      "subtitleIndex": 25,
+      "startTime": "92.0",
+      "endTime": "95.0",
+      "source_en": "Our whole universe was in a hot, dense state",
+      "source_zh": "我们的宇宙曾经超热又超密",
+      "text": "dense",
+      "markerStart": 33,
+      "markerEnd": 38,
+      "decisionSource": "vocabulary-level-analysis",
+      "confidence": 0.96,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "word": "dense",
+      "lemma": "dense",
+      "phonetic": "/dens/",
+      "partOfSpeech": "adjective",
+      "sentenceMeaning": "having matter packed closely together — used scientifically here, not colloquially ('stupid')",
+      "translation": "密集的，稠密的",
+      "contextBefore": [
+        "Voila!",
+        "You thought it was going to be food, didn't you?"
+      ],
+      "contextAfter": [
+        "Then nearly 14 billion years ago expansion started... Wait!",
+        "The Earth began to cool"
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000023",
+      "type": "vocabulary",
+      "subtitleIndex": 26,
+      "startTime": "95.0",
+      "endTime": "99.0",
+      "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+      "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+      "text": "expansion",
+      "markerStart": 33,
+      "markerEnd": 42,
+      "decisionSource": "vocabulary-level-analysis",
+      "confidence": 0.97,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "word": "expansion",
+      "lemma": "expansion",
+      "phonetic": "/ɪkˈspænʃn/",
+      "partOfSpeech": "noun",
+      "sentenceMeaning": "increase in the volume of space between galaxies — key cosmological concept",
+      "translation": "膨胀，扩张",
+      "contextBefore": [
+        "You thought it was going to be food, didn't you?",
+        "Our whole universe was in a hot, dense state"
+      ],
+      "contextAfter": [
+        "The Earth began to cool",
+        "The autotrophs began to drool, Neanderthals developed tools?"
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000024",
+      "type": "vocabulary",
+      "subtitleIndex": 27,
+      "startTime": "99.0",
+      "endTime": "101.0",
+      "source_en": "The Earth began to cool",
+      "source_zh": "地球开始冷却",
+      "text": "cool",
+      "markerStart": 19,
+      "markerEnd": 23,
+      "decisionSource": "vocabulary-level-analysis",
+      "confidence": 0.95,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "word": "cool",
+      "lemma": "cool",
+      "phonetic": "/kuːl/",
+      "partOfSpeech": "verb",
+      "sentenceMeaning": "to decrease in temperature — scientific process, not slang usage",
+      "translation": "冷却",
+      "contextBefore": [
+        "Our whole universe was in a hot, dense state",
+        "Then nearly 14 billion years ago expansion started... Wait!"
+      ],
+      "contextAfter": [
+        "The autotrophs began to drool, Neanderthals developed tools?",
+        "We built the Wall We built the pyramids"
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000025",
+      "type": "vocabulary",
+      "subtitleIndex": 28,
+      "startTime": "101.0",
+      "endTime": "104.0",
+      "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+      "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+      "text": "autotrophs",
+      "markerStart": 4,
+      "markerEnd": 14,
+      "decisionSource": "vocabulary-level-analysis",
+      "confidence": 0.89,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "word": "autotrophs",
+      "lemma": "autotroph",
+      "phonetic": "/ˈɔːtətrəʊf/",
+      "partOfSpeech": "noun",
+      "sentenceMeaning": "organisms that produce their own food from inorganic substances — biological term requiring domain knowledge",
+      "translation": "自养生物",
+      "contextBefore": [
+        "Then nearly 14 billion years ago expansion started... Wait!",
+        "The Earth began to cool"
+      ],
+      "contextAfter": [
+        "We built the Wall We built the pyramids",
+        "Math, Science, History, unraveling the mystery"
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000026",
+      "type": "vocabulary",
+      "subtitleIndex": 28,
+      "startTime": "101.0",
+      "endTime": "104.0",
+      "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+      "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+      "text": "Neanderthals",
+      "markerStart": 31,
+      "markerEnd": 43,
+      "decisionSource": "vocabulary-level-analysis",
+      "confidence": 0.96,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "word": "Neanderthals",
+      "lemma": "Neanderthal",
+      "phonetic": "/niˈændəθɔːl/",
+      "partOfSpeech": "noun",
+      "sentenceMeaning": "an extinct species or subspecies of human that lived in Europe and western Asia — proper noun, capitalized",
+      "translation": "尼安德特人",
+      "contextBefore": [
+        "Then nearly 14 billion years ago expansion started... Wait!",
+        "The Earth began to cool"
+      ],
+      "contextAfter": [
+        "We built the Wall We built the pyramids",
+        "Math, Science, History, unraveling the mystery"
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000027",
+      "type": "comprehension",
+      "subtitleIndex": 29,
+      "startTime": "104.0",
+      "endTime": "105.0",
+      "source_en": "We built the Wall We built the pyramids",
+      "source_zh": "我们建了长城 我们建了金字塔",
+      "text": "the Wall",
+      "markerStart": 9,
+      "markerEnd": 17,
+      "decisionSource": "comprehension-barrier-analysis",
+      "confidence": 0.91,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "prototype": "definite noun phrase with cultural specificity",
+      "literal": "a wall",
+      "actual": "the Great Wall of China — unmarked reference assuming shared cultural knowledge",
+      "grammar": "definite article + singular noun without modifier — relies on encyclopedic knowledge",
+      "contextBefore": [
+        "The Earth began to cool",
+        "The autotrophs began to drool, Neanderthals developed tools?"
+      ],
+      "contextAfter": [
+        "Math, Science, History, unraveling the mystery",
+        "♪ Math, Science, History, unraveling the mystery ♪"
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000028",
+      "type": "comprehension",
+      "subtitleIndex": 30,
+      "startTime": "105.0",
+      "endTime": "106.0",
+      "source_en": "Math, Science, History, unraveling the mystery",
+      "source_zh": "数学 科学 历史 解开了谜团",
+      "text": "unraveling the mystery",
+      "markerStart": 24,
+      "markerEnd": 46,
+      "decisionSource": "comprehension-barrier-analysis",
+      "confidence": 0.92,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "prototype": "gerund phrase with figurative meaning",
+      "literal": "taking apart thread by thread",
+      "actual": "solving, explaining, or making clear a complex phenomenon",
+      "grammar": "present participle + definite noun — idiomatic collocation requiring conceptual mapping",
+      "contextBefore": [
+        "The autotrophs began to drool, Neanderthals developed tools?",
+        "We built the Wall We built the pyramids"
+      ],
+      "contextAfter": [
+        "♪ Math, Science, History, unraveling the mystery ♪",
+        "That all started with a big bang"
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000029",
+      "type": "vocabulary",
+      "subtitleIndex": 32,
+      "startTime": "108.0",
+      "endTime": "110.0",
+      "source_en": "That all started with a big bang",
+      "source_zh": "一切都始于大爆炸",
+      "text": "big bang",
+      "markerStart": 24,
+      "markerEnd": 32,
+      "decisionSource": "vocabulary-level-analysis",
+      "confidence": 0.98,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "word": "big bang",
+      "lemma": "big bang",
+      "phonetic": "/bɪɡ bæŋ/",
+      "partOfSpeech": "noun",
+      "sentenceMeaning": "the event marking the origin of the universe — capitalized in scientific contexts but lowercase here as common noun phrase",
+      "translation": "大爆炸",
+      "contextBefore": [
+        "Math, Science, History, unraveling the mystery",
+        "♪ Math, Science, History, unraveling the mystery ♪"
+      ],
+      "contextAfter": [
+        "Bang!",
+        "Is it nice having Sheldon and Amy away on their honeymoon?"
+      ]
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000030",
+      "type": "comprehension",
+      "subtitleIndex": 33,
+      "startTime": "110.0",
+      "endTime": "116.5",
+      "source_en": "Bang!",
+      "source_zh": "炸",
+      "text": "Bang!",
+      "markerStart": 0,
+      "markerEnd": 5,
+      "decisionSource": "comprehension-barrier-analysis",
+      "confidence": 0.9,
+      "reviewStatus": "draft",
+      "reviewDecision": "pending",
+      "prototype": "onomatopoeic interjection",
+      "literal": "sound of explosion",
+      "actual": "iconic representation of the Big Bang — functions as both sound effect and conceptual shorthand",
+      "grammar": "exclamation mark required for full pragmatic force; isolated utterance lacking syntax",
+      "contextBefore": [
+        "♪ Math, Science, History, unraveling the mystery ♪",
+        "That all started with a big bang"
+      ],
+      "contextAfter": [
+        "Is it nice having Sheldon and Amy away on their honeymoon?",
+        "Yeah, because now Leonard and I get all this alone time."
+      ]
+    }
+  ]
+}
