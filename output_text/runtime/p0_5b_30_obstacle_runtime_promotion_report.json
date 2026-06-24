@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "p0-5b-30-obstacle-runtime-promotion-report.v1",
+  "stage": "P0-5B-9",
+  "sourceFrozenPath": "output_text/frozen/p0_5b_30_obstacle_frozen.json",
+  "sourceFrozenValidationReportPath": "output_text/frozen/p0_5b_30_obstacle_frozen_validation_report.json",
+  "runtimeArtifactPath": "output_text/runtime/p0_5b_30_obstacle_runtime.json",
+  "summary": {
+    "runtimeObstacleCount": 17,
+    "sourceFrozenObstacleCount": 17,
+    "productionDefaultObstacleCount": 48
+  },
+  "promotedObstacleIds": [
+    "tbbt-s12e01-p0-5b-obstacle-000002",
+    "tbbt-s12e01-p0-5b-obstacle-000003",
+    "tbbt-s12e01-p0-5b-obstacle-000005",
+    "tbbt-s12e01-p0-5b-obstacle-000009",
+    "tbbt-s12e01-p0-5b-obstacle-000011",
+    "tbbt-s12e01-p0-5b-obstacle-000014",
+    "tbbt-s12e01-p0-5b-obstacle-000015",
+    "tbbt-s12e01-p0-5b-obstacle-000016",
+    "tbbt-s12e01-p0-5b-obstacle-000019",
+    "tbbt-s12e01-p0-5b-obstacle-000020",
+    "tbbt-s12e01-p0-5b-obstacle-000021",
+    "tbbt-s12e01-p0-5b-obstacle-000023",
+    "tbbt-s12e01-p0-5b-obstacle-000025",
+    "tbbt-s12e01-p0-5b-obstacle-000026",
+    "tbbt-s12e01-p0-5b-obstacle-000027",
+    "tbbt-s12e01-p0-5b-obstacle-000028",
+    "tbbt-s12e01-p0-5b-obstacle-000029"
+  ],
+  "runtimeMayConsume": true,
+  "activation": {
+    "queryParam": "runtimePilot=1",
+    "defaultProductionFlowUnchanged": true,
+    "normalUsersEnabled": false
+  },
+  "nextRecommendedStep": "Validate runtime artifact, then verify Runtime Pilot under ?runtimePilot=1 while default / remains Production."
+}
