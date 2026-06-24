@@ -1566,3 +1566,147 @@ Allowed next implementation shape:
 Merge gate:
 
 Yes, merge only if only `docs/PROJECT_STATUS_V6.md` changed, no code files changed, no `output_text` files changed, the contract freezes the 30-obstacle input time scope as `00:00:00~00:06:00`, the contract preserves Production default 48, the contract preserves Runtime Pilot developer-only opt-in, the contract says Runtime must not decide input scope, and the contract says this task does not generate obstacles or call AI.
+
+## P0-5B-5A Draft Auto-normalization / Repair Contract
+
+Status:
+
+FROZEN CONTRACT
+
+Document purpose:
+
+P0-5B-5A freezes which P0-5B draft validation failures may be repaired automatically and which must remain for human review.
+
+Document current failed validation evidence:
+
+- Validation gate completed.
+- Report path:
+  `output_text/drafts/p0_5b_30_obstacle_ai_draft_validation_report.json`
+- status: failed
+- actualObstacleCount: 30
+- vocabularyCount: 21
+- comprehensionCount: 9
+- invalidCount: 34
+- warningCount: 0
+- nextStageAllowed: false
+
+Freeze auto-repair allowed scope:
+
+1. Allowed auto-repair category A:
+   Vocabulary partOfSpeech display normalization.
+
+   Source values may be normalized as:
+   - noun -> n.
+   - verb -> vt./vi.
+   - adjective -> adj.
+   - adverb -> adv.
+   - proper noun -> n.
+
+   Rationale:
+   These are display-format normalization issues, not semantic obstacle-selection changes.
+
+2. Allowed auto-repair category B:
+   Vocabulary sentenceMeaning shortening.
+
+   Allowed rule:
+   - If sentenceMeaning is too long, replace it with a short Chinese current-sentence meaning.
+   - The meaning must be derived only from existing draft fields and subtitle context:
+     word
+     lemma
+     translation
+     source_en
+     source_zh
+     current subtitle context
+   - It must not use Runtime.
+   - It must not call AI.
+   - It must be concise:
+     preferably 2~8 Chinese characters
+     hard maximum 30 Chinese characters
+     hard maximum 80 total characters
+
+   Rationale:
+   Runtime card requires short learner-facing current-sentence meaning, not long English explanation.
+
+Freeze auto-repair prohibited scope:
+
+1. Do NOT auto-approve or reject obstacles.
+2. Do NOT change obstacle type.
+3. Do NOT add new obstacles.
+4. Do NOT remove obstacles.
+5. Do NOT reorder obstacles except preserving existing stable order if script rewrites file.
+6. Do NOT change obstacleId.
+7. Do NOT change subtitleIndex.
+8. Do NOT change source_en/source_zh/startTime/endTime.
+9. Do NOT change markerStart/markerEnd/text unless a future explicit marker repair contract authorizes it.
+10. Do NOT rewrite comprehension literal/actual/grammar in this repair step.
+11. Do NOT modify reviewStatus.
+12. Do NOT modify reviewDecision.
+13. Do NOT set runtimeMayConsume true.
+14. Do NOT promote data.
+15. Do NOT write output_text/frozen.
+16. Do NOT write output_text/runtime.
+17. Do NOT modify Production obstacle files.
+18. Do NOT modify Runtime.
+
+Freeze output strategy for future implementation:
+
+The future repair script must not overwrite the original AI draft.
+It must create a repaired draft copy, for example:
+
+`output_text/drafts/p0_5b_30_obstacle_ai_draft_repaired.json`
+
+The original remains:
+
+`output_text/drafts/p0_5b_30_obstacle_ai_draft.json`
+
+A future repair report may be written as:
+
+`output_text/drafts/p0_5b_30_obstacle_ai_draft_repair_report.json`
+
+Freeze validation flow after future repair:
+
+1. Generate repaired draft copy.
+2. Run validation gate against repaired draft or a repair-aware validation path.
+3. Only if validation passes may the project proceed to Human Review Decision.
+4. If validation still fails, do not proceed to Human Review Decision.
+
+Freeze human review boundary:
+
+Human review may later decide whether the repaired draft obstacles are actually good learning obstacles.
+Auto-repair may only fix mechanical/schema/display issues.
+Auto-repair must not decide learning value.
+
+Explicit non-goals:
+
+- Do not implement the repair script in this task.
+- Do not edit the draft in this task.
+- Do not regenerate AI draft in this task.
+- Do not call AI in this task.
+- Do not run validation in this task.
+- Do not run human review in this task.
+- Do not promote frozen data in this task.
+- Do not modify Runtime in this task.
+- Do not modify output_text in this task.
+
+Recommended next implementation:
+
+P0-5B-5B Draft Auto-normalization Repair Script
+
+Expected future implementation shape:
+
+- Create only:
+  `scripts/p0_5b_repair_30_obstacle_ai_draft.js`
+- Read:
+  `output_text/drafts/p0_5b_30_obstacle_ai_draft.json`
+  `output_text/drafts/p0_5b_30_obstacle_ai_draft_validation_report.json`
+- Write:
+  `output_text/drafts/p0_5b_30_obstacle_ai_draft_repaired.json`
+  `output_text/drafts/p0_5b_30_obstacle_ai_draft_repair_report.json`
+- Do not overwrite original draft.
+- Do not call AI.
+- Do not modify Runtime.
+- Do not promote data.
+
+Merge gate:
+
+Yes, merge only if only `docs/PROJECT_STATUS_V6.md` changed, no code files changed, no `output_text` files changed, the contract allows POS display normalization, the contract allows short Chinese `sentenceMeaning` repair, the contract forbids changing obstacle identity, type, marker span, review status, review decision, Runtime, Production, frozen, or runtime outputs, and the contract requires a repaired draft copy instead of overwriting the original draft.
