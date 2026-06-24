@@ -1,0 +1,1498 @@
+{
+  "schemaVersion": "p0-5b-30-obstacle-frozen-validation-report.v1",
+  "stage": "P0-5B-8A",
+  "inputFrozenPath": "output_text/frozen/p0_5b_30_obstacle_frozen.json",
+  "inputPromotionReportPath": "output_text/frozen/p0_5b_30_obstacle_frozen_promotion_report.json",
+  "status": "passed",
+  "summary": {
+    "frozenObstacleCount": 17,
+    "vocabularyCount": 11,
+    "comprehensionCount": 6,
+    "invalidCount": 0,
+    "warningCount": 5
+  },
+  "checks": [
+    {
+      "name": "frozen artifact exists",
+      "status": "passed"
+    },
+    {
+      "name": "promotion report exists",
+      "status": "passed"
+    },
+    {
+      "name": "frozen schemaVersion",
+      "status": "passed"
+    },
+    {
+      "name": "frozen reviewStatus",
+      "status": "passed"
+    },
+    {
+      "name": "frozen runtimeMayConsume false",
+      "status": "passed"
+    },
+    {
+      "name": "frozen promotionPolicy",
+      "status": "passed"
+    },
+    {
+      "name": "frozen summary sourceObstacleCount",
+      "status": "passed"
+    },
+    {
+      "name": "frozen summary frozenObstacleCount",
+      "status": "passed"
+    },
+    {
+      "name": "frozen summary approvedPromotedCount",
+      "status": "passed"
+    },
+    {
+      "name": "frozen summary rejectedExcludedCount",
+      "status": "passed"
+    },
+    {
+      "name": "frozen summary needsEditExcludedCount",
+      "status": "passed"
+    },
+    {
+      "name": "frozen summary pendingExcludedCount",
+      "status": "passed"
+    },
+    {
+      "name": "frozen obstacle array count",
+      "status": "passed"
+    },
+    {
+      "name": "no runtimeMayConsume true anywhere",
+      "status": "passed"
+    },
+    {
+      "name": "no draft/reviewed/pending/rejected/needs_edit statuses",
+      "status": "passed"
+    },
+    {
+      "name": "no draft runtime-consumable path",
+      "status": "passed"
+    },
+    {
+      "name": "promotion report schemaVersion",
+      "status": "passed"
+    },
+    {
+      "name": "promotion report runtimePromotionAllowed false",
+      "status": "passed"
+    },
+    {
+      "name": "promotion summary sourceObstacleCount",
+      "status": "passed"
+    },
+    {
+      "name": "promotion summary frozenObstacleCount",
+      "status": "passed"
+    },
+    {
+      "name": "promotion summary approvedPromotedCount",
+      "status": "passed"
+    },
+    {
+      "name": "promotion summary rejectedExcludedCount",
+      "status": "passed"
+    },
+    {
+      "name": "promotion summary needsEditExcludedCount",
+      "status": "passed"
+    },
+    {
+      "name": "promotion summary pendingExcludedCount",
+      "status": "passed"
+    },
+    {
+      "name": "promotedObstacleIds equal frozen IDs in order",
+      "status": "passed"
+    },
+    {
+      "name": "excluded rejected IDs absent",
+      "status": "passed"
+    },
+    {
+      "name": "excluded needsEdit IDs absent",
+      "status": "passed"
+    },
+    {
+      "name": "excluded pending IDs absent",
+      "status": "passed"
+    },
+    {
+      "name": "unique obstacleId",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewStatus frozen",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewDecision approved",
+      "status": "passed"
+    },
+    {
+      "name": "allowed obstacle type",
+      "status": "passed"
+    },
+    {
+      "name": "subtitleIndex number",
+      "status": "passed"
+    },
+    {
+      "name": "source_en non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "source_zh non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "text non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "marker integers",
+      "status": "passed"
+    },
+    {
+      "name": "marker bounds",
+      "status": "passed"
+    },
+    {
+      "name": "text matches marker slice",
+      "status": "passed"
+    },
+    {
+      "name": "confidence range",
+      "status": "passed"
+    },
+    {
+      "name": "decisionSource non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary word non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary lemma non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary phonetic non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary partOfSpeech non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary sentenceMeaning non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary translation non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary partOfSpeech supported",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary sentenceMeaning limits",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewStatus frozen",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewDecision approved",
+      "status": "passed"
+    },
+    {
+      "name": "allowed obstacle type",
+      "status": "passed"
+    },
+    {
+      "name": "subtitleIndex number",
+      "status": "passed"
+    },
+    {
+      "name": "source_en non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "source_zh non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "text non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "marker integers",
+      "status": "passed"
+    },
+    {
+      "name": "marker bounds",
+      "status": "passed"
+    },
+    {
+      "name": "text matches marker slice",
+      "status": "passed"
+    },
+    {
+      "name": "confidence range",
+      "status": "passed"
+    },
+    {
+      "name": "decisionSource non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary word non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary lemma non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary phonetic non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary partOfSpeech non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary sentenceMeaning non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary translation non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary partOfSpeech supported",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary sentenceMeaning limits",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewStatus frozen",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewDecision approved",
+      "status": "passed"
+    },
+    {
+      "name": "allowed obstacle type",
+      "status": "passed"
+    },
+    {
+      "name": "subtitleIndex number",
+      "status": "passed"
+    },
+    {
+      "name": "source_en non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "source_zh non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "text non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "marker integers",
+      "status": "passed"
+    },
+    {
+      "name": "marker bounds",
+      "status": "passed"
+    },
+    {
+      "name": "text matches marker slice",
+      "status": "passed"
+    },
+    {
+      "name": "confidence range",
+      "status": "passed"
+    },
+    {
+      "name": "decisionSource non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary word non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary lemma non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary phonetic non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary partOfSpeech non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary sentenceMeaning non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary translation non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary partOfSpeech supported",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary sentenceMeaning limits",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewStatus frozen",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewDecision approved",
+      "status": "passed"
+    },
+    {
+      "name": "allowed obstacle type",
+      "status": "passed"
+    },
+    {
+      "name": "subtitleIndex number",
+      "status": "passed"
+    },
+    {
+      "name": "source_en non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "source_zh non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "text non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "marker integers",
+      "status": "passed"
+    },
+    {
+      "name": "marker bounds",
+      "status": "passed"
+    },
+    {
+      "name": "text matches marker slice",
+      "status": "passed"
+    },
+    {
+      "name": "confidence range",
+      "status": "passed"
+    },
+    {
+      "name": "decisionSource non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary word non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary lemma non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary phonetic non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary partOfSpeech non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary sentenceMeaning non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary translation non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary partOfSpeech supported",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary sentenceMeaning limits",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewStatus frozen",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewDecision approved",
+      "status": "passed"
+    },
+    {
+      "name": "allowed obstacle type",
+      "status": "passed"
+    },
+    {
+      "name": "subtitleIndex number",
+      "status": "passed"
+    },
+    {
+      "name": "source_en non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "source_zh non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "text non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "marker integers",
+      "status": "passed"
+    },
+    {
+      "name": "marker bounds",
+      "status": "passed"
+    },
+    {
+      "name": "text matches marker slice",
+      "status": "passed"
+    },
+    {
+      "name": "confidence range",
+      "status": "passed"
+    },
+    {
+      "name": "decisionSource non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension title field present",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension literal non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension actual non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension grammar non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension literal not placeholder",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension actual not placeholder",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension grammar not placeholder",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewStatus frozen",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewDecision approved",
+      "status": "passed"
+    },
+    {
+      "name": "allowed obstacle type",
+      "status": "passed"
+    },
+    {
+      "name": "subtitleIndex number",
+      "status": "passed"
+    },
+    {
+      "name": "source_en non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "source_zh non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "text non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "marker integers",
+      "status": "passed"
+    },
+    {
+      "name": "marker bounds",
+      "status": "passed"
+    },
+    {
+      "name": "text matches marker slice",
+      "status": "passed"
+    },
+    {
+      "name": "confidence range",
+      "status": "passed"
+    },
+    {
+      "name": "decisionSource non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary word non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary lemma non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary phonetic non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary partOfSpeech non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary sentenceMeaning non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary translation non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary partOfSpeech supported",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary sentenceMeaning limits",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewStatus frozen",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewDecision approved",
+      "status": "passed"
+    },
+    {
+      "name": "allowed obstacle type",
+      "status": "passed"
+    },
+    {
+      "name": "subtitleIndex number",
+      "status": "passed"
+    },
+    {
+      "name": "source_en non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "source_zh non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "text non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "marker integers",
+      "status": "passed"
+    },
+    {
+      "name": "marker bounds",
+      "status": "passed"
+    },
+    {
+      "name": "text matches marker slice",
+      "status": "passed"
+    },
+    {
+      "name": "confidence range",
+      "status": "passed"
+    },
+    {
+      "name": "decisionSource non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary word non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary lemma non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary phonetic non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary partOfSpeech non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary sentenceMeaning non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary translation non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary partOfSpeech supported",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary sentenceMeaning limits",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewStatus frozen",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewDecision approved",
+      "status": "passed"
+    },
+    {
+      "name": "allowed obstacle type",
+      "status": "passed"
+    },
+    {
+      "name": "subtitleIndex number",
+      "status": "passed"
+    },
+    {
+      "name": "source_en non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "source_zh non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "text non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "marker integers",
+      "status": "passed"
+    },
+    {
+      "name": "marker bounds",
+      "status": "passed"
+    },
+    {
+      "name": "text matches marker slice",
+      "status": "passed"
+    },
+    {
+      "name": "confidence range",
+      "status": "passed"
+    },
+    {
+      "name": "decisionSource non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension title field present",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension literal non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension actual non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension grammar non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension literal not placeholder",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension actual not placeholder",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension grammar not placeholder",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewStatus frozen",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewDecision approved",
+      "status": "passed"
+    },
+    {
+      "name": "allowed obstacle type",
+      "status": "passed"
+    },
+    {
+      "name": "subtitleIndex number",
+      "status": "passed"
+    },
+    {
+      "name": "source_en non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "source_zh non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "text non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "marker integers",
+      "status": "passed"
+    },
+    {
+      "name": "marker bounds",
+      "status": "passed"
+    },
+    {
+      "name": "text matches marker slice",
+      "status": "passed"
+    },
+    {
+      "name": "confidence range",
+      "status": "passed"
+    },
+    {
+      "name": "decisionSource non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary word non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary lemma non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary phonetic non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary partOfSpeech non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary sentenceMeaning non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary translation non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary partOfSpeech supported",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary sentenceMeaning limits",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewStatus frozen",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewDecision approved",
+      "status": "passed"
+    },
+    {
+      "name": "allowed obstacle type",
+      "status": "passed"
+    },
+    {
+      "name": "subtitleIndex number",
+      "status": "passed"
+    },
+    {
+      "name": "source_en non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "source_zh non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "text non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "marker integers",
+      "status": "passed"
+    },
+    {
+      "name": "marker bounds",
+      "status": "passed"
+    },
+    {
+      "name": "text matches marker slice",
+      "status": "passed"
+    },
+    {
+      "name": "confidence range",
+      "status": "passed"
+    },
+    {
+      "name": "decisionSource non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension title field present",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension literal non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension actual non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension grammar non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension literal not placeholder",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension actual not placeholder",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension grammar not placeholder",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewStatus frozen",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewDecision approved",
+      "status": "passed"
+    },
+    {
+      "name": "allowed obstacle type",
+      "status": "passed"
+    },
+    {
+      "name": "subtitleIndex number",
+      "status": "passed"
+    },
+    {
+      "name": "source_en non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "source_zh non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "text non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "marker integers",
+      "status": "passed"
+    },
+    {
+      "name": "marker bounds",
+      "status": "passed"
+    },
+    {
+      "name": "text matches marker slice",
+      "status": "passed"
+    },
+    {
+      "name": "confidence range",
+      "status": "passed"
+    },
+    {
+      "name": "decisionSource non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension title field present",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension literal non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension actual non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension grammar non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension literal not placeholder",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension actual not placeholder",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension grammar not placeholder",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewStatus frozen",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewDecision approved",
+      "status": "passed"
+    },
+    {
+      "name": "allowed obstacle type",
+      "status": "passed"
+    },
+    {
+      "name": "subtitleIndex number",
+      "status": "passed"
+    },
+    {
+      "name": "source_en non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "source_zh non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "text non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "marker integers",
+      "status": "passed"
+    },
+    {
+      "name": "marker bounds",
+      "status": "passed"
+    },
+    {
+      "name": "text matches marker slice",
+      "status": "passed"
+    },
+    {
+      "name": "confidence range",
+      "status": "passed"
+    },
+    {
+      "name": "decisionSource non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary word non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary lemma non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary phonetic non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary partOfSpeech non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary sentenceMeaning non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary translation non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary partOfSpeech supported",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary sentenceMeaning limits",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewStatus frozen",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewDecision approved",
+      "status": "passed"
+    },
+    {
+      "name": "allowed obstacle type",
+      "status": "passed"
+    },
+    {
+      "name": "subtitleIndex number",
+      "status": "passed"
+    },
+    {
+      "name": "source_en non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "source_zh non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "text non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "marker integers",
+      "status": "passed"
+    },
+    {
+      "name": "marker bounds",
+      "status": "passed"
+    },
+    {
+      "name": "text matches marker slice",
+      "status": "passed"
+    },
+    {
+      "name": "confidence range",
+      "status": "passed"
+    },
+    {
+      "name": "decisionSource non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary word non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary lemma non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary phonetic non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary partOfSpeech non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary sentenceMeaning non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary translation non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary partOfSpeech supported",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary sentenceMeaning limits",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewStatus frozen",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewDecision approved",
+      "status": "passed"
+    },
+    {
+      "name": "allowed obstacle type",
+      "status": "passed"
+    },
+    {
+      "name": "subtitleIndex number",
+      "status": "passed"
+    },
+    {
+      "name": "source_en non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "source_zh non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "text non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "marker integers",
+      "status": "passed"
+    },
+    {
+      "name": "marker bounds",
+      "status": "passed"
+    },
+    {
+      "name": "text matches marker slice",
+      "status": "passed"
+    },
+    {
+      "name": "confidence range",
+      "status": "passed"
+    },
+    {
+      "name": "decisionSource non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary word non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary lemma non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary phonetic non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary partOfSpeech non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary sentenceMeaning non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary translation non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary partOfSpeech supported",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary sentenceMeaning limits",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewStatus frozen",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewDecision approved",
+      "status": "passed"
+    },
+    {
+      "name": "allowed obstacle type",
+      "status": "passed"
+    },
+    {
+      "name": "subtitleIndex number",
+      "status": "passed"
+    },
+    {
+      "name": "source_en non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "source_zh non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "text non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "marker integers",
+      "status": "passed"
+    },
+    {
+      "name": "marker bounds",
+      "status": "passed"
+    },
+    {
+      "name": "text matches marker slice",
+      "status": "passed"
+    },
+    {
+      "name": "confidence range",
+      "status": "passed"
+    },
+    {
+      "name": "decisionSource non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension title field present",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension literal non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension actual non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension grammar non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension literal not placeholder",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension actual not placeholder",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension grammar not placeholder",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewStatus frozen",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewDecision approved",
+      "status": "passed"
+    },
+    {
+      "name": "allowed obstacle type",
+      "status": "passed"
+    },
+    {
+      "name": "subtitleIndex number",
+      "status": "passed"
+    },
+    {
+      "name": "source_en non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "source_zh non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "text non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "marker integers",
+      "status": "passed"
+    },
+    {
+      "name": "marker bounds",
+      "status": "passed"
+    },
+    {
+      "name": "text matches marker slice",
+      "status": "passed"
+    },
+    {
+      "name": "confidence range",
+      "status": "passed"
+    },
+    {
+      "name": "decisionSource non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension title field present",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension literal non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension actual non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension grammar non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension literal not placeholder",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension actual not placeholder",
+      "status": "passed"
+    },
+    {
+      "name": "comprehension grammar not placeholder",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewStatus frozen",
+      "status": "passed"
+    },
+    {
+      "name": "obstacle reviewDecision approved",
+      "status": "passed"
+    },
+    {
+      "name": "allowed obstacle type",
+      "status": "passed"
+    },
+    {
+      "name": "subtitleIndex number",
+      "status": "passed"
+    },
+    {
+      "name": "source_en non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "source_zh non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "text non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "marker integers",
+      "status": "passed"
+    },
+    {
+      "name": "marker bounds",
+      "status": "passed"
+    },
+    {
+      "name": "text matches marker slice",
+      "status": "passed"
+    },
+    {
+      "name": "confidence range",
+      "status": "passed"
+    },
+    {
+      "name": "decisionSource non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary word non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary lemma non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary phonetic non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary partOfSpeech non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary sentenceMeaning non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary translation non-empty",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary partOfSpeech supported",
+      "status": "passed"
+    },
+    {
+      "name": "vocabulary sentenceMeaning limits",
+      "status": "passed"
+    }
+  ],
+  "invalidObstacles": [],
+  "warnings": [
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000002",
+      "type": "english-only-sentenceMeaning",
+      "message": "Vocabulary sentenceMeaning is English-only"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000003",
+      "type": "english-only-sentenceMeaning",
+      "message": "Vocabulary sentenceMeaning is English-only"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000009",
+      "type": "english-only-sentenceMeaning",
+      "message": "Vocabulary sentenceMeaning is English-only"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000019",
+      "type": "english-only-sentenceMeaning",
+      "message": "Vocabulary sentenceMeaning is English-only"
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000023",
+      "type": "english-only-sentenceMeaning",
+      "message": "Vocabulary sentenceMeaning is English-only"
+    }
+  ],
+  "runtimePromotionAllowed": true,
+  "nextStageAllowed": true
+}
