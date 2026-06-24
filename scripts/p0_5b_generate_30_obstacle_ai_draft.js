@@ -163,8 +163,147 @@ function isCompatibleText(source, start, end, text) {
   return text === slice || (slice.includes(text.trim()) && text.trim().length > 0);
 }
 
-function normalizeDraft(parsed) {
-  const obstacles = Array.isArray(parsed.obstacles) ? parsed.obstacles.slice() : [];
+function canonicalSearchCharacters(character) {
+  if (/[\u2018\u2019]/.test(character)) return "'";
+  if (/[\u201C\u201D]/.test(character)) return '"';
+  if (character === '\u2026') return '...';
+  return character;
+}
+
+function normalizeForSpanSearch(value) {
+  let normalized = '';
+  const map = [];
+  let previousWasWhitespace = false;
+
+  for (let index = 0; index < String(value).length; index += 1) {
+    const characters = canonicalSearchCharacters(String(value)[index]);
+    for (const character of characters) {
+      if (/\s/.test(character)) {
+        if (!previousWasWhitespace) {
+          normalized += ' ';
+          map.push(index);
+          previousWasWhitespace = true;
+        }
+      } else {
+        normalized += character;
+        map.push(index);
+        previousWasWhitespace = false;
+      }
+    }
+  }
+
+  return { normalized, map };
+}
+
+function uniqueSpanCandidates(candidates) {
+  const seen = new Set();
+  const unique = [];
+  for (const candidate of candidates) {
+    if (candidate === undefined || candidate === null) continue;
+    const text = String(candidate);
+    if (!text.trim()) continue;
+    if (seen.has(text)) continue;
+    seen.add(text);
+    unique.push(text);
+  }
+  return unique;
+}
+
+function findExactSpan(source, candidate) {
+  const start = source.indexOf(candidate);
+  if (start === -1) return null;
+  return { start, end: start + candidate.length };
+}
+
+function findNormalizedSpan(source, candidate) {
+  const normalizedSource = normalizeForSpanSearch(source);
+  const normalizedCandidate = normalizeForSpanSearch(candidate).normalized;
+  if (!normalizedCandidate.trim()) return null;
+  const normalizedStart = normalizedSource.normalized.indexOf(normalizedCandidate);
+  if (normalizedStart === -1) return null;
+  const normalizedEndExclusive = normalizedStart + normalizedCandidate.length - 1;
+  return {
+    start: normalizedSource.map[normalizedStart],
+    end: normalizedSource.map[normalizedEndExclusive] + 1,
+  };
+}
+
+function findDeterministicSpan(source, obstacle) {
+  const requestedText = obstacle.text === undefined || obstacle.text === null ? '' : String(obstacle.text);
+  const exactMatch = findExactSpan(source, requestedText);
+  if (exactMatch) return exactMatch;
+
+  const trimmedText = requestedText.trim();
+  if (trimmedText !== requestedText) {
+    const trimmedMatch = findExactSpan(source, trimmedText);
+    if (trimmedMatch) return trimmedMatch;
+  }
+
+  for (const candidate of uniqueSpanCandidates([requestedText, trimmedText])) {
+    const normalizedMatch = findNormalizedSpan(source, candidate);
+    if (normalizedMatch) return normalizedMatch;
+  }
+
+  const fallbackCandidates = [];
+  if (obstacle.type === 'vocabulary') fallbackCandidates.push(obstacle.word, obstacle.lemma);
+  if (obstacle.type === 'comprehension') fallbackCandidates.push(obstacle.prototype, obstacle.phrase);
+
+  for (const candidate of uniqueSpanCandidates(fallbackCandidates)) {
+    const exactFallbackMatch = findExactSpan(source, candidate);
+    if (exactFallbackMatch) return exactFallbackMatch;
+    const trimmedCandidate = candidate.trim();
+    if (trimmedCandidate !== candidate) {
+      const trimmedFallbackMatch = findExactSpan(source, trimmedCandidate);
+      if (trimmedFallbackMatch) return trimmedFallbackMatch;
+    }
+    const normalizedFallbackMatch = findNormalizedSpan(source, trimmedCandidate);
+    if (normalizedFallbackMatch) return normalizedFallbackMatch;
+  }
+
+  return null;
+}
+
+function normalizeObstacleSpans(obstacles, analyzeInput) {
+  const subtitlesByIndex = subtitleMapFromInput(analyzeInput);
+  const diagnostics = [];
+
+  const normalized = obstacles.map((obstacle, index) => {
+    const subtitle = subtitlesByIndex.get(String(obstacle.subtitleIndex));
+    if (!subtitle) return { ...obstacle };
+
+    const canonicalSource = String(subtitle.source_en);
+    const match = findDeterministicSpan(canonicalSource, obstacle);
+    if (!match) {
+      diagnostics.push(
+        `obstacle[${index}] subtitleIndex=${String(obstacle.subtitleIndex)} requested text=${JSON.stringify(obstacle.text)} source_en=${JSON.stringify(canonicalSource)}`
+      );
+      return {
+        ...obstacle,
+        source_en: canonicalSource,
+        startTime: subtitle.startTime,
+        endTime: subtitle.endTime,
+        source_zh: subtitle.source_zh,
+      };
+    }
+
+    return {
+      ...obstacle,
+      source_en: canonicalSource,
+      startTime: subtitle.startTime,
+      endTime: subtitle.endTime,
+      source_zh: subtitle.source_zh,
+      markerStart: match.start,
+      markerEnd: match.end,
+      text: canonicalSource.slice(match.start, match.end),
+    };
+  });
+
+  if (diagnostics.length) fail('span normalization failed; no deterministic source_en match was found', diagnostics);
+  return normalized;
+}
+
+function normalizeDraft(parsed, analyzeInput) {
+  const obstacles = normalizeObstacleSpans(Array.isArray(parsed.obstacles) ? parsed.obstacles.slice() : [], analyzeInput);
   obstacles.sort((a, b) =>
     Number(a.subtitleIndex) - Number(b.subtitleIndex)
     || Number(a.markerStart) - Number(b.markerStart)
@@ -258,7 +397,7 @@ async function main() {
   const apiKey = readApiKey();
   const prompt = buildPrompt(analyzeInput);
   const parsed = await callQwen(prompt, apiKey);
-  const draft = normalizeDraft(parsed);
+  const draft = normalizeDraft(parsed, analyzeInput);
   validateDraft(draft, analyzeInput);
 
   fs.mkdirSync(path.dirname(repoPath(OUTPUT_PATH)), { recursive: true });
