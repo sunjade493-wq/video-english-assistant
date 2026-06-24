@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 const fs = require('fs');
 
-const draftPath = 'output_text/drafts/p0_5b_30_obstacle_ai_draft.json';
+const defaultDraftPath = 'output_text/drafts/p0_5b_30_obstacle_ai_draft.json';
 const analyzePath = 'output_text/drafts/p0_5b_30_obstacle_analyze_input.json';
-const reportPath = 'output_text/drafts/p0_5b_30_obstacle_ai_draft_validation_report.json';
+const defaultReportPath = 'output_text/drafts/p0_5b_30_obstacle_ai_draft_validation_report.json';
+const repairedDraftPath = 'output_text/drafts/p0_5b_30_obstacle_ai_draft_repaired.json';
+const repairedReportPath = 'output_text/drafts/p0_5b_30_obstacle_ai_draft_repaired_validation_report.json';
 const expectedDraftSchema = 'p0-5b-30-obstacle-ai-draft.v1';
 const expectedReportSchema = 'p0-5b-30-obstacle-draft-validation-report.v1';
 const targetObstacleCount = 30;
@@ -14,6 +16,33 @@ const allowedPos = new Set([
   'vt./vi./n.'
 ]);
 const placeholderValues = new Set(['tbd', 'todo', 'n/a', 'unknown', '待定', '无']);
+
+
+function parseArgs(argv) {
+  const options = {
+    draftPath: defaultDraftPath,
+    reportPath: defaultReportPath
+  };
+
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    if (arg === '--draft') {
+      const value = argv[index + 1];
+      if (!value || value.startsWith('--')) throw new Error('--draft requires a path value');
+      options.draftPath = value;
+      index += 1;
+    } else if (arg === '--report') {
+      const value = argv[index + 1];
+      if (!value || value.startsWith('--')) throw new Error('--report requires a path value');
+      options.reportPath = value;
+      index += 1;
+    } else {
+      throw new Error(`Unsupported argument: ${arg}`);
+    }
+  }
+
+  return options;
+}
 
 function readJson(path) {
   return JSON.parse(fs.readFileSync(path, 'utf8'));
@@ -86,6 +115,9 @@ function warn(check, detail, obstacleId) {
   check.details.push(detail);
   warnings.push({ obstacleId: obstacleId || null, check: check.name, detail });
 }
+
+const { draftPath, reportPath } = parseArgs(process.argv.slice(2));
+const validationMode = draftPath === repairedDraftPath && reportPath === repairedReportPath ? 'repaired-draft' : 'default';
 
 const checks = [];
 const invalidObstacles = [];
@@ -296,9 +328,15 @@ const report = {
   nextStageAllowed: hardFailureCount === 0
 };
 
+if (validationMode === 'repaired-draft') {
+  report.validationMode = validationMode;
+}
+
 fs.writeFileSync(reportPath, JSON.stringify(report, null, 2) + '\n');
 
 console.log('P0-5B-5 draft validation gate');
+console.log(`input draft: ${draftPath}`);
+console.log(`report: ${reportPath}`);
 console.log(`status: ${report.status}`);
 console.log(`actual obstacle count: ${report.summary.actualObstacleCount}`);
 console.log(`vocabulary count: ${report.summary.vocabularyCount}`);
@@ -306,6 +344,5 @@ console.log(`comprehension count: ${report.summary.comprehensionCount}`);
 console.log(`invalid count: ${report.summary.invalidCount}`);
 console.log(`warning count: ${report.summary.warningCount}`);
 console.log(`next stage allowed: ${report.nextStageAllowed}`);
-console.log(`report: ${reportPath}`);
 
 process.exit(report.nextStageAllowed ? 0 : 1);
