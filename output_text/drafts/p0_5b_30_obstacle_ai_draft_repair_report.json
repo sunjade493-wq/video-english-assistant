@@ -1,0 +1,255 @@
+{
+  "schemaVersion": "p0-5b-30-obstacle-draft-repair-report.v1",
+  "stage": "P0-5B-5B",
+  "sourceDraftPath": "output_text/drafts/p0_5b_30_obstacle_ai_draft.json",
+  "sourceValidationReportPath": "output_text/drafts/p0_5b_30_obstacle_ai_draft_validation_report.json",
+  "repairedDraftPath": "output_text/drafts/p0_5b_30_obstacle_ai_draft_repaired.json",
+  "summary": {
+    "obstacleCount": 30,
+    "posNormalizedCount": 21,
+    "sentenceMeaningShortenedCount": 13,
+    "unrepairedCount": 0
+  },
+  "changes": [
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000001",
+      "field": "partOfSpeech",
+      "before": "adverb",
+      "after": "adv.",
+      "reason": "Normalized vocabulary partOfSpeech display value to frozen-supported form."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000002",
+      "field": "partOfSpeech",
+      "before": "noun",
+      "after": "n.",
+      "reason": "Normalized vocabulary partOfSpeech display value to frozen-supported form."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000003",
+      "field": "partOfSpeech",
+      "before": "adjective",
+      "after": "adj.",
+      "reason": "Normalized vocabulary partOfSpeech display value to frozen-supported form."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000004",
+      "field": "partOfSpeech",
+      "before": "proper noun",
+      "after": "n.",
+      "reason": "Normalized vocabulary partOfSpeech display value to frozen-supported form."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000004",
+      "field": "sentenceMeaning",
+      "before": "a fictional satirical website name implying absurdly low barriers to officiating weddings",
+      "after": "连你都能证婚网",
+      "reason": "Shortened to concise Chinese current-sentence meaning derived from existing draft fields."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000005",
+      "field": "partOfSpeech",
+      "before": "verb",
+      "after": "vt./vi.",
+      "reason": "Normalized vocabulary partOfSpeech display value to frozen-supported form."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000005",
+      "field": "sentenceMeaning",
+      "before": "to officially declare something formally, especially in a legal or ceremonial context",
+      "after": "宣布",
+      "reason": "Shortened to concise Chinese current-sentence meaning derived from existing draft fields."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000006",
+      "field": "partOfSpeech",
+      "before": "noun",
+      "after": "n.",
+      "reason": "Normalized vocabulary partOfSpeech display value to frozen-supported form."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000008",
+      "field": "partOfSpeech",
+      "before": "adverb",
+      "after": "adv.",
+      "reason": "Normalized vocabulary partOfSpeech display value to frozen-supported form."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000008",
+      "field": "sentenceMeaning",
+      "before": "used for emphasis to stress reality or truth, often contrasting expectation with fact",
+      "after": "事实上",
+      "reason": "Shortened to concise Chinese current-sentence meaning derived from existing draft fields."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000009",
+      "field": "partOfSpeech",
+      "before": "adjective",
+      "after": "adj.",
+      "reason": "Normalized vocabulary partOfSpeech display value to frozen-supported form."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000010",
+      "field": "partOfSpeech",
+      "before": "noun",
+      "after": "n.",
+      "reason": "Normalized vocabulary partOfSpeech display value to frozen-supported form."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000010",
+      "field": "sentenceMeaning",
+      "before": "large rectangular cloths used to cover a bed; culturally symbolic here as proof of consummation",
+      "after": "床单",
+      "reason": "Shortened to concise Chinese current-sentence meaning derived from existing draft fields."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000012",
+      "field": "partOfSpeech",
+      "before": "noun",
+      "after": "n.",
+      "reason": "Normalized vocabulary partOfSpeech display value to frozen-supported form."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000012",
+      "field": "sentenceMeaning",
+      "before": "the holiday taken by a newly married couple; carries cultural weight beyond literal travel",
+      "after": "蜜月",
+      "reason": "Shortened to concise Chinese current-sentence meaning derived from existing draft fields."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000014",
+      "field": "partOfSpeech",
+      "before": "noun",
+      "after": "n.",
+      "reason": "Normalized vocabulary partOfSpeech display value to frozen-supported form."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000014",
+      "field": "sentenceMeaning",
+      "before": "a figure of speech in which a word or phrase is applied to something to which it is not literally applicable, to suggest a resemblance",
+      "after": "隐喻",
+      "reason": "Shortened to concise Chinese current-sentence meaning derived from existing draft fields."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000015",
+      "field": "partOfSpeech",
+      "before": "noun",
+      "after": "n.",
+      "reason": "Normalized vocabulary partOfSpeech display value to frozen-supported form."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000015",
+      "field": "sentenceMeaning",
+      "before": "a formal, archaic, or euphemistic term for sexual intercourse, especially within marriage",
+      "after": "性交",
+      "reason": "Shortened to concise Chinese current-sentence meaning derived from existing draft fields."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000017",
+      "field": "partOfSpeech",
+      "before": "adjective",
+      "after": "adj.",
+      "reason": "Normalized vocabulary partOfSpeech display value to frozen-supported form."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000017",
+      "field": "sentenceMeaning",
+      "before": "giving pleasure and fulfillment, especially through sensory or emotional response",
+      "after": "令人满足的",
+      "reason": "Shortened to concise Chinese current-sentence meaning derived from existing draft fields."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000018",
+      "field": "partOfSpeech",
+      "before": "verb",
+      "after": "vt./vi.",
+      "reason": "Normalized vocabulary partOfSpeech display value to frozen-supported form."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000018",
+      "field": "sentenceMeaning",
+      "before": "past tense of 'forget' — indicates lapse in memory, often used idiomatically before introducing new information",
+      "after": "忘记",
+      "reason": "Shortened to concise Chinese current-sentence meaning derived from existing draft fields."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000019",
+      "field": "partOfSpeech",
+      "before": "noun",
+      "after": "n.",
+      "reason": "Normalized vocabulary partOfSpeech display value to frozen-supported form."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000022",
+      "field": "partOfSpeech",
+      "before": "adjective",
+      "after": "adj.",
+      "reason": "Normalized vocabulary partOfSpeech display value to frozen-supported form."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000022",
+      "field": "sentenceMeaning",
+      "before": "having matter packed closely together — used scientifically here, not colloquially ('stupid')",
+      "after": "密集的",
+      "reason": "Shortened to concise Chinese current-sentence meaning derived from existing draft fields."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000023",
+      "field": "partOfSpeech",
+      "before": "noun",
+      "after": "n.",
+      "reason": "Normalized vocabulary partOfSpeech display value to frozen-supported form."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000024",
+      "field": "partOfSpeech",
+      "before": "verb",
+      "after": "vt./vi.",
+      "reason": "Normalized vocabulary partOfSpeech display value to frozen-supported form."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000025",
+      "field": "partOfSpeech",
+      "before": "noun",
+      "after": "n.",
+      "reason": "Normalized vocabulary partOfSpeech display value to frozen-supported form."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000025",
+      "field": "sentenceMeaning",
+      "before": "organisms that produce their own food from inorganic substances — biological term requiring domain knowledge",
+      "after": "自养生物",
+      "reason": "Shortened to concise Chinese current-sentence meaning derived from existing draft fields."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000026",
+      "field": "partOfSpeech",
+      "before": "noun",
+      "after": "n.",
+      "reason": "Normalized vocabulary partOfSpeech display value to frozen-supported form."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000026",
+      "field": "sentenceMeaning",
+      "before": "an extinct species or subspecies of human that lived in Europe and western Asia — proper noun, capitalized",
+      "after": "尼安德特人",
+      "reason": "Shortened to concise Chinese current-sentence meaning derived from existing draft fields."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000029",
+      "field": "partOfSpeech",
+      "before": "noun",
+      "after": "n.",
+      "reason": "Normalized vocabulary partOfSpeech display value to frozen-supported form."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000029",
+      "field": "sentenceMeaning",
+      "before": "the event marking the origin of the universe — capitalized in scientific contexts but lowercase here as common noun phrase",
+      "after": "大爆炸",
+      "reason": "Shortened to concise Chinese current-sentence meaning derived from existing draft fields."
+    }
+  ],
+  "unrepaired": [],
+  "nextRecommendedStep": "Run P0-5B validation gate against repaired draft."
+}
