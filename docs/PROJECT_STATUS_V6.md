@@ -1710,3 +1710,82 @@ Expected future implementation shape:
 Merge gate:
 
 Yes, merge only if only `docs/PROJECT_STATUS_V6.md` changed, no code files changed, no `output_text` files changed, the contract allows POS display normalization, the contract allows short Chinese `sentenceMeaning` repair, the contract forbids changing obstacle identity, type, marker span, review status, review decision, Runtime, Production, frozen, or runtime outputs, and the contract requires a repaired draft copy instead of overwriting the original draft.
+
+## P0-5B-7A Needs-edit Resolution Contract
+
+Status:
+FROZEN CONTRACT
+
+Document source tag:
+p0-5b-7-human-review-apply-completed
+
+Document current evidence:
+- Reviewed draft path:
+  `output_text/drafts/p0_5b_30_obstacle_reviewed_draft.json`
+- Apply report path:
+  `output_text/drafts/p0_5b_30_obstacle_human_review_apply_report.json`
+- sourceObstacleCount: 30
+- approvedCount: 17
+- rejectedCount: 12
+- needsEditCount: 1
+- pendingCount: 0
+- reviewedObstacleCount: 17
+- runtimeMayConsume: false
+
+Freeze approved-only promotion policy:
+
+1. P0-5B frozen promotion may promote only the 17 approved reviewed obstacles.
+2. Rejected obstacles must not be promoted.
+3. needs_edit obstacles must not be promoted in this pass.
+4. The single needs_edit item does not block approved-only promotion.
+5. The needs_edit item remains traceable through the apply report.
+6. Any future recovery/edit pass for the needs_edit item must be separate and explicitly authorized.
+7. Approved-only promotion is allowed only because:
+   - pendingCount is 0
+   - approvedCount is greater than 0
+   - reviewed draft contains only approved obstacles
+   - reviewed draft runtimeMayConsume is false
+   - no rejected/needs_edit obstacle appears in reviewed draft
+
+Freeze next allowed stage:
+
+Next allowed implementation:
+P0-5B-8 Frozen Promotion
+
+P0-5B-8 must:
+- Read only:
+  `output_text/drafts/p0_5b_30_obstacle_reviewed_draft.json`
+  `output_text/drafts/p0_5b_30_obstacle_human_review_apply_report.json`
+- Write only a frozen artifact under `output_text/frozen/`
+- Promote only reviewed/approved obstacles
+- Preserve Runtime read-only principles
+- Keep runtimeMayConsume false unless a later runtime promotion explicitly authorizes runtime output
+- Not modify Runtime
+- Not modify Production
+- Not modify draft sources
+- Not include rejected or needs_edit obstacles
+
+Freeze hard prohibitions:
+
+- Do NOT include needs_edit item in frozen promotion.
+- Do NOT auto-edit needs_edit item.
+- Do NOT silently drop traceability.
+- Do NOT promote rejected items.
+- Do NOT promote pending items.
+- Do NOT call AI/OCR/Qwen/Qwen-VL.
+- Do NOT modify Runtime.
+- Do NOT write `output_text/runtime` in P0-5B-8.
+- Do NOT replace Production flow.
+- Do NOT enable Runtime Pilot for normal users.
+
+Explicit non-goals:
+
+- Do not implement Frozen Promotion in this task.
+- Do not repair the needs_edit item in this task.
+- Do not change review decisions in this task.
+- Do not modify `output_text` in this task.
+- Do not modify code in this task.
+
+Merge gate:
+
+Yes, merge only if only `docs/PROJECT_STATUS_V6.md` changed, no code files changed, no `output_text` files changed, the contract explicitly allows approved-only frozen promotion, the contract explicitly forbids needs_edit/rejected promotion, the contract preserves Runtime and Production boundaries, and the contract states P0-5B-8 is the next allowed stage.
