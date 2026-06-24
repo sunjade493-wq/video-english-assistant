@@ -1459,3 +1459,110 @@ Recommended next implementation after this contract:
 Merge gate:
 
 Yes, merge only if only `docs/PROJECT_STATUS_V6.md` changed, no code files changed, no `output_text` files changed, the contract freezes 30-obstacle expansion scope, the contract preserves Production default 48, the contract preserves Runtime Pilot developer-only opt-in, the contract requires validation, human review, frozen promotion, and runtime promotion, the contract says draft AI output must never be consumed directly by Runtime, and the contract preserves Runtime read-only and fail-closed boundaries.
+
+## P0-5B-2 30-obstacle Offline Analyze Input Expansion Contract
+
+Status: FROZEN CONTRACT
+
+Date: 2026-06-23
+
+Source tag:
+
+- `p0-5b-1-30-obstacle-offline-analyze-scope-expansion-contract`
+
+P0-5B-2 freezes the offline analyze input boundary for the 30-obstacle Runtime Pilot expansion. This task decides the 30-obstacle pilot input scope only. It is a documentation-only contract; it does not authorize obstacle generation, AI calls, Analyze script changes, Runtime changes, Qwen/Qwen-VL pipeline changes, `output_text` changes, or production behavior changes.
+
+Frozen pilot input scope:
+
+```text
+00:00:00
+~
+00:06:00
+```
+
+Equivalent subtitle-index scope from current repository subtitle data:
+
+- Source checked: `output_text/v28d_bilingual_subtitles.json`.
+- Rows whose subtitle time range overlaps `00:00:00~00:06:00`: subtitle indexes `0~36`.
+- Current repository subtitle data ends at subtitle index `36` (`122.5` seconds to `124.5` seconds), so every currently versioned subtitle row overlaps the frozen time range.
+- If a later input generation task uses a fuller subtitle source than the currently versioned repository subtitle JSON, the subtitle-index boundary must be computed by that input generation script from the frozen time range `00:00:00~00:06:00`.
+
+Rationale:
+
+- The previous 10-obstacle pilot used a smaller early-episode scope.
+- The 30-obstacle pilot needs a larger but still bounded early-episode scope.
+- `00:00:00~00:06:00` is large enough to give the offline Analyze pipeline a chance to find around 30 high-quality obstacles.
+- `00:00:00~00:06:00` remains small enough to keep AI cost, human review cost, and validation scope controlled.
+- The pipeline must not pad low-value obstacles just to reach 30.
+- If fewer than 30 high-quality obstacles are found in this scope, the pipeline must report the actual count.
+
+Frozen input rules:
+
+1. The 30-obstacle pilot input must be derived from the frozen time range:
+
+   ```text
+   00:00:00~00:06:00
+   ```
+
+2. The input generation script may select subtitle rows whose time range overlaps the frozen time range.
+3. The input generation script must not modify:
+   - source subtitle JSON
+   - source video file
+   - production obstacle JSON
+   - runtime obstacle JSON
+   - visual mapping JSON
+4. The input generation script must write only future draft/input artifacts explicitly authorized by later implementation tasks.
+5. Runtime must not decide or change the input scope.
+6. Runtime must not call AI/OCR/Qwen/Qwen-VL.
+7. Runtime must not infer missing obstacles.
+8. AI draft generation must occur only after this input scope contract is frozen and after a future implementation task explicitly authorizes draft generation.
+9. Draft AI output must never be consumed directly by Runtime.
+10. Production default must remain unchanged:
+
+    ```text
+    http://127.0.0.1:5500/
+    Production Flow
+    48 obstacles
+    ```
+
+11. Runtime Pilot remains developer-only:
+
+    ```text
+    http://127.0.0.1:5500/?runtimePilot=1
+    ```
+
+12. This scope expansion must preserve P0-4B and P0-5A isolation/fail-closed rules.
+
+Explicit non-goals:
+
+- Do not generate 30 obstacles in this task.
+- Do not call AI in this task.
+- Do not modify Analyze scripts in this task.
+- Do not modify Runtime in this task.
+- Do not modify Qwen/Qwen-VL pipeline in this task.
+- Do not modify `output_text` files in this task.
+- Do not process the full episode in this task.
+- Do not expand to 100 obstacles in this task.
+- Do not promote Runtime Pilot to Production.
+- Do not enable Runtime Pilot for normal users.
+- Do not introduce a visible UI toggle.
+- Do not redesign UI.
+- Do not change marker rendering rules.
+
+Recommended next implementation after this contract:
+
+P0-5B-3 30-obstacle Offline Analyze Input Generation
+
+Allowed next implementation shape:
+
+- Create or update only the input generation script if needed.
+- Generate only the `00:00:00~00:06:00` analyze input artifact under `output_text/drafts/`.
+- Do not call AI yet unless explicitly authorized by the next task.
+- Do not modify Runtime.
+- Do not modify production obstacle files.
+- Verify generated input subtitle count and time range.
+- Confirm no `output_text/runtime` file changed.
+
+Merge gate:
+
+Yes, merge only if only `docs/PROJECT_STATUS_V6.md` changed, no code files changed, no `output_text` files changed, the contract freezes the 30-obstacle input time scope as `00:00:00~00:06:00`, the contract preserves Production default 48, the contract preserves Runtime Pilot developer-only opt-in, the contract says Runtime must not decide input scope, and the contract says this task does not generate obstacles or call AI.
