@@ -3,14 +3,14 @@
   "stage": "P0-5B-6",
   "sourceDraftPath": "output_text/drafts/p0_5b_30_obstacle_ai_draft_repaired.json",
   "sourceValidationReportPath": "output_text/drafts/p0_5b_30_obstacle_ai_draft_repaired_validation_report.json",
-  "reviewStatus": "pending-human-review",
+  "reviewStatus": "human-review-completed",
   "reviewerInstruction": "Human reviewer: manually inspect each obstacle and set reviewDecision to approved, rejected, needs_edit, or pending. Do not change obstacle content in this file except reviewDecision, reviewNotes, and qualityChecklist fields. This template starts with all decisions pending and nextStageAllowed false.",
   "summary": {
     "obstacleCount": 30,
-    "approvedCount": 0,
-    "rejectedCount": 0,
-    "needsEditCount": 0,
-    "pendingCount": 30
+    "approvedCount": 17,
+    "rejectedCount": 12,
+    "needsEditCount": 1,
+    "pendingCount": 0
   },
   "decisions": [
     {
@@ -28,8 +28,8 @@
         "actual": "",
         "grammar": ""
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "rejected",
+      "reviewNotes": "Too easy / low-value recap marker; not a real CET-4 learning obstacle in this context.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -37,12 +37,12 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
+        "realLearningObstacle": false,
+        "levelAppropriate": false,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
         "explanationUseful": null,
-        "sentenceMeaningGood": null
+        "sentenceMeaningGood": false
       }
     },
     {
@@ -60,8 +60,8 @@
         "actual": "",
         "grammar": ""
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "approved",
+      "reviewNotes": "Useful figurative use of “lamb” for an innocent/affectionate person; context makes it more than the animal meaning.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -69,12 +69,12 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
+        "realLearningObstacle": true,
+        "levelAppropriate": true,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
         "explanationUseful": null,
-        "sentenceMeaningGood": null
+        "sentenceMeaningGood": true
       }
     },
     {
@@ -92,8 +92,8 @@
         "actual": "",
         "grammar": ""
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "approved",
+      "reviewNotes": "High-value formal/legal collocation in “power vested in me”; likely a real learner obstacle.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -101,12 +101,12 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
+        "realLearningObstacle": true,
+        "levelAppropriate": true,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
         "explanationUseful": null,
-        "sentenceMeaningGood": null
+        "sentenceMeaningGood": true
       }
     },
     {
@@ -124,8 +124,8 @@
         "actual": "",
         "grammar": ""
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "rejected",
+      "reviewNotes": "Proper-name joke website rather than a reusable vocabulary obstacle; boundary is a whole invented domain name.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -133,12 +133,12 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
+        "realLearningObstacle": false,
+        "levelAppropriate": false,
+        "notDuplicate": true,
+        "boundaryCorrect": false,
         "explanationUseful": null,
-        "sentenceMeaningGood": null
+        "sentenceMeaningGood": false
       }
     },
     {
@@ -156,8 +156,8 @@
         "actual": "",
         "grammar": ""
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "approved",
+      "reviewNotes": "Useful ceremony-specific sense of “pronounce” meaning formally declare; context is clear and reusable.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -165,12 +165,12 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
+        "realLearningObstacle": true,
+        "levelAppropriate": true,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
         "explanationUseful": null,
-        "sentenceMeaningGood": null
+        "sentenceMeaningGood": true
       }
     },
     {
@@ -188,8 +188,8 @@
         "actual": "",
         "grammar": ""
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "rejected",
+      "reviewNotes": "Too easy / low-value basic wedding word; unlikely to be a CET-4 obstacle.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -197,12 +197,12 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
+        "realLearningObstacle": false,
+        "levelAppropriate": false,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
         "explanationUseful": null,
-        "sentenceMeaningGood": null
+        "sentenceMeaningGood": true
       }
     },
     {
@@ -220,8 +220,8 @@
         "actual": "a dramatic pause signaling narrative shift from wedding ceremony to newlywed domestic life",
         "grammar": "elliptical clause functioning as discourse connector, not syntactically complete sentence"
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "needs_edit",
+      "reviewNotes": "Potentially useful transition, but current explanation overstates “newlywed domestic life”; should be reframed as a recap-to-current-story transition.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -229,11 +229,11 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
-        "explanationUseful": null,
+        "realLearningObstacle": true,
+        "levelAppropriate": true,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
+        "explanationUseful": false,
         "sentenceMeaningGood": null
       }
     },
@@ -252,8 +252,8 @@
         "actual": "",
         "grammar": ""
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "rejected",
+      "reviewNotes": "Too easy and ordinary adverb in a literal sentence; not a meaningful obstacle here.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -261,12 +261,12 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
+        "realLearningObstacle": false,
+        "levelAppropriate": false,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
         "explanationUseful": null,
-        "sentenceMeaningGood": null
+        "sentenceMeaningGood": false
       }
     },
     {
@@ -284,8 +284,8 @@
         "actual": "",
         "grammar": ""
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "approved",
+      "reviewNotes": "Useful non-literal status meaning “formally recognized”; common but contextually meaningful.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -293,12 +293,12 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
+        "realLearningObstacle": true,
+        "levelAppropriate": true,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
         "explanationUseful": null,
-        "sentenceMeaningGood": null
+        "sentenceMeaningGood": true
       }
     },
     {
@@ -316,8 +316,8 @@
         "actual": "",
         "grammar": ""
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "rejected",
+      "reviewNotes": "Literal household noun and low-value as a CET-4 obstacle; the cultural issue is in the surrounding custom, not the word.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -325,12 +325,12 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
+        "realLearningObstacle": false,
+        "levelAppropriate": false,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
         "explanationUseful": null,
-        "sentenceMeaningGood": null
+        "sentenceMeaningGood": false
       }
     },
     {
@@ -348,8 +348,8 @@
         "actual": "engaged in sexual intercourse, specifically to validate marriage under traditional custom",
         "grammar": "past participle used adjectivally after 'that we' — requires understanding of cultural/legal register"
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "approved",
+      "reviewNotes": "Strong high-value obstacle: formal/sexual sense is necessary to understand the joke and cultural reference.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -357,11 +357,11 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
-        "explanationUseful": null,
+        "realLearningObstacle": true,
+        "levelAppropriate": true,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
+        "explanationUseful": true,
         "sentenceMeaningGood": null
       }
     },
@@ -380,8 +380,8 @@
         "actual": "",
         "grammar": ""
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "rejected",
+      "reviewNotes": "Common literal wedding/travel word; not a strong learning obstacle in this context.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -389,12 +389,12 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
+        "realLearningObstacle": false,
+        "levelAppropriate": false,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
         "explanationUseful": null,
-        "sentenceMeaningGood": null
+        "sentenceMeaningGood": true
       }
     },
     {
@@ -412,8 +412,8 @@
         "actual": "polite, reluctant concession masking underlying skepticism or irony",
         "grammar": "discourse particle 'Well' + epistemic verb 'suppose' + subject complement — signals pragmatic softening"
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "rejected",
+      "reviewNotes": "Ordinary literal sentence; pragmatic reading is too generic to be a real comprehension barrier.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -421,11 +421,11 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
-        "explanationUseful": null,
+        "realLearningObstacle": false,
+        "levelAppropriate": false,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
+        "explanationUseful": false,
         "sentenceMeaningGood": null
       }
     },
@@ -444,8 +444,8 @@
         "actual": "",
         "grammar": ""
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "approved",
+      "reviewNotes": "Useful abstract vocabulary needed for Sheldon’s Lego analogy; boundary and sentence meaning are clear.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -453,12 +453,12 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
+        "realLearningObstacle": true,
+        "levelAppropriate": true,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
         "explanationUseful": null,
-        "sentenceMeaningGood": null
+        "sentenceMeaningGood": true
       }
     },
     {
@@ -476,8 +476,8 @@
         "actual": "",
         "grammar": ""
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "approved",
+      "reviewNotes": "High-value archaic/euphemistic sense of “congress” meaning sexual intercourse; essential to the joke.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -485,12 +485,12 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
+        "realLearningObstacle": true,
+        "levelAppropriate": true,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
         "explanationUseful": null,
-        "sentenceMeaningGood": null
+        "sentenceMeaningGood": true
       }
     },
     {
@@ -508,8 +508,8 @@
         "actual": "deliberate double meaning: physical Lego connection + implied sexual coupling",
         "grammar": "present tense verb with adverbial phrase 'with a satisfying snap' — requires recognizing intentional innuendo"
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "approved",
+      "reviewNotes": "Real comprehension barrier because the Lego wording carries deliberate innuendo beyond the literal action.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -517,11 +517,11 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
-        "explanationUseful": null,
+        "realLearningObstacle": true,
+        "levelAppropriate": true,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
+        "explanationUseful": true,
         "sentenceMeaningGood": null
       }
     },
@@ -540,8 +540,8 @@
         "actual": "",
         "grammar": ""
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "rejected",
+      "reviewNotes": "Ordinary adjective and largely literal; the innuendo is already covered by the interlock comprehension item.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -549,12 +549,12 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
+        "realLearningObstacle": false,
+        "levelAppropriate": false,
+        "notDuplicate": false,
+        "boundaryCorrect": true,
         "explanationUseful": null,
-        "sentenceMeaningGood": null
+        "sentenceMeaningGood": false
       }
     },
     {
@@ -572,8 +572,8 @@
         "actual": "",
         "grammar": ""
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "rejected",
+      "reviewNotes": "Too easy / low-value common verb form; not a real CET-4 obstacle here.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -581,12 +581,12 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
+        "realLearningObstacle": false,
+        "levelAppropriate": false,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
         "explanationUseful": null,
-        "sentenceMeaningGood": null
+        "sentenceMeaningGood": false
       }
     },
     {
@@ -604,8 +604,8 @@
         "actual": "",
         "grammar": ""
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "approved",
+      "reviewNotes": "Useful hotel-service phrase with clear contextual meaning; appropriate learner obstacle.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -613,12 +613,12 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
+        "realLearningObstacle": true,
+        "levelAppropriate": true,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
         "explanationUseful": null,
-        "sentenceMeaningGood": null
+        "sentenceMeaningGood": true
       }
     },
     {
@@ -636,8 +636,8 @@
         "actual": "performative utterance marking reveal or presentation — culturally marked, not literal French usage",
         "grammar": "exclamatory particle, no grammatical function in English clause structure"
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "approved",
+      "reviewNotes": "Useful discourse/cultural interjection for a reveal; not simply translated word-for-word.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -645,11 +645,11 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
-        "explanationUseful": null,
+        "realLearningObstacle": true,
+        "levelAppropriate": true,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
+        "explanationUseful": true,
         "sentenceMeaningGood": null
       }
     },
@@ -668,8 +668,8 @@
         "actual": "rhetorical device expressing speaker's confident assumption — implies shared knowledge or prior expectation",
         "grammar": "inverted tag question attached to past-tense declarative clause; pragmatically functions as assertion"
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "approved",
+      "reviewNotes": "Tag-question meaning is a real pragmatic/grammar obstacle for learners and the boundary is minimal.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -677,11 +677,11 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
-        "explanationUseful": null,
+        "realLearningObstacle": true,
+        "levelAppropriate": true,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
+        "explanationUseful": true,
         "sentenceMeaningGood": null
       }
     },
@@ -700,8 +700,8 @@
         "actual": "",
         "grammar": ""
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "rejected",
+      "reviewNotes": "Common literal adjective in a science lyric; low-value compared with stronger technical terms nearby.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -709,12 +709,12 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
+        "realLearningObstacle": false,
+        "levelAppropriate": false,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
         "explanationUseful": null,
-        "sentenceMeaningGood": null
+        "sentenceMeaningGood": false
       }
     },
     {
@@ -732,8 +732,8 @@
         "actual": "",
         "grammar": ""
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "approved",
+      "reviewNotes": "Relevant scientific vocabulary in context with good explanatory sentence meaning.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -741,12 +741,12 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
+        "realLearningObstacle": true,
+        "levelAppropriate": true,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
         "explanationUseful": null,
-        "sentenceMeaningGood": null
+        "sentenceMeaningGood": true
       }
     },
     {
@@ -764,8 +764,8 @@
         "actual": "",
         "grammar": ""
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "rejected",
+      "reviewNotes": "Very common literal verb in this line; not a meaningful CET-4 obstacle.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -773,12 +773,12 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
+        "realLearningObstacle": false,
+        "levelAppropriate": false,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
         "explanationUseful": null,
-        "sentenceMeaningGood": null
+        "sentenceMeaningGood": false
       }
     },
     {
@@ -796,8 +796,8 @@
         "actual": "",
         "grammar": ""
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "approved",
+      "reviewNotes": "Specialized science term likely to block comprehension of the lyric; explanation is concise.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -805,12 +805,12 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
+        "realLearningObstacle": true,
+        "levelAppropriate": true,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
         "explanationUseful": null,
-        "sentenceMeaningGood": null
+        "sentenceMeaningGood": true
       }
     },
     {
@@ -828,8 +828,8 @@
         "actual": "",
         "grammar": ""
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "approved",
+      "reviewNotes": "Proper scientific/historical term that can block meaning in the theme-song lyric; boundary is correct.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -837,12 +837,12 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
+        "realLearningObstacle": true,
+        "levelAppropriate": true,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
         "explanationUseful": null,
-        "sentenceMeaningGood": null
+        "sentenceMeaningGood": true
       }
     },
     {
@@ -860,8 +860,8 @@
         "actual": "the Great Wall of China — unmarked reference assuming shared cultural knowledge",
         "grammar": "definite article + singular noun without modifier — relies on encyclopedic knowledge"
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "approved",
+      "reviewNotes": "Real comprehension barrier: “the Wall” relies on cultural/world-knowledge reference to the Great Wall.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -869,11 +869,11 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
-        "explanationUseful": null,
+        "realLearningObstacle": true,
+        "levelAppropriate": true,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
+        "explanationUseful": true,
         "sentenceMeaningGood": null
       }
     },
@@ -892,8 +892,8 @@
         "actual": "solving, explaining, or making clear a complex phenomenon",
         "grammar": "present participle + definite noun — idiomatic collocation requiring conceptual mapping"
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "approved",
+      "reviewNotes": "Useful idiomatic phrase meaning solving/explaining a mystery; boundary is meaningful.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -901,11 +901,11 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
-        "explanationUseful": null,
+        "realLearningObstacle": true,
+        "levelAppropriate": true,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
+        "explanationUseful": true,
         "sentenceMeaningGood": null
       }
     },
@@ -924,8 +924,8 @@
         "actual": "",
         "grammar": ""
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "approved",
+      "reviewNotes": "Core series/science term with contextual importance and clear meaning.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -933,12 +933,12 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
+        "realLearningObstacle": true,
+        "levelAppropriate": true,
+        "notDuplicate": true,
+        "boundaryCorrect": true,
         "explanationUseful": null,
-        "sentenceMeaningGood": null
+        "sentenceMeaningGood": true
       }
     },
     {
@@ -956,8 +956,8 @@
         "actual": "iconic representation of the Big Bang — functions as both sound effect and conceptual shorthand",
         "grammar": "exclamation mark required for full pragmatic force; isolated utterance lacking syntax"
       },
-      "reviewDecision": "pending",
-      "reviewNotes": "",
+      "reviewDecision": "rejected",
+      "reviewNotes": "Too thin as a standalone comprehension obstacle; mainly a sound effect already covered by “big bang”.",
       "allowedDecisionValues": [
         "approved",
         "rejected",
@@ -965,14 +965,14 @@
         "pending"
       ],
       "qualityChecklist": {
-        "realLearningObstacle": null,
-        "levelAppropriate": null,
-        "notDuplicate": null,
-        "boundaryCorrect": null,
-        "explanationUseful": null,
+        "realLearningObstacle": false,
+        "levelAppropriate": false,
+        "notDuplicate": false,
+        "boundaryCorrect": true,
+        "explanationUseful": false,
         "sentenceMeaningGood": null
       }
     }
   ],
-  "nextStageAllowed": false
+  "nextStageAllowed": true
 }
