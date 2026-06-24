@@ -1,0 +1,577 @@
+{
+  "schemaVersion": "p0-5b-30-obstacle-analyze-input.v1",
+  "episodeId": "tbbt-s12e01",
+  "learnerLevel": "CET-4",
+  "targetObstacleCount": 30,
+  "pilotScope": {
+    "start": "00:00:00",
+    "end": "00:06:00",
+    "selectionRule": "include subtitle rows whose time range overlaps the frozen scope"
+  },
+  "source": {
+    "subtitlesPath": "output_text/v28d_bilingual_subtitles.json",
+    "scopeContractTag": "p0-5b-2-30-obstacle-offline-analyze-input-expansion-contract"
+  },
+  "generationRules": {
+    "aiMayBeCalled": false,
+    "runtimeMayConsume": false,
+    "draftOnly": true,
+    "mustNotGenerateObstacles": true
+  },
+  "stats": {
+    "subtitleCount": 37,
+    "firstSubtitleIndex": 0,
+    "lastSubtitleIndex": 36,
+    "firstStartTime": "2.0",
+    "lastEndTime": "124.5"
+  },
+  "subtitles": [
+    {
+      "subtitleIndex": 0,
+      "startTime": "2.0",
+      "endTime": "6.0",
+      "source_en": "Previously on The Big Bang Theory...",
+      "source_zh": "《生活大爆炸》前情提要",
+      "contextBefore": [],
+      "contextAfter": [
+        "Can you believe our little lamb is finally getting married?",
+        "He can't believe it."
+      ]
+    },
+    {
+      "subtitleIndex": 1,
+      "startTime": "6.0",
+      "endTime": "10.0",
+      "source_en": "Can you believe our little lamb is finally getting married?",
+      "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+      "contextBefore": [
+        "Previously on The Big Bang Theory..."
+      ],
+      "contextAfter": [
+        "He can't believe it.",
+        "And neither can I."
+      ]
+    },
+    {
+      "subtitleIndex": 2,
+      "startTime": "10.0",
+      "endTime": "12.0",
+      "source_en": "He can't believe it.",
+      "source_zh": "他肯定不信",
+      "contextBefore": [
+        "Previously on The Big Bang Theory...",
+        "Can you believe our little lamb is finally getting married?"
+      ],
+      "contextAfter": [
+        "And neither can I.",
+        "Hi, Dad. How you doing?"
+      ]
+    },
+    {
+      "subtitleIndex": 3,
+      "startTime": "12.0",
+      "endTime": "15.5",
+      "source_en": "And neither can I.",
+      "source_zh": "我也不敢相信",
+      "contextBefore": [
+        "Can you believe our little lamb is finally getting married?",
+        "He can't believe it."
+      ],
+      "contextAfter": [
+        "Hi, Dad. How you doing?",
+        "Then by the power vested in me..."
+      ]
+    },
+    {
+      "subtitleIndex": 4,
+      "startTime": "15.5",
+      "endTime": "20.5",
+      "source_en": "Hi, Dad. How you doing?",
+      "source_zh": "爸 你还好吗",
+      "contextBefore": [
+        "He can't believe it.",
+        "And neither can I."
+      ],
+      "contextAfter": [
+        "Then by the power vested in me...",
+        "by EvenYouCanPerformWeddings.Com..."
+      ]
+    },
+    {
+      "subtitleIndex": 5,
+      "startTime": "20.5",
+      "endTime": "23.0",
+      "source_en": "Then by the power vested in me...",
+      "source_zh": "我以\"连你都能证婚网\"",
+      "contextBefore": [
+        "And neither can I.",
+        "Hi, Dad. How you doing?"
+      ],
+      "contextAfter": [
+        "by EvenYouCanPerformWeddings.Com...",
+        "...I now pronounce you husband and wife."
+      ]
+    },
+    {
+      "subtitleIndex": 6,
+      "startTime": "23.0",
+      "endTime": "28.5",
+      "source_en": "by EvenYouCanPerformWeddings.Com...",
+      "source_zh": "所赋予我的合法权利",
+      "contextBefore": [
+        "Hi, Dad. How you doing?",
+        "Then by the power vested in me..."
+      ],
+      "contextAfter": [
+        "...I now pronounce you husband and wife.",
+        "You may kiss the bride."
+      ]
+    },
+    {
+      "subtitleIndex": 7,
+      "startTime": "28.5",
+      "endTime": "30.5",
+      "source_en": "...I now pronounce you husband and wife.",
+      "source_zh": "我现在宣布你们正式结为合法夫妻",
+      "contextBefore": [
+        "Then by the power vested in me...",
+        "by EvenYouCanPerformWeddings.Com..."
+      ],
+      "contextAfter": [
+        "You may kiss the bride.",
+        "and now..."
+      ]
+    },
+    {
+      "subtitleIndex": 8,
+      "startTime": "30.5",
+      "endTime": "36.5",
+      "source_en": "You may kiss the bride.",
+      "source_zh": "你可以吻新娘了",
+      "contextBefore": [
+        "by EvenYouCanPerformWeddings.Com...",
+        "...I now pronounce you husband and wife."
+      ],
+      "contextAfter": [
+        "and now...",
+        "Good morning, wife."
+      ]
+    },
+    {
+      "subtitleIndex": 9,
+      "startTime": "36.5",
+      "endTime": "40.5",
+      "source_en": "and now...",
+      "source_zh": "时至今日",
+      "contextBefore": [
+        "...I now pronounce you husband and wife.",
+        "You may kiss the bride."
+      ],
+      "contextAfter": [
+        "Good morning, wife.",
+        "Good morning, husband."
+      ]
+    },
+    {
+      "subtitleIndex": 10,
+      "startTime": "40.5",
+      "endTime": "44.5",
+      "source_en": "Good morning, wife.",
+      "source_zh": "早安啊 老婆",
+      "contextBefore": [
+        "You may kiss the bride.",
+        "and now..."
+      ],
+      "contextAfter": [
+        "Good morning, husband.",
+        "I can't believe we're actually married."
+      ]
+    },
+    {
+      "subtitleIndex": 11,
+      "startTime": "44.5",
+      "endTime": "47.5",
+      "source_en": "Good morning, husband.",
+      "source_zh": "早安啊 老公",
+      "contextBefore": [
+        "and now...",
+        "Good morning, wife."
+      ],
+      "contextAfter": [
+        "I can't believe we're actually married.",
+        "It's official. According to tradition,"
+      ]
+    },
+    {
+      "subtitleIndex": 12,
+      "startTime": "47.5",
+      "endTime": "49.5",
+      "source_en": "I can't believe we're actually married.",
+      "source_zh": "真不敢相信我们真的结婚了",
+      "contextBefore": [
+        "Good morning, wife.",
+        "Good morning, husband."
+      ],
+      "contextAfter": [
+        "It's official. According to tradition,",
+        "we should hang the bedsheets outside"
+      ]
+    },
+    {
+      "subtitleIndex": 13,
+      "startTime": "49.5",
+      "endTime": "51.5",
+      "source_en": "It's official. According to tradition,",
+      "source_zh": "正式完婚了 根据传统",
+      "contextBefore": [
+        "Good morning, husband.",
+        "I can't believe we're actually married."
+      ],
+      "contextAfter": [
+        "we should hang the bedsheets outside",
+        "so the villagers can see that we consummated."
+      ]
+    },
+    {
+      "subtitleIndex": 14,
+      "startTime": "51.5",
+      "endTime": "53.0",
+      "source_en": "we should hang the bedsheets outside",
+      "source_zh": "我们应该把床单挂在外面",
+      "contextBefore": [
+        "I can't believe we're actually married.",
+        "It's official. According to tradition,"
+      ],
+      "contextAfter": [
+        "so the villagers can see that we consummated.",
+        "considering where we're starting our honeymoon."
+      ]
+    },
+    {
+      "subtitleIndex": 15,
+      "startTime": "53.0",
+      "endTime": "58.0",
+      "source_en": "so the villagers can see that we consummated.",
+      "source_zh": "这样其他村民就能知道我们行过房了",
+      "contextBefore": [
+        "It's official. According to tradition,",
+        "we should hang the bedsheets outside"
+      ],
+      "contextAfter": [
+        "considering where we're starting our honeymoon.",
+        "Well, I suppose you're right."
+      ]
+    },
+    {
+      "subtitleIndex": 16,
+      "startTime": "58.0",
+      "endTime": "60.5",
+      "source_en": "considering where we're starting our honeymoon.",
+      "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅",
+      "contextBefore": [
+        "we should hang the bedsheets outside",
+        "so the villagers can see that we consummated."
+      ],
+      "contextAfter": [
+        "Well, I suppose you're right.",
+        "Lego is the perfect metaphor for marital congress."
+      ]
+    },
+    {
+      "subtitleIndex": 17,
+      "startTime": "60.5",
+      "endTime": "67.0",
+      "source_en": "Well, I suppose you're right.",
+      "source_zh": "你说的有道理",
+      "contextBefore": [
+        "so the villagers can see that we consummated.",
+        "considering where we're starting our honeymoon."
+      ],
+      "contextAfter": [
+        "Lego is the perfect metaphor for marital congress.",
+        "Two pieces that interlock with a satisfying snap."
+      ]
+    },
+    {
+      "subtitleIndex": 18,
+      "startTime": "67.0",
+      "endTime": "70.0",
+      "source_en": "Lego is the perfect metaphor for marital congress.",
+      "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+      "contextBefore": [
+        "considering where we're starting our honeymoon.",
+        "Well, I suppose you're right."
+      ],
+      "contextAfter": [
+        "Two pieces that interlock with a satisfying snap.",
+        "Oh, I almost forgot."
+      ]
+    },
+    {
+      "subtitleIndex": 19,
+      "startTime": "70.0",
+      "endTime": "79.5",
+      "source_en": "Two pieces that interlock with a satisfying snap.",
+      "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+      "contextBefore": [
+        "Well, I suppose you're right.",
+        "Lego is the perfect metaphor for marital congress."
+      ],
+      "contextAfter": [
+        "Oh, I almost forgot.",
+        "While you were sleeping, I ordered room service."
+      ]
+    },
+    {
+      "subtitleIndex": 20,
+      "startTime": "79.5",
+      "endTime": "80.5",
+      "source_en": "Oh, I almost forgot.",
+      "source_zh": "我差点就忘了",
+      "contextBefore": [
+        "Lego is the perfect metaphor for marital congress.",
+        "Two pieces that interlock with a satisfying snap."
+      ],
+      "contextAfter": [
+        "While you were sleeping, I ordered room service.",
+        "Really?"
+      ]
+    },
+    {
+      "subtitleIndex": 21,
+      "startTime": "80.5",
+      "endTime": "83.5",
+      "source_en": "While you were sleeping, I ordered room service.",
+      "source_zh": "在你睡觉的时候 我点了客房送餐",
+      "contextBefore": [
+        "Two pieces that interlock with a satisfying snap.",
+        "Oh, I almost forgot."
+      ],
+      "contextAfter": [
+        "Really?",
+        "Voila!"
+      ]
+    },
+    {
+      "subtitleIndex": 22,
+      "startTime": "83.5",
+      "endTime": "85.5",
+      "source_en": "Really?",
+      "source_zh": "真的吗",
+      "contextBefore": [
+        "Oh, I almost forgot.",
+        "While you were sleeping, I ordered room service."
+      ],
+      "contextAfter": [
+        "Voila!",
+        "You thought it was going to be food, didn't you?"
+      ]
+    },
+    {
+      "subtitleIndex": 23,
+      "startTime": "85.5",
+      "endTime": "88.5",
+      "source_en": "Voila!",
+      "source_zh": "请看",
+      "contextBefore": [
+        "While you were sleeping, I ordered room service.",
+        "Really?"
+      ],
+      "contextAfter": [
+        "You thought it was going to be food, didn't you?",
+        "Our whole universe was in a hot, dense state"
+      ]
+    },
+    {
+      "subtitleIndex": 24,
+      "startTime": "88.5",
+      "endTime": "92.0",
+      "source_en": "You thought it was going to be food, didn't you?",
+      "source_zh": "你本来还以为是食物 对吧",
+      "contextBefore": [
+        "Really?",
+        "Voila!"
+      ],
+      "contextAfter": [
+        "Our whole universe was in a hot, dense state",
+        "Then nearly 14 billion years ago expansion started... Wait!"
+      ]
+    },
+    {
+      "subtitleIndex": 25,
+      "startTime": "92.0",
+      "endTime": "95.0",
+      "source_en": "Our whole universe was in a hot, dense state",
+      "source_zh": "我们的宇宙曾经超热又超密",
+      "contextBefore": [
+        "Voila!",
+        "You thought it was going to be food, didn't you?"
+      ],
+      "contextAfter": [
+        "Then nearly 14 billion years ago expansion started... Wait!",
+        "The Earth began to cool"
+      ]
+    },
+    {
+      "subtitleIndex": 26,
+      "startTime": "95.0",
+      "endTime": "99.0",
+      "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+      "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+      "contextBefore": [
+        "You thought it was going to be food, didn't you?",
+        "Our whole universe was in a hot, dense state"
+      ],
+      "contextAfter": [
+        "The Earth began to cool",
+        "The autotrophs began to drool, Neanderthals developed tools?"
+      ]
+    },
+    {
+      "subtitleIndex": 27,
+      "startTime": "99.0",
+      "endTime": "101.0",
+      "source_en": "The Earth began to cool",
+      "source_zh": "地球开始冷却",
+      "contextBefore": [
+        "Our whole universe was in a hot, dense state",
+        "Then nearly 14 billion years ago expansion started... Wait!"
+      ],
+      "contextAfter": [
+        "The autotrophs began to drool, Neanderthals developed tools?",
+        "We built the Wall We built the pyramids"
+      ]
+    },
+    {
+      "subtitleIndex": 28,
+      "startTime": "101.0",
+      "endTime": "104.0",
+      "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+      "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+      "contextBefore": [
+        "Then nearly 14 billion years ago expansion started... Wait!",
+        "The Earth began to cool"
+      ],
+      "contextAfter": [
+        "We built the Wall We built the pyramids",
+        "Math, Science, History, unraveling the mystery"
+      ]
+    },
+    {
+      "subtitleIndex": 29,
+      "startTime": "104.0",
+      "endTime": "105.0",
+      "source_en": "We built the Wall We built the pyramids",
+      "source_zh": "我们建了长城 我们建了金字塔",
+      "contextBefore": [
+        "The Earth began to cool",
+        "The autotrophs began to drool, Neanderthals developed tools?"
+      ],
+      "contextAfter": [
+        "Math, Science, History, unraveling the mystery",
+        "♪ Math, Science, History, unraveling the mystery ♪"
+      ]
+    },
+    {
+      "subtitleIndex": 30,
+      "startTime": "105.0",
+      "endTime": "106.0",
+      "source_en": "Math, Science, History, unraveling the mystery",
+      "source_zh": "数学 科学 历史 解开了谜团",
+      "contextBefore": [
+        "The autotrophs began to drool, Neanderthals developed tools?",
+        "We built the Wall We built the pyramids"
+      ],
+      "contextAfter": [
+        "♪ Math, Science, History, unraveling the mystery ♪",
+        "That all started with a big bang"
+      ]
+    },
+    {
+      "subtitleIndex": 31,
+      "startTime": "106.0",
+      "endTime": "108.0",
+      "source_en": "♪ Math, Science, History, unraveling the mystery ♪",
+      "source_zh": "♪ 数学 科学 历史 解开了谜团 ♪",
+      "contextBefore": [
+        "We built the Wall We built the pyramids",
+        "Math, Science, History, unraveling the mystery"
+      ],
+      "contextAfter": [
+        "That all started with a big bang",
+        "Bang!"
+      ]
+    },
+    {
+      "subtitleIndex": 32,
+      "startTime": "108.0",
+      "endTime": "110.0",
+      "source_en": "That all started with a big bang",
+      "source_zh": "一切都始于大爆炸",
+      "contextBefore": [
+        "Math, Science, History, unraveling the mystery",
+        "♪ Math, Science, History, unraveling the mystery ♪"
+      ],
+      "contextAfter": [
+        "Bang!",
+        "Is it nice having Sheldon and Amy away on their honeymoon?"
+      ]
+    },
+    {
+      "subtitleIndex": 33,
+      "startTime": "110.0",
+      "endTime": "116.5",
+      "source_en": "Bang!",
+      "source_zh": "炸",
+      "contextBefore": [
+        "♪ Math, Science, History, unraveling the mystery ♪",
+        "That all started with a big bang"
+      ],
+      "contextAfter": [
+        "Is it nice having Sheldon and Amy away on their honeymoon?",
+        "Yeah, because now Leonard and I get all this alone time."
+      ]
+    },
+    {
+      "subtitleIndex": 34,
+      "startTime": "116.5",
+      "endTime": "119.5",
+      "source_en": "Is it nice having Sheldon and Amy away on their honeymoon?",
+      "source_zh": "谢尔顿跟艾米出去度蜜月你们是不是很爽啊",
+      "contextBefore": [
+        "That all started with a big bang",
+        "Bang!"
+      ],
+      "contextAfter": [
+        "Yeah, because now Leonard and I get all this alone time.",
+        "But you're not alone. We're here."
+      ]
+    },
+    {
+      "subtitleIndex": 35,
+      "startTime": "119.5",
+      "endTime": "122.5",
+      "source_en": "Yeah, because now Leonard and I get all this alone time.",
+      "source_zh": "是啊 因为我跟莱纳德有大把的独处时间",
+      "contextBefore": [
+        "Bang!",
+        "Is it nice having Sheldon and Amy away on their honeymoon?"
+      ],
+      "contextAfter": [
+        "But you're not alone. We're here."
+      ]
+    },
+    {
+      "subtitleIndex": 36,
+      "startTime": "122.5",
+      "endTime": "124.5",
+      "source_en": "But you're not alone. We're here.",
+      "source_zh": "但你俩不能独处啊 我们在呢",
+      "contextBefore": [
+        "Is it nice having Sheldon and Amy away on their honeymoon?",
+        "Yeah, because now Leonard and I get all this alone time."
+      ],
+      "contextAfter": []
+    }
+  ]
+}
