@@ -1,0 +1,232 @@
+{
+  "schemaVersion": "p0-5b-30-obstacle-human-review-apply-report.v1",
+  "stage": "P0-5B-7",
+  "sourceDraftPath": "output_text/drafts/p0_5b_30_obstacle_ai_draft_repaired.json",
+  "sourceDecisionPath": "output_text/drafts/p0_5b_30_obstacle_human_review_decisions.json",
+  "reviewedDraftPath": "output_text/drafts/p0_5b_30_obstacle_reviewed_draft.json",
+  "summary": {
+    "sourceObstacleCount": 30,
+    "approvedCount": 17,
+    "rejectedCount": 12,
+    "needsEditCount": 1,
+    "pendingCount": 0,
+    "reviewedObstacleCount": 17
+  },
+  "approved": [
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000002",
+      "type": "vocabulary",
+      "subtitleIndex": 1,
+      "text": "lamb",
+      "reviewNotes": "Useful figurative use of “lamb” for an innocent/affectionate person; context makes it more than the animal meaning."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000003",
+      "type": "vocabulary",
+      "subtitleIndex": 5,
+      "text": "vested",
+      "reviewNotes": "High-value formal/legal collocation in “power vested in me”; likely a real learner obstacle."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000005",
+      "type": "vocabulary",
+      "subtitleIndex": 7,
+      "text": "pronounce",
+      "reviewNotes": "Useful ceremony-specific sense of “pronounce” meaning formally declare; context is clear and reusable."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000009",
+      "type": "vocabulary",
+      "subtitleIndex": 13,
+      "text": "official",
+      "reviewNotes": "Useful non-literal status meaning “formally recognized”; common but contextually meaningful."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000011",
+      "type": "comprehension",
+      "subtitleIndex": 15,
+      "text": "consummated",
+      "reviewNotes": "Strong high-value obstacle: formal/sexual sense is necessary to understand the joke and cultural reference."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000014",
+      "type": "vocabulary",
+      "subtitleIndex": 18,
+      "text": "metaphor",
+      "reviewNotes": "Useful abstract vocabulary needed for Sheldon’s Lego analogy; boundary and sentence meaning are clear."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000015",
+      "type": "vocabulary",
+      "subtitleIndex": 18,
+      "text": "congress",
+      "reviewNotes": "High-value archaic/euphemistic sense of “congress” meaning sexual intercourse; essential to the joke."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000016",
+      "type": "comprehension",
+      "subtitleIndex": 19,
+      "text": "interlock",
+      "reviewNotes": "Real comprehension barrier because the Lego wording carries deliberate innuendo beyond the literal action."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000019",
+      "type": "vocabulary",
+      "subtitleIndex": 21,
+      "text": "room service",
+      "reviewNotes": "Useful hotel-service phrase with clear contextual meaning; appropriate learner obstacle."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000020",
+      "type": "comprehension",
+      "subtitleIndex": 23,
+      "text": "Voila!",
+      "reviewNotes": "Useful discourse/cultural interjection for a reveal; not simply translated word-for-word."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000021",
+      "type": "comprehension",
+      "subtitleIndex": 24,
+      "text": "didn't you?",
+      "reviewNotes": "Tag-question meaning is a real pragmatic/grammar obstacle for learners and the boundary is minimal."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000023",
+      "type": "vocabulary",
+      "subtitleIndex": 26,
+      "text": "expansion",
+      "reviewNotes": "Relevant scientific vocabulary in context with good explanatory sentence meaning."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000025",
+      "type": "vocabulary",
+      "subtitleIndex": 28,
+      "text": "autotrophs",
+      "reviewNotes": "Specialized science term likely to block comprehension of the lyric; explanation is concise."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000026",
+      "type": "vocabulary",
+      "subtitleIndex": 28,
+      "text": "Neanderthals",
+      "reviewNotes": "Proper scientific/historical term that can block meaning in the theme-song lyric; boundary is correct."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000027",
+      "type": "comprehension",
+      "subtitleIndex": 29,
+      "text": "the Wall",
+      "reviewNotes": "Real comprehension barrier: “the Wall” relies on cultural/world-knowledge reference to the Great Wall."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000028",
+      "type": "comprehension",
+      "subtitleIndex": 30,
+      "text": "unraveling the mystery",
+      "reviewNotes": "Useful idiomatic phrase meaning solving/explaining a mystery; boundary is meaningful."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000029",
+      "type": "vocabulary",
+      "subtitleIndex": 32,
+      "text": "big bang",
+      "reviewNotes": "Core series/science term with contextual importance and clear meaning."
+    }
+  ],
+  "rejected": [
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000001",
+      "type": "vocabulary",
+      "subtitleIndex": 0,
+      "text": "Previously",
+      "reviewNotes": "Too easy / low-value recap marker; not a real CET-4 learning obstacle in this context."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000004",
+      "type": "vocabulary",
+      "subtitleIndex": 6,
+      "text": "EvenYouCanPerformWeddings.Com",
+      "reviewNotes": "Proper-name joke website rather than a reusable vocabulary obstacle; boundary is a whole invented domain name."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000006",
+      "type": "vocabulary",
+      "subtitleIndex": 8,
+      "text": "bride",
+      "reviewNotes": "Too easy / low-value basic wedding word; unlikely to be a CET-4 obstacle."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000008",
+      "type": "vocabulary",
+      "subtitleIndex": 12,
+      "text": "actually",
+      "reviewNotes": "Too easy and ordinary adverb in a literal sentence; not a meaningful obstacle here."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000010",
+      "type": "vocabulary",
+      "subtitleIndex": 14,
+      "text": "bedsheets",
+      "reviewNotes": "Literal household noun and low-value as a CET-4 obstacle; the cultural issue is in the surrounding custom, not the word."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000012",
+      "type": "vocabulary",
+      "subtitleIndex": 16,
+      "text": "honeymoon",
+      "reviewNotes": "Common literal wedding/travel word; not a strong learning obstacle in this context."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000013",
+      "type": "comprehension",
+      "subtitleIndex": 17,
+      "text": "Well, I suppose you're right.",
+      "reviewNotes": "Ordinary literal sentence; pragmatic reading is too generic to be a real comprehension barrier."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000017",
+      "type": "vocabulary",
+      "subtitleIndex": 19,
+      "text": "satisfying",
+      "reviewNotes": "Ordinary adjective and largely literal; the innuendo is already covered by the interlock comprehension item."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000018",
+      "type": "vocabulary",
+      "subtitleIndex": 20,
+      "text": "forgot",
+      "reviewNotes": "Too easy / low-value common verb form; not a real CET-4 obstacle here."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000022",
+      "type": "vocabulary",
+      "subtitleIndex": 25,
+      "text": "dense",
+      "reviewNotes": "Common literal adjective in a science lyric; low-value compared with stronger technical terms nearby."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000024",
+      "type": "vocabulary",
+      "subtitleIndex": 27,
+      "text": "cool",
+      "reviewNotes": "Very common literal verb in this line; not a meaningful CET-4 obstacle."
+    },
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000030",
+      "type": "comprehension",
+      "subtitleIndex": 33,
+      "text": "Bang!",
+      "reviewNotes": "Too thin as a standalone comprehension obstacle; mainly a sound effect already covered by “big bang”."
+    }
+  ],
+  "needsEdit": [
+    {
+      "obstacleId": "tbbt-s12e01-p0-5b-obstacle-000007",
+      "type": "comprehension",
+      "subtitleIndex": 9,
+      "text": "and now...",
+      "reviewNotes": "Potentially useful transition, but current explanation overstates “newlywed domestic life”; should be reframed as a recap-to-current-story transition."
+    }
+  ],
+  "nextRecommendedStep": "Resolve needs_edit items before frozen promotion, or explicitly freeze approved-only promotion policy."
+}
