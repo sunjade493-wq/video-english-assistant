@@ -1794,7 +1794,9 @@ Yes, merge only if only `docs/PROJECT_STATUS_V6.md` changed, no code files chang
 
 ### P0-5C Comprehension Obstacle Philosophy Freeze
 
-Status: Completed.
+Status: FROZEN.
+
+Source: `docs/P0_5C_COMPREHENSION_OBSTACLE_PHILOSOPHY_FREEZE.md`
 
 P0-5C freezes the New Learning Value Principle for Comprehension Obstacle generation.
 
