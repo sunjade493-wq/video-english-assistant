@@ -1792,6 +1792,45 @@ Yes, merge only if only `docs/PROJECT_STATUS_V6.md` changed, no code files chang
 
 ---
 
+## P0-5B Runtime Pilot Verification
+
+Status: VERIFIED ✅
+
+Verification Tag: `p0-5b-runtime-pilot-verified`
+
+Date: 2026-06-27
+
+P0-5B Runtime Pilot verification completed successfully.
+
+Runtime Pilot obstacle count: 17
+
+Production obstacle count: 48
+
+Runtime / Production isolation: VERIFIED ✅
+
+Runtime data source updated:
+- `output_text/runtime/p0_5b_30_obstacle_runtime.json`
+
+Runtime validator schema support:
+- `p0-4a-runtime-obstacles-pilot-v1` (backward compatible)
+- `p0-5b-30-obstacle-runtime.v1` (P0-5B forward compatible)
+
+Console verification:
+- runtime pilot obstacles loaded: 17
+- runtime pilot normalized candidates available: 17
+- runtime pilot opt-in active: 17 obstacles
+
+Runtime pipeline verification: PASSED ✅
+
+Marker bound warnings classification:
+- Marker bound warnings are Data QA issues only.
+- Marker bound warnings are NOT Runtime Pipeline bugs.
+- Runtime pipeline correctly validates and reports data quality issues.
+
+Recommended next milestone: P0-5C
+
+---
+
 ### P0-5C Comprehension Obstacle Philosophy Freeze
 
 Status: FROZEN.
