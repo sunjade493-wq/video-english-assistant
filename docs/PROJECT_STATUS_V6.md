@@ -1789,3 +1789,27 @@ Explicit non-goals:
 Merge gate:
 
 Yes, merge only if only `docs/PROJECT_STATUS_V6.md` changed, no code files changed, no `output_text` files changed, the contract explicitly allows approved-only frozen promotion, the contract explicitly forbids needs_edit/rejected promotion, the contract preserves Runtime and Production boundaries, and the contract states P0-5B-8 is the next allowed stage.
+
+---
+
+### P0-5C Comprehension Obstacle Philosophy Freeze
+
+Status: Completed.
+
+P0-5C freezes the New Learning Value Principle for Comprehension Obstacle generation.
+
+Comprehension Obstacles must provide learning value that cannot be obtained from Vocabulary Obstacles.
+
+Vocabulary Obstacles answer what a word means in the current sentence.
+
+Comprehension Obstacles answer why the expression is used in the current context.
+
+Vocabulary and Comprehension Obstacles may coexist on the same word, phrase, or subtitle line only when they serve different learning goals.
+
+Comprehension Obstacles must be rejected if they merely repeat the Vocabulary Obstacle, sentenceMeaning, translation, or basic lexical explanation.
+
+This freeze affects Analyze Engine policy, AI draft generation, review decision rules, future AI vendor benchmarks, and future content factory production.
+
+This freeze does not affect Runtime, UI, marker rendering, or data contract behavior.
+
+Runtime remains read-only and continues to consume only frozen artifacts.
