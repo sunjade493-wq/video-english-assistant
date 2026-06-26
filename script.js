@@ -1,7 +1,7 @@
 const DEFAULT_SUBTITLE_TEXT = `Demo subtitle unavailable.`;
 const REAL_SUBTITLE_DATA_URL = 'output_text/v28d_bilingual_subtitles.json';
 const REAL_OBSTACLE_DATA_URL = 'output_text/v29a_obstacles.json';
-const RUNTIME_PILOT_OBSTACLE_DATA_URL = 'output_text/runtime/p0_4a_obstacles_pilot_runtime.json';
+const RUNTIME_PILOT_OBSTACLE_DATA_URL = 'output_text/runtime/p0_5b_30_obstacle_runtime.json';
 const REAL_VISUAL_MAPPING_DATA_URL = 'output_text/visual_mapping/TBBT_S12E01_word_boxes.json';
 const REAL_VIDEO_URL = 'assets/videos/TBBT_S12E01.mp4';
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
@@ -873,7 +873,11 @@ function validateRuntimePilotObstacle(row, rowIndex) {
 }
 
 function validateRuntimePilotObstaclePayload(payload) {
-  if (payload?.schemaVersion !== 'p0-4a-runtime-obstacles-pilot-v1') {
+  const SUPPORTED_RUNTIME_PILOT_SCHEMAS = [
+    'p0-4a-runtime-obstacles-pilot-v1',
+    'p0-5b-30-obstacle-runtime.v1'
+  ];
+  if (!SUPPORTED_RUNTIME_PILOT_SCHEMAS.includes(payload?.schemaVersion)) {
     throw new Error('schemaVersion mismatch');
   }
 
