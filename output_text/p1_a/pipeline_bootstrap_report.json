@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "p1-a-pipeline-bootstrap-report.v1",
+  "stage": "P1-A",
+  "episodeId": "tbbt-s12e01",
+  "learnerLevel": "CET-4",
+  "subtitleSource": "output_text/v28d_bilingual_subtitles.json",
+  "usedExistingBilingualSubtitles": true,
+  "scope": {
+    "maxSubtitleEntries": 30,
+    "maxScopeSeconds": 120,
+    "appliedEntryCount": 30,
+    "firstSubtitleIndex": 0,
+    "lastSubtitleIndex": 29
+  },
+  "artifactOrder": [
+    "subtitle_artifact",
+    "scene_meaning_artifact",
+    "evidence_artifact",
+    "draft_obstacle_artifact",
+    "review_artifact",
+    "frozen_candidate_artifact",
+    "runtime_candidate_artifact"
+  ],
+  "forwardOnlyOrderPreserved": true,
+  "artifactsCreated": [
+    "output_text/p1_a/subtitle_artifact.json",
+    "output_text/p1_a/scene_meaning_artifact.json",
+    "output_text/p1_a/evidence_artifact.json",
+    "output_text/p1_a/draft_obstacle_artifact.json",
+    "output_text/p1_a/review_artifact.json",
+    "output_text/p1_a/frozen_candidate_artifact.json",
+    "output_text/p1_a/runtime_candidate_artifact.json"
+  ],
+  "verification": {
+    "existingBilingualSubtitlesUsed": true,
+    "fixedScopeApplied": true,
+    "allExpectedArtifactsCreated": true,
+    "forwardOnlyOrder": true,
+    "runtimeUntouched": true,
+    "noUiFilesModified": true,
+    "noProductionFilesModified": true,
+    "noAiApiCalled": true,
+    "runtimeConsumable": false
+  },
+  "bootstrapCompleted": true,
+  "nextRecommendedStep": "P1-B: replace placeholder Scene Meaning and Evidence stages with real engine producers (offline only), one stage at a time, preserving Runtime read-only boundary."
+}

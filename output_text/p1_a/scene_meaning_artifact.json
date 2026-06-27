@@ -1,0 +1,229 @@
+{
+  "schemaVersion": "p1-a-scene-meaning-artifact.v1",
+  "stage": "P1-A",
+  "artifactName": "scene_meaning_artifact",
+  "episodeId": "tbbt-s12e01",
+  "learnerLevel": "CET-4",
+  "producerStage": "Scene Meaning Engine",
+  "consumerStage": "Evidence Engine",
+  "inputArtifact": "subtitle_artifact",
+  "outputArtifact": "scene_meaning_artifact",
+  "artifactStatus": "produced",
+  "contentMode": "placeholder",
+  "runtimeConsumable": false,
+  "notes": "PLACEHOLDER. Real Scene Meaning generation is owned by P0-6B and not performed in this bootstrap. One Scene Meaning per subtitle.",
+  "payload": {
+    "sceneMeanings": [
+      {
+        "subtitleIndex": 0,
+        "source_en": "Previously on The Big Bang Theory...",
+        "source_zh": "《生活大爆炸》前情提要",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 1,
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 2,
+        "source_en": "He can't believe it.",
+        "source_zh": "他肯定不信",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 3,
+        "source_en": "And neither can I.",
+        "source_zh": "我也不敢相信",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 4,
+        "source_en": "Hi, Dad. How you doing?",
+        "source_zh": "爸 你还好吗",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 5,
+        "source_en": "Then by the power vested in me...",
+        "source_zh": "我以\"连你都能证婚网\"",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 6,
+        "source_en": "by EvenYouCanPerformWeddings.Com...",
+        "source_zh": "所赋予我的合法权利",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 7,
+        "source_en": "...I now pronounce you husband and wife.",
+        "source_zh": "我现在宣布你们正式结为合法夫妻",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 8,
+        "source_en": "You may kiss the bride.",
+        "source_zh": "你可以吻新娘了",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 9,
+        "source_en": "and now...",
+        "source_zh": "时至今日",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 10,
+        "source_en": "Good morning, wife.",
+        "source_zh": "早安啊 老婆",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 11,
+        "source_en": "Good morning, husband.",
+        "source_zh": "早安啊 老公",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 12,
+        "source_en": "I can't believe we're actually married.",
+        "source_zh": "真不敢相信我们真的结婚了",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 13,
+        "source_en": "It's official. According to tradition,",
+        "source_zh": "正式完婚了 根据传统",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 14,
+        "source_en": "we should hang the bedsheets outside",
+        "source_zh": "我们应该把床单挂在外面",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 15,
+        "source_en": "so the villagers can see that we consummated.",
+        "source_zh": "这样其他村民就能知道我们行过房了",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 16,
+        "source_en": "considering where we're starting our honeymoon.",
+        "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 17,
+        "source_en": "Well, I suppose you're right.",
+        "source_zh": "你说的有道理",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 18,
+        "source_en": "Lego is the perfect metaphor for marital congress.",
+        "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 19,
+        "source_en": "Two pieces that interlock with a satisfying snap.",
+        "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 20,
+        "source_en": "Oh, I almost forgot.",
+        "source_zh": "我差点就忘了",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 21,
+        "source_en": "While you were sleeping, I ordered room service.",
+        "source_zh": "在你睡觉的时候 我点了客房送餐",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 22,
+        "source_en": "Really?",
+        "source_zh": "真的吗",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 23,
+        "source_en": "Voila!",
+        "source_zh": "请看",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 24,
+        "source_en": "You thought it was going to be food, didn't you?",
+        "source_zh": "你本来还以为是食物 对吧",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 25,
+        "source_en": "Our whole universe was in a hot, dense state",
+        "source_zh": "我们的宇宙曾经超热又超密",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 26,
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 27,
+        "source_en": "The Earth began to cool",
+        "source_zh": "地球开始冷却",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 28,
+        "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+        "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+        "sceneMeaning": null,
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 29,
+        "source_en": "We built the Wall We built the pyramids",
+        "source_zh": "我们建了长城 我们建了金字塔",
+        "sceneMeaning": null,
+        "placeholder": true
+      }
+    ]
+  }
+}

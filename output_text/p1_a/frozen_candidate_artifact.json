@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "p1-a-frozen-candidate-artifact.v1",
+  "stage": "P1-A",
+  "artifactName": "frozen_candidate_artifact",
+  "episodeId": "tbbt-s12e01",
+  "learnerLevel": "CET-4",
+  "producerStage": "Frozen Promotion",
+  "consumerStage": "Runtime Promotion",
+  "inputArtifact": "review_artifact",
+  "outputArtifact": "frozen_candidate_artifact",
+  "artifactStatus": "produced",
+  "contentMode": "placeholder",
+  "runtimeConsumable": false,
+  "notes": "PLACEHOLDER frozen CANDIDATE only. This is a bootstrap wiring artifact and is NOT a real frozen artifact. reviewStatus is not set to frozen.",
+  "payload": {
+    "reviewStatus": "bootstrap-placeholder",
+    "frozenObstacles": [],
+    "placeholder": true
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "p1-a-runtime-candidate-artifact.v1",
+  "stage": "P1-A",
+  "artifactName": "runtime_candidate_artifact",
+  "episodeId": "tbbt-s12e01",
+  "learnerLevel": "CET-4",
+  "producerStage": "Runtime Promotion",
+  "consumerStage": "Runtime (read-only) — NOT CONNECTED in bootstrap",
+  "inputArtifact": "frozen_candidate_artifact",
+  "outputArtifact": "runtime_candidate_artifact",
+  "artifactStatus": "produced",
+  "contentMode": "placeholder",
+  "runtimeConsumable": false,
+  "notes": "PLACEHOLDER runtime CANDIDATE only. runtimeMayConsume is intentionally false. This bootstrap never promotes to real Runtime and never modifies any existing Runtime artifact.",
+  "payload": {
+    "runtimeMayConsume": false,
+    "runtimeObstacles": [],
+    "placeholder": true
+  }
+}

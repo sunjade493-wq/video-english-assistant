@@ -1,0 +1,235 @@
+{
+  "schemaVersion": "p1-a-subtitle-artifact.v1",
+  "stage": "P1-A",
+  "artifactName": "subtitle_artifact",
+  "episodeId": "tbbt-s12e01",
+  "learnerLevel": "CET-4",
+  "producerStage": "Subtitle Input",
+  "consumerStage": "Scene Meaning Engine",
+  "inputArtifact": "output_text/v28d_bilingual_subtitles.json",
+  "outputArtifact": "subtitle_artifact",
+  "artifactStatus": "produced",
+  "contentMode": "real",
+  "runtimeConsumable": false,
+  "notes": "Scoped subtitle input derived from existing bilingual subtitle data. Forward-only chain head.",
+  "payload": {
+    "sourcePath": "output_text/v28d_bilingual_subtitles.json",
+    "scope": {
+      "maxSubtitleEntries": 30,
+      "maxScopeSeconds": 120,
+      "appliedEntryCount": 30
+    },
+    "subtitles": [
+      {
+        "subtitleIndex": 0,
+        "startTime": "2.0",
+        "endTime": "6.0",
+        "source_en": "Previously on The Big Bang Theory...",
+        "source_zh": "《生活大爆炸》前情提要"
+      },
+      {
+        "subtitleIndex": 1,
+        "startTime": "6.0",
+        "endTime": "10.0",
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗"
+      },
+      {
+        "subtitleIndex": 2,
+        "startTime": "10.0",
+        "endTime": "12.0",
+        "source_en": "He can't believe it.",
+        "source_zh": "他肯定不信"
+      },
+      {
+        "subtitleIndex": 3,
+        "startTime": "12.0",
+        "endTime": "15.5",
+        "source_en": "And neither can I.",
+        "source_zh": "我也不敢相信"
+      },
+      {
+        "subtitleIndex": 4,
+        "startTime": "15.5",
+        "endTime": "20.5",
+        "source_en": "Hi, Dad. How you doing?",
+        "source_zh": "爸 你还好吗"
+      },
+      {
+        "subtitleIndex": 5,
+        "startTime": "20.5",
+        "endTime": "23.0",
+        "source_en": "Then by the power vested in me...",
+        "source_zh": "我以\"连你都能证婚网\""
+      },
+      {
+        "subtitleIndex": 6,
+        "startTime": "23.0",
+        "endTime": "28.5",
+        "source_en": "by EvenYouCanPerformWeddings.Com...",
+        "source_zh": "所赋予我的合法权利"
+      },
+      {
+        "subtitleIndex": 7,
+        "startTime": "28.5",
+        "endTime": "30.5",
+        "source_en": "...I now pronounce you husband and wife.",
+        "source_zh": "我现在宣布你们正式结为合法夫妻"
+      },
+      {
+        "subtitleIndex": 8,
+        "startTime": "30.5",
+        "endTime": "36.5",
+        "source_en": "You may kiss the bride.",
+        "source_zh": "你可以吻新娘了"
+      },
+      {
+        "subtitleIndex": 9,
+        "startTime": "36.5",
+        "endTime": "40.5",
+        "source_en": "and now...",
+        "source_zh": "时至今日"
+      },
+      {
+        "subtitleIndex": 10,
+        "startTime": "40.5",
+        "endTime": "44.5",
+        "source_en": "Good morning, wife.",
+        "source_zh": "早安啊 老婆"
+      },
+      {
+        "subtitleIndex": 11,
+        "startTime": "44.5",
+        "endTime": "47.5",
+        "source_en": "Good morning, husband.",
+        "source_zh": "早安啊 老公"
+      },
+      {
+        "subtitleIndex": 12,
+        "startTime": "47.5",
+        "endTime": "49.5",
+        "source_en": "I can't believe we're actually married.",
+        "source_zh": "真不敢相信我们真的结婚了"
+      },
+      {
+        "subtitleIndex": 13,
+        "startTime": "49.5",
+        "endTime": "51.5",
+        "source_en": "It's official. According to tradition,",
+        "source_zh": "正式完婚了 根据传统"
+      },
+      {
+        "subtitleIndex": 14,
+        "startTime": "51.5",
+        "endTime": "53.0",
+        "source_en": "we should hang the bedsheets outside",
+        "source_zh": "我们应该把床单挂在外面"
+      },
+      {
+        "subtitleIndex": 15,
+        "startTime": "53.0",
+        "endTime": "58.0",
+        "source_en": "so the villagers can see that we consummated.",
+        "source_zh": "这样其他村民就能知道我们行过房了"
+      },
+      {
+        "subtitleIndex": 16,
+        "startTime": "58.0",
+        "endTime": "60.5",
+        "source_en": "considering where we're starting our honeymoon.",
+        "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅"
+      },
+      {
+        "subtitleIndex": 17,
+        "startTime": "60.5",
+        "endTime": "67.0",
+        "source_en": "Well, I suppose you're right.",
+        "source_zh": "你说的有道理"
+      },
+      {
+        "subtitleIndex": 18,
+        "startTime": "67.0",
+        "endTime": "70.0",
+        "source_en": "Lego is the perfect metaphor for marital congress.",
+        "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢"
+      },
+      {
+        "subtitleIndex": 19,
+        "startTime": "70.0",
+        "endTime": "79.5",
+        "source_en": "Two pieces that interlock with a satisfying snap.",
+        "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声"
+      },
+      {
+        "subtitleIndex": 20,
+        "startTime": "79.5",
+        "endTime": "80.5",
+        "source_en": "Oh, I almost forgot.",
+        "source_zh": "我差点就忘了"
+      },
+      {
+        "subtitleIndex": 21,
+        "startTime": "80.5",
+        "endTime": "83.5",
+        "source_en": "While you were sleeping, I ordered room service.",
+        "source_zh": "在你睡觉的时候 我点了客房送餐"
+      },
+      {
+        "subtitleIndex": 22,
+        "startTime": "83.5",
+        "endTime": "85.5",
+        "source_en": "Really?",
+        "source_zh": "真的吗"
+      },
+      {
+        "subtitleIndex": 23,
+        "startTime": "85.5",
+        "endTime": "88.5",
+        "source_en": "Voila!",
+        "source_zh": "请看"
+      },
+      {
+        "subtitleIndex": 24,
+        "startTime": "88.5",
+        "endTime": "92.0",
+        "source_en": "You thought it was going to be food, didn't you?",
+        "source_zh": "你本来还以为是食物 对吧"
+      },
+      {
+        "subtitleIndex": 25,
+        "startTime": "92.0",
+        "endTime": "95.0",
+        "source_en": "Our whole universe was in a hot, dense state",
+        "source_zh": "我们的宇宙曾经超热又超密"
+      },
+      {
+        "subtitleIndex": 26,
+        "startTime": "95.0",
+        "endTime": "99.0",
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等"
+      },
+      {
+        "subtitleIndex": 27,
+        "startTime": "99.0",
+        "endTime": "101.0",
+        "source_en": "The Earth began to cool",
+        "source_zh": "地球开始冷却"
+      },
+      {
+        "subtitleIndex": 28,
+        "startTime": "101.0",
+        "endTime": "104.0",
+        "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+        "source_zh": "自养生物开始发育 尼安德塔人发明工具"
+      },
+      {
+        "subtitleIndex": 29,
+        "startTime": "104.0",
+        "endTime": "105.0",
+        "source_en": "We built the Wall We built the pyramids",
+        "source_zh": "我们建了长城 我们建了金字塔"
+      }
+    ]
+  }
+}

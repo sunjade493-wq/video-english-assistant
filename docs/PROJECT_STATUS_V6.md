@@ -2033,3 +2033,37 @@ Frozen architecture summary:
 - Future AI vendors, LLMs, prompts, batch generation, content factory, multiple shows, regression testing, replay, and QA are supported without changing Runtime.
 - Architecture changes require a new Architecture Freeze; implementation changes do not.
 - Runtime remains read-only and consumes only frozen runtime artifacts.
+
+---
+
+## P1-A First End-to-End Analyze Pipeline Bootstrap
+
+Status: COMPLETE ✅
+
+Git Tag: `p1-a-analyze-pipeline-bootstrap`
+
+Source: `scripts/p1_a_analyze_pipeline_bootstrap.js`
+
+Output directory: `output_text/p1_a/`
+
+Summary:
+
+- P1-A created the first executable offline Analyze Pipeline bootstrap.
+- It used existing TBBT S12E01 bilingual subtitles from `output_text/v28d_bilingual_subtitles.json`.
+- It processed a fixed scope of 30 subtitle entries.
+- It produced 8 pipeline artifacts:
+  - `subtitle_artifact.json`
+  - `scene_meaning_artifact.json`
+  - `evidence_artifact.json`
+  - `draft_obstacle_artifact.json`
+  - `review_artifact.json`
+  - `frozen_candidate_artifact.json`
+  - `runtime_candidate_artifact.json`
+  - `pipeline_bootstrap_report.json`
+- This is a wiring/bootstrap test only.
+- No AI API was called.
+- Scene Meaning, Evidence, Draft, Review, Frozen Candidate, and Runtime Candidate artifacts are placeholders.
+- Runtime/UI were untouched.
+- No production Runtime or Frozen files were modified.
+- runtimeMayConsume remains false.
+- P1-A validates forward-only Artifact flow from Subtitle to Runtime Candidate.

@@ -1,0 +1,439 @@
+{
+  "schemaVersion": "p1-a-evidence-artifact.v1",
+  "stage": "P1-A",
+  "artifactName": "evidence_artifact",
+  "episodeId": "tbbt-s12e01",
+  "learnerLevel": "CET-4",
+  "producerStage": "Evidence Engine",
+  "consumerStage": "Vocabulary Engine + Comprehension Engine",
+  "inputArtifact": "subtitle_artifact + scene_meaning_artifact",
+  "outputArtifact": "evidence_artifact",
+  "artifactStatus": "produced",
+  "contentMode": "placeholder",
+  "runtimeConsumable": false,
+  "notes": "PLACEHOLDER Evidence Chain. Real evidence collection/prioritization is owned by P0-6A and not performed in this bootstrap.",
+  "payload": {
+    "evidenceChains": [
+      {
+        "subtitleIndex": 0,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 1,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 2,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 3,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 4,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 5,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 6,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 7,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 8,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 9,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 10,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 11,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 12,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 13,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 14,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 15,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 16,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 17,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 18,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 19,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 20,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 21,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 22,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 23,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 24,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 25,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 26,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 27,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 28,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      },
+      {
+        "subtitleIndex": 29,
+        "evidenceChain": {
+          "frozenContract": "not-available",
+          "dictionary": "not-available",
+          "pos": "not-available",
+          "grammar": "not-available",
+          "englishSubtitle": "checked",
+          "chineseSubtitle": "checked",
+          "sceneMeaning": "not-available",
+          "dialogueContext": "not-available"
+        },
+        "placeholder": true
+      }
+    ]
+  }
+}
