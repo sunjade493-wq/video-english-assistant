@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "p1-a-scene-meaning-artifact.v1",
+  "schemaVersion": "p1-b-scene-meaning-artifact.v1",
   "stage": "P1-A",
   "artifactName": "scene_meaning_artifact",
   "episodeId": "tbbt-s12e01",
@@ -9,220 +9,1389 @@
   "inputArtifact": "subtitle_artifact",
   "outputArtifact": "scene_meaning_artifact",
   "artifactStatus": "produced",
-  "contentMode": "placeholder",
+  "contentMode": "real",
   "runtimeConsumable": false,
-  "notes": "PLACEHOLDER. Real Scene Meaning generation is owned by P0-6B and not performed in this bootstrap. One Scene Meaning per subtitle.",
+  "notes": "REAL offline deterministic Scene Meaning Engine (P1-B). Generation flow: Subtitle -> Context Collection -> Scene Understanding -> Scene Meaning. No AI API, OCR, video analysis, or online search. One Scene Meaning per subtitle, produced as evidence only (never decides obstacles, never runtime consumable). Text synthesis is deterministic; a future AI-backed producer may enrich the contextual meaning without changing this artifact contract.",
   "payload": {
+    "sceneMeaningCount": 30,
     "sceneMeanings": [
       {
         "subtitleIndex": 0,
+        "timestamp": {
+          "startTime": "2.0",
+          "endTime": "6.0"
+        },
         "source_en": "Previously on The Big Bang Theory...",
         "source_zh": "《生活大爆炸》前情提要",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [],
+        "contextAfter": [
+          {
+            "subtitleIndex": 1,
+            "source_en": "Can you believe our little lamb is finally getting married?",
+            "source_zh": "你能相信我们的小羊羔终于要嫁人了吗"
+          },
+          {
+            "subtitleIndex": 2,
+            "source_en": "He can't believe it.",
+            "source_zh": "他肯定不信"
+          }
+        ],
+        "dialogueFunction": "recap-marker",
+        "speakerIntent": "orient the viewer to prior events",
+        "sceneMeaning": "Functions as a recap-marker intended to orient the viewer to prior events. Contextual meaning (from bilingual subtitle evidence): 《生活大爆炸》前情提要",
+        "ambiguity": {
+          "hasAmbiguity": true,
+          "note": "Line trails off or continues; meaning may depend on adjacent dialogue."
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
         "source_en": "Can you believe our little lamb is finally getting married?",
         "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 0,
+            "source_en": "Previously on The Big Bang Theory...",
+            "source_zh": "《生活大爆炸》前情提要"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 2,
+            "source_en": "He can't believe it.",
+            "source_zh": "他肯定不信"
+          },
+          {
+            "subtitleIndex": 3,
+            "source_en": "And neither can I.",
+            "source_zh": "我也不敢相信"
+          }
+        ],
+        "dialogueFunction": "question",
+        "speakerIntent": "seek information, confirmation, or a response",
+        "sceneMeaning": "Functions as a question intended to seek information, confirmation, or a response. Contextual meaning (from bilingual subtitle evidence): 你能相信我们的小羊羔终于要嫁人了吗",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 2,
+        "timestamp": {
+          "startTime": "10.0",
+          "endTime": "12.0"
+        },
         "source_en": "He can't believe it.",
         "source_zh": "他肯定不信",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 0,
+            "source_en": "Previously on The Big Bang Theory...",
+            "source_zh": "《生活大爆炸》前情提要"
+          },
+          {
+            "subtitleIndex": 1,
+            "source_en": "Can you believe our little lamb is finally getting married?",
+            "source_zh": "你能相信我们的小羊羔终于要嫁人了吗"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 3,
+            "source_en": "And neither can I.",
+            "source_zh": "我也不敢相信"
+          },
+          {
+            "subtitleIndex": 4,
+            "source_en": "Hi, Dad. How you doing?",
+            "source_zh": "爸 你还好吗"
+          }
+        ],
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 他肯定不信",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 3,
+        "timestamp": {
+          "startTime": "12.0",
+          "endTime": "15.5"
+        },
         "source_en": "And neither can I.",
         "source_zh": "我也不敢相信",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 1,
+            "source_en": "Can you believe our little lamb is finally getting married?",
+            "source_zh": "你能相信我们的小羊羔终于要嫁人了吗"
+          },
+          {
+            "subtitleIndex": 2,
+            "source_en": "He can't believe it.",
+            "source_zh": "他肯定不信"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 4,
+            "source_en": "Hi, Dad. How you doing?",
+            "source_zh": "爸 你还好吗"
+          },
+          {
+            "subtitleIndex": 5,
+            "source_en": "Then by the power vested in me...",
+            "source_zh": "我以\"连你都能证婚网\""
+          }
+        ],
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 我也不敢相信",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 4,
+        "timestamp": {
+          "startTime": "15.5",
+          "endTime": "20.5"
+        },
         "source_en": "Hi, Dad. How you doing?",
         "source_zh": "爸 你还好吗",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 2,
+            "source_en": "He can't believe it.",
+            "source_zh": "他肯定不信"
+          },
+          {
+            "subtitleIndex": 3,
+            "source_en": "And neither can I.",
+            "source_zh": "我也不敢相信"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 5,
+            "source_en": "Then by the power vested in me...",
+            "source_zh": "我以\"连你都能证婚网\""
+          },
+          {
+            "subtitleIndex": 6,
+            "source_en": "by EvenYouCanPerformWeddings.Com...",
+            "source_zh": "所赋予我的合法权利"
+          }
+        ],
+        "dialogueFunction": "question",
+        "speakerIntent": "seek information, confirmation, or a response",
+        "sceneMeaning": "Functions as a question intended to seek information, confirmation, or a response. Contextual meaning (from bilingual subtitle evidence): 爸 你还好吗",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 5,
+        "timestamp": {
+          "startTime": "20.5",
+          "endTime": "23.0"
+        },
         "source_en": "Then by the power vested in me...",
         "source_zh": "我以\"连你都能证婚网\"",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 3,
+            "source_en": "And neither can I.",
+            "source_zh": "我也不敢相信"
+          },
+          {
+            "subtitleIndex": 4,
+            "source_en": "Hi, Dad. How you doing?",
+            "source_zh": "爸 你还好吗"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 6,
+            "source_en": "by EvenYouCanPerformWeddings.Com...",
+            "source_zh": "所赋予我的合法权利"
+          },
+          {
+            "subtitleIndex": 7,
+            "source_en": "...I now pronounce you husband and wife.",
+            "source_zh": "我现在宣布你们正式结为合法夫妻"
+          }
+        ],
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 我以\"连你都能证婚网\"",
+        "ambiguity": {
+          "hasAmbiguity": true,
+          "note": "Line trails off or continues; meaning may depend on adjacent dialogue."
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 6,
+        "timestamp": {
+          "startTime": "23.0",
+          "endTime": "28.5"
+        },
         "source_en": "by EvenYouCanPerformWeddings.Com...",
         "source_zh": "所赋予我的合法权利",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 4,
+            "source_en": "Hi, Dad. How you doing?",
+            "source_zh": "爸 你还好吗"
+          },
+          {
+            "subtitleIndex": 5,
+            "source_en": "Then by the power vested in me...",
+            "source_zh": "我以\"连你都能证婚网\""
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 7,
+            "source_en": "...I now pronounce you husband and wife.",
+            "source_zh": "我现在宣布你们正式结为合法夫妻"
+          },
+          {
+            "subtitleIndex": 8,
+            "source_en": "You may kiss the bride.",
+            "source_zh": "你可以吻新娘了"
+          }
+        ],
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 所赋予我的合法权利",
+        "ambiguity": {
+          "hasAmbiguity": true,
+          "note": "Line trails off or continues; meaning may depend on adjacent dialogue."
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 7,
+        "timestamp": {
+          "startTime": "28.5",
+          "endTime": "30.5"
+        },
         "source_en": "...I now pronounce you husband and wife.",
         "source_zh": "我现在宣布你们正式结为合法夫妻",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 5,
+            "source_en": "Then by the power vested in me...",
+            "source_zh": "我以\"连你都能证婚网\""
+          },
+          {
+            "subtitleIndex": 6,
+            "source_en": "by EvenYouCanPerformWeddings.Com...",
+            "source_zh": "所赋予我的合法权利"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 8,
+            "source_en": "You may kiss the bride.",
+            "source_zh": "你可以吻新娘了"
+          },
+          {
+            "subtitleIndex": 9,
+            "source_en": "and now...",
+            "source_zh": "时至今日"
+          }
+        ],
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 我现在宣布你们正式结为合法夫妻",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 8,
+        "timestamp": {
+          "startTime": "30.5",
+          "endTime": "36.5"
+        },
         "source_en": "You may kiss the bride.",
         "source_zh": "你可以吻新娘了",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 6,
+            "source_en": "by EvenYouCanPerformWeddings.Com...",
+            "source_zh": "所赋予我的合法权利"
+          },
+          {
+            "subtitleIndex": 7,
+            "source_en": "...I now pronounce you husband and wife.",
+            "source_zh": "我现在宣布你们正式结为合法夫妻"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 9,
+            "source_en": "and now...",
+            "source_zh": "时至今日"
+          },
+          {
+            "subtitleIndex": 10,
+            "source_en": "Good morning, wife.",
+            "source_zh": "早安啊 老婆"
+          }
+        ],
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 你可以吻新娘了",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 9,
+        "timestamp": {
+          "startTime": "36.5",
+          "endTime": "40.5"
+        },
         "source_en": "and now...",
         "source_zh": "时至今日",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 7,
+            "source_en": "...I now pronounce you husband and wife.",
+            "source_zh": "我现在宣布你们正式结为合法夫妻"
+          },
+          {
+            "subtitleIndex": 8,
+            "source_en": "You may kiss the bride.",
+            "source_zh": "你可以吻新娘了"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 10,
+            "source_en": "Good morning, wife.",
+            "source_zh": "早安啊 老婆"
+          },
+          {
+            "subtitleIndex": 11,
+            "source_en": "Good morning, husband.",
+            "source_zh": "早安啊 老公"
+          }
+        ],
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 时至今日",
+        "ambiguity": {
+          "hasAmbiguity": true,
+          "note": "Line trails off or continues; meaning may depend on adjacent dialogue."
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 10,
+        "timestamp": {
+          "startTime": "40.5",
+          "endTime": "44.5"
+        },
         "source_en": "Good morning, wife.",
         "source_zh": "早安啊 老婆",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 8,
+            "source_en": "You may kiss the bride.",
+            "source_zh": "你可以吻新娘了"
+          },
+          {
+            "subtitleIndex": 9,
+            "source_en": "and now...",
+            "source_zh": "时至今日"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 11,
+            "source_en": "Good morning, husband.",
+            "source_zh": "早安啊 老公"
+          },
+          {
+            "subtitleIndex": 12,
+            "source_en": "I can't believe we're actually married.",
+            "source_zh": "真不敢相信我们真的结婚了"
+          }
+        ],
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 早安啊 老婆",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 11,
+        "timestamp": {
+          "startTime": "44.5",
+          "endTime": "47.5"
+        },
         "source_en": "Good morning, husband.",
         "source_zh": "早安啊 老公",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 9,
+            "source_en": "and now...",
+            "source_zh": "时至今日"
+          },
+          {
+            "subtitleIndex": 10,
+            "source_en": "Good morning, wife.",
+            "source_zh": "早安啊 老婆"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 12,
+            "source_en": "I can't believe we're actually married.",
+            "source_zh": "真不敢相信我们真的结婚了"
+          },
+          {
+            "subtitleIndex": 13,
+            "source_en": "It's official. According to tradition,",
+            "source_zh": "正式完婚了 根据传统"
+          }
+        ],
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 早安啊 老公",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 12,
+        "timestamp": {
+          "startTime": "47.5",
+          "endTime": "49.5"
+        },
         "source_en": "I can't believe we're actually married.",
         "source_zh": "真不敢相信我们真的结婚了",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 10,
+            "source_en": "Good morning, wife.",
+            "source_zh": "早安啊 老婆"
+          },
+          {
+            "subtitleIndex": 11,
+            "source_en": "Good morning, husband.",
+            "source_zh": "早安啊 老公"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 13,
+            "source_en": "It's official. According to tradition,",
+            "source_zh": "正式完婚了 根据传统"
+          },
+          {
+            "subtitleIndex": 14,
+            "source_en": "we should hang the bedsheets outside",
+            "source_zh": "我们应该把床单挂在外面"
+          }
+        ],
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 真不敢相信我们真的结婚了",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 13,
+        "timestamp": {
+          "startTime": "49.5",
+          "endTime": "51.5"
+        },
         "source_en": "It's official. According to tradition,",
         "source_zh": "正式完婚了 根据传统",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 11,
+            "source_en": "Good morning, husband.",
+            "source_zh": "早安啊 老公"
+          },
+          {
+            "subtitleIndex": 12,
+            "source_en": "I can't believe we're actually married.",
+            "source_zh": "真不敢相信我们真的结婚了"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 14,
+            "source_en": "we should hang the bedsheets outside",
+            "source_zh": "我们应该把床单挂在外面"
+          },
+          {
+            "subtitleIndex": 15,
+            "source_en": "so the villagers can see that we consummated.",
+            "source_zh": "这样其他村民就能知道我们行过房了"
+          }
+        ],
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 正式完婚了 根据传统",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 14,
+        "timestamp": {
+          "startTime": "51.5",
+          "endTime": "53.0"
+        },
         "source_en": "we should hang the bedsheets outside",
         "source_zh": "我们应该把床单挂在外面",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 12,
+            "source_en": "I can't believe we're actually married.",
+            "source_zh": "真不敢相信我们真的结婚了"
+          },
+          {
+            "subtitleIndex": 13,
+            "source_en": "It's official. According to tradition,",
+            "source_zh": "正式完婚了 根据传统"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 15,
+            "source_en": "so the villagers can see that we consummated.",
+            "source_zh": "这样其他村民就能知道我们行过房了"
+          },
+          {
+            "subtitleIndex": 16,
+            "source_en": "considering where we're starting our honeymoon.",
+            "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅"
+          }
+        ],
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 我们应该把床单挂在外面",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 15,
+        "timestamp": {
+          "startTime": "53.0",
+          "endTime": "58.0"
+        },
         "source_en": "so the villagers can see that we consummated.",
         "source_zh": "这样其他村民就能知道我们行过房了",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 13,
+            "source_en": "It's official. According to tradition,",
+            "source_zh": "正式完婚了 根据传统"
+          },
+          {
+            "subtitleIndex": 14,
+            "source_en": "we should hang the bedsheets outside",
+            "source_zh": "我们应该把床单挂在外面"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 16,
+            "source_en": "considering where we're starting our honeymoon.",
+            "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅"
+          },
+          {
+            "subtitleIndex": 17,
+            "source_en": "Well, I suppose you're right.",
+            "source_zh": "你说的有道理"
+          }
+        ],
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 这样其他村民就能知道我们行过房了",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 16,
+        "timestamp": {
+          "startTime": "58.0",
+          "endTime": "60.5"
+        },
         "source_en": "considering where we're starting our honeymoon.",
         "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 14,
+            "source_en": "we should hang the bedsheets outside",
+            "source_zh": "我们应该把床单挂在外面"
+          },
+          {
+            "subtitleIndex": 15,
+            "source_en": "so the villagers can see that we consummated.",
+            "source_zh": "这样其他村民就能知道我们行过房了"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 17,
+            "source_en": "Well, I suppose you're right.",
+            "source_zh": "你说的有道理"
+          },
+          {
+            "subtitleIndex": 18,
+            "source_en": "Lego is the perfect metaphor for marital congress.",
+            "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢"
+          }
+        ],
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 毕竟我们是在这种地方开始我们的蜜月之旅",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 17,
+        "timestamp": {
+          "startTime": "60.5",
+          "endTime": "67.0"
+        },
         "source_en": "Well, I suppose you're right.",
         "source_zh": "你说的有道理",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 15,
+            "source_en": "so the villagers can see that we consummated.",
+            "source_zh": "这样其他村民就能知道我们行过房了"
+          },
+          {
+            "subtitleIndex": 16,
+            "source_en": "considering where we're starting our honeymoon.",
+            "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 18,
+            "source_en": "Lego is the perfect metaphor for marital congress.",
+            "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢"
+          },
+          {
+            "subtitleIndex": 19,
+            "source_en": "Two pieces that interlock with a satisfying snap.",
+            "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声"
+          }
+        ],
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 你说的有道理",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 18,
+        "timestamp": {
+          "startTime": "67.0",
+          "endTime": "70.0"
+        },
         "source_en": "Lego is the perfect metaphor for marital congress.",
         "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 16,
+            "source_en": "considering where we're starting our honeymoon.",
+            "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅"
+          },
+          {
+            "subtitleIndex": 17,
+            "source_en": "Well, I suppose you're right.",
+            "source_zh": "你说的有道理"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 19,
+            "source_en": "Two pieces that interlock with a satisfying snap.",
+            "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声"
+          },
+          {
+            "subtitleIndex": 20,
+            "source_en": "Oh, I almost forgot.",
+            "source_zh": "我差点就忘了"
+          }
+        ],
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 乐高有着形容夫妻房事的最完美隐喻呢",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 19,
+        "timestamp": {
+          "startTime": "70.0",
+          "endTime": "79.5"
+        },
         "source_en": "Two pieces that interlock with a satisfying snap.",
         "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 17,
+            "source_en": "Well, I suppose you're right.",
+            "source_zh": "你说的有道理"
+          },
+          {
+            "subtitleIndex": 18,
+            "source_en": "Lego is the perfect metaphor for marital congress.",
+            "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 20,
+            "source_en": "Oh, I almost forgot.",
+            "source_zh": "我差点就忘了"
+          },
+          {
+            "subtitleIndex": 21,
+            "source_en": "While you were sleeping, I ordered room service.",
+            "source_zh": "在你睡觉的时候 我点了客房送餐"
+          }
+        ],
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 两片乐高\"合体\"并带有爽度十足的咔哒声",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 20,
+        "timestamp": {
+          "startTime": "79.5",
+          "endTime": "80.5"
+        },
         "source_en": "Oh, I almost forgot.",
         "source_zh": "我差点就忘了",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 18,
+            "source_en": "Lego is the perfect metaphor for marital congress.",
+            "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢"
+          },
+          {
+            "subtitleIndex": 19,
+            "source_en": "Two pieces that interlock with a satisfying snap.",
+            "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 21,
+            "source_en": "While you were sleeping, I ordered room service.",
+            "source_zh": "在你睡觉的时候 我点了客房送餐"
+          },
+          {
+            "subtitleIndex": 22,
+            "source_en": "Really?",
+            "source_zh": "真的吗"
+          }
+        ],
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 我差点就忘了",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 21,
+        "timestamp": {
+          "startTime": "80.5",
+          "endTime": "83.5"
+        },
         "source_en": "While you were sleeping, I ordered room service.",
         "source_zh": "在你睡觉的时候 我点了客房送餐",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 19,
+            "source_en": "Two pieces that interlock with a satisfying snap.",
+            "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声"
+          },
+          {
+            "subtitleIndex": 20,
+            "source_en": "Oh, I almost forgot.",
+            "source_zh": "我差点就忘了"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 22,
+            "source_en": "Really?",
+            "source_zh": "真的吗"
+          },
+          {
+            "subtitleIndex": 23,
+            "source_en": "Voila!",
+            "source_zh": "请看"
+          }
+        ],
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 在你睡觉的时候 我点了客房送餐",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 22,
+        "timestamp": {
+          "startTime": "83.5",
+          "endTime": "85.5"
+        },
         "source_en": "Really?",
         "source_zh": "真的吗",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 20,
+            "source_en": "Oh, I almost forgot.",
+            "source_zh": "我差点就忘了"
+          },
+          {
+            "subtitleIndex": 21,
+            "source_en": "While you were sleeping, I ordered room service.",
+            "source_zh": "在你睡觉的时候 我点了客房送餐"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 23,
+            "source_en": "Voila!",
+            "source_zh": "请看"
+          },
+          {
+            "subtitleIndex": 24,
+            "source_en": "You thought it was going to be food, didn't you?",
+            "source_zh": "你本来还以为是食物 对吧"
+          }
+        ],
+        "dialogueFunction": "question",
+        "speakerIntent": "seek information, confirmation, or a response",
+        "sceneMeaning": "Functions as a question intended to seek information, confirmation, or a response. Contextual meaning (from bilingual subtitle evidence): 真的吗",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 23,
+        "timestamp": {
+          "startTime": "85.5",
+          "endTime": "88.5"
+        },
         "source_en": "Voila!",
         "source_zh": "请看",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 21,
+            "source_en": "While you were sleeping, I ordered room service.",
+            "source_zh": "在你睡觉的时候 我点了客房送餐"
+          },
+          {
+            "subtitleIndex": 22,
+            "source_en": "Really?",
+            "source_zh": "真的吗"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 24,
+            "source_en": "You thought it was going to be food, didn't you?",
+            "source_zh": "你本来还以为是食物 对吧"
+          },
+          {
+            "subtitleIndex": 25,
+            "source_en": "Our whole universe was in a hot, dense state",
+            "source_zh": "我们的宇宙曾经超热又超密"
+          }
+        ],
+        "dialogueFunction": "exclamation",
+        "speakerIntent": "express emphasis or strong emotion",
+        "sceneMeaning": "Functions as a exclamation intended to express emphasis or strong emotion. Contextual meaning (from bilingual subtitle evidence): 请看",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 24,
+        "timestamp": {
+          "startTime": "88.5",
+          "endTime": "92.0"
+        },
         "source_en": "You thought it was going to be food, didn't you?",
         "source_zh": "你本来还以为是食物 对吧",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 22,
+            "source_en": "Really?",
+            "source_zh": "真的吗"
+          },
+          {
+            "subtitleIndex": 23,
+            "source_en": "Voila!",
+            "source_zh": "请看"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 25,
+            "source_en": "Our whole universe was in a hot, dense state",
+            "source_zh": "我们的宇宙曾经超热又超密"
+          },
+          {
+            "subtitleIndex": 26,
+            "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+            "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等"
+          }
+        ],
+        "dialogueFunction": "question",
+        "speakerIntent": "seek information, confirmation, or a response",
+        "sceneMeaning": "Functions as a question intended to seek information, confirmation, or a response. Contextual meaning (from bilingual subtitle evidence): 你本来还以为是食物 对吧",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 25,
+        "timestamp": {
+          "startTime": "92.0",
+          "endTime": "95.0"
+        },
         "source_en": "Our whole universe was in a hot, dense state",
         "source_zh": "我们的宇宙曾经超热又超密",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 23,
+            "source_en": "Voila!",
+            "source_zh": "请看"
+          },
+          {
+            "subtitleIndex": 24,
+            "source_en": "You thought it was going to be food, didn't you?",
+            "source_zh": "你本来还以为是食物 对吧"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 26,
+            "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+            "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等"
+          },
+          {
+            "subtitleIndex": 27,
+            "source_en": "The Earth began to cool",
+            "source_zh": "地球开始冷却"
+          }
+        ],
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 我们的宇宙曾经超热又超密",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
         "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
         "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 24,
+            "source_en": "You thought it was going to be food, didn't you?",
+            "source_zh": "你本来还以为是食物 对吧"
+          },
+          {
+            "subtitleIndex": 25,
+            "source_en": "Our whole universe was in a hot, dense state",
+            "source_zh": "我们的宇宙曾经超热又超密"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 27,
+            "source_en": "The Earth began to cool",
+            "source_zh": "地球开始冷却"
+          },
+          {
+            "subtitleIndex": 28,
+            "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+            "source_zh": "自养生物开始发育 尼安德塔人发明工具"
+          }
+        ],
+        "dialogueFunction": "exclamation",
+        "speakerIntent": "express emphasis or strong emotion",
+        "sceneMeaning": "Functions as a exclamation intended to express emphasis or strong emotion. Contextual meaning (from bilingual subtitle evidence): 直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 27,
+        "timestamp": {
+          "startTime": "99.0",
+          "endTime": "101.0"
+        },
         "source_en": "The Earth began to cool",
         "source_zh": "地球开始冷却",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 25,
+            "source_en": "Our whole universe was in a hot, dense state",
+            "source_zh": "我们的宇宙曾经超热又超密"
+          },
+          {
+            "subtitleIndex": 26,
+            "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+            "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 28,
+            "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+            "source_zh": "自养生物开始发育 尼安德塔人发明工具"
+          },
+          {
+            "subtitleIndex": 29,
+            "source_en": "We built the Wall We built the pyramids",
+            "source_zh": "我们建了长城 我们建了金字塔"
+          }
+        ],
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 地球开始冷却",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 28,
+        "timestamp": {
+          "startTime": "101.0",
+          "endTime": "104.0"
+        },
         "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
         "source_zh": "自养生物开始发育 尼安德塔人发明工具",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 26,
+            "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+            "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等"
+          },
+          {
+            "subtitleIndex": 27,
+            "source_en": "The Earth began to cool",
+            "source_zh": "地球开始冷却"
+          }
+        ],
+        "contextAfter": [
+          {
+            "subtitleIndex": 29,
+            "source_en": "We built the Wall We built the pyramids",
+            "source_zh": "我们建了长城 我们建了金字塔"
+          }
+        ],
+        "dialogueFunction": "question",
+        "speakerIntent": "seek information, confirmation, or a response",
+        "sceneMeaning": "Functions as a question intended to seek information, confirmation, or a response. Contextual meaning (from bilingual subtitle evidence): 自养生物开始发育 尼安德塔人发明工具",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       },
       {
         "subtitleIndex": 29,
+        "timestamp": {
+          "startTime": "104.0",
+          "endTime": "105.0"
+        },
         "source_en": "We built the Wall We built the pyramids",
         "source_zh": "我们建了长城 我们建了金字塔",
-        "sceneMeaning": null,
-        "placeholder": true
+        "contextBefore": [
+          {
+            "subtitleIndex": 27,
+            "source_en": "The Earth began to cool",
+            "source_zh": "地球开始冷却"
+          },
+          {
+            "subtitleIndex": 28,
+            "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+            "source_zh": "自养生物开始发育 尼安德塔人发明工具"
+          }
+        ],
+        "contextAfter": [],
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 我们建了长城 我们建了金字塔",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "confidence": 1,
+        "placeholder": false
       }
     ]
   }

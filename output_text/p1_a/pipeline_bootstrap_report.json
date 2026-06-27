@@ -43,5 +43,5 @@
     "runtimeConsumable": false
   },
   "bootstrapCompleted": true,
-  "nextRecommendedStep": "P1-B: replace placeholder Scene Meaning and Evidence stages with real engine producers (offline only), one stage at a time, preserving Runtime read-only boundary."
+  "nextRecommendedStep": "P1-C: replace the placeholder Evidence stage with a real offline Evidence Engine that consumes the real Scene Meaning Artifact, preserving the Runtime read-only boundary and the forward-only Artifact chain."
 }

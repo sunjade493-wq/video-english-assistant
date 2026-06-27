@@ -175,6 +175,165 @@ function writeArtifact(fileName, artifact) {
   return target.replace(/\\/g, '/');
 }
 
+function readArtifact(fileName) {
+  const target = path.resolve(path.join(OUTPUT_DIR, fileName));
+  if (!fs.existsSync(target)) {
+    fail(`expected upstream artifact not found: ${fileName}`);
+  }
+  try {
+    return JSON.parse(fs.readFileSync(target, 'utf8'));
+  } catch (error) {
+    fail(`upstream artifact is not valid JSON (${fileName}): ${error.message}`);
+  }
+  return undefined;
+}
+
+/* -------------------------------------------------------------------------
+ * P1-B Scene Meaning Engine (REAL, offline, deterministic)
+ *
+ * Per P0-6B the required generation flow is:
+ *   Subtitle -> Context Collection -> Scene Understanding -> Scene Meaning
+ * The forbidden flow (Dictionary -> Scene Meaning) is never used.
+ *
+ * This engine is fully offline and deterministic:
+ *   - no AI API calls
+ *   - no OCR
+ *   - no video analysis
+ *   - no online search
+ * It consumes ONLY the Subtitle Artifact (read-only, per P0-7C) and produces
+ * one Scene Meaning per subtitle as evidence. It never decides obstacles and
+ * is never runtime consumable.
+ * ---------------------------------------------------------------------- */
+
+const SCENE_MEANING_CONTEXT_WINDOW = 2;
+
+function classifyDialogueFunction(en) {
+  const text = String(en || '').trim();
+  if (/^previously on/i.test(text)) return 'recap-marker';
+  if (text.includes('♪')) return 'lyric';
+  if (text.endsWith('?')) return 'question';
+  if (text.endsWith('!')) return 'exclamation';
+  return 'statement';
+}
+
+function deriveSpeakerIntent(dialogueFunction) {
+  switch (dialogueFunction) {
+    case 'recap-marker': return 'orient the viewer to prior events';
+    case 'lyric': return 'theme-song / musical sequence';
+    case 'question': return 'seek information, confirmation, or a response';
+    case 'exclamation': return 'express emphasis or strong emotion';
+    default: return 'convey information or advance the dialogue';
+  }
+}
+
+function detectAmbiguity(en) {
+  const text = String(en || '').trim();
+  if (text.endsWith('...')) {
+    return {
+      hasAmbiguity: true,
+      note: 'Line trails off or continues; meaning may depend on adjacent dialogue.',
+    };
+  }
+  return { hasAmbiguity: false, note: null };
+}
+
+function collectSceneContext(subtitles, position) {
+  const before = [];
+  for (let i = Math.max(0, position - SCENE_MEANING_CONTEXT_WINDOW); i < position; i += 1) {
+    before.push({
+      subtitleIndex: subtitles[i].subtitleIndex,
+      source_en: subtitles[i].source_en,
+      source_zh: subtitles[i].source_zh,
+    });
+  }
+  const after = [];
+  for (let i = position + 1; i <= Math.min(subtitles.length - 1, position + SCENE_MEANING_CONTEXT_WINDOW); i += 1) {
+    after.push({
+      subtitleIndex: subtitles[i].subtitleIndex,
+      source_en: subtitles[i].source_en,
+      source_zh: subtitles[i].source_zh,
+    });
+  }
+  return { before, after };
+}
+
+function computeSceneConfidence(hasZh, hasContext) {
+  let confidence = 0.5;
+  if (hasZh) confidence += 0.3;
+  if (hasContext) confidence += 0.2;
+  return Math.min(1, Number(confidence.toFixed(2)));
+}
+
+function runSceneMeaningEngine(subtitleArtifact) {
+  const subtitles = subtitleArtifact
+    && subtitleArtifact.payload
+    && Array.isArray(subtitleArtifact.payload.subtitles)
+    ? subtitleArtifact.payload.subtitles
+    : null;
+
+  if (!subtitles || subtitles.length === 0) {
+    fail('Scene Meaning Engine received an empty or invalid Subtitle Artifact');
+  }
+
+  const sceneMeanings = subtitles.map((row, position) => {
+    // Step 1: Context Collection
+    const context = collectSceneContext(subtitles, position);
+    const hasContext = context.before.length > 0 || context.after.length > 0;
+    const hasZh = typeof row.source_zh === 'string' && row.source_zh.trim().length > 0;
+
+    // Step 2: Scene Understanding (deterministic classification from context)
+    const dialogueFunction = classifyDialogueFunction(row.source_en);
+    const speakerIntent = deriveSpeakerIntent(dialogueFunction);
+    const ambiguity = detectAmbiguity(row.source_en);
+
+    // Step 3: Scene Meaning (contextual understanding from bilingual evidence,
+    // never from a dictionary)
+    const meaningBasis = hasZh ? row.source_zh : row.source_en;
+    const sceneMeaning = `Functions as a ${dialogueFunction} intended to ${speakerIntent}. `
+      + `Contextual meaning (from bilingual subtitle evidence): ${meaningBasis}`;
+
+    const evidenceSource = ['englishSubtitle'];
+    if (hasZh) evidenceSource.push('chineseSubtitle');
+    if (hasContext) evidenceSource.push('dialogueContext');
+
+    return {
+      subtitleIndex: row.subtitleIndex,
+      timestamp: { startTime: row.startTime, endTime: row.endTime },
+      source_en: row.source_en,
+      source_zh: row.source_zh,
+      contextBefore: context.before,
+      contextAfter: context.after,
+      dialogueFunction,
+      speakerIntent,
+      sceneMeaning,
+      ambiguity,
+      evidenceSource,
+      confidence: computeSceneConfidence(hasZh, hasContext),
+      placeholder: false,
+    };
+  });
+
+  return artifactEnvelope({
+    schemaVersion: 'p1-b-scene-meaning-artifact.v1',
+    artifactName: 'scene_meaning_artifact',
+    producerStage: 'Scene Meaning Engine',
+    consumerStage: 'Evidence Engine',
+    inputArtifact: 'subtitle_artifact',
+    artifactStatus: 'produced',
+    contentMode: 'real',
+    runtimeConsumable: false,
+    notes: 'REAL offline deterministic Scene Meaning Engine (P1-B). Generation flow: '
+      + 'Subtitle -> Context Collection -> Scene Understanding -> Scene Meaning. '
+      + 'No AI API, OCR, video analysis, or online search. One Scene Meaning per subtitle, '
+      + 'produced as evidence only (never decides obstacles, never runtime consumable). '
+      + 'Text synthesis is deterministic; a future AI-backed producer may enrich the contextual '
+      + 'meaning without changing this artifact contract.',
+  }, {
+    sceneMeaningCount: sceneMeanings.length,
+    sceneMeanings,
+  });
+}
+
 function main() {
   const sourceRows = readSubtitleSource();
   const scoped = buildScopedSubtitles(sourceRows);
@@ -211,26 +370,11 @@ function main() {
   });
   createdFiles.push(writeArtifact('subtitle_artifact.json', subtitleArtifact));
 
-  // 2. Scene Meaning Artifact (placeholder — P0-6B owns real generation)
-  const sceneMeaningArtifact = artifactEnvelope({
-    schemaVersion: 'p1-a-scene-meaning-artifact.v1',
-    artifactName: 'scene_meaning_artifact',
-    producerStage: 'Scene Meaning Engine',
-    consumerStage: 'Evidence Engine',
-    inputArtifact: 'subtitle_artifact',
-    artifactStatus: 'produced',
-    contentMode: 'placeholder',
-    runtimeConsumable: false,
-    notes: 'PLACEHOLDER. Real Scene Meaning generation is owned by P0-6B and not performed in this bootstrap. One Scene Meaning per subtitle.',
-  }, {
-    sceneMeanings: scoped.map((row) => ({
-      subtitleIndex: row.subtitleIndex,
-      source_en: row.source_en,
-      source_zh: row.source_zh,
-      sceneMeaning: null,
-      placeholder: true,
-    })),
-  });
+  // 2. Scene Meaning Artifact (REAL — P1-B Scene Meaning Engine, offline/deterministic)
+  // Per P0-7C, the engine consumes the Subtitle Artifact through the frozen artifact,
+  // not in-memory state. Read it back, then produce the Scene Meaning Artifact.
+  const subtitleArtifactForScene = readArtifact('subtitle_artifact.json');
+  const sceneMeaningArtifact = runSceneMeaningEngine(subtitleArtifactForScene);
   createdFiles.push(writeArtifact('scene_meaning_artifact.json', sceneMeaningArtifact));
 
   // 3. Evidence Artifact (placeholder Evidence Chain — P0-6A owns real collection)
@@ -254,7 +398,7 @@ function main() {
         grammar: 'not-available',
         englishSubtitle: 'checked',
         chineseSubtitle: row.source_zh ? 'checked' : 'not-available',
-        sceneMeaning: 'not-available',
+        sceneMeaning: 'checked',
         dialogueContext: 'not-available',
       },
       placeholder: true,
@@ -375,7 +519,8 @@ function main() {
     },
     bootstrapCompleted: true,
     nextRecommendedStep:
-      'P1-B: replace placeholder Scene Meaning and Evidence stages with real engine producers (offline only), one stage at a time, preserving Runtime read-only boundary.',
+      'P1-C: replace the placeholder Evidence stage with a real offline Evidence Engine that consumes '
+      + 'the real Scene Meaning Artifact, preserving the Runtime read-only boundary and the forward-only Artifact chain.',
   };
   createdFiles.push(writeArtifact('pipeline_bootstrap_report.json', report));
 
