@@ -1889,3 +1889,29 @@ Frozen rules:
 This freeze affects Analyze Engine, AI Review, AI Draft Generation, validation, review decision rules, future AI vendor benchmarks, and future content factory production.
 
 Runtime remains read-only and is not part of AI Review.
+
+---
+
+## P0-6B Scene Meaning Engine Freeze
+
+Status: COMPLETE ✅
+
+Git Tag: `p0-6b-scene-meaning-engine-freeze`
+
+Source: `docs/P0_6B_SCENE_MEANING_ENGINE_FREEZE.md`
+
+P0-6B freezes the architecture of the Scene Meaning Engine as the contextual understanding layer of the Analyze Pipeline.
+
+Frozen architecture summary:
+
+- Scene Meaning is an independent Evidence Engine.
+- One subtitle owns one Scene Meaning.
+- Multiple obstacles consume one Scene Meaning.
+- Scene Meaning never decides obstacles.
+- Scene Meaning produces evidence only.
+- AI Review consumes Scene Meaning through the P0-6A Evidence Engine.
+- Runtime never participates.
+- Scene Meaning is not obstacle data.
+- Scene Meaning is not Runtime data.
+- Scene Meaning is reusable across Vocabulary, Comprehension, AI Review, QA, and future Analyze Pipeline components.
+- Future Runtime continues to consume frozen artifacts only.
