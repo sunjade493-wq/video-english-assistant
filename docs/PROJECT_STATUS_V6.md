@@ -1947,3 +1947,37 @@ Frozen architecture summary:
 - Runtime never participates.
 - Runtime remains read-only and consumes only frozen runtime artifacts.
 - Batch processing is a volume change, not an architecture change.
+
+---
+
+## P0-7B Artifact Pipeline Freeze
+
+Status: COMPLETE ✅
+
+Git Tag: `p0-7b-artifact-pipeline-freeze`
+
+Source: `docs/P0_7B_ARTIFACT_PIPELINE_FREEZE.md`
+
+P0-7B freezes the Artifact Pipeline architecture for the Analyze Pipeline.
+
+Frozen architecture summary:
+
+- Artifact-first architecture.
+- Artifact Contracts define every stage.
+- Engines are implementations.
+- Artifacts are architecture.
+- Frozen Artifact Chain:
+  Subtitle
+  → Scene Meaning
+  → Evidence
+  → Draft
+  → Review
+  → Frozen
+  → Runtime
+- Artifact ownership: one stage owns one Artifact; many stages may consume it.
+- Forward-only dependencies; no Artifact depends on a downstream Artifact.
+- Artifacts are immutable after production.
+- Artifacts are traceable.
+- Artifacts are reproducible.
+- Producers are replaceable as long as they emit a conforming Artifact.
+- Runtime remains read-only and consumes only the Runtime Artifact.
