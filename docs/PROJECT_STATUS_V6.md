@@ -2004,3 +2004,32 @@ Frozen architecture summary:
 - Retry recreates a new Artifact and never mutates an existing one.
 - Future parallel execution is enabled through Artifact isolation.
 - Runtime never participates and remains read-only.
+
+---
+
+## P0-7D Pipeline Constitution Freeze
+
+Status: COMPLETE ✅
+
+Git Tag: `p0-7d-pipeline-constitution-freeze`
+
+Source: `docs/P0_7D_PIPELINE_CONSTITUTION_FREEZE.md`
+
+P0-7D freezes the Constitution of the Analyze Pipeline — the highest architectural contract that governs every Analyze Engine.
+
+Frozen architecture summary:
+
+- P0-7D is the highest architectural contract; it is not an Engine, Artifact, or Pipeline stage.
+- Constitutional principles: Evidence before Decision, Context before Analysis, Artifact before Engine, Immutable Artifacts, Forward-only Pipeline, Runtime Read-only, Analyze Generates, Runtime Consumes, Human Review is Final Escalation, Every Decision is Traceable, Every Artifact is Reproducible, Replaceable Producers, Stable Contracts.
+- Constitutional Hierarchy:
+  Pipeline Constitution
+  → Pipeline Skeleton
+  → Artifact Pipeline
+  → Engine Integration
+  → Individual Engines
+  → Runtime
+- Higher layers govern lower layers; lower layers never redefine higher layers.
+- Governs Evidence Engine, Scene Meaning Engine, Vocabulary Engine, Comprehension Engine, AI Review, Human Review, Frozen Promotion, and Runtime Promotion.
+- Future AI vendors, LLMs, prompts, batch generation, content factory, multiple shows, regression testing, replay, and QA are supported without changing Runtime.
+- Architecture changes require a new Architecture Freeze; implementation changes do not.
+- Runtime remains read-only and consumes only frozen runtime artifacts.
