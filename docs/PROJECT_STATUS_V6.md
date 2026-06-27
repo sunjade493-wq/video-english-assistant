@@ -1981,3 +1981,26 @@ Frozen architecture summary:
 - Artifacts are reproducible.
 - Producers are replaceable as long as they emit a conforming Artifact.
 - Runtime remains read-only and consumes only the Runtime Artifact.
+
+---
+
+## P0-7C Engine Integration Freeze
+
+Status: COMPLETE ✅
+
+Git Tag: `p0-7c-engine-integration-freeze`
+
+Source: `docs/P0_7C_ENGINE_INTEGRATION_FREEZE.md`
+
+P0-7C freezes the Engine Integration Contract for the Analyze Pipeline.
+
+Frozen architecture summary:
+
+- P0-7C freezes Engine Integration.
+- Engines communicate only through frozen Artifacts.
+- No Engine may directly invoke another Engine.
+- No Engine may modify another Engine's Artifact.
+- Failure propagates through Artifacts only.
+- Retry recreates a new Artifact and never mutates an existing one.
+- Future parallel execution is enabled through Artifact isolation.
+- Runtime never participates and remains read-only.
