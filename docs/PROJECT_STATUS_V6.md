@@ -1854,3 +1854,38 @@ This freeze affects Analyze Engine policy, AI draft generation, review decision 
 This freeze does not affect Runtime, UI, marker rendering, or data contract behavior.
 
 Runtime remains read-only and continues to consume only frozen artifacts.
+
+---
+
+## P0-6A AI Review Evidence Rules Freeze
+
+Status: COMPLETE ✅
+
+Git Tag: `p0-6a-ai-review-evidence-rules-freeze`
+
+Source: `docs/P0_6A_AI_REVIEW_EVIDENCE_RULES_FREEZE.md`
+
+P0-6A upgrades AI Review from a confidence-driven review model to an evidence-driven Evidence Engine.
+
+AI Review does not decide based on confidence. AI Review decides based on evidence.
+
+New architecture principles introduced:
+
+- Architecture Philosophy
+- Evidence Completeness
+- Decision Traceability
+- Evidence Reproducibility
+- Evidence Engine Architecture
+
+Frozen rules:
+
+- Evidence Collection must complete before reasoning begins.
+- Evidence always precedes reasoning; reasoning always precedes decision.
+- Confidence is supplementary information only and must never replace evidence.
+- Decisions (Frozen, Reject, Needs Human) are determined by evidence quality, not confidence thresholds.
+- Every decision must be reconstructable and reproducible from the Evidence Chain.
+- Human Review is the final escalation path, not the default uncertainty path.
+
+This freeze affects Analyze Engine, AI Review, AI Draft Generation, validation, review decision rules, future AI vendor benchmarks, and future content factory production.
+
+Runtime remains read-only and is not part of AI Review.
