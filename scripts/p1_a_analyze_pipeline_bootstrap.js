@@ -2323,6 +2323,144 @@ function buildP3DDisplayDraftHumanReviewGate(p3cGeneration) {
   };
 }
 
+/* -------------------------------------------------------------------------
+ * P3-E AI Quality Assurance Engine
+ *
+ * Deterministic, rules-based QA over P3-C VALID display drafts. Replaces
+ * "manual review by default": AI generates (P3-C) -> AI QA checks (P3-E) ->
+ * high-quality drafts become promotion-eligible -> only uncertain cases need
+ * human review.
+ *
+ * It does NOT promote drafts, does NOT make Runtime consume anything, calls NO
+ * Qwen/API (fully deterministic), and reads only P3-C valid drafts. Runtime
+ * stays read-only; runtimeDisplayMayConsume is always false here.
+ * ---------------------------------------------------------------------- */
+
+const P3E_RUNTIME_POS_STYLE = new Set([
+  'n.', 'pron.', 'v.', 'vt.', 'vi.', 'vt./vi.', 'aux.', 'modal v.',
+  'adj.', 'adv.', 'prep.', 'conj.', 'art.', 'num.', 'interj.', 'abbr.',
+]);
+
+function countChineseChars(value) {
+  const matches = String(value || '').match(/[一-鿿]/g);
+  return matches ? matches.length : 0;
+}
+
+function buildP3EAiQualityAssuranceEngine(p3cGeneration) {
+  const validDrafts = p3cGeneration && Array.isArray(p3cGeneration.validDrafts)
+    ? p3cGeneration.validDrafts
+    : [];
+
+  const qaDecisions = validDrafts.map((draft) => {
+    const generatedFields = draft && draft.generatedFields ? draft.generatedFields : {};
+    const checks = {};
+    let score = 100;
+    let criticalFailure = false;
+
+    // Schema validity (critical).
+    const schemaValid = validateP3ADisplayFieldDraft(draft);
+    checks.schemaValid = schemaValid;
+    if (!schemaValid) { score -= 100; criticalFailure = true; }
+
+    // Confidence band.
+    const confidence = typeof draft.confidence === 'number' ? draft.confidence : 0;
+    if (confidence < 0.65) {
+      score -= 50;
+      checks.confidenceBand = 'low';
+    } else if (confidence < 0.85) {
+      score -= 20;
+      checks.confidenceBand = 'medium';
+    } else {
+      checks.confidenceBand = 'high';
+    }
+
+    // Required fields presence + emptiness + placeholders (critical).
+    const requiredByType = draft.type === 'vocabulary'
+      ? ['word', 'phonetic', 'partOfSpeech', 'sentenceMeaning']
+      : ['literal', 'actual', 'grammar'];
+    let missingField = false;
+    let emptyField = false;
+    let placeholderField = false;
+    requiredByType.forEach((field) => {
+      const value = generatedFields[field];
+      if (value === undefined || value === null) {
+        missingField = true;
+      } else if (!isPresentDisplayField(value)) {
+        emptyField = true;
+      } else if (P3A_PLACEHOLDER_VALUES.includes(String(value).trim())) {
+        placeholderField = true;
+      }
+    });
+    checks.allRequiredFieldsPresent = !missingField;
+    checks.noEmptyFields = !emptyField;
+    checks.noPlaceholders = !placeholderField;
+    if (missingField) { score -= 100; criticalFailure = true; }
+    if (emptyField) { score -= 100; criticalFailure = true; }
+    if (placeholderField) { score -= 100; criticalFailure = true; }
+
+    // Vocabulary: sentenceMeaning length + POS style.
+    if (draft.type === 'vocabulary') {
+      const sentenceMeaningChineseLength = countChineseChars(generatedFields.sentenceMeaning);
+      checks.sentenceMeaningConcise = sentenceMeaningChineseLength <= 12;
+      if (sentenceMeaningChineseLength > 12) score -= 30;
+
+      const posOk = P3E_RUNTIME_POS_STYLE.has(String(generatedFields.partOfSpeech || '').trim());
+      checks.partOfSpeechRuntimeStyle = posOk;
+      if (!posOk) score -= 20;
+    }
+
+    // Comprehension: grammar must be substantive enough to explain why.
+    if (draft.type === 'comprehension') {
+      const grammarLongEnough = String(generatedFields.grammar || '').trim().length >= 12;
+      checks.grammarExplainsWhy = grammarLongEnough;
+      if (!grammarLongEnough) score -= 20;
+    }
+
+    const qaScore = score;
+    let qaDecision;
+    if (criticalFailure || qaScore < 65) {
+      qaDecision = 'qa_auto_rejected';
+    } else if (qaScore < 85) {
+      qaDecision = 'qa_needs_human_review';
+    } else {
+      qaDecision = 'qa_auto_approved';
+    }
+
+    const promotionEligible = qaDecision === 'qa_auto_approved';
+
+    return {
+      runtimeCandidateId: draft.runtimeCandidateId,
+      qaDecision,
+      qaReviewer: 'ai-quality-assurance-engine',
+      reviewedAt: 'P3-E-deterministic-qa',
+      qaScore,
+      qaChecks: checks,
+      reason: criticalFailure
+        ? 'critical QA failure (schema/required-field/placeholder)'
+        : `deterministic QA score ${qaScore}`,
+      promotionEligible,
+      runtimeDisplayMayConsume: false,
+    };
+  });
+
+  const qaAutoApprovedDraftCount = qaDecisions.filter((d) => d.qaDecision === 'qa_auto_approved').length;
+  const qaNeedsHumanReviewDraftCount = qaDecisions.filter((d) => d.qaDecision === 'qa_needs_human_review').length;
+  const qaAutoRejectedDraftCount = qaDecisions.filter((d) => d.qaDecision === 'qa_auto_rejected').length;
+
+  return {
+    qaEngineStatus: validDrafts.length > 0 ? 'qa_complete' : 'no_valid_drafts_to_qa',
+    qaReviewedDraftCount: qaDecisions.length,
+    qaAutoApprovedDraftCount,
+    qaNeedsHumanReviewDraftCount,
+    qaAutoRejectedDraftCount,
+    qaDecisions,
+    runtimeDisplayMayConsume: false,
+    expectedNextStep:
+      'a future review-gated promotion stage may promote only qa_auto_approved (promotionEligible) drafts; '
+      + 'qa_needs_human_review drafts require human review; qa_auto_rejected drafts are excluded',
+  };
+}
+
 async function main() {
   const sourceRows = readSubtitleSource();
   const scoped = buildScopedSubtitles(sourceRows);
@@ -2632,6 +2770,19 @@ async function main() {
     runtimeDisplayMayConsume: decision.runtimeDisplayMayConsume,
   }));
 
+  // P3-E AI Quality Assurance Engine.
+  // Deterministic, rules-based QA over P3-C valid drafts. No Qwen/API. Does not
+  // promote drafts and does not enable Runtime consumption.
+  const p3eQaEngine = buildP3EAiQualityAssuranceEngine(p3cGeneration);
+  const p3eSafeQaSample = p3eQaEngine.qaDecisions.slice(0, 1).map((decision) => ({
+    runtimeCandidateId: decision.runtimeCandidateId,
+    qaDecision: decision.qaDecision,
+    qaReviewer: decision.qaReviewer,
+    qaScore: decision.qaScore,
+    promotionEligible: decision.promotionEligible,
+    runtimeDisplayMayConsume: decision.runtimeDisplayMayConsume,
+  }));
+
   const report = {
     schemaVersion: 'p1-a-pipeline-bootstrap-report.v1',
     stage: STAGE,
@@ -2776,6 +2927,17 @@ async function main() {
       p3dRuntimeMayConsumeStillFalse: runtimeCandidateArtifact.payload.runtimeMayConsume === false,
       p3dExpectedNextStep: p3dReviewGate.expectedNextStep,
       p3dSafeReviewSample,
+      p3eAiQualityAssuranceEngine: true,
+      p3eQaEngineStatus: p3eQaEngine.qaEngineStatus,
+      p3eQaReviewedDraftCount: p3eQaEngine.qaReviewedDraftCount,
+      p3eQaAutoApprovedDraftCount: p3eQaEngine.qaAutoApprovedDraftCount,
+      p3eQaNeedsHumanReviewDraftCount: p3eQaEngine.qaNeedsHumanReviewDraftCount,
+      p3eQaAutoRejectedDraftCount: p3eQaEngine.qaAutoRejectedDraftCount,
+      p3eRuntimeDisplayMayConsume: false,
+      p3eRuntimeCandidateStillNotConsumable: runtimeCandidateArtifact.runtimeConsumable === false,
+      p3eRuntimeMayConsumeStillFalse: runtimeCandidateArtifact.payload.runtimeMayConsume === false,
+      p3eExpectedNextStep: p3eQaEngine.expectedNextStep,
+      p3eSafeQaSample,
       downstreamStillPlaceholder: false,
       noOcrCalled: true,
       noInternetSubtitleFetch: true,
