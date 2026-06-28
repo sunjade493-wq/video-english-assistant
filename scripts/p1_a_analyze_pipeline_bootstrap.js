@@ -1967,6 +1967,156 @@ function buildOfflineAiDisplayFieldGeneratorProbe(runtimeCandidateArtifact, upst
   };
 }
 
+/* -------------------------------------------------------------------------
+ * P3-A Offline AI Display Field Generator — Skeleton (safe)
+ *
+ * First real generator skeleton (no longer probe-only): it defines the
+ * generator contract, detects configuration, prepares a bounded input sample,
+ * and validates output schema. It does NOT generate real AI output unless an
+ * approved offline AI helper/config already exists in this pipeline (none
+ * does), and it adds NO new network/API code.
+ *
+ * Runtime stays read-only. Generated drafts (if any) are draft-only:
+ * reviewStatus "pending_human_review", runtimeDisplayMayConsume false. It never
+ * writes into runtime_candidate_artifact, never sets runtimeMayConsume /
+ * runtimeConsumable true, and makes no OCR / Qwen-VL / Internet calls.
+ * ---------------------------------------------------------------------- */
+
+const P3A_DISPLAY_FIELD_SAMPLE_LIMIT = 5;
+const P3A_PLACEHOLDER_VALUES = ['待补充', 'unknown', 'TODO'];
+
+function buildP3ADisplayFieldGeneratorInput(runtimeCandidateArtifact, upstreamArtifacts, limit = P3A_DISPLAY_FIELD_SAMPLE_LIMIT) {
+  const runtimeCandidates = runtimeCandidateArtifact
+    && runtimeCandidateArtifact.payload
+    && Array.isArray(runtimeCandidateArtifact.payload.runtimeCandidates)
+    ? runtimeCandidateArtifact.payload.runtimeCandidates
+    : null;
+
+  if (!runtimeCandidates) {
+    fail('P3-A generator input: payload.runtimeCandidates is not an array');
+  }
+
+  // Nearby subtitle context from the subtitle artifact, keyed by subtitleIndex.
+  const subtitleArtifact = upstreamArtifacts && upstreamArtifacts.subtitleArtifact;
+  const subtitles = subtitleArtifact
+    && subtitleArtifact.payload
+    && Array.isArray(subtitleArtifact.payload.subtitles)
+    ? subtitleArtifact.payload.subtitles
+    : [];
+  const subtitleByIndex = new Map();
+  subtitles.forEach((row) => {
+    if (row && Number.isFinite(Number(row.subtitleIndex))) {
+      subtitleByIndex.set(row.subtitleIndex, row);
+    }
+  });
+
+  const buildNearbyContext = (subtitleIndex) => {
+    const nearby = [];
+    [subtitleIndex - 1, subtitleIndex + 1].forEach((idx) => {
+      const row = subtitleByIndex.get(idx);
+      if (row) {
+        nearby.push({ subtitleIndex: idx, source_en: row.source_en, source_zh: row.source_zh });
+      }
+    });
+    return nearby;
+  };
+
+  return runtimeCandidates.slice(0, limit).map((candidate) => ({
+    runtimeCandidateId: candidate.runtimeCandidateId,
+    sourceDraftObstacleId: candidate.sourceDraftObstacleId || null,
+    sourceReviewId: candidate.sourceReviewId || null,
+    sourceFrozenCandidateId: candidate.sourceFrozenCandidateId || null,
+    type: candidate.type,
+    subtitleIndex: candidate.subtitleIndex,
+    source_en: candidate.source_en,
+    source_zh: Object.prototype.hasOwnProperty.call(candidate, 'source_zh') ? candidate.source_zh : null,
+    nearbyContext: buildNearbyContext(candidate.subtitleIndex),
+  }));
+}
+
+function validateP3ADisplayFieldDraft(draft) {
+  if (!draft || typeof draft !== 'object') return false;
+  if (!isPresentDisplayField(draft.runtimeCandidateId)) return false;
+  if (!draft.generatedFields || typeof draft.generatedFields !== 'object') return false;
+  if (typeof draft.confidence !== 'number' || draft.confidence < 0 || draft.confidence > 1) return false;
+  if (draft.reviewStatus !== 'pending_human_review') return false;
+  if (draft.runtimeDisplayMayConsume !== false) return false;
+
+  const requiredByType = draft.type === 'vocabulary'
+    ? ['word', 'phonetic', 'partOfSpeech', 'sentenceMeaning']
+    : ['literal', 'actual', 'grammar'];
+
+  for (const field of requiredByType) {
+    const value = draft.generatedFields[field];
+    if (!isPresentDisplayField(value)) return false;
+    if (P3A_PLACEHOLDER_VALUES.includes(String(value).trim())) return false;
+  }
+
+  if (draft.type === 'comprehension') {
+    const hasTitle = ['prototype', 'phrase', 'text'].some(
+      (field) => isPresentDisplayField(draft.generatedFields[field]),
+    );
+    if (!hasTitle) return false;
+  }
+
+  return true;
+}
+
+function detectApprovedP3AOfflineAiHelperConfig() {
+  // An approved offline AI helper/config must already be present in this
+  // pipeline. This script imports only fs/path and has no such helper/config.
+  // We do not add one here.
+  return { available: false, name: null };
+}
+
+function buildP3AOfflineAiDisplayFieldGeneratorSkeleton(runtimeCandidateArtifact, upstreamArtifacts) {
+  const input = buildP3ADisplayFieldGeneratorInput(runtimeCandidateArtifact, upstreamArtifacts);
+  const helper = detectApprovedP3AOfflineAiHelperConfig();
+
+  if (!helper.available) {
+    return {
+      generatorStatus: 'blocked_missing_offline_ai_helper',
+      offlineAiHelperAvailable: false,
+      inputCandidateCount: input.length,
+      sampleLimit: P3A_DISPLAY_FIELD_SAMPLE_LIMIT,
+      displayFieldDrafts: [],
+      generatedVocabularyDraftCount: 0,
+      generatedComprehensionDraftCount: 0,
+      generatedDraftCount: 0,
+      requiresHumanReview: true,
+      runtimeDisplayMayConsume: false,
+      expectedNextStep:
+        'introduce and approve an offline AI helper/config (deterministic, JSON-only, temperature 0, '
+        + 'fail-closed, no runtime network) wired into this pipeline; the P3-A skeleton will then generate '
+        + 'a bounded sample of display-field drafts for human review',
+    };
+  }
+
+  // (Unreachable in this pipeline: no approved helper/config is wired in.)
+  // Contract for when a helper exists: bounded sample, temperature 0, JSON
+  // required, fail closed on invalid JSON, validate every returned draft, never
+  // write generated fields into runtime_candidate_artifact.
+  const validatedDrafts = [];
+  let generatedVocabularyDraftCount = 0;
+  let generatedComprehensionDraftCount = 0;
+  // No generation performed here because helper.available is false above.
+
+  return {
+    generatorStatus: 'ready',
+    offlineAiHelperAvailable: true,
+    offlineAiHelperName: helper.name,
+    inputCandidateCount: input.length,
+    sampleLimit: P3A_DISPLAY_FIELD_SAMPLE_LIMIT,
+    displayFieldDrafts: validatedDrafts,
+    generatedVocabularyDraftCount,
+    generatedComprehensionDraftCount,
+    generatedDraftCount: validatedDrafts.length,
+    requiresHumanReview: true,
+    runtimeDisplayMayConsume: false,
+    expectedNextStep: 'human review of generated display-field drafts before any review-gated display promotion',
+  };
+}
+
 function main() {
   const sourceRows = readSubtitleSource();
   const scoped = buildScopedSubtitles(sourceRows);
@@ -2216,6 +2366,32 @@ function main() {
     expectedNextStep: offlineAiDisplayFieldGenerator.expectedNextStep,
   };
 
+  // P3-A Offline AI Display Field Generator Skeleton.
+  // Defines the generator contract and prepares a bounded input sample. No AI is
+  // called because no approved offline helper/config is wired into this pipeline.
+  const p3aGenerator = buildP3AOfflineAiDisplayFieldGeneratorSkeleton(runtimeCandidateArtifact, {
+    frozenCandidateArtifact,
+    reviewArtifact,
+    draftObstacleArtifact,
+    vocabularyDecisionArtifact,
+    vocabularyCandidateArtifact,
+    evidenceArtifact,
+    sceneMeaningArtifact,
+    subtitleArtifact,
+  });
+  const p3aGeneratorSummary = {
+    generatorStatus: p3aGenerator.generatorStatus,
+    offlineAiHelperAvailable: p3aGenerator.offlineAiHelperAvailable,
+    inputCandidateCount: p3aGenerator.inputCandidateCount,
+    sampleLimit: p3aGenerator.sampleLimit,
+    generatedDraftCount: p3aGenerator.generatedDraftCount,
+    generatedVocabularyDraftCount: p3aGenerator.generatedVocabularyDraftCount,
+    generatedComprehensionDraftCount: p3aGenerator.generatedComprehensionDraftCount,
+    requiresHumanReview: p3aGenerator.requiresHumanReview,
+    runtimeDisplayMayConsume: p3aGenerator.runtimeDisplayMayConsume,
+    expectedNextStep: p3aGenerator.expectedNextStep,
+  };
+
   const report = {
     schemaVersion: 'p1-a-pipeline-bootstrap-report.v1',
     stage: STAGE,
@@ -2324,6 +2500,18 @@ function main() {
       offlineAiDisplayFieldGeneratorRuntimeDisplayMayConsume: false,
       offlineAiDisplayFieldGeneratorExpectedNextStep: offlineAiDisplayFieldGenerator.expectedNextStep,
       offlineAiDisplayFieldGeneratorSummary,
+      p3aOfflineAiDisplayFieldGeneratorSkeleton: true,
+      p3aGeneratorStatus: p3aGenerator.generatorStatus,
+      p3aGeneratorInputCandidateCount: p3aGenerator.inputCandidateCount,
+      p3aGeneratedDraftCount: p3aGenerator.generatedDraftCount,
+      p3aGeneratedVocabularyDraftCount: p3aGenerator.generatedVocabularyDraftCount,
+      p3aGeneratedComprehensionDraftCount: p3aGenerator.generatedComprehensionDraftCount,
+      p3aGeneratedDraftsRequireHumanReview: p3aGenerator.requiresHumanReview,
+      p3aRuntimeDisplayMayConsume: false,
+      p3aRuntimeCandidateStillNotConsumable: runtimeCandidateArtifact.runtimeConsumable === false,
+      p3aRuntimeMayConsumeStillFalse: runtimeCandidateArtifact.payload.runtimeMayConsume === false,
+      p3aExpectedNextStep: p3aGenerator.expectedNextStep,
+      p3aGeneratorSummary,
       downstreamStillPlaceholder: false,
       noOcrCalled: true,
       noInternetSubtitleFetch: true,
