@@ -870,6 +870,164 @@ function runDraftAssemblyEngine(vocabularyDecisionArtifact) {
   });
 }
 
+/* -------------------------------------------------------------------------
+ * P1-E Comprehension Engine (REAL, offline, deterministic)
+ *
+ * Per P0-7C this engine consumes the upstream Evidence Artifact
+ * (evidence_artifact.json) and the existing real Draft Obstacle Artifact
+ * (draft_obstacle_artifact.json), both read from disk. It does NOT read the
+ * subtitle source or the Scene Meaning Artifact directly; Scene Meaning
+ * signals are read only through the Evidence Artifact fields.
+ *
+ * It is fully offline and deterministic: no AI / Qwen / Qwen-VL / OCR.
+ *
+ * It APPENDS comprehension draft obstacles after the existing vocabulary draft
+ * obstacles, preserving them exactly. It does NOT modify vocabulary decisions,
+ * does NOT review, does NOT promote, and is never runtime consumable.
+ * ---------------------------------------------------------------------- */
+
+const COMPREHENSION_PRAGMATIC_MARKERS = [
+  'I mean',
+  'you know',
+  'come on',
+  'what do you mean',
+  'go ahead',
+  'as if',
+  'not exactly',
+  'kind of',
+  'sort of',
+];
+
+function detectPragmaticMarkers(sourceEn) {
+  const haystack = String(sourceEn || '').toLowerCase();
+  return COMPREHENSION_PRAGMATIC_MARKERS.filter(
+    (marker) => haystack.includes(marker.toLowerCase()),
+  );
+}
+
+function runComprehensionEngine(evidenceArtifact, existingDraftArtifact) {
+  const evidenceChains = evidenceArtifact
+    && evidenceArtifact.payload
+    && Array.isArray(evidenceArtifact.payload.evidenceChains)
+    ? evidenceArtifact.payload.evidenceChains
+    : null;
+
+  const existingDraftObstacles = existingDraftArtifact
+    && existingDraftArtifact.payload
+    && Array.isArray(existingDraftArtifact.payload.draftObstacles)
+    ? existingDraftArtifact.payload.draftObstacles
+    : null;
+
+  if (!evidenceChains) {
+    fail('Comprehension Engine received an invalid Evidence Artifact');
+  }
+  if (!existingDraftObstacles) {
+    fail('Comprehension Engine received an invalid Draft Obstacle Artifact');
+  }
+
+  // Preserve all existing vocabulary draft obstacles exactly.
+  const vocabularyDraftObstacles = existingDraftObstacles.slice();
+  const comprehensionDraftObstacles = [];
+  let sequence = vocabularyDraftObstacles.length;
+
+  evidenceChains.forEach((chain) => {
+    const inner = chain.evidenceChain || {};
+    const scene = inner.sceneMeaning || {};
+    const english = inner.englishSubtitle || {};
+    const chinese = inner.chineseSubtitle || {};
+    const dialogueContext = inner.dialogueContext || {};
+
+    const sourceEn = typeof english.source_en === 'string' ? english.source_en : '';
+    const sourceZh = chinese && typeof chinese.source_zh === 'string' ? chinese.source_zh : null;
+
+    const ambiguity = scene.ambiguity || { hasAmbiguity: false, note: null };
+    const dialogueFunction = scene.dialogueFunction;
+    const speakerIntent = scene.speakerIntent;
+    const pragmaticMarkers = detectPragmaticMarkers(sourceEn);
+
+    const reasons = [];
+    if (ambiguity && ambiguity.hasAmbiguity === true) {
+      reasons.push('scene-ambiguity');
+    }
+    if (typeof dialogueFunction === 'string' && dialogueFunction && dialogueFunction !== 'literal-information') {
+      reasons.push(`dialogue-function:${dialogueFunction}`);
+    }
+    if (typeof speakerIntent === 'string' && speakerIntent && speakerIntent !== 'literal-information') {
+      reasons.push(`speaker-intent:${speakerIntent}`);
+    }
+    if (pragmaticMarkers.length > 0) {
+      reasons.push(`pragmatic-markers:${pragmaticMarkers.join('|')}`);
+    }
+
+    if (reasons.length === 0) {
+      return;
+    }
+
+    sequence += 1;
+    const id = String(sequence).padStart(6, '0');
+    const evidenceSource = ['evidence_artifact', 'sceneMeaning', 'englishSubtitle'];
+    if (sourceZh) evidenceSource.push('chineseSubtitle');
+    if ((dialogueContext.contextBeforeCount || 0) > 0 || (dialogueContext.contextAfterCount || 0) > 0) {
+      evidenceSource.push('dialogueContext');
+    }
+
+    comprehensionDraftObstacles.push({
+      draftObstacleId: `${EPISODE_ID}-draft-obstacle-${id}`,
+      type: 'comprehension',
+      subtitleIndex: chain.subtitleIndex,
+      timestamp: chain.timestamp,
+      source_en: sourceEn,
+      source_zh: sourceZh,
+      sceneMeaning: scene.sceneMeaning,
+      dialogueFunction,
+      speakerIntent,
+      ambiguity,
+      dialogueContext,
+      comprehensionReason: reasons.join('; '),
+      evidenceSource,
+      placeholder: false,
+    });
+  });
+
+  const draftObstacles = vocabularyDraftObstacles.concat(comprehensionDraftObstacles);
+
+  return artifactEnvelope({
+    schemaVersion: 'p1-e-draft-obstacle-artifact.v1',
+    artifactName: 'draft_obstacle_artifact',
+    producerStage: 'Draft Obstacle Assembly (Vocabulary + Comprehension)',
+    consumerStage: 'AI Review',
+    inputArtifact: 'vocabulary_decision_artifact + evidence_artifact',
+    artifactStatus: 'produced',
+    contentMode: 'real',
+    runtimeConsumable: false,
+    notes: 'REAL offline deterministic Draft Obstacle Artifact (P1-E). Vocabulary draft obstacles '
+      + '(P1-DC) are preserved exactly; comprehension draft obstacles are appended by the '
+      + 'Comprehension Engine, which consumes evidence_artifact only (read from disk per P0-7C) and '
+      + 'reads Scene Meaning signals solely through Evidence Artifact fields. No AI / Qwen / Qwen-VL / '
+      + 'OCR. It makes no vocabulary decisions, no review, and no promotion. Never runtime consumable.',
+  }, {
+    draftObstacleCount: draftObstacles.length,
+    draftObstacles,
+    assemblySummary: {
+      vocabularyDraftObstacleCount: vocabularyDraftObstacles.length,
+      comprehensionDraftObstacleCount: comprehensionDraftObstacles.length,
+      totalDraftObstacleCount: draftObstacles.length,
+    },
+    assemblyRules: {
+      vocabulary: 'existing vocabulary draft obstacles preserved exactly',
+      comprehension: 'at most one comprehension obstacle per evidenceChain when deterministic signals indicate comprehension value',
+      comprehensionSignals: [
+        'sceneMeaning.ambiguity.hasAmbiguity true',
+        'dialogueFunction present and not literal-information',
+        'speakerIntent present and not literal-information',
+        `pragmatic markers: ${COMPREHENSION_PRAGMATIC_MARKERS.join(', ')}`,
+      ],
+      ordering: 'comprehension obstacles appended after vocabulary obstacles; draftObstacleId sequence continued',
+      note: 'Deterministic only. No AI, no comprehension explanation generation, no review.',
+    },
+  });
+}
+
 function main() {
   const sourceRows = readSubtitleSource();
   const scoped = buildScopedSubtitles(sourceRows);
@@ -940,8 +1098,19 @@ function main() {
   // 4. Draft Obstacle Artifact (REAL — P1-DC Draft Assembly Engine)
   // Per P0-7C, consumes the Vocabulary Decision Artifact from disk only.
   const vocabularyDecisionArtifactForDraft = readArtifact('vocabulary_decision_artifact.json');
-  const draftObstacleArtifact = runDraftAssemblyEngine(vocabularyDecisionArtifactForDraft);
-  createdFiles.push(writeArtifact('draft_obstacle_artifact.json', draftObstacleArtifact));
+  const draftAssemblyArtifact = runDraftAssemblyEngine(vocabularyDecisionArtifactForDraft);
+  createdFiles.push(writeArtifact('draft_obstacle_artifact.json', draftAssemblyArtifact));
+
+  // 4b. Draft Obstacle Artifact (REAL — P1-E Comprehension Engine)
+  // Per P0-7C, consumes evidence_artifact + the existing real draft_obstacle_artifact
+  // from disk, preserves vocabulary draft obstacles, and appends comprehension obstacles.
+  const evidenceArtifactForComprehension = readArtifact('evidence_artifact.json');
+  const draftArtifactForComprehension = readArtifact('draft_obstacle_artifact.json');
+  const draftObstacleArtifact = runComprehensionEngine(
+    evidenceArtifactForComprehension,
+    draftArtifactForComprehension,
+  );
+  writeArtifact('draft_obstacle_artifact.json', draftObstacleArtifact);
 
   // 5. Review Artifact (placeholder — P0-6A AI Review owns real decisions)
   const reviewArtifact = artifactEnvelope({
@@ -1023,6 +1192,8 @@ function main() {
   const draftObstacleIdsSequential = draftObstacleArtifact.payload.draftObstacles.every(
     (obstacle, position) => obstacle.draftObstacleId === `${EPISODE_ID}-draft-obstacle-${String(position + 1).padStart(6, '0')}`,
   );
+  const comprehensionDraftObstacleCount =
+    draftObstacleArtifact.payload.assemblySummary.comprehensionDraftObstacleCount;
 
   const report = {
     schemaVersion: 'p1-a-pipeline-bootstrap-report.v1',
@@ -1061,15 +1232,16 @@ function main() {
       draftAssemblyReal: true,
       draftObstacleCount,
       draftObstacleIdsSequential,
+      comprehensionEngineReal: true,
+      comprehensionDraftObstacleCount,
       downstreamStillPlaceholder: true,
       noOcrCalled: true,
       noInternetSubtitleFetch: true,
     },
     bootstrapCompleted: true,
     nextRecommendedStep:
-      'P1-E: add a real offline Comprehension obstacle stage and connect the AI Review stage that '
-      + 'consumes the real draft_obstacle_artifact, preserving the Runtime read-only boundary and the '
-      + 'forward-only Artifact chain.',
+      'P1-F: connect the AI Review stage that consumes the real draft_obstacle_artifact (vocabulary + '
+      + 'comprehension), preserving the Runtime read-only boundary and the forward-only Artifact chain.',
   };
   createdFiles.push(writeArtifact('pipeline_bootstrap_report.json', report));
 

@@ -1,19 +1,19 @@
 {
-  "schemaVersion": "p1-dc-draft-obstacle-artifact.v1",
+  "schemaVersion": "p1-e-draft-obstacle-artifact.v1",
   "stage": "P1-A",
   "artifactName": "draft_obstacle_artifact",
   "episodeId": "tbbt-s12e01",
   "learnerLevel": "CET-4",
-  "producerStage": "Draft Obstacle Assembly",
+  "producerStage": "Draft Obstacle Assembly (Vocabulary + Comprehension)",
   "consumerStage": "AI Review",
-  "inputArtifact": "vocabulary_decision_artifact",
+  "inputArtifact": "vocabulary_decision_artifact + evidence_artifact",
   "outputArtifact": "draft_obstacle_artifact",
   "artifactStatus": "produced",
   "contentMode": "real",
   "runtimeConsumable": false,
-  "notes": "REAL offline deterministic Draft Assembly Engine (P1-DC). Consumes vocabulary_decision_artifact only (read from disk per P0-7C). No AI / Qwen / Qwen-VL / OCR. Converts accepted vocabulary decisions into draft obstacles only — it makes no new Vocabulary decisions, no Comprehension decisions, no review, and no promotion. Never runtime consumable.",
+  "notes": "REAL offline deterministic Draft Obstacle Artifact (P1-E). Vocabulary draft obstacles (P1-DC) are preserved exactly; comprehension draft obstacles are appended by the Comprehension Engine, which consumes evidence_artifact only (read from disk per P0-7C) and reads Scene Meaning signals solely through Evidence Artifact fields. No AI / Qwen / Qwen-VL / OCR. It makes no vocabulary decisions, no review, and no promotion. Never runtime consumable.",
   "payload": {
-    "draftObstacleCount": 96,
+    "draftObstacleCount": 126,
     "draftObstacles": [
       {
         "draftObstacleId": "tbbt-s12e01-draft-obstacle-000001",
@@ -2318,18 +2318,1642 @@
         "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
         "draftAssemblyReason": "assembled-deterministic: one draft obstacle per accepted vocabulary decision, ordering preserved",
         "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000097",
+        "type": "comprehension",
+        "subtitleIndex": 0,
+        "timestamp": {
+          "startTime": "2.0",
+          "endTime": "6.0"
+        },
+        "source_en": "Previously on The Big Bang Theory...",
+        "source_zh": "《生活大爆炸》前情提要",
+        "sceneMeaning": "Functions as a recap-marker intended to orient the viewer to prior events. Contextual meaning (from bilingual subtitle evidence): 《生活大爆炸》前情提要",
+        "dialogueFunction": "recap-marker",
+        "speakerIntent": "orient the viewer to prior events",
+        "ambiguity": {
+          "hasAmbiguity": true,
+          "note": "Line trails off or continues; meaning may depend on adjacent dialogue."
+        },
+        "dialogueContext": {
+          "contextBefore": [],
+          "contextAfter": [
+            {
+              "subtitleIndex": 1,
+              "source_en": "Can you believe our little lamb is finally getting married?",
+              "source_zh": "你能相信我们的小羊羔终于要嫁人了吗"
+            },
+            {
+              "subtitleIndex": 2,
+              "source_en": "He can't believe it.",
+              "source_zh": "他肯定不信"
+            }
+          ],
+          "contextBeforeCount": 0,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "scene-ambiguity; dialogue-function:recap-marker; speaker-intent:orient the viewer to prior events",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000098",
+        "type": "comprehension",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "sceneMeaning": "Functions as a question intended to seek information, confirmation, or a response. Contextual meaning (from bilingual subtitle evidence): 你能相信我们的小羊羔终于要嫁人了吗",
+        "dialogueFunction": "question",
+        "speakerIntent": "seek information, confirmation, or a response",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 0,
+              "source_en": "Previously on The Big Bang Theory...",
+              "source_zh": "《生活大爆炸》前情提要"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 2,
+              "source_en": "He can't believe it.",
+              "source_zh": "他肯定不信"
+            },
+            {
+              "subtitleIndex": 3,
+              "source_en": "And neither can I.",
+              "source_zh": "我也不敢相信"
+            }
+          ],
+          "contextBeforeCount": 1,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:question; speaker-intent:seek information, confirmation, or a response",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000099",
+        "type": "comprehension",
+        "subtitleIndex": 2,
+        "timestamp": {
+          "startTime": "10.0",
+          "endTime": "12.0"
+        },
+        "source_en": "He can't believe it.",
+        "source_zh": "他肯定不信",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 他肯定不信",
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 0,
+              "source_en": "Previously on The Big Bang Theory...",
+              "source_zh": "《生活大爆炸》前情提要"
+            },
+            {
+              "subtitleIndex": 1,
+              "source_en": "Can you believe our little lamb is finally getting married?",
+              "source_zh": "你能相信我们的小羊羔终于要嫁人了吗"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 3,
+              "source_en": "And neither can I.",
+              "source_zh": "我也不敢相信"
+            },
+            {
+              "subtitleIndex": 4,
+              "source_en": "Hi, Dad. How you doing?",
+              "source_zh": "爸 你还好吗"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:statement; speaker-intent:convey information or advance the dialogue",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000100",
+        "type": "comprehension",
+        "subtitleIndex": 3,
+        "timestamp": {
+          "startTime": "12.0",
+          "endTime": "15.5"
+        },
+        "source_en": "And neither can I.",
+        "source_zh": "我也不敢相信",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 我也不敢相信",
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 1,
+              "source_en": "Can you believe our little lamb is finally getting married?",
+              "source_zh": "你能相信我们的小羊羔终于要嫁人了吗"
+            },
+            {
+              "subtitleIndex": 2,
+              "source_en": "He can't believe it.",
+              "source_zh": "他肯定不信"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 4,
+              "source_en": "Hi, Dad. How you doing?",
+              "source_zh": "爸 你还好吗"
+            },
+            {
+              "subtitleIndex": 5,
+              "source_en": "Then by the power vested in me...",
+              "source_zh": "我以\"连你都能证婚网\""
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:statement; speaker-intent:convey information or advance the dialogue",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000101",
+        "type": "comprehension",
+        "subtitleIndex": 4,
+        "timestamp": {
+          "startTime": "15.5",
+          "endTime": "20.5"
+        },
+        "source_en": "Hi, Dad. How you doing?",
+        "source_zh": "爸 你还好吗",
+        "sceneMeaning": "Functions as a question intended to seek information, confirmation, or a response. Contextual meaning (from bilingual subtitle evidence): 爸 你还好吗",
+        "dialogueFunction": "question",
+        "speakerIntent": "seek information, confirmation, or a response",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 2,
+              "source_en": "He can't believe it.",
+              "source_zh": "他肯定不信"
+            },
+            {
+              "subtitleIndex": 3,
+              "source_en": "And neither can I.",
+              "source_zh": "我也不敢相信"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 5,
+              "source_en": "Then by the power vested in me...",
+              "source_zh": "我以\"连你都能证婚网\""
+            },
+            {
+              "subtitleIndex": 6,
+              "source_en": "by EvenYouCanPerformWeddings.Com...",
+              "source_zh": "所赋予我的合法权利"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:question; speaker-intent:seek information, confirmation, or a response",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000102",
+        "type": "comprehension",
+        "subtitleIndex": 5,
+        "timestamp": {
+          "startTime": "20.5",
+          "endTime": "23.0"
+        },
+        "source_en": "Then by the power vested in me...",
+        "source_zh": "我以\"连你都能证婚网\"",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 我以\"连你都能证婚网\"",
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "ambiguity": {
+          "hasAmbiguity": true,
+          "note": "Line trails off or continues; meaning may depend on adjacent dialogue."
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 3,
+              "source_en": "And neither can I.",
+              "source_zh": "我也不敢相信"
+            },
+            {
+              "subtitleIndex": 4,
+              "source_en": "Hi, Dad. How you doing?",
+              "source_zh": "爸 你还好吗"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 6,
+              "source_en": "by EvenYouCanPerformWeddings.Com...",
+              "source_zh": "所赋予我的合法权利"
+            },
+            {
+              "subtitleIndex": 7,
+              "source_en": "...I now pronounce you husband and wife.",
+              "source_zh": "我现在宣布你们正式结为合法夫妻"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "scene-ambiguity; dialogue-function:statement; speaker-intent:convey information or advance the dialogue",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000103",
+        "type": "comprehension",
+        "subtitleIndex": 6,
+        "timestamp": {
+          "startTime": "23.0",
+          "endTime": "28.5"
+        },
+        "source_en": "by EvenYouCanPerformWeddings.Com...",
+        "source_zh": "所赋予我的合法权利",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 所赋予我的合法权利",
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "ambiguity": {
+          "hasAmbiguity": true,
+          "note": "Line trails off or continues; meaning may depend on adjacent dialogue."
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 4,
+              "source_en": "Hi, Dad. How you doing?",
+              "source_zh": "爸 你还好吗"
+            },
+            {
+              "subtitleIndex": 5,
+              "source_en": "Then by the power vested in me...",
+              "source_zh": "我以\"连你都能证婚网\""
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 7,
+              "source_en": "...I now pronounce you husband and wife.",
+              "source_zh": "我现在宣布你们正式结为合法夫妻"
+            },
+            {
+              "subtitleIndex": 8,
+              "source_en": "You may kiss the bride.",
+              "source_zh": "你可以吻新娘了"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "scene-ambiguity; dialogue-function:statement; speaker-intent:convey information or advance the dialogue",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000104",
+        "type": "comprehension",
+        "subtitleIndex": 7,
+        "timestamp": {
+          "startTime": "28.5",
+          "endTime": "30.5"
+        },
+        "source_en": "...I now pronounce you husband and wife.",
+        "source_zh": "我现在宣布你们正式结为合法夫妻",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 我现在宣布你们正式结为合法夫妻",
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 5,
+              "source_en": "Then by the power vested in me...",
+              "source_zh": "我以\"连你都能证婚网\""
+            },
+            {
+              "subtitleIndex": 6,
+              "source_en": "by EvenYouCanPerformWeddings.Com...",
+              "source_zh": "所赋予我的合法权利"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 8,
+              "source_en": "You may kiss the bride.",
+              "source_zh": "你可以吻新娘了"
+            },
+            {
+              "subtitleIndex": 9,
+              "source_en": "and now...",
+              "source_zh": "时至今日"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:statement; speaker-intent:convey information or advance the dialogue",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000105",
+        "type": "comprehension",
+        "subtitleIndex": 8,
+        "timestamp": {
+          "startTime": "30.5",
+          "endTime": "36.5"
+        },
+        "source_en": "You may kiss the bride.",
+        "source_zh": "你可以吻新娘了",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 你可以吻新娘了",
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 6,
+              "source_en": "by EvenYouCanPerformWeddings.Com...",
+              "source_zh": "所赋予我的合法权利"
+            },
+            {
+              "subtitleIndex": 7,
+              "source_en": "...I now pronounce you husband and wife.",
+              "source_zh": "我现在宣布你们正式结为合法夫妻"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 9,
+              "source_en": "and now...",
+              "source_zh": "时至今日"
+            },
+            {
+              "subtitleIndex": 10,
+              "source_en": "Good morning, wife.",
+              "source_zh": "早安啊 老婆"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:statement; speaker-intent:convey information or advance the dialogue",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000106",
+        "type": "comprehension",
+        "subtitleIndex": 9,
+        "timestamp": {
+          "startTime": "36.5",
+          "endTime": "40.5"
+        },
+        "source_en": "and now...",
+        "source_zh": "时至今日",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 时至今日",
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "ambiguity": {
+          "hasAmbiguity": true,
+          "note": "Line trails off or continues; meaning may depend on adjacent dialogue."
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 7,
+              "source_en": "...I now pronounce you husband and wife.",
+              "source_zh": "我现在宣布你们正式结为合法夫妻"
+            },
+            {
+              "subtitleIndex": 8,
+              "source_en": "You may kiss the bride.",
+              "source_zh": "你可以吻新娘了"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 10,
+              "source_en": "Good morning, wife.",
+              "source_zh": "早安啊 老婆"
+            },
+            {
+              "subtitleIndex": 11,
+              "source_en": "Good morning, husband.",
+              "source_zh": "早安啊 老公"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "scene-ambiguity; dialogue-function:statement; speaker-intent:convey information or advance the dialogue",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000107",
+        "type": "comprehension",
+        "subtitleIndex": 10,
+        "timestamp": {
+          "startTime": "40.5",
+          "endTime": "44.5"
+        },
+        "source_en": "Good morning, wife.",
+        "source_zh": "早安啊 老婆",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 早安啊 老婆",
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 8,
+              "source_en": "You may kiss the bride.",
+              "source_zh": "你可以吻新娘了"
+            },
+            {
+              "subtitleIndex": 9,
+              "source_en": "and now...",
+              "source_zh": "时至今日"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 11,
+              "source_en": "Good morning, husband.",
+              "source_zh": "早安啊 老公"
+            },
+            {
+              "subtitleIndex": 12,
+              "source_en": "I can't believe we're actually married.",
+              "source_zh": "真不敢相信我们真的结婚了"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:statement; speaker-intent:convey information or advance the dialogue",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000108",
+        "type": "comprehension",
+        "subtitleIndex": 11,
+        "timestamp": {
+          "startTime": "44.5",
+          "endTime": "47.5"
+        },
+        "source_en": "Good morning, husband.",
+        "source_zh": "早安啊 老公",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 早安啊 老公",
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 9,
+              "source_en": "and now...",
+              "source_zh": "时至今日"
+            },
+            {
+              "subtitleIndex": 10,
+              "source_en": "Good morning, wife.",
+              "source_zh": "早安啊 老婆"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 12,
+              "source_en": "I can't believe we're actually married.",
+              "source_zh": "真不敢相信我们真的结婚了"
+            },
+            {
+              "subtitleIndex": 13,
+              "source_en": "It's official. According to tradition,",
+              "source_zh": "正式完婚了 根据传统"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:statement; speaker-intent:convey information or advance the dialogue",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000109",
+        "type": "comprehension",
+        "subtitleIndex": 12,
+        "timestamp": {
+          "startTime": "47.5",
+          "endTime": "49.5"
+        },
+        "source_en": "I can't believe we're actually married.",
+        "source_zh": "真不敢相信我们真的结婚了",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 真不敢相信我们真的结婚了",
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 10,
+              "source_en": "Good morning, wife.",
+              "source_zh": "早安啊 老婆"
+            },
+            {
+              "subtitleIndex": 11,
+              "source_en": "Good morning, husband.",
+              "source_zh": "早安啊 老公"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 13,
+              "source_en": "It's official. According to tradition,",
+              "source_zh": "正式完婚了 根据传统"
+            },
+            {
+              "subtitleIndex": 14,
+              "source_en": "we should hang the bedsheets outside",
+              "source_zh": "我们应该把床单挂在外面"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:statement; speaker-intent:convey information or advance the dialogue",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000110",
+        "type": "comprehension",
+        "subtitleIndex": 13,
+        "timestamp": {
+          "startTime": "49.5",
+          "endTime": "51.5"
+        },
+        "source_en": "It's official. According to tradition,",
+        "source_zh": "正式完婚了 根据传统",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 正式完婚了 根据传统",
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 11,
+              "source_en": "Good morning, husband.",
+              "source_zh": "早安啊 老公"
+            },
+            {
+              "subtitleIndex": 12,
+              "source_en": "I can't believe we're actually married.",
+              "source_zh": "真不敢相信我们真的结婚了"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 14,
+              "source_en": "we should hang the bedsheets outside",
+              "source_zh": "我们应该把床单挂在外面"
+            },
+            {
+              "subtitleIndex": 15,
+              "source_en": "so the villagers can see that we consummated.",
+              "source_zh": "这样其他村民就能知道我们行过房了"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:statement; speaker-intent:convey information or advance the dialogue",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000111",
+        "type": "comprehension",
+        "subtitleIndex": 14,
+        "timestamp": {
+          "startTime": "51.5",
+          "endTime": "53.0"
+        },
+        "source_en": "we should hang the bedsheets outside",
+        "source_zh": "我们应该把床单挂在外面",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 我们应该把床单挂在外面",
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 12,
+              "source_en": "I can't believe we're actually married.",
+              "source_zh": "真不敢相信我们真的结婚了"
+            },
+            {
+              "subtitleIndex": 13,
+              "source_en": "It's official. According to tradition,",
+              "source_zh": "正式完婚了 根据传统"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 15,
+              "source_en": "so the villagers can see that we consummated.",
+              "source_zh": "这样其他村民就能知道我们行过房了"
+            },
+            {
+              "subtitleIndex": 16,
+              "source_en": "considering where we're starting our honeymoon.",
+              "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:statement; speaker-intent:convey information or advance the dialogue",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000112",
+        "type": "comprehension",
+        "subtitleIndex": 15,
+        "timestamp": {
+          "startTime": "53.0",
+          "endTime": "58.0"
+        },
+        "source_en": "so the villagers can see that we consummated.",
+        "source_zh": "这样其他村民就能知道我们行过房了",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 这样其他村民就能知道我们行过房了",
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 13,
+              "source_en": "It's official. According to tradition,",
+              "source_zh": "正式完婚了 根据传统"
+            },
+            {
+              "subtitleIndex": 14,
+              "source_en": "we should hang the bedsheets outside",
+              "source_zh": "我们应该把床单挂在外面"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 16,
+              "source_en": "considering where we're starting our honeymoon.",
+              "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅"
+            },
+            {
+              "subtitleIndex": 17,
+              "source_en": "Well, I suppose you're right.",
+              "source_zh": "你说的有道理"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:statement; speaker-intent:convey information or advance the dialogue",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000113",
+        "type": "comprehension",
+        "subtitleIndex": 16,
+        "timestamp": {
+          "startTime": "58.0",
+          "endTime": "60.5"
+        },
+        "source_en": "considering where we're starting our honeymoon.",
+        "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 毕竟我们是在这种地方开始我们的蜜月之旅",
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 14,
+              "source_en": "we should hang the bedsheets outside",
+              "source_zh": "我们应该把床单挂在外面"
+            },
+            {
+              "subtitleIndex": 15,
+              "source_en": "so the villagers can see that we consummated.",
+              "source_zh": "这样其他村民就能知道我们行过房了"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 17,
+              "source_en": "Well, I suppose you're right.",
+              "source_zh": "你说的有道理"
+            },
+            {
+              "subtitleIndex": 18,
+              "source_en": "Lego is the perfect metaphor for marital congress.",
+              "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:statement; speaker-intent:convey information or advance the dialogue",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000114",
+        "type": "comprehension",
+        "subtitleIndex": 17,
+        "timestamp": {
+          "startTime": "60.5",
+          "endTime": "67.0"
+        },
+        "source_en": "Well, I suppose you're right.",
+        "source_zh": "你说的有道理",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 你说的有道理",
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 15,
+              "source_en": "so the villagers can see that we consummated.",
+              "source_zh": "这样其他村民就能知道我们行过房了"
+            },
+            {
+              "subtitleIndex": 16,
+              "source_en": "considering where we're starting our honeymoon.",
+              "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 18,
+              "source_en": "Lego is the perfect metaphor for marital congress.",
+              "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢"
+            },
+            {
+              "subtitleIndex": 19,
+              "source_en": "Two pieces that interlock with a satisfying snap.",
+              "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:statement; speaker-intent:convey information or advance the dialogue",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000115",
+        "type": "comprehension",
+        "subtitleIndex": 18,
+        "timestamp": {
+          "startTime": "67.0",
+          "endTime": "70.0"
+        },
+        "source_en": "Lego is the perfect metaphor for marital congress.",
+        "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 乐高有着形容夫妻房事的最完美隐喻呢",
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 16,
+              "source_en": "considering where we're starting our honeymoon.",
+              "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅"
+            },
+            {
+              "subtitleIndex": 17,
+              "source_en": "Well, I suppose you're right.",
+              "source_zh": "你说的有道理"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 19,
+              "source_en": "Two pieces that interlock with a satisfying snap.",
+              "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声"
+            },
+            {
+              "subtitleIndex": 20,
+              "source_en": "Oh, I almost forgot.",
+              "source_zh": "我差点就忘了"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:statement; speaker-intent:convey information or advance the dialogue",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000116",
+        "type": "comprehension",
+        "subtitleIndex": 19,
+        "timestamp": {
+          "startTime": "70.0",
+          "endTime": "79.5"
+        },
+        "source_en": "Two pieces that interlock with a satisfying snap.",
+        "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 两片乐高\"合体\"并带有爽度十足的咔哒声",
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 17,
+              "source_en": "Well, I suppose you're right.",
+              "source_zh": "你说的有道理"
+            },
+            {
+              "subtitleIndex": 18,
+              "source_en": "Lego is the perfect metaphor for marital congress.",
+              "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 20,
+              "source_en": "Oh, I almost forgot.",
+              "source_zh": "我差点就忘了"
+            },
+            {
+              "subtitleIndex": 21,
+              "source_en": "While you were sleeping, I ordered room service.",
+              "source_zh": "在你睡觉的时候 我点了客房送餐"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:statement; speaker-intent:convey information or advance the dialogue",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000117",
+        "type": "comprehension",
+        "subtitleIndex": 20,
+        "timestamp": {
+          "startTime": "79.5",
+          "endTime": "80.5"
+        },
+        "source_en": "Oh, I almost forgot.",
+        "source_zh": "我差点就忘了",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 我差点就忘了",
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 18,
+              "source_en": "Lego is the perfect metaphor for marital congress.",
+              "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢"
+            },
+            {
+              "subtitleIndex": 19,
+              "source_en": "Two pieces that interlock with a satisfying snap.",
+              "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 21,
+              "source_en": "While you were sleeping, I ordered room service.",
+              "source_zh": "在你睡觉的时候 我点了客房送餐"
+            },
+            {
+              "subtitleIndex": 22,
+              "source_en": "Really?",
+              "source_zh": "真的吗"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:statement; speaker-intent:convey information or advance the dialogue",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000118",
+        "type": "comprehension",
+        "subtitleIndex": 21,
+        "timestamp": {
+          "startTime": "80.5",
+          "endTime": "83.5"
+        },
+        "source_en": "While you were sleeping, I ordered room service.",
+        "source_zh": "在你睡觉的时候 我点了客房送餐",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 在你睡觉的时候 我点了客房送餐",
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 19,
+              "source_en": "Two pieces that interlock with a satisfying snap.",
+              "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声"
+            },
+            {
+              "subtitleIndex": 20,
+              "source_en": "Oh, I almost forgot.",
+              "source_zh": "我差点就忘了"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 22,
+              "source_en": "Really?",
+              "source_zh": "真的吗"
+            },
+            {
+              "subtitleIndex": 23,
+              "source_en": "Voila!",
+              "source_zh": "请看"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:statement; speaker-intent:convey information or advance the dialogue",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000119",
+        "type": "comprehension",
+        "subtitleIndex": 22,
+        "timestamp": {
+          "startTime": "83.5",
+          "endTime": "85.5"
+        },
+        "source_en": "Really?",
+        "source_zh": "真的吗",
+        "sceneMeaning": "Functions as a question intended to seek information, confirmation, or a response. Contextual meaning (from bilingual subtitle evidence): 真的吗",
+        "dialogueFunction": "question",
+        "speakerIntent": "seek information, confirmation, or a response",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 20,
+              "source_en": "Oh, I almost forgot.",
+              "source_zh": "我差点就忘了"
+            },
+            {
+              "subtitleIndex": 21,
+              "source_en": "While you were sleeping, I ordered room service.",
+              "source_zh": "在你睡觉的时候 我点了客房送餐"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 23,
+              "source_en": "Voila!",
+              "source_zh": "请看"
+            },
+            {
+              "subtitleIndex": 24,
+              "source_en": "You thought it was going to be food, didn't you?",
+              "source_zh": "你本来还以为是食物 对吧"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:question; speaker-intent:seek information, confirmation, or a response",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000120",
+        "type": "comprehension",
+        "subtitleIndex": 23,
+        "timestamp": {
+          "startTime": "85.5",
+          "endTime": "88.5"
+        },
+        "source_en": "Voila!",
+        "source_zh": "请看",
+        "sceneMeaning": "Functions as a exclamation intended to express emphasis or strong emotion. Contextual meaning (from bilingual subtitle evidence): 请看",
+        "dialogueFunction": "exclamation",
+        "speakerIntent": "express emphasis or strong emotion",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 21,
+              "source_en": "While you were sleeping, I ordered room service.",
+              "source_zh": "在你睡觉的时候 我点了客房送餐"
+            },
+            {
+              "subtitleIndex": 22,
+              "source_en": "Really?",
+              "source_zh": "真的吗"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 24,
+              "source_en": "You thought it was going to be food, didn't you?",
+              "source_zh": "你本来还以为是食物 对吧"
+            },
+            {
+              "subtitleIndex": 25,
+              "source_en": "Our whole universe was in a hot, dense state",
+              "source_zh": "我们的宇宙曾经超热又超密"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:exclamation; speaker-intent:express emphasis or strong emotion",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000121",
+        "type": "comprehension",
+        "subtitleIndex": 24,
+        "timestamp": {
+          "startTime": "88.5",
+          "endTime": "92.0"
+        },
+        "source_en": "You thought it was going to be food, didn't you?",
+        "source_zh": "你本来还以为是食物 对吧",
+        "sceneMeaning": "Functions as a question intended to seek information, confirmation, or a response. Contextual meaning (from bilingual subtitle evidence): 你本来还以为是食物 对吧",
+        "dialogueFunction": "question",
+        "speakerIntent": "seek information, confirmation, or a response",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 22,
+              "source_en": "Really?",
+              "source_zh": "真的吗"
+            },
+            {
+              "subtitleIndex": 23,
+              "source_en": "Voila!",
+              "source_zh": "请看"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 25,
+              "source_en": "Our whole universe was in a hot, dense state",
+              "source_zh": "我们的宇宙曾经超热又超密"
+            },
+            {
+              "subtitleIndex": 26,
+              "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+              "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:question; speaker-intent:seek information, confirmation, or a response",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000122",
+        "type": "comprehension",
+        "subtitleIndex": 25,
+        "timestamp": {
+          "startTime": "92.0",
+          "endTime": "95.0"
+        },
+        "source_en": "Our whole universe was in a hot, dense state",
+        "source_zh": "我们的宇宙曾经超热又超密",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 我们的宇宙曾经超热又超密",
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 23,
+              "source_en": "Voila!",
+              "source_zh": "请看"
+            },
+            {
+              "subtitleIndex": 24,
+              "source_en": "You thought it was going to be food, didn't you?",
+              "source_zh": "你本来还以为是食物 对吧"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 26,
+              "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+              "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等"
+            },
+            {
+              "subtitleIndex": 27,
+              "source_en": "The Earth began to cool",
+              "source_zh": "地球开始冷却"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:statement; speaker-intent:convey information or advance the dialogue",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000123",
+        "type": "comprehension",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "sceneMeaning": "Functions as a exclamation intended to express emphasis or strong emotion. Contextual meaning (from bilingual subtitle evidence): 直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "dialogueFunction": "exclamation",
+        "speakerIntent": "express emphasis or strong emotion",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 24,
+              "source_en": "You thought it was going to be food, didn't you?",
+              "source_zh": "你本来还以为是食物 对吧"
+            },
+            {
+              "subtitleIndex": 25,
+              "source_en": "Our whole universe was in a hot, dense state",
+              "source_zh": "我们的宇宙曾经超热又超密"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 27,
+              "source_en": "The Earth began to cool",
+              "source_zh": "地球开始冷却"
+            },
+            {
+              "subtitleIndex": 28,
+              "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+              "source_zh": "自养生物开始发育 尼安德塔人发明工具"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:exclamation; speaker-intent:express emphasis or strong emotion",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000124",
+        "type": "comprehension",
+        "subtitleIndex": 27,
+        "timestamp": {
+          "startTime": "99.0",
+          "endTime": "101.0"
+        },
+        "source_en": "The Earth began to cool",
+        "source_zh": "地球开始冷却",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 地球开始冷却",
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 25,
+              "source_en": "Our whole universe was in a hot, dense state",
+              "source_zh": "我们的宇宙曾经超热又超密"
+            },
+            {
+              "subtitleIndex": 26,
+              "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+              "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 28,
+              "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+              "source_zh": "自养生物开始发育 尼安德塔人发明工具"
+            },
+            {
+              "subtitleIndex": 29,
+              "source_en": "We built the Wall We built the pyramids",
+              "source_zh": "我们建了长城 我们建了金字塔"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 2
+        },
+        "comprehensionReason": "dialogue-function:statement; speaker-intent:convey information or advance the dialogue",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000125",
+        "type": "comprehension",
+        "subtitleIndex": 28,
+        "timestamp": {
+          "startTime": "101.0",
+          "endTime": "104.0"
+        },
+        "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+        "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+        "sceneMeaning": "Functions as a question intended to seek information, confirmation, or a response. Contextual meaning (from bilingual subtitle evidence): 自养生物开始发育 尼安德塔人发明工具",
+        "dialogueFunction": "question",
+        "speakerIntent": "seek information, confirmation, or a response",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 26,
+              "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+              "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等"
+            },
+            {
+              "subtitleIndex": 27,
+              "source_en": "The Earth began to cool",
+              "source_zh": "地球开始冷却"
+            }
+          ],
+          "contextAfter": [
+            {
+              "subtitleIndex": 29,
+              "source_en": "We built the Wall We built the pyramids",
+              "source_zh": "我们建了长城 我们建了金字塔"
+            }
+          ],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 1
+        },
+        "comprehensionReason": "dialogue-function:question; speaker-intent:seek information, confirmation, or a response",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
+      },
+      {
+        "draftObstacleId": "tbbt-s12e01-draft-obstacle-000126",
+        "type": "comprehension",
+        "subtitleIndex": 29,
+        "timestamp": {
+          "startTime": "104.0",
+          "endTime": "105.0"
+        },
+        "source_en": "We built the Wall We built the pyramids",
+        "source_zh": "我们建了长城 我们建了金字塔",
+        "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 我们建了长城 我们建了金字塔",
+        "dialogueFunction": "statement",
+        "speakerIntent": "convey information or advance the dialogue",
+        "ambiguity": {
+          "hasAmbiguity": false,
+          "note": null
+        },
+        "dialogueContext": {
+          "contextBefore": [
+            {
+              "subtitleIndex": 27,
+              "source_en": "The Earth began to cool",
+              "source_zh": "地球开始冷却"
+            },
+            {
+              "subtitleIndex": 28,
+              "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+              "source_zh": "自养生物开始发育 尼安德塔人发明工具"
+            }
+          ],
+          "contextAfter": [],
+          "contextBeforeCount": 2,
+          "contextAfterCount": 0
+        },
+        "comprehensionReason": "dialogue-function:statement; speaker-intent:convey information or advance the dialogue",
+        "evidenceSource": [
+          "evidence_artifact",
+          "sceneMeaning",
+          "englishSubtitle",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       }
     ],
     "assemblySummary": {
-      "sourceVocabularyDecisionCount": 96,
-      "assembledDraftObstacleCount": 96,
-      "comprehensionDraftObstacleCount": 0
+      "vocabularyDraftObstacleCount": 96,
+      "comprehensionDraftObstacleCount": 30,
+      "totalDraftObstacleCount": 126
     },
     "assemblyRules": {
-      "conversion": "one draft obstacle per accepted vocabulary decision",
-      "orderingPreserved": "vocabulary decision order is preserved exactly",
-      "comprehension": "not assembled at this stage",
-      "note": "Deterministic assembly only. No new decisions, no AI, no comprehension."
+      "vocabulary": "existing vocabulary draft obstacles preserved exactly",
+      "comprehension": "at most one comprehension obstacle per evidenceChain when deterministic signals indicate comprehension value",
+      "comprehensionSignals": [
+        "sceneMeaning.ambiguity.hasAmbiguity true",
+        "dialogueFunction present and not literal-information",
+        "speakerIntent present and not literal-information",
+        "pragmatic markers: I mean, you know, come on, what do you mean, go ahead, as if, not exactly, kind of, sort of"
+      ],
+      "ordering": "comprehension obstacles appended after vocabulary obstacles; draftObstacleId sequence continued",
+      "note": "Deterministic only. No AI, no comprehension explanation generation, no review."
     }
   }
 }
