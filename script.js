@@ -2,6 +2,8 @@ const DEFAULT_SUBTITLE_TEXT = `Demo subtitle unavailable.`;
 const REAL_SUBTITLE_DATA_URL = 'output_text/v28d_bilingual_subtitles.json';
 const REAL_OBSTACLE_DATA_URL = 'output_text/v29a_obstacles.json';
 const RUNTIME_PILOT_OBSTACLE_DATA_URL = 'output_text/runtime/p0_5b_30_obstacle_runtime.json';
+const RUNTIME_SHADOW_CANDIDATE_ARTIFACT_URL = 'output_text/p1_a/runtime_candidate_artifact.json';
+const RUNTIME_SHADOW_REVIEW_ARTIFACT_URL = 'output_text/p1_a/runtime_consumption_review_artifact.json';
 const REAL_VISUAL_MAPPING_DATA_URL = 'output_text/visual_mapping/TBBT_S12E01_word_boxes.json';
 const REAL_VIDEO_URL = 'assets/videos/TBBT_S12E01.mp4';
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
@@ -17,6 +19,10 @@ const EPISODE_PROGRESS_STORAGE_PREFIX = 'videoEnglishAssistant.episodeProgress.'
 
 function isRuntimePilotOptInEnabled() {
   return new URLSearchParams(window.location.search).get('runtimePilot') === '1';
+}
+
+function isRuntimeShadowOptInEnabled() {
+  return new URLSearchParams(window.location.search).get('runtimeShadow') === '1';
 }
 
 const SUPPORTED_PART_OF_SPEECH_FORMATS = new Set([
@@ -819,6 +825,60 @@ async function fetchJson(url) {
   return response.json();
 }
 
+
+function validateRuntimeShadowArtifacts(candidateArtifact, reviewArtifact) {
+  const reviewPayload = reviewArtifact?.payload;
+  const candidatePayload = candidateArtifact?.payload;
+
+  if (reviewPayload?.runtimeConsumptionReviewDecision !== 'approved_for_p2_runtime_integration') {
+    throw new Error('runtime consumption review decision is not approved for P2 runtime integration');
+  }
+
+  if (reviewPayload?.runtimeMayConsumeDecision !== true) {
+    throw new Error('runtime consumption review does not explicitly approve runtimeMayConsumeDecision');
+  }
+
+  if (candidateArtifact?.runtimeConsumable !== false) {
+    throw new Error('runtime candidate artifact is not marked runtimeConsumable=false');
+  }
+
+  if (candidatePayload?.runtimeMayConsume !== false) {
+    throw new Error('runtime candidate payload is not marked runtimeMayConsume=false');
+  }
+
+  if (!Array.isArray(candidatePayload?.runtimeCandidates)) {
+    throw new Error('runtime candidate artifact payload.runtimeCandidates is not an array');
+  }
+
+  return {
+    approved: true,
+    candidates: candidatePayload.runtimeCandidates.map((candidate) => ({ ...candidate })),
+  };
+}
+
+async function runRuntimeShadowProbeIfEnabled() {
+  if (!isRuntimeShadowOptInEnabled()) {
+    return null;
+  }
+
+  try {
+    const [candidateArtifact, reviewArtifact] = await Promise.all([
+      fetchJson(RUNTIME_SHADOW_CANDIDATE_ARTIFACT_URL),
+      fetchJson(RUNTIME_SHADOW_REVIEW_ARTIFACT_URL),
+    ]);
+    const shadowModel = validateRuntimeShadowArtifacts(candidateArtifact, reviewArtifact);
+    const productionObstacleCount = Array.isArray(obstacles) ? obstacles.length : 0;
+
+    console.info(
+      `[P2-C Runtime Shadow] loaded=${shadowModel.candidates.length} production=${productionObstacleCount} approved=${shadowModel.approved} activeDataSource=${activeDataSource}`,
+    );
+    return shadowModel;
+  } catch (error) {
+    console.warn(`[P2-C Runtime Shadow] skipped: ${error?.message || error}`);
+    return null;
+  }
+}
+
 function getVisualMappingWordBoxes(payload) {
   const rootWordBoxes = Array.isArray(payload?.wordBoxes) ? payload.wordBoxes : [];
   const subtitleWordBoxes = Array.isArray(payload?.subtitles)
@@ -1286,6 +1346,7 @@ async function initApp() {
     logRuntimePilotShadowComparison();
     logRuntimePilotReadOnlySelectionCandidatesAvailable();
     logRuntimePilotSelectionShadowComparison();
+    await runRuntimeShadowProbeIfEnabled();
     activateRuntimePilotOptInIfEnabled();
     logRuntimePilotExitIsolationVerification();
     return;
