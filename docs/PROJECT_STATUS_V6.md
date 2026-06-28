@@ -2380,3 +2380,79 @@ Summary:
 Pipeline note: the P1 offline Analyze Pipeline is now REAL end-to-end (Subtitle → Runtime Candidate). Every stage — Scene Meaning, Evidence, Vocabulary Candidate, Vocabulary Decision, Draft Assembly, Comprehension, Review, Frozen Promotion, Runtime Promotion — is a real offline deterministic engine. Runtime consumption stays unauthorized (`runtimeMayConsume` false) pending an explicit reviewed decision.
 
 Next Milestone: P1-I Explicit Runtime Consumption Review (do not enable `runtimeMayConsume` without a separate reviewed decision)
+
+---
+
+## P1-I Runtime Consumption Review Gate
+
+Status: FROZEN ✅
+
+Git Tag: `p1-i-runtime-consumption-review-gate`
+
+Commit: `9762d26`
+
+Source: `scripts/p1_a_analyze_pipeline_bootstrap.js`
+
+Generated outputs:
+
+- `output_text/p1_a/runtime_consumption_review_artifact.json`
+- `output_text/p1_a/pipeline_bootstrap_report.json`
+
+Summary:
+
+- P1-I Runtime Consumption Review Gate is complete.
+- Real offline deterministic gate.
+- Consumes only `runtime_candidate_artifact.json`, read from disk.
+- Does NOT read any other artifact and does NOT call AI / OCR / Internet.
+- Produces `output_text/p1_a/runtime_consumption_review_artifact.json`.
+- Gate decision: `approved_for_p2_runtime_integration`.
+- `runtimeMayConsumeDecision` is true in the gate artifact.
+- `runtime_candidate_artifact` payload.runtimeMayConsume remains false.
+- `runtime_candidate_artifact` runtimeConsumable remains false.
+- The gate does NOT modify or rewrite `runtime_candidate_artifact.json`.
+- Runtime remains read-only and untouched.
+- No Runtime wiring was done in P1-I.
+- Actual Runtime integration is deferred to P2.
+- Forward-only Artifact Chain preserved.
+- No AI / OCR / Internet calls.
+
+Current pipeline status:
+
+```text
+Subtitle
+    │
+    ▼
+Scene Meaning                     ✅ REAL
+    │
+    ▼
+Evidence                          ✅ REAL
+    │
+    ▼
+Vocabulary Candidate              ✅ REAL
+    │
+    ▼
+Vocabulary Decision               ✅ REAL
+    │
+    ▼
+Draft Assembly                    ✅ REAL
+    │
+    ▼
+Comprehension Engine              ✅ REAL
+    │
+    ▼
+Review                            ✅ REAL
+    │
+    ▼
+Frozen Promotion                  ✅ REAL
+    │
+    ▼
+Runtime Promotion                 ✅ REAL
+    │
+    ▼
+Runtime Consumption Review Gate   ✅ REAL
+    │
+    ▼
+Runtime                           Read-only (not wired; runtimeMayConsume false)
+```
+
+Next Milestone: P2 Runtime Integration
