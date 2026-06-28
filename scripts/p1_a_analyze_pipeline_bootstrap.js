@@ -2117,7 +2117,158 @@ function buildP3AOfflineAiDisplayFieldGeneratorSkeleton(runtimeCandidateArtifact
   };
 }
 
-function main() {
+/* -------------------------------------------------------------------------
+ * P3-C Offline AI Display Field Generation REAL
+ *
+ * Performs REAL offline Qwen generation of display-field DRAFTS for a bounded
+ * sample (max 3) of Runtime Candidate records, per docs/P3B_AI_DISPLAY_GENERATOR
+ * _CONTRACT.md. Drafts are draft-only (reviewStatus pending_human_review,
+ * runtimeDisplayMayConsume false). It never writes into runtime_candidate
+ * _artifact, never sets runtimeMayConsume/runtimeConsumable true, never changes
+ * UI, and makes no OCR / Qwen-VL / Internet-scraping calls.
+ *
+ * Fails closed on: missing API key, API error, invalid JSON, missing drafts
+ * array, schema mismatch, or placeholder values.
+ * ---------------------------------------------------------------------- */
+
+const P3C_SAMPLE_LIMIT = 3;
+const P3C_MODEL = 'qwen-plus';
+const P3C_ENDPOINT = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions';
+
+function buildP3CDisplayFieldPrompt(inputItems) {
+  const contract = [
+    'You generate user-facing English-learning display fields for subtitle obstacles.',
+    'Input is a JSON array of at most 3 candidate items.',
+    'Return JSON ONLY in this exact shape: {"drafts": [ ... ]}.',
+    'Each draft MUST include: runtimeCandidateId, sourceDraftObstacleId, type, subtitleIndex,',
+    'source_en, source_zh, generatedFields, generationSource, confidence,',
+    'reviewStatus, runtimeDisplayMayConsume.',
+    'Set generationSource to "qwen-plus-display-field-generator".',
+    'Set reviewStatus to "pending_human_review". Set runtimeDisplayMayConsume to false.',
+    'confidence is a number between 0 and 1.',
+    'For type "vocabulary", generatedFields MUST include: word, phonetic, partOfSpeech, sentenceMeaning.',
+    '  - word = dictionary/base form of the obstacle word.',
+    '  - phonetic = phonetic transcription of that base form.',
+    '  - partOfSpeech = concise dictionary POS such as n., vt., vi., adj., adv., prep., interj.',
+    '  - sentenceMeaning = a SHORT Chinese meaning for the word in THIS sentence only.',
+    'For type "comprehension", generatedFields MUST include: prototype, literal, actual, grammar.',
+    '  - prototype = the prototypical phrase form.',
+    '  - literal = the surface meaning.',
+    '  - actual = the intended/contextual meaning.',
+    '  - grammar = explain WHY the meaning arises.',
+    'Never use placeholders like "待补充", "unknown", or "TODO". Never leave a required field empty.',
+    'Use the provided nearby subtitle context to disambiguate meaning; do not invent facts.',
+  ].join('\n');
+
+  return [
+    { role: 'system', content: contract },
+    { role: 'user', content: JSON.stringify(inputItems) },
+  ];
+}
+
+async function callQwenDisplayFieldGenerator(inputItems) {
+  const apiKey = process.env.DASHSCOPE_API_KEY;
+  if (!apiKey || !apiKey.trim()) {
+    return { status: 'blocked_missing_api_key', aiCalled: false, drafts: null };
+  }
+
+  let response;
+  try {
+    response = await fetch(P3C_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: P3C_MODEL,
+        temperature: 0,
+        response_format: { type: 'json_object' },
+        messages: buildP3CDisplayFieldPrompt(inputItems),
+      }),
+    });
+  } catch (error) {
+    return { status: 'fail_closed_api_error', aiCalled: true, drafts: null, reason: error?.message || String(error) };
+  }
+
+  if (!response.ok) {
+    return { status: 'fail_closed_api_error', aiCalled: true, drafts: null, reason: `HTTP ${response.status}` };
+  }
+
+  let body;
+  try {
+    body = await response.json();
+  } catch (error) {
+    return { status: 'fail_closed_invalid_json', aiCalled: true, drafts: null, reason: 'response body is not JSON' };
+  }
+
+  const content = body && body.choices && body.choices[0] && body.choices[0].message
+    ? body.choices[0].message.content
+    : null;
+  if (typeof content !== 'string') {
+    return { status: 'fail_closed_invalid_json', aiCalled: true, drafts: null, reason: 'missing message content' };
+  }
+
+  let parsed;
+  try {
+    parsed = JSON.parse(content);
+  } catch (error) {
+    return { status: 'fail_closed_invalid_json', aiCalled: true, drafts: null, reason: 'content is not valid JSON' };
+  }
+
+  if (!parsed || !Array.isArray(parsed.drafts)) {
+    return { status: 'fail_closed_missing_drafts', aiCalled: true, drafts: null, reason: 'drafts array missing' };
+  }
+
+  return { status: 'generated', aiCalled: true, drafts: parsed.drafts };
+}
+
+async function runP3CDisplayFieldGeneration(runtimeCandidateArtifact, upstreamArtifacts) {
+  const inputItems = buildP3ADisplayFieldGeneratorInput(
+    runtimeCandidateArtifact,
+    upstreamArtifacts,
+    P3C_SAMPLE_LIMIT,
+  );
+
+  const result = await callQwenDisplayFieldGenerator(inputItems);
+
+  const baseSummary = {
+    generatorStatus: result.status,
+    aiCalled: result.aiCalled,
+    model: P3C_MODEL,
+    inputCandidateCount: inputItems.length,
+    generatedDraftCount: 0,
+    validDraftCount: 0,
+    invalidDraftCount: 0,
+    validDrafts: [],
+    requiresHumanReview: true,
+    runtimeDisplayMayConsume: false,
+  };
+
+  if (result.status !== 'generated') {
+    return {
+      ...baseSummary,
+      expectedNextStep: result.status === 'blocked_missing_api_key'
+        ? 'set DASHSCOPE_API_KEY in the offline environment, then re-run to generate display-field drafts for human review'
+        : `resolve generation failure (${result.reason || result.status}); generation fails closed and produces no drafts`,
+    };
+  }
+
+  const rawDrafts = result.drafts;
+  const validDrafts = rawDrafts.filter((draft) => validateP3ADisplayFieldDraft(draft));
+  const invalidDraftCount = rawDrafts.length - validDrafts.length;
+
+  return {
+    ...baseSummary,
+    generatedDraftCount: rawDrafts.length,
+    validDraftCount: validDrafts.length,
+    invalidDraftCount,
+    validDrafts,
+    expectedNextStep: 'P3-D human review of valid display-field drafts before any review-gated display promotion',
+  };
+}
+
+async function main() {
   const sourceRows = readSubtitleSource();
   const scoped = buildScopedSubtitles(sourceRows);
 
@@ -2392,6 +2543,29 @@ function main() {
     expectedNextStep: p3aGenerator.expectedNextStep,
   };
 
+  // P3-C Offline AI Display Field Generation REAL.
+  // Calls Qwen (qwen-plus) for a bounded sample (max 3) only when DASHSCOPE_API_KEY
+  // is set; fails closed otherwise. Drafts are draft-only and never written into
+  // runtime_candidate_artifact.
+  const p3cGeneration = await runP3CDisplayFieldGeneration(runtimeCandidateArtifact, {
+    frozenCandidateArtifact,
+    reviewArtifact,
+    draftObstacleArtifact,
+    vocabularyDecisionArtifact,
+    vocabularyCandidateArtifact,
+    evidenceArtifact,
+    sceneMeaningArtifact,
+    subtitleArtifact,
+  });
+  // Safe, bounded sample for the report: max 1 draft, fields trimmed to confirm shape.
+  const p3cSafeDraftSample = p3cGeneration.validDrafts.slice(0, 1).map((draft) => ({
+    runtimeCandidateId: draft.runtimeCandidateId,
+    type: draft.type,
+    generatedFieldKeys: Object.keys(draft.generatedFields || {}),
+    reviewStatus: draft.reviewStatus,
+    runtimeDisplayMayConsume: draft.runtimeDisplayMayConsume,
+  }));
+
   const report = {
     schemaVersion: 'p1-a-pipeline-bootstrap-report.v1',
     stage: STAGE,
@@ -2512,6 +2686,20 @@ function main() {
       p3aRuntimeMayConsumeStillFalse: runtimeCandidateArtifact.payload.runtimeMayConsume === false,
       p3aExpectedNextStep: p3aGenerator.expectedNextStep,
       p3aGeneratorSummary,
+      p3cOfflineAiDisplayFieldGenerationReal: true,
+      p3cGeneratorStatus: p3cGeneration.generatorStatus,
+      p3cAiCalled: p3cGeneration.aiCalled,
+      p3cModel: p3cGeneration.model,
+      p3cInputCandidateCount: p3cGeneration.inputCandidateCount,
+      p3cGeneratedDraftCount: p3cGeneration.generatedDraftCount,
+      p3cValidDraftCount: p3cGeneration.validDraftCount,
+      p3cInvalidDraftCount: p3cGeneration.invalidDraftCount,
+      p3cRequiresHumanReview: p3cGeneration.requiresHumanReview,
+      p3cRuntimeDisplayMayConsume: false,
+      p3cRuntimeCandidateStillNotConsumable: runtimeCandidateArtifact.runtimeConsumable === false,
+      p3cRuntimeMayConsumeStillFalse: runtimeCandidateArtifact.payload.runtimeMayConsume === false,
+      p3cExpectedNextStep: p3cGeneration.expectedNextStep,
+      p3cSafeDraftSample,
       downstreamStillPlaceholder: false,
       noOcrCalled: true,
       noInternetSubtitleFetch: true,
@@ -2532,4 +2720,7 @@ function main() {
   process.stdout.write('Runtime untouched: true | UI untouched: true | runtimeMayConsume: false\n');
 }
 
-main();
+main().catch((error) => {
+  process.stderr.write(`${error?.stack || error}\n`);
+  process.exitCode = 1;
+});
