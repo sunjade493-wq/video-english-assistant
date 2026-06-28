@@ -2430,6 +2430,10 @@ function buildP3EAiQualityAssuranceEngine(p3cGeneration) {
 
     return {
       runtimeCandidateId: draft.runtimeCandidateId,
+      type: draft.type,
+      generatedFields,
+      reviewStatus: draft.reviewStatus,
+      confidence,
       qaDecision,
       qaReviewer: 'ai-quality-assurance-engine',
       reviewedAt: 'P3-E-deterministic-qa',
@@ -2458,6 +2462,73 @@ function buildP3EAiQualityAssuranceEngine(p3cGeneration) {
     expectedNextStep:
       'a future review-gated promotion stage may promote only qa_auto_approved (promotionEligible) drafts; '
       + 'qa_needs_human_review drafts require human review; qa_auto_rejected drafts are excluded',
+  };
+}
+
+/* -------------------------------------------------------------------------
+ * P3-F Display Promotion
+ *
+ * Promotes ONLY QA-approved display drafts (from P3-E) into Promoted Display
+ * records. Deterministic; no Qwen/API. Reads only P3-E QA results. It does NOT
+ * make Runtime consume promoted displays, never writes into
+ * runtime_candidate_artifact, and never sets runtimeMayConsume /
+ * runtimeConsumable true. Promoted records keep runtimeDisplayMayConsume false.
+ *
+ * generatedFields are preserved exactly — promotion never modifies content.
+ * ---------------------------------------------------------------------- */
+
+function buildP3FDisplayPromotion(p3eQaResult) {
+  const qaDecisions = p3eQaResult && Array.isArray(p3eQaResult.qaDecisions)
+    ? p3eQaResult.qaDecisions
+    : [];
+
+  const promotedDisplays = [];
+  let skippedDisplayCount = 0;
+
+  qaDecisions.forEach((decision) => {
+    // Reconstruct the draft shape for revalidation against the frozen schema.
+    const draftForValidation = {
+      runtimeCandidateId: decision.runtimeCandidateId,
+      type: decision.type,
+      generatedFields: decision.generatedFields,
+      confidence: decision.confidence,
+      reviewStatus: decision.reviewStatus,
+      runtimeDisplayMayConsume: decision.runtimeDisplayMayConsume,
+    };
+
+    const eligible = decision.qaDecision === 'qa_auto_approved'
+      && decision.promotionEligible === true
+      && decision.runtimeDisplayMayConsume === false
+      && validateP3ADisplayFieldDraft(draftForValidation);
+
+    if (!eligible) {
+      skippedDisplayCount += 1;
+      return;
+    }
+
+    promotedDisplays.push({
+      runtimeCandidateId: decision.runtimeCandidateId,
+      promotedDisplayId: `${decision.runtimeCandidateId}-promoted-display-v1`,
+      promotedFromDraftId: decision.runtimeCandidateId,
+      promotedAt: 'P3-F-deterministic-promotion',
+      promotedBy: 'promotion-engine',
+      type: decision.type,
+      generatedFields: decision.generatedFields,
+      promotionStatus: 'promoted',
+      promotionVersion: 1,
+      runtimeDisplayMayConsume: false,
+    });
+  });
+
+  return {
+    promotionStatus: promotedDisplays.length > 0 ? 'promoted' : 'no_eligible_displays',
+    promotedDisplayCount: promotedDisplays.length,
+    skippedDisplayCount,
+    promotedDisplays,
+    runtimeDisplayMayConsume: false,
+    expectedNextStep:
+      'promoted display records remain offline and not runtime-consumable; a future, separately authorized '
+      + 'runtime display-consumption review must approve before Runtime may consume promoted displays',
   };
 }
 
@@ -2783,6 +2854,20 @@ async function main() {
     runtimeDisplayMayConsume: decision.runtimeDisplayMayConsume,
   }));
 
+  // P3-F Display Promotion.
+  // Promotes only QA-approved (promotionEligible) display drafts into Promoted
+  // Display records. Deterministic; preserves generatedFields exactly. Does not
+  // enable Runtime consumption.
+  const p3fPromotion = buildP3FDisplayPromotion(p3eQaEngine);
+  const p3fSafePromotionSample = p3fPromotion.promotedDisplays.slice(0, 1).map((display) => ({
+    runtimeCandidateId: display.runtimeCandidateId,
+    promotedDisplayId: display.promotedDisplayId,
+    promotionStatus: display.promotionStatus,
+    promotionVersion: display.promotionVersion,
+    generatedFieldKeys: Object.keys(display.generatedFields || {}),
+    runtimeDisplayMayConsume: display.runtimeDisplayMayConsume,
+  }));
+
   const report = {
     schemaVersion: 'p1-a-pipeline-bootstrap-report.v1',
     stage: STAGE,
@@ -2938,6 +3023,15 @@ async function main() {
       p3eRuntimeMayConsumeStillFalse: runtimeCandidateArtifact.payload.runtimeMayConsume === false,
       p3eExpectedNextStep: p3eQaEngine.expectedNextStep,
       p3eSafeQaSample,
+      p3fDisplayPromotion: true,
+      p3fPromotionStatus: p3fPromotion.promotionStatus,
+      p3fPromotedDisplayCount: p3fPromotion.promotedDisplayCount,
+      p3fSkippedDisplayCount: p3fPromotion.skippedDisplayCount,
+      p3fRuntimeDisplayMayConsume: false,
+      p3fRuntimeCandidateStillNotConsumable: runtimeCandidateArtifact.runtimeConsumable === false,
+      p3fRuntimeMayConsumeStillFalse: runtimeCandidateArtifact.payload.runtimeMayConsume === false,
+      p3fExpectedNextStep: p3fPromotion.expectedNextStep,
+      p3fSafePromotionSample,
       downstreamStillPlaceholder: false,
       noOcrCalled: true,
       noInternetSubtitleFetch: true,
