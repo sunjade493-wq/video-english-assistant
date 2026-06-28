@@ -19,7 +19,15 @@
         },
         "promotionStatus": "promoted",
         "promotionVersion": 1,
-        "runtimeDisplayMayConsume": false
+        "runtimeDisplayMayConsume": false,
+        "sourceRuntimeCandidateId": "tbbt-s12e01-runtime-candidate-000001",
+        "subtitleIndex": 0,
+        "source_en": "Previously on The Big Bang Theory...",
+        "source_zh": "《生活大爆炸》前情提要",
+        "markerStart": 0,
+        "markerEnd": 10,
+        "markerBindingSource": "draft-obstacle-token-bounds",
+        "markerBindingStatus": "bound"
       },
       {
         "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000002",
@@ -34,8 +42,20 @@
         },
         "promotionStatus": "promoted",
         "promotionVersion": 1,
-        "runtimeDisplayMayConsume": false
+        "runtimeDisplayMayConsume": false,
+        "sourceRuntimeCandidateId": "tbbt-s12e01-runtime-candidate-000002",
+        "subtitleIndex": 0,
+        "source_en": "Previously on The Big Bang Theory...",
+        "source_zh": "《生活大爆炸》前情提要",
+        "markerStart": 18,
+        "markerEnd": 21,
+        "markerBindingSource": "draft-obstacle-token-bounds",
+        "markerBindingStatus": "bound"
       }
     ]
-  }
+  },
+  "markerBindingVersion": 1,
+  "markerBindingStatus": "all_bound",
+  "markerBoundCount": 2,
+  "markerUnboundCount": 0
 }
