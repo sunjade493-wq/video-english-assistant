@@ -1,0 +1,2147 @@
+{
+  "schemaVersion": "p1-db-vocabulary-decision-artifact.v1",
+  "stage": "P1-A",
+  "artifactName": "vocabulary_decision_artifact",
+  "episodeId": "tbbt-s12e01",
+  "learnerLevel": "CET-4",
+  "producerStage": "Vocabulary Decision Engine",
+  "consumerStage": "Draft Obstacle Assembly",
+  "inputArtifact": "vocabulary_candidate_artifact",
+  "outputArtifact": "vocabulary_decision_artifact",
+  "artifactStatus": "produced",
+  "contentMode": "real",
+  "runtimeConsumable": false,
+  "notes": "REAL offline deterministic Vocabulary Decision Engine (P1-DB). Consumes vocabulary_candidate_artifact only (read from disk per P0-7C). No AI / Qwen / Qwen-VL / OCR. Decides which candidates become Vocabulary obstacles using deterministic rules (minimum length + first episode occurrence), preserving candidate ordering and assigning deterministic obstacle ids. Does NOT decide comprehension obstacles, does NOT review, does NOT promote. Never runtime consumable.",
+  "payload": {
+    "vocabularyDecisionCount": 96,
+    "vocabularyObstacles": [
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000001",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000001",
+        "type": "vocabulary",
+        "subtitleIndex": 0,
+        "timestamp": {
+          "startTime": "2.0",
+          "endTime": "6.0"
+        },
+        "tokenStart": 0,
+        "tokenEnd": 10,
+        "surfaceForm": "Previously",
+        "normalizedForm": "previously",
+        "source_en": "Previously on The Big Bang Theory...",
+        "source_zh": "《生活大爆炸》前情提要",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000002",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000002",
+        "type": "vocabulary",
+        "subtitleIndex": 0,
+        "timestamp": {
+          "startTime": "2.0",
+          "endTime": "6.0"
+        },
+        "tokenStart": 18,
+        "tokenEnd": 21,
+        "surfaceForm": "Big",
+        "normalizedForm": "big",
+        "source_en": "Previously on The Big Bang Theory...",
+        "source_zh": "《生活大爆炸》前情提要",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000003",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000003",
+        "type": "vocabulary",
+        "subtitleIndex": 0,
+        "timestamp": {
+          "startTime": "2.0",
+          "endTime": "6.0"
+        },
+        "tokenStart": 22,
+        "tokenEnd": 26,
+        "surfaceForm": "Bang",
+        "normalizedForm": "bang",
+        "source_en": "Previously on The Big Bang Theory...",
+        "source_zh": "《生活大爆炸》前情提要",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000004",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000004",
+        "type": "vocabulary",
+        "subtitleIndex": 0,
+        "timestamp": {
+          "startTime": "2.0",
+          "endTime": "6.0"
+        },
+        "tokenStart": 27,
+        "tokenEnd": 36,
+        "surfaceForm": "Theory...",
+        "normalizedForm": "theory",
+        "source_en": "Previously on The Big Bang Theory...",
+        "source_zh": "《生活大爆炸》前情提要",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000005",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000005",
+        "type": "vocabulary",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "tokenStart": 0,
+        "tokenEnd": 3,
+        "surfaceForm": "Can",
+        "normalizedForm": "can",
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000006",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000006",
+        "type": "vocabulary",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "tokenStart": 8,
+        "tokenEnd": 15,
+        "surfaceForm": "believe",
+        "normalizedForm": "believe",
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000007",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000007",
+        "type": "vocabulary",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "tokenStart": 20,
+        "tokenEnd": 26,
+        "surfaceForm": "little",
+        "normalizedForm": "little",
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000008",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000008",
+        "type": "vocabulary",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "tokenStart": 27,
+        "tokenEnd": 31,
+        "surfaceForm": "lamb",
+        "normalizedForm": "lamb",
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000009",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000009",
+        "type": "vocabulary",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "tokenStart": 35,
+        "tokenEnd": 42,
+        "surfaceForm": "finally",
+        "normalizedForm": "finally",
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000010",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000010",
+        "type": "vocabulary",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "tokenStart": 43,
+        "tokenEnd": 50,
+        "surfaceForm": "getting",
+        "normalizedForm": "getting",
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000011",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000011",
+        "type": "vocabulary",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "tokenStart": 51,
+        "tokenEnd": 59,
+        "surfaceForm": "married?",
+        "normalizedForm": "married",
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000012",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000012",
+        "type": "vocabulary",
+        "subtitleIndex": 2,
+        "timestamp": {
+          "startTime": "10.0",
+          "endTime": "12.0"
+        },
+        "tokenStart": 3,
+        "tokenEnd": 8,
+        "surfaceForm": "can't",
+        "normalizedForm": "can't",
+        "source_en": "He can't believe it.",
+        "source_zh": "他肯定不信",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000013",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000014",
+        "type": "vocabulary",
+        "subtitleIndex": 3,
+        "timestamp": {
+          "startTime": "12.0",
+          "endTime": "15.5"
+        },
+        "tokenStart": 4,
+        "tokenEnd": 11,
+        "surfaceForm": "neither",
+        "normalizedForm": "neither",
+        "source_en": "And neither can I.",
+        "source_zh": "我也不敢相信",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000014",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000017",
+        "type": "vocabulary",
+        "subtitleIndex": 4,
+        "timestamp": {
+          "startTime": "15.5",
+          "endTime": "20.5"
+        },
+        "tokenStart": 4,
+        "tokenEnd": 8,
+        "surfaceForm": "Dad.",
+        "normalizedForm": "dad",
+        "source_en": "Hi, Dad. How you doing?",
+        "source_zh": "爸 你还好吗",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000015",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000018",
+        "type": "vocabulary",
+        "subtitleIndex": 4,
+        "timestamp": {
+          "startTime": "15.5",
+          "endTime": "20.5"
+        },
+        "tokenStart": 9,
+        "tokenEnd": 12,
+        "surfaceForm": "How",
+        "normalizedForm": "how",
+        "source_en": "Hi, Dad. How you doing?",
+        "source_zh": "爸 你还好吗",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000016",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000019",
+        "type": "vocabulary",
+        "subtitleIndex": 4,
+        "timestamp": {
+          "startTime": "15.5",
+          "endTime": "20.5"
+        },
+        "tokenStart": 17,
+        "tokenEnd": 23,
+        "surfaceForm": "doing?",
+        "normalizedForm": "doing",
+        "source_en": "Hi, Dad. How you doing?",
+        "source_zh": "爸 你还好吗",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000017",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000020",
+        "type": "vocabulary",
+        "subtitleIndex": 5,
+        "timestamp": {
+          "startTime": "20.5",
+          "endTime": "23.0"
+        },
+        "tokenStart": 0,
+        "tokenEnd": 4,
+        "surfaceForm": "Then",
+        "normalizedForm": "then",
+        "source_en": "Then by the power vested in me...",
+        "source_zh": "我以\"连你都能证婚网\"",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000018",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000021",
+        "type": "vocabulary",
+        "subtitleIndex": 5,
+        "timestamp": {
+          "startTime": "20.5",
+          "endTime": "23.0"
+        },
+        "tokenStart": 12,
+        "tokenEnd": 17,
+        "surfaceForm": "power",
+        "normalizedForm": "power",
+        "source_en": "Then by the power vested in me...",
+        "source_zh": "我以\"连你都能证婚网\"",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000019",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000022",
+        "type": "vocabulary",
+        "subtitleIndex": 5,
+        "timestamp": {
+          "startTime": "20.5",
+          "endTime": "23.0"
+        },
+        "tokenStart": 18,
+        "tokenEnd": 24,
+        "surfaceForm": "vested",
+        "normalizedForm": "vested",
+        "source_en": "Then by the power vested in me...",
+        "source_zh": "我以\"连你都能证婚网\"",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000020",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000024",
+        "type": "vocabulary",
+        "subtitleIndex": 6,
+        "timestamp": {
+          "startTime": "23.0",
+          "endTime": "28.5"
+        },
+        "tokenStart": 3,
+        "tokenEnd": 35,
+        "surfaceForm": "EvenYouCanPerformWeddings.Com...",
+        "normalizedForm": "evenyoucanperformweddings.com",
+        "source_en": "by EvenYouCanPerformWeddings.Com...",
+        "source_zh": "所赋予我的合法权利",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000021",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000025",
+        "type": "vocabulary",
+        "subtitleIndex": 7,
+        "timestamp": {
+          "startTime": "28.5",
+          "endTime": "30.5"
+        },
+        "tokenStart": 5,
+        "tokenEnd": 8,
+        "surfaceForm": "now",
+        "normalizedForm": "now",
+        "source_en": "...I now pronounce you husband and wife.",
+        "source_zh": "我现在宣布你们正式结为合法夫妻",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000022",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000026",
+        "type": "vocabulary",
+        "subtitleIndex": 7,
+        "timestamp": {
+          "startTime": "28.5",
+          "endTime": "30.5"
+        },
+        "tokenStart": 9,
+        "tokenEnd": 18,
+        "surfaceForm": "pronounce",
+        "normalizedForm": "pronounce",
+        "source_en": "...I now pronounce you husband and wife.",
+        "source_zh": "我现在宣布你们正式结为合法夫妻",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000023",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000027",
+        "type": "vocabulary",
+        "subtitleIndex": 7,
+        "timestamp": {
+          "startTime": "28.5",
+          "endTime": "30.5"
+        },
+        "tokenStart": 23,
+        "tokenEnd": 30,
+        "surfaceForm": "husband",
+        "normalizedForm": "husband",
+        "source_en": "...I now pronounce you husband and wife.",
+        "source_zh": "我现在宣布你们正式结为合法夫妻",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000024",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000028",
+        "type": "vocabulary",
+        "subtitleIndex": 7,
+        "timestamp": {
+          "startTime": "28.5",
+          "endTime": "30.5"
+        },
+        "tokenStart": 35,
+        "tokenEnd": 40,
+        "surfaceForm": "wife.",
+        "normalizedForm": "wife",
+        "source_en": "...I now pronounce you husband and wife.",
+        "source_zh": "我现在宣布你们正式结为合法夫妻",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000025",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000029",
+        "type": "vocabulary",
+        "subtitleIndex": 8,
+        "timestamp": {
+          "startTime": "30.5",
+          "endTime": "36.5"
+        },
+        "tokenStart": 4,
+        "tokenEnd": 7,
+        "surfaceForm": "may",
+        "normalizedForm": "may",
+        "source_en": "You may kiss the bride.",
+        "source_zh": "你可以吻新娘了",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000026",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000030",
+        "type": "vocabulary",
+        "subtitleIndex": 8,
+        "timestamp": {
+          "startTime": "30.5",
+          "endTime": "36.5"
+        },
+        "tokenStart": 8,
+        "tokenEnd": 12,
+        "surfaceForm": "kiss",
+        "normalizedForm": "kiss",
+        "source_en": "You may kiss the bride.",
+        "source_zh": "你可以吻新娘了",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000027",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000031",
+        "type": "vocabulary",
+        "subtitleIndex": 8,
+        "timestamp": {
+          "startTime": "30.5",
+          "endTime": "36.5"
+        },
+        "tokenStart": 17,
+        "tokenEnd": 23,
+        "surfaceForm": "bride.",
+        "normalizedForm": "bride",
+        "source_en": "You may kiss the bride.",
+        "source_zh": "你可以吻新娘了",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000028",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000033",
+        "type": "vocabulary",
+        "subtitleIndex": 10,
+        "timestamp": {
+          "startTime": "40.5",
+          "endTime": "44.5"
+        },
+        "tokenStart": 0,
+        "tokenEnd": 4,
+        "surfaceForm": "Good",
+        "normalizedForm": "good",
+        "source_en": "Good morning, wife.",
+        "source_zh": "早安啊 老婆",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000029",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000034",
+        "type": "vocabulary",
+        "subtitleIndex": 10,
+        "timestamp": {
+          "startTime": "40.5",
+          "endTime": "44.5"
+        },
+        "tokenStart": 5,
+        "tokenEnd": 13,
+        "surfaceForm": "morning,",
+        "normalizedForm": "morning",
+        "source_en": "Good morning, wife.",
+        "source_zh": "早安啊 老婆",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000030",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000041",
+        "type": "vocabulary",
+        "subtitleIndex": 12,
+        "timestamp": {
+          "startTime": "47.5",
+          "endTime": "49.5"
+        },
+        "tokenStart": 16,
+        "tokenEnd": 21,
+        "surfaceForm": "we're",
+        "normalizedForm": "we're",
+        "source_en": "I can't believe we're actually married.",
+        "source_zh": "真不敢相信我们真的结婚了",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000031",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000042",
+        "type": "vocabulary",
+        "subtitleIndex": 12,
+        "timestamp": {
+          "startTime": "47.5",
+          "endTime": "49.5"
+        },
+        "tokenStart": 22,
+        "tokenEnd": 30,
+        "surfaceForm": "actually",
+        "normalizedForm": "actually",
+        "source_en": "I can't believe we're actually married.",
+        "source_zh": "真不敢相信我们真的结婚了",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000032",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000044",
+        "type": "vocabulary",
+        "subtitleIndex": 13,
+        "timestamp": {
+          "startTime": "49.5",
+          "endTime": "51.5"
+        },
+        "tokenStart": 0,
+        "tokenEnd": 4,
+        "surfaceForm": "It's",
+        "normalizedForm": "it's",
+        "source_en": "It's official. According to tradition,",
+        "source_zh": "正式完婚了 根据传统",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000033",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000045",
+        "type": "vocabulary",
+        "subtitleIndex": 13,
+        "timestamp": {
+          "startTime": "49.5",
+          "endTime": "51.5"
+        },
+        "tokenStart": 5,
+        "tokenEnd": 14,
+        "surfaceForm": "official.",
+        "normalizedForm": "official",
+        "source_en": "It's official. According to tradition,",
+        "source_zh": "正式完婚了 根据传统",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000034",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000046",
+        "type": "vocabulary",
+        "subtitleIndex": 13,
+        "timestamp": {
+          "startTime": "49.5",
+          "endTime": "51.5"
+        },
+        "tokenStart": 15,
+        "tokenEnd": 24,
+        "surfaceForm": "According",
+        "normalizedForm": "according",
+        "source_en": "It's official. According to tradition,",
+        "source_zh": "正式完婚了 根据传统",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000035",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000047",
+        "type": "vocabulary",
+        "subtitleIndex": 13,
+        "timestamp": {
+          "startTime": "49.5",
+          "endTime": "51.5"
+        },
+        "tokenStart": 28,
+        "tokenEnd": 38,
+        "surfaceForm": "tradition,",
+        "normalizedForm": "tradition",
+        "source_en": "It's official. According to tradition,",
+        "source_zh": "正式完婚了 根据传统",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000036",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000048",
+        "type": "vocabulary",
+        "subtitleIndex": 14,
+        "timestamp": {
+          "startTime": "51.5",
+          "endTime": "53.0"
+        },
+        "tokenStart": 3,
+        "tokenEnd": 9,
+        "surfaceForm": "should",
+        "normalizedForm": "should",
+        "source_en": "we should hang the bedsheets outside",
+        "source_zh": "我们应该把床单挂在外面",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000037",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000049",
+        "type": "vocabulary",
+        "subtitleIndex": 14,
+        "timestamp": {
+          "startTime": "51.5",
+          "endTime": "53.0"
+        },
+        "tokenStart": 10,
+        "tokenEnd": 14,
+        "surfaceForm": "hang",
+        "normalizedForm": "hang",
+        "source_en": "we should hang the bedsheets outside",
+        "source_zh": "我们应该把床单挂在外面",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000038",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000050",
+        "type": "vocabulary",
+        "subtitleIndex": 14,
+        "timestamp": {
+          "startTime": "51.5",
+          "endTime": "53.0"
+        },
+        "tokenStart": 19,
+        "tokenEnd": 28,
+        "surfaceForm": "bedsheets",
+        "normalizedForm": "bedsheets",
+        "source_en": "we should hang the bedsheets outside",
+        "source_zh": "我们应该把床单挂在外面",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000039",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000051",
+        "type": "vocabulary",
+        "subtitleIndex": 14,
+        "timestamp": {
+          "startTime": "51.5",
+          "endTime": "53.0"
+        },
+        "tokenStart": 29,
+        "tokenEnd": 36,
+        "surfaceForm": "outside",
+        "normalizedForm": "outside",
+        "source_en": "we should hang the bedsheets outside",
+        "source_zh": "我们应该把床单挂在外面",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000040",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000053",
+        "type": "vocabulary",
+        "subtitleIndex": 15,
+        "timestamp": {
+          "startTime": "53.0",
+          "endTime": "58.0"
+        },
+        "tokenStart": 7,
+        "tokenEnd": 16,
+        "surfaceForm": "villagers",
+        "normalizedForm": "villagers",
+        "source_en": "so the villagers can see that we consummated.",
+        "source_zh": "这样其他村民就能知道我们行过房了",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000041",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000055",
+        "type": "vocabulary",
+        "subtitleIndex": 15,
+        "timestamp": {
+          "startTime": "53.0",
+          "endTime": "58.0"
+        },
+        "tokenStart": 21,
+        "tokenEnd": 24,
+        "surfaceForm": "see",
+        "normalizedForm": "see",
+        "source_en": "so the villagers can see that we consummated.",
+        "source_zh": "这样其他村民就能知道我们行过房了",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000042",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000056",
+        "type": "vocabulary",
+        "subtitleIndex": 15,
+        "timestamp": {
+          "startTime": "53.0",
+          "endTime": "58.0"
+        },
+        "tokenStart": 33,
+        "tokenEnd": 45,
+        "surfaceForm": "consummated.",
+        "normalizedForm": "consummated",
+        "source_en": "so the villagers can see that we consummated.",
+        "source_zh": "这样其他村民就能知道我们行过房了",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000043",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000057",
+        "type": "vocabulary",
+        "subtitleIndex": 16,
+        "timestamp": {
+          "startTime": "58.0",
+          "endTime": "60.5"
+        },
+        "tokenStart": 0,
+        "tokenEnd": 11,
+        "surfaceForm": "considering",
+        "normalizedForm": "considering",
+        "source_en": "considering where we're starting our honeymoon.",
+        "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000044",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000058",
+        "type": "vocabulary",
+        "subtitleIndex": 16,
+        "timestamp": {
+          "startTime": "58.0",
+          "endTime": "60.5"
+        },
+        "tokenStart": 12,
+        "tokenEnd": 17,
+        "surfaceForm": "where",
+        "normalizedForm": "where",
+        "source_en": "considering where we're starting our honeymoon.",
+        "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000045",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000060",
+        "type": "vocabulary",
+        "subtitleIndex": 16,
+        "timestamp": {
+          "startTime": "58.0",
+          "endTime": "60.5"
+        },
+        "tokenStart": 24,
+        "tokenEnd": 32,
+        "surfaceForm": "starting",
+        "normalizedForm": "starting",
+        "source_en": "considering where we're starting our honeymoon.",
+        "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000046",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000061",
+        "type": "vocabulary",
+        "subtitleIndex": 16,
+        "timestamp": {
+          "startTime": "58.0",
+          "endTime": "60.5"
+        },
+        "tokenStart": 37,
+        "tokenEnd": 47,
+        "surfaceForm": "honeymoon.",
+        "normalizedForm": "honeymoon",
+        "source_en": "considering where we're starting our honeymoon.",
+        "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000047",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000062",
+        "type": "vocabulary",
+        "subtitleIndex": 17,
+        "timestamp": {
+          "startTime": "60.5",
+          "endTime": "67.0"
+        },
+        "tokenStart": 0,
+        "tokenEnd": 5,
+        "surfaceForm": "Well,",
+        "normalizedForm": "well",
+        "source_en": "Well, I suppose you're right.",
+        "source_zh": "你说的有道理",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000048",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000063",
+        "type": "vocabulary",
+        "subtitleIndex": 17,
+        "timestamp": {
+          "startTime": "60.5",
+          "endTime": "67.0"
+        },
+        "tokenStart": 8,
+        "tokenEnd": 15,
+        "surfaceForm": "suppose",
+        "normalizedForm": "suppose",
+        "source_en": "Well, I suppose you're right.",
+        "source_zh": "你说的有道理",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000049",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000064",
+        "type": "vocabulary",
+        "subtitleIndex": 17,
+        "timestamp": {
+          "startTime": "60.5",
+          "endTime": "67.0"
+        },
+        "tokenStart": 16,
+        "tokenEnd": 22,
+        "surfaceForm": "you're",
+        "normalizedForm": "you're",
+        "source_en": "Well, I suppose you're right.",
+        "source_zh": "你说的有道理",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000050",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000065",
+        "type": "vocabulary",
+        "subtitleIndex": 17,
+        "timestamp": {
+          "startTime": "60.5",
+          "endTime": "67.0"
+        },
+        "tokenStart": 23,
+        "tokenEnd": 29,
+        "surfaceForm": "right.",
+        "normalizedForm": "right",
+        "source_en": "Well, I suppose you're right.",
+        "source_zh": "你说的有道理",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000051",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000066",
+        "type": "vocabulary",
+        "subtitleIndex": 18,
+        "timestamp": {
+          "startTime": "67.0",
+          "endTime": "70.0"
+        },
+        "tokenStart": 0,
+        "tokenEnd": 4,
+        "surfaceForm": "Lego",
+        "normalizedForm": "lego",
+        "source_en": "Lego is the perfect metaphor for marital congress.",
+        "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000052",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000067",
+        "type": "vocabulary",
+        "subtitleIndex": 18,
+        "timestamp": {
+          "startTime": "67.0",
+          "endTime": "70.0"
+        },
+        "tokenStart": 12,
+        "tokenEnd": 19,
+        "surfaceForm": "perfect",
+        "normalizedForm": "perfect",
+        "source_en": "Lego is the perfect metaphor for marital congress.",
+        "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000053",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000068",
+        "type": "vocabulary",
+        "subtitleIndex": 18,
+        "timestamp": {
+          "startTime": "67.0",
+          "endTime": "70.0"
+        },
+        "tokenStart": 20,
+        "tokenEnd": 28,
+        "surfaceForm": "metaphor",
+        "normalizedForm": "metaphor",
+        "source_en": "Lego is the perfect metaphor for marital congress.",
+        "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000054",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000069",
+        "type": "vocabulary",
+        "subtitleIndex": 18,
+        "timestamp": {
+          "startTime": "67.0",
+          "endTime": "70.0"
+        },
+        "tokenStart": 33,
+        "tokenEnd": 40,
+        "surfaceForm": "marital",
+        "normalizedForm": "marital",
+        "source_en": "Lego is the perfect metaphor for marital congress.",
+        "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000055",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000070",
+        "type": "vocabulary",
+        "subtitleIndex": 18,
+        "timestamp": {
+          "startTime": "67.0",
+          "endTime": "70.0"
+        },
+        "tokenStart": 41,
+        "tokenEnd": 50,
+        "surfaceForm": "congress.",
+        "normalizedForm": "congress",
+        "source_en": "Lego is the perfect metaphor for marital congress.",
+        "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000056",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000071",
+        "type": "vocabulary",
+        "subtitleIndex": 19,
+        "timestamp": {
+          "startTime": "70.0",
+          "endTime": "79.5"
+        },
+        "tokenStart": 0,
+        "tokenEnd": 3,
+        "surfaceForm": "Two",
+        "normalizedForm": "two",
+        "source_en": "Two pieces that interlock with a satisfying snap.",
+        "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000057",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000072",
+        "type": "vocabulary",
+        "subtitleIndex": 19,
+        "timestamp": {
+          "startTime": "70.0",
+          "endTime": "79.5"
+        },
+        "tokenStart": 4,
+        "tokenEnd": 10,
+        "surfaceForm": "pieces",
+        "normalizedForm": "pieces",
+        "source_en": "Two pieces that interlock with a satisfying snap.",
+        "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000058",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000073",
+        "type": "vocabulary",
+        "subtitleIndex": 19,
+        "timestamp": {
+          "startTime": "70.0",
+          "endTime": "79.5"
+        },
+        "tokenStart": 16,
+        "tokenEnd": 25,
+        "surfaceForm": "interlock",
+        "normalizedForm": "interlock",
+        "source_en": "Two pieces that interlock with a satisfying snap.",
+        "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000059",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000074",
+        "type": "vocabulary",
+        "subtitleIndex": 19,
+        "timestamp": {
+          "startTime": "70.0",
+          "endTime": "79.5"
+        },
+        "tokenStart": 33,
+        "tokenEnd": 43,
+        "surfaceForm": "satisfying",
+        "normalizedForm": "satisfying",
+        "source_en": "Two pieces that interlock with a satisfying snap.",
+        "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000060",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000075",
+        "type": "vocabulary",
+        "subtitleIndex": 19,
+        "timestamp": {
+          "startTime": "70.0",
+          "endTime": "79.5"
+        },
+        "tokenStart": 44,
+        "tokenEnd": 49,
+        "surfaceForm": "snap.",
+        "normalizedForm": "snap",
+        "source_en": "Two pieces that interlock with a satisfying snap.",
+        "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000061",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000077",
+        "type": "vocabulary",
+        "subtitleIndex": 20,
+        "timestamp": {
+          "startTime": "79.5",
+          "endTime": "80.5"
+        },
+        "tokenStart": 6,
+        "tokenEnd": 12,
+        "surfaceForm": "almost",
+        "normalizedForm": "almost",
+        "source_en": "Oh, I almost forgot.",
+        "source_zh": "我差点就忘了",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000062",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000078",
+        "type": "vocabulary",
+        "subtitleIndex": 20,
+        "timestamp": {
+          "startTime": "79.5",
+          "endTime": "80.5"
+        },
+        "tokenStart": 13,
+        "tokenEnd": 20,
+        "surfaceForm": "forgot.",
+        "normalizedForm": "forgot",
+        "source_en": "Oh, I almost forgot.",
+        "source_zh": "我差点就忘了",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000063",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000079",
+        "type": "vocabulary",
+        "subtitleIndex": 21,
+        "timestamp": {
+          "startTime": "80.5",
+          "endTime": "83.5"
+        },
+        "tokenStart": 0,
+        "tokenEnd": 5,
+        "surfaceForm": "While",
+        "normalizedForm": "while",
+        "source_en": "While you were sleeping, I ordered room service.",
+        "source_zh": "在你睡觉的时候 我点了客房送餐",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000064",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000080",
+        "type": "vocabulary",
+        "subtitleIndex": 21,
+        "timestamp": {
+          "startTime": "80.5",
+          "endTime": "83.5"
+        },
+        "tokenStart": 15,
+        "tokenEnd": 24,
+        "surfaceForm": "sleeping,",
+        "normalizedForm": "sleeping",
+        "source_en": "While you were sleeping, I ordered room service.",
+        "source_zh": "在你睡觉的时候 我点了客房送餐",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000065",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000081",
+        "type": "vocabulary",
+        "subtitleIndex": 21,
+        "timestamp": {
+          "startTime": "80.5",
+          "endTime": "83.5"
+        },
+        "tokenStart": 27,
+        "tokenEnd": 34,
+        "surfaceForm": "ordered",
+        "normalizedForm": "ordered",
+        "source_en": "While you were sleeping, I ordered room service.",
+        "source_zh": "在你睡觉的时候 我点了客房送餐",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000066",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000082",
+        "type": "vocabulary",
+        "subtitleIndex": 21,
+        "timestamp": {
+          "startTime": "80.5",
+          "endTime": "83.5"
+        },
+        "tokenStart": 35,
+        "tokenEnd": 39,
+        "surfaceForm": "room",
+        "normalizedForm": "room",
+        "source_en": "While you were sleeping, I ordered room service.",
+        "source_zh": "在你睡觉的时候 我点了客房送餐",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000067",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000083",
+        "type": "vocabulary",
+        "subtitleIndex": 21,
+        "timestamp": {
+          "startTime": "80.5",
+          "endTime": "83.5"
+        },
+        "tokenStart": 40,
+        "tokenEnd": 48,
+        "surfaceForm": "service.",
+        "normalizedForm": "service",
+        "source_en": "While you were sleeping, I ordered room service.",
+        "source_zh": "在你睡觉的时候 我点了客房送餐",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000068",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000084",
+        "type": "vocabulary",
+        "subtitleIndex": 22,
+        "timestamp": {
+          "startTime": "83.5",
+          "endTime": "85.5"
+        },
+        "tokenStart": 0,
+        "tokenEnd": 7,
+        "surfaceForm": "Really?",
+        "normalizedForm": "really",
+        "source_en": "Really?",
+        "source_zh": "真的吗",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000069",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000085",
+        "type": "vocabulary",
+        "subtitleIndex": 23,
+        "timestamp": {
+          "startTime": "85.5",
+          "endTime": "88.5"
+        },
+        "tokenStart": 0,
+        "tokenEnd": 6,
+        "surfaceForm": "Voila!",
+        "normalizedForm": "voila",
+        "source_en": "Voila!",
+        "source_zh": "请看",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000070",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000086",
+        "type": "vocabulary",
+        "subtitleIndex": 24,
+        "timestamp": {
+          "startTime": "88.5",
+          "endTime": "92.0"
+        },
+        "tokenStart": 4,
+        "tokenEnd": 11,
+        "surfaceForm": "thought",
+        "normalizedForm": "thought",
+        "source_en": "You thought it was going to be food, didn't you?",
+        "source_zh": "你本来还以为是食物 对吧",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000071",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000087",
+        "type": "vocabulary",
+        "subtitleIndex": 24,
+        "timestamp": {
+          "startTime": "88.5",
+          "endTime": "92.0"
+        },
+        "tokenStart": 19,
+        "tokenEnd": 24,
+        "surfaceForm": "going",
+        "normalizedForm": "going",
+        "source_en": "You thought it was going to be food, didn't you?",
+        "source_zh": "你本来还以为是食物 对吧",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000072",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000088",
+        "type": "vocabulary",
+        "subtitleIndex": 24,
+        "timestamp": {
+          "startTime": "88.5",
+          "endTime": "92.0"
+        },
+        "tokenStart": 31,
+        "tokenEnd": 36,
+        "surfaceForm": "food,",
+        "normalizedForm": "food",
+        "source_en": "You thought it was going to be food, didn't you?",
+        "source_zh": "你本来还以为是食物 对吧",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000073",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000089",
+        "type": "vocabulary",
+        "subtitleIndex": 24,
+        "timestamp": {
+          "startTime": "88.5",
+          "endTime": "92.0"
+        },
+        "tokenStart": 37,
+        "tokenEnd": 43,
+        "surfaceForm": "didn't",
+        "normalizedForm": "didn't",
+        "source_en": "You thought it was going to be food, didn't you?",
+        "source_zh": "你本来还以为是食物 对吧",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000074",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000090",
+        "type": "vocabulary",
+        "subtitleIndex": 25,
+        "timestamp": {
+          "startTime": "92.0",
+          "endTime": "95.0"
+        },
+        "tokenStart": 4,
+        "tokenEnd": 9,
+        "surfaceForm": "whole",
+        "normalizedForm": "whole",
+        "source_en": "Our whole universe was in a hot, dense state",
+        "source_zh": "我们的宇宙曾经超热又超密",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000075",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000091",
+        "type": "vocabulary",
+        "subtitleIndex": 25,
+        "timestamp": {
+          "startTime": "92.0",
+          "endTime": "95.0"
+        },
+        "tokenStart": 10,
+        "tokenEnd": 18,
+        "surfaceForm": "universe",
+        "normalizedForm": "universe",
+        "source_en": "Our whole universe was in a hot, dense state",
+        "source_zh": "我们的宇宙曾经超热又超密",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000076",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000092",
+        "type": "vocabulary",
+        "subtitleIndex": 25,
+        "timestamp": {
+          "startTime": "92.0",
+          "endTime": "95.0"
+        },
+        "tokenStart": 28,
+        "tokenEnd": 32,
+        "surfaceForm": "hot,",
+        "normalizedForm": "hot",
+        "source_en": "Our whole universe was in a hot, dense state",
+        "source_zh": "我们的宇宙曾经超热又超密",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000077",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000093",
+        "type": "vocabulary",
+        "subtitleIndex": 25,
+        "timestamp": {
+          "startTime": "92.0",
+          "endTime": "95.0"
+        },
+        "tokenStart": 33,
+        "tokenEnd": 38,
+        "surfaceForm": "dense",
+        "normalizedForm": "dense",
+        "source_en": "Our whole universe was in a hot, dense state",
+        "source_zh": "我们的宇宙曾经超热又超密",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000078",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000094",
+        "type": "vocabulary",
+        "subtitleIndex": 25,
+        "timestamp": {
+          "startTime": "92.0",
+          "endTime": "95.0"
+        },
+        "tokenStart": 39,
+        "tokenEnd": 44,
+        "surfaceForm": "state",
+        "normalizedForm": "state",
+        "source_en": "Our whole universe was in a hot, dense state",
+        "source_zh": "我们的宇宙曾经超热又超密",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000079",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000096",
+        "type": "vocabulary",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "tokenStart": 5,
+        "tokenEnd": 11,
+        "surfaceForm": "nearly",
+        "normalizedForm": "nearly",
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000080",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000097",
+        "type": "vocabulary",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "tokenStart": 15,
+        "tokenEnd": 22,
+        "surfaceForm": "billion",
+        "normalizedForm": "billion",
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000081",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000098",
+        "type": "vocabulary",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "tokenStart": 23,
+        "tokenEnd": 28,
+        "surfaceForm": "years",
+        "normalizedForm": "years",
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000082",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000099",
+        "type": "vocabulary",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "tokenStart": 29,
+        "tokenEnd": 32,
+        "surfaceForm": "ago",
+        "normalizedForm": "ago",
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000083",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000100",
+        "type": "vocabulary",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "tokenStart": 33,
+        "tokenEnd": 42,
+        "surfaceForm": "expansion",
+        "normalizedForm": "expansion",
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000084",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000101",
+        "type": "vocabulary",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "tokenStart": 43,
+        "tokenEnd": 53,
+        "surfaceForm": "started...",
+        "normalizedForm": "started",
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000085",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000102",
+        "type": "vocabulary",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "tokenStart": 54,
+        "tokenEnd": 59,
+        "surfaceForm": "Wait!",
+        "normalizedForm": "wait",
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000086",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000103",
+        "type": "vocabulary",
+        "subtitleIndex": 27,
+        "timestamp": {
+          "startTime": "99.0",
+          "endTime": "101.0"
+        },
+        "tokenStart": 4,
+        "tokenEnd": 9,
+        "surfaceForm": "Earth",
+        "normalizedForm": "earth",
+        "source_en": "The Earth began to cool",
+        "source_zh": "地球开始冷却",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000087",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000104",
+        "type": "vocabulary",
+        "subtitleIndex": 27,
+        "timestamp": {
+          "startTime": "99.0",
+          "endTime": "101.0"
+        },
+        "tokenStart": 10,
+        "tokenEnd": 15,
+        "surfaceForm": "began",
+        "normalizedForm": "began",
+        "source_en": "The Earth began to cool",
+        "source_zh": "地球开始冷却",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000088",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000105",
+        "type": "vocabulary",
+        "subtitleIndex": 27,
+        "timestamp": {
+          "startTime": "99.0",
+          "endTime": "101.0"
+        },
+        "tokenStart": 19,
+        "tokenEnd": 23,
+        "surfaceForm": "cool",
+        "normalizedForm": "cool",
+        "source_en": "The Earth began to cool",
+        "source_zh": "地球开始冷却",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000089",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000106",
+        "type": "vocabulary",
+        "subtitleIndex": 28,
+        "timestamp": {
+          "startTime": "101.0",
+          "endTime": "104.0"
+        },
+        "tokenStart": 4,
+        "tokenEnd": 14,
+        "surfaceForm": "autotrophs",
+        "normalizedForm": "autotrophs",
+        "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+        "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000090",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000108",
+        "type": "vocabulary",
+        "subtitleIndex": 28,
+        "timestamp": {
+          "startTime": "101.0",
+          "endTime": "104.0"
+        },
+        "tokenStart": 24,
+        "tokenEnd": 30,
+        "surfaceForm": "drool,",
+        "normalizedForm": "drool",
+        "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+        "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000091",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000109",
+        "type": "vocabulary",
+        "subtitleIndex": 28,
+        "timestamp": {
+          "startTime": "101.0",
+          "endTime": "104.0"
+        },
+        "tokenStart": 31,
+        "tokenEnd": 43,
+        "surfaceForm": "Neanderthals",
+        "normalizedForm": "neanderthals",
+        "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+        "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000092",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000110",
+        "type": "vocabulary",
+        "subtitleIndex": 28,
+        "timestamp": {
+          "startTime": "101.0",
+          "endTime": "104.0"
+        },
+        "tokenStart": 44,
+        "tokenEnd": 53,
+        "surfaceForm": "developed",
+        "normalizedForm": "developed",
+        "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+        "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000093",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000111",
+        "type": "vocabulary",
+        "subtitleIndex": 28,
+        "timestamp": {
+          "startTime": "101.0",
+          "endTime": "104.0"
+        },
+        "tokenStart": 54,
+        "tokenEnd": 60,
+        "surfaceForm": "tools?",
+        "normalizedForm": "tools",
+        "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+        "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000094",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000112",
+        "type": "vocabulary",
+        "subtitleIndex": 29,
+        "timestamp": {
+          "startTime": "104.0",
+          "endTime": "105.0"
+        },
+        "tokenStart": 3,
+        "tokenEnd": 8,
+        "surfaceForm": "built",
+        "normalizedForm": "built",
+        "source_en": "We built the Wall We built the pyramids",
+        "source_zh": "我们建了长城 我们建了金字塔",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000095",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000113",
+        "type": "vocabulary",
+        "subtitleIndex": 29,
+        "timestamp": {
+          "startTime": "104.0",
+          "endTime": "105.0"
+        },
+        "tokenStart": 13,
+        "tokenEnd": 17,
+        "surfaceForm": "Wall",
+        "normalizedForm": "wall",
+        "source_en": "We built the Wall We built the pyramids",
+        "source_zh": "我们建了长城 我们建了金字塔",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      },
+      {
+        "obstacleId": "tbbt-s12e01-vocab-obstacle-000096",
+        "candidateId": "tbbt-s12e01-vocab-candidate-000115",
+        "type": "vocabulary",
+        "subtitleIndex": 29,
+        "timestamp": {
+          "startTime": "104.0",
+          "endTime": "105.0"
+        },
+        "tokenStart": 31,
+        "tokenEnd": 39,
+        "surfaceForm": "pyramids",
+        "normalizedForm": "pyramids",
+        "source_en": "We built the Wall We built the pyramids",
+        "source_zh": "我们建了长城 我们建了金字塔",
+        "evidenceSource": [
+          "englishSubtitle",
+          "chineseSubtitle"
+        ],
+        "decisionReason": "accepted-deterministic: content token of sufficient length, first episode occurrence",
+        "placeholder": false
+      }
+    ],
+    "decisionSummary": {
+      "totalCandidates": 115,
+      "accepted": 96,
+      "rejected": 19,
+      "rejectionReasons": {
+        "tooShort": 4,
+        "duplicateInEpisode": 15
+      }
+    },
+    "decisionRules": {
+      "minNormalizedLength": 3,
+      "episodeLevelDedupe": "keep first occurrence of each normalizedForm",
+      "orderingPreserved": "candidate order (subtitleIndex, tokenStart, normalizedForm) is preserved",
+      "note": "Deterministic decision only. No AI, no evidence re-collection, no comprehension decision."
+    }
+  }
+}

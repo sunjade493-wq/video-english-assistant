@@ -17,6 +17,7 @@
     "scene_meaning_artifact",
     "evidence_artifact",
     "vocabulary_candidate_artifact",
+    "vocabulary_decision_artifact",
     "draft_obstacle_artifact",
     "review_artifact",
     "frozen_candidate_artifact",
@@ -28,6 +29,7 @@
     "output_text/p1_a/scene_meaning_artifact.json",
     "output_text/p1_a/evidence_artifact.json",
     "output_text/p1_a/vocabulary_candidate_artifact.json",
+    "output_text/p1_a/vocabulary_decision_artifact.json",
     "output_text/p1_a/draft_obstacle_artifact.json",
     "output_text/p1_a/review_artifact.json",
     "output_text/p1_a/frozen_candidate_artifact.json",
@@ -47,10 +49,13 @@
     "evidenceReal": true,
     "vocabularyCandidateReal": true,
     "vocabularyCandidateCount": 115,
+    "vocabularyDecisionReal": true,
+    "vocabularyDecisionCount": 96,
+    "vocabularyObstacleIdsSequential": true,
     "downstreamStillPlaceholder": true,
     "noOcrCalled": true,
     "noInternetSubtitleFetch": true
   },
   "bootstrapCompleted": true,
-  "nextRecommendedStep": "P1-DB: add a real offline Vocabulary Obstacle decision stage that consumes the vocabulary_candidate_artifact, preserving the Runtime read-only boundary and the forward-only Artifact chain."
+  "nextRecommendedStep": "P1-E: add a real offline Comprehension obstacle stage that consumes the upstream evidence and vocabulary decision artifacts, preserving the Runtime read-only boundary and the forward-only Artifact chain."
 }

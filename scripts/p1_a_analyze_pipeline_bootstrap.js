@@ -681,6 +681,116 @@ function runVocabularyCandidateEngine(evidenceArtifact) {
   });
 }
 
+/* -------------------------------------------------------------------------
+ * P1-DB Vocabulary Decision Engine (REAL, offline, deterministic)
+ *
+ * Per P0-7C this engine consumes ONLY the upstream Vocabulary Candidate
+ * Artifact (vocabulary_candidate_artifact.json, read from disk). It does NOT
+ * read the subtitle source, the Scene Meaning Artifact, or the Evidence
+ * Artifact directly.
+ *
+ * It is fully offline and deterministic: no AI / Qwen / Qwen-VL / OCR.
+ *
+ * It DECIDES which candidates become Vocabulary obstacles, preserving
+ * candidate ordering and assigning deterministic obstacle ids. It does NOT
+ * decide comprehension obstacles, does NOT review, does NOT promote, and is
+ * never runtime consumable.
+ * ---------------------------------------------------------------------- */
+
+const VOCAB_DECISION_MIN_LENGTH = 3;
+
+function runVocabularyDecisionEngine(vocabularyCandidateArtifact) {
+  const candidates = vocabularyCandidateArtifact
+    && vocabularyCandidateArtifact.payload
+    && Array.isArray(vocabularyCandidateArtifact.payload.vocabularyCandidates)
+    ? vocabularyCandidateArtifact.payload.vocabularyCandidates
+    : null;
+
+  if (!candidates) {
+    fail('Vocabulary Decision Engine received an invalid Vocabulary Candidate Artifact');
+  }
+
+  const rejectionReasons = {
+    tooShort: 0,
+    duplicateInEpisode: 0,
+  };
+
+  const seenNormalized = new Set();
+  const accepted = [];
+
+  // Candidates are already in stable order (subtitleIndex, tokenStart,
+  // normalizedForm). Preserve that ordering exactly.
+  candidates.forEach((candidate) => {
+    const normalized = candidate.normalizedForm;
+
+    if (typeof normalized !== 'string' || normalized.length < VOCAB_DECISION_MIN_LENGTH) {
+      rejectionReasons.tooShort += 1;
+      return;
+    }
+    if (seenNormalized.has(normalized)) {
+      rejectionReasons.duplicateInEpisode += 1;
+      return;
+    }
+
+    seenNormalized.add(normalized);
+    accepted.push(candidate);
+  });
+
+  const vocabularyObstacles = accepted.map((candidate, position) => {
+    const sequence = String(position + 1).padStart(6, '0');
+    return {
+      obstacleId: `${EPISODE_ID}-vocab-obstacle-${sequence}`,
+      candidateId: candidate.candidateId,
+      type: 'vocabulary',
+      subtitleIndex: candidate.subtitleIndex,
+      timestamp: candidate.timestamp,
+      tokenStart: candidate.tokenStart,
+      tokenEnd: candidate.tokenEnd,
+      surfaceForm: candidate.surfaceForm,
+      normalizedForm: candidate.normalizedForm,
+      source_en: candidate.source_en,
+      source_zh: candidate.source_zh,
+      evidenceSource: candidate.evidenceSource,
+      decisionReason: 'accepted-deterministic: content token of sufficient length, first episode occurrence',
+      placeholder: false,
+    };
+  });
+
+  const rejectedCount = candidates.length - accepted.length;
+
+  return artifactEnvelope({
+    schemaVersion: 'p1-db-vocabulary-decision-artifact.v1',
+    artifactName: 'vocabulary_decision_artifact',
+    producerStage: 'Vocabulary Decision Engine',
+    consumerStage: 'Draft Obstacle Assembly',
+    inputArtifact: 'vocabulary_candidate_artifact',
+    artifactStatus: 'produced',
+    contentMode: 'real',
+    runtimeConsumable: false,
+    notes: 'REAL offline deterministic Vocabulary Decision Engine (P1-DB). Consumes '
+      + 'vocabulary_candidate_artifact only (read from disk per P0-7C). No AI / Qwen / Qwen-VL / OCR. '
+      + 'Decides which candidates become Vocabulary obstacles using deterministic rules '
+      + '(minimum length + first episode occurrence), preserving candidate ordering and assigning '
+      + 'deterministic obstacle ids. Does NOT decide comprehension obstacles, does NOT review, '
+      + 'does NOT promote. Never runtime consumable.',
+  }, {
+    vocabularyDecisionCount: vocabularyObstacles.length,
+    vocabularyObstacles,
+    decisionSummary: {
+      totalCandidates: candidates.length,
+      accepted: accepted.length,
+      rejected: rejectedCount,
+      rejectionReasons,
+    },
+    decisionRules: {
+      minNormalizedLength: VOCAB_DECISION_MIN_LENGTH,
+      episodeLevelDedupe: 'keep first occurrence of each normalizedForm',
+      orderingPreserved: 'candidate order (subtitleIndex, tokenStart, normalizedForm) is preserved',
+      note: 'Deterministic decision only. No AI, no evidence re-collection, no comprehension decision.',
+    },
+  });
+}
+
 function main() {
   const sourceRows = readSubtitleSource();
   const scoped = buildScopedSubtitles(sourceRows);
@@ -742,18 +852,25 @@ function main() {
   const vocabularyCandidateArtifact = runVocabularyCandidateEngine(evidenceArtifactForVocab);
   createdFiles.push(writeArtifact('vocabulary_candidate_artifact.json', vocabularyCandidateArtifact));
 
+  // 3c. Vocabulary Decision Artifact (REAL — P1-DB Vocabulary Decision Engine)
+  // Per P0-7C, consumes the Vocabulary Candidate Artifact from disk only.
+  const vocabularyCandidateArtifactForDecision = readArtifact('vocabulary_candidate_artifact.json');
+  const vocabularyDecisionArtifact = runVocabularyDecisionEngine(vocabularyCandidateArtifactForDecision);
+  createdFiles.push(writeArtifact('vocabulary_decision_artifact.json', vocabularyDecisionArtifact));
+
   // 4. Draft Obstacle Artifact (placeholder — no real Vocabulary/Comprehension analysis)
   const draftObstacleArtifact = artifactEnvelope({
     schemaVersion: 'p1-a-draft-obstacle-artifact.v1',
     artifactName: 'draft_obstacle_artifact',
     producerStage: 'Draft Obstacle Assembly (Vocabulary Engine + Comprehension Engine)',
     consumerStage: 'AI Review',
-    inputArtifact: 'evidence_artifact + scene_meaning_artifact + vocabulary_candidate_artifact',
+    inputArtifact: 'evidence_artifact + scene_meaning_artifact + vocabulary_candidate_artifact + vocabulary_decision_artifact',
     artifactStatus: 'produced',
     contentMode: 'placeholder',
     runtimeConsumable: false,
-    notes: 'PLACEHOLDER. Vocabulary candidates are available upstream but no real Vocabulary or '
-      + 'Comprehension obstacle decision is performed in this bootstrap. Empty obstacle set is intentional.',
+    notes: 'PLACEHOLDER. Vocabulary candidates and decisions are available upstream but no real '
+      + 'Draft assembly or Comprehension obstacle decision is performed in this bootstrap. '
+      + 'Empty obstacle set is intentional.',
   }, {
     draftObstacles: [],
     candidateCount: 0,
@@ -821,6 +938,7 @@ function main() {
     'scene_meaning_artifact',
     'evidence_artifact',
     'vocabulary_candidate_artifact',
+    'vocabulary_decision_artifact',
     'draft_obstacle_artifact',
     'review_artifact',
     'frozen_candidate_artifact',
@@ -828,6 +946,13 @@ function main() {
   ];
 
   const vocabularyCandidateCount = vocabularyCandidateArtifact.payload.vocabularyCandidateCount;
+  const vocabularyDecisionCount = vocabularyDecisionArtifact.payload.vocabularyDecisionCount;
+  const vocabularyObstacleIds = vocabularyDecisionArtifact.payload.vocabularyObstacles.map(
+    (obstacle) => obstacle.obstacleId,
+  );
+  const vocabularyObstacleIdsSequential = vocabularyObstacleIds.every(
+    (id, position) => id === `${EPISODE_ID}-vocab-obstacle-${String(position + 1).padStart(6, '0')}`,
+  );
 
   const report = {
     schemaVersion: 'p1-a-pipeline-bootstrap-report.v1',
@@ -860,14 +985,17 @@ function main() {
       evidenceReal: true,
       vocabularyCandidateReal: true,
       vocabularyCandidateCount,
+      vocabularyDecisionReal: true,
+      vocabularyDecisionCount,
+      vocabularyObstacleIdsSequential,
       downstreamStillPlaceholder: true,
       noOcrCalled: true,
       noInternetSubtitleFetch: true,
     },
     bootstrapCompleted: true,
     nextRecommendedStep:
-      'P1-DB: add a real offline Vocabulary Obstacle decision stage that consumes the '
-      + 'vocabulary_candidate_artifact, preserving the Runtime read-only boundary and the '
+      'P1-E: add a real offline Comprehension obstacle stage that consumes the upstream evidence and '
+      + 'vocabulary decision artifacts, preserving the Runtime read-only boundary and the '
       + 'forward-only Artifact chain.',
   };
   createdFiles.push(writeArtifact('pipeline_bootstrap_report.json', report));
