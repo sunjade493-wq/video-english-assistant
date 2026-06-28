@@ -65,11 +65,15 @@
     "frozenPromotionReal": true,
     "frozenCandidateCount": 126,
     "frozenCandidateIdsSequential": true,
-    "runtimeCandidateStillPlaceholder": true,
-    "downstreamStillPlaceholder": true,
+    "runtimePromotionReal": true,
+    "runtimeCandidateCount": 126,
+    "runtimeCandidateIdsSequential": true,
+    "runtimeCandidateStillNotConsumable": true,
+    "runtimeMayConsume": false,
+    "downstreamStillPlaceholder": false,
     "noOcrCalled": true,
     "noInternetSubtitleFetch": true
   },
   "bootstrapCompleted": true,
-  "nextRecommendedStep": "P1-H: add a real offline Runtime Promotion stage that consumes the real frozen_candidate_artifact. It must produce a runtime candidate explicitly, and any runtimeMayConsume change must be an explicit, separately reviewed step — the Runtime read-only boundary and forward-only Artifact chain must be preserved."
+  "nextRecommendedStep": "P1-I: explicitly review whether Runtime may consume runtime_candidate_artifact. Do not enable runtimeMayConsume without a separate reviewed decision."
 }

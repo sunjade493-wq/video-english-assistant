@@ -1195,6 +1195,92 @@ function runFrozenPromotionEngine(reviewArtifact) {
   });
 }
 
+/* -------------------------------------------------------------------------
+ * P1-H Runtime Promotion Engine (REAL, offline, deterministic)
+ *
+ * Per P0-7C this engine consumes ONLY the upstream Frozen Candidate Artifact
+ * (frozen_candidate_artifact.json, read from disk). It does NOT read the
+ * subtitle source, Scene Meaning, Evidence, Vocabulary Candidate, Vocabulary
+ * Decision, Draft, or Review artifacts directly.
+ *
+ * It is fully offline and deterministic: no AI / Qwen / Qwen-VL / OCR.
+ *
+ * It transforms frozen candidates into runtime CANDIDATES deterministically.
+ * It does NOT modify frozen candidates and does NOT authorize Runtime
+ * consumption: runtimeConsumable stays false and payload.runtimeMayConsume
+ * stays false. Enabling Runtime consumption is a separate reviewed decision.
+ * ---------------------------------------------------------------------- */
+
+function runRuntimePromotionEngine(frozenCandidateArtifact) {
+  const frozenCandidates = frozenCandidateArtifact
+    && frozenCandidateArtifact.payload
+    && Array.isArray(frozenCandidateArtifact.payload.frozenCandidates)
+    ? frozenCandidateArtifact.payload.frozenCandidates
+    : null;
+
+  if (!frozenCandidates) {
+    fail('Runtime Promotion Engine received an invalid Frozen Candidate Artifact');
+  }
+
+  const runtimeCandidates = frozenCandidates.map((candidate, position) => {
+    const sequence = String(position + 1).padStart(6, '0');
+    const runtimeCandidate = {
+      runtimeCandidateId: `${EPISODE_ID}-runtime-candidate-${sequence}`,
+      sourceFrozenCandidateId: candidate.frozenCandidateId,
+      sourceReviewId: candidate.sourceReviewId,
+      sourceDraftObstacleId: candidate.sourceDraftObstacleId,
+      type: candidate.type,
+      subtitleIndex: candidate.subtitleIndex,
+      timestamp: candidate.timestamp,
+      source_en: candidate.source_en,
+      source_zh: candidate.source_zh,
+      runtimeStatus: 'runtime_candidate',
+      promotionReason: 'deterministic-runtime-candidate-from-frozen-candidate',
+      placeholder: false,
+    };
+    if (Object.prototype.hasOwnProperty.call(candidate, 'normalizedForm')) {
+      runtimeCandidate.normalizedForm = candidate.normalizedForm;
+    }
+    if (Object.prototype.hasOwnProperty.call(candidate, 'surfaceForm')) {
+      runtimeCandidate.surfaceForm = candidate.surfaceForm;
+    }
+    return runtimeCandidate;
+  });
+
+  return artifactEnvelope({
+    schemaVersion: 'p1-h-runtime-candidate-artifact.v1',
+    artifactName: 'runtime_candidate_artifact',
+    producerStage: 'Runtime Promotion',
+    consumerStage: 'Runtime (read-only) — NOT AUTHORIZED until a separate reviewed decision',
+    inputArtifact: 'frozen_candidate_artifact',
+    artifactStatus: 'produced',
+    contentMode: 'real',
+    runtimeConsumable: false,
+    notes: 'REAL offline deterministic Runtime Promotion Engine (P1-H). Consumes '
+      + 'frozen_candidate_artifact only (read from disk per P0-7C). No AI / Qwen / Qwen-VL / OCR. '
+      + 'Transforms frozen candidates into runtime CANDIDATES without modifying them. This stage '
+      + 'produces a real runtime candidate artifact only; it does NOT authorize Runtime consumption. '
+      + 'runtimeConsumable and payload.runtimeMayConsume both remain false.',
+  }, {
+    runtimeCandidateCount: runtimeCandidates.length,
+    runtimeCandidates,
+    runtimeMayConsume: false,
+    promotionSummary: {
+      sourceFrozenCandidateCount: frozenCandidates.length,
+      promotedRuntimeCandidateCount: runtimeCandidates.length,
+      runtimeMayConsume: false,
+    },
+    promotionRules: {
+      transform: 'one runtime candidate per frozen candidate',
+      modification: 'frozen candidates are not modified',
+      status: 'each item is a runtime_candidate; Runtime consumption is NOT authorized at this stage',
+      authorization: 'runtimeMayConsume must remain false until a separate reviewed decision enables it',
+      ordering: 'runtime candidates preserve frozen candidate order; runtimeCandidateId sequence follows that order',
+      note: 'Deterministic promotion only. No AI. Runtime remains read-only and untouched.',
+    },
+  });
+}
+
 function main() {
   const sourceRows = readSubtitleSource();
   const scoped = buildScopedSubtitles(sourceRows);
@@ -1291,22 +1377,11 @@ function main() {
   const frozenCandidateArtifact = runFrozenPromotionEngine(reviewArtifactForFrozen);
   createdFiles.push(writeArtifact('frozen_candidate_artifact.json', frozenCandidateArtifact));
 
-  // 7. Runtime Candidate Artifact (placeholder — explicitly NOT runtime consumable)
-  const runtimeCandidateArtifact = artifactEnvelope({
-    schemaVersion: 'p1-a-runtime-candidate-artifact.v1',
-    artifactName: 'runtime_candidate_artifact',
-    producerStage: 'Runtime Promotion',
-    consumerStage: 'Runtime (read-only) — NOT CONNECTED in bootstrap',
-    inputArtifact: 'frozen_candidate_artifact',
-    artifactStatus: 'produced',
-    contentMode: 'placeholder',
-    runtimeConsumable: false,
-    notes: 'PLACEHOLDER runtime CANDIDATE only. runtimeMayConsume is intentionally false. This bootstrap never promotes to real Runtime and never modifies any existing Runtime artifact.',
-  }, {
-    runtimeMayConsume: false,
-    runtimeObstacles: [],
-    placeholder: true,
-  });
+  // 7. Runtime Candidate Artifact (REAL — P1-H Runtime Promotion Engine)
+  // Per P0-7C, consumes the Frozen Candidate Artifact from disk only.
+  // runtimeConsumable and payload.runtimeMayConsume both remain false.
+  const frozenCandidateArtifactForRuntime = readArtifact('frozen_candidate_artifact.json');
+  const runtimeCandidateArtifact = runRuntimePromotionEngine(frozenCandidateArtifactForRuntime);
   createdFiles.push(writeArtifact('runtime_candidate_artifact.json', runtimeCandidateArtifact));
 
   // 8. Pipeline Bootstrap Report
@@ -1348,6 +1423,11 @@ function main() {
   const frozenCandidateCount = frozenCandidateArtifact.payload.frozenCandidateCount;
   const frozenCandidateIdsSequential = frozenCandidateArtifact.payload.frozenCandidates.every(
     (candidate, position) => candidate.frozenCandidateId === `${EPISODE_ID}-frozen-candidate-${String(position + 1).padStart(6, '0')}`,
+  );
+
+  const runtimeCandidateCount = runtimeCandidateArtifact.payload.runtimeCandidateCount;
+  const runtimeCandidateIdsSequential = runtimeCandidateArtifact.payload.runtimeCandidates.every(
+    (candidate, position) => candidate.runtimeCandidateId === `${EPISODE_ID}-runtime-candidate-${String(position + 1).padStart(6, '0')}`,
   );
 
   const report = {
@@ -1397,17 +1477,19 @@ function main() {
       frozenPromotionReal: true,
       frozenCandidateCount,
       frozenCandidateIdsSequential,
-      runtimeCandidateStillPlaceholder: true,
-      downstreamStillPlaceholder: true,
+      runtimePromotionReal: true,
+      runtimeCandidateCount,
+      runtimeCandidateIdsSequential,
+      runtimeCandidateStillNotConsumable: true,
+      runtimeMayConsume: false,
+      downstreamStillPlaceholder: false,
       noOcrCalled: true,
       noInternetSubtitleFetch: true,
     },
     bootstrapCompleted: true,
     nextRecommendedStep:
-      'P1-H: add a real offline Runtime Promotion stage that consumes the real frozen_candidate_artifact. '
-      + 'It must produce a runtime candidate explicitly, and any runtimeMayConsume change must be an '
-      + 'explicit, separately reviewed step — the Runtime read-only boundary and forward-only Artifact '
-      + 'chain must be preserved.',
+      'P1-I: explicitly review whether Runtime may consume runtime_candidate_artifact. Do not enable '
+      + 'runtimeMayConsume without a separate reviewed decision.',
   };
   createdFiles.push(writeArtifact('pipeline_bootstrap_report.json', report));
 

@@ -1,20 +1,2368 @@
 {
-  "schemaVersion": "p1-a-runtime-candidate-artifact.v1",
+  "schemaVersion": "p1-h-runtime-candidate-artifact.v1",
   "stage": "P1-A",
   "artifactName": "runtime_candidate_artifact",
   "episodeId": "tbbt-s12e01",
   "learnerLevel": "CET-4",
   "producerStage": "Runtime Promotion",
-  "consumerStage": "Runtime (read-only) — NOT CONNECTED in bootstrap",
+  "consumerStage": "Runtime (read-only) — NOT AUTHORIZED until a separate reviewed decision",
   "inputArtifact": "frozen_candidate_artifact",
   "outputArtifact": "runtime_candidate_artifact",
   "artifactStatus": "produced",
-  "contentMode": "placeholder",
+  "contentMode": "real",
   "runtimeConsumable": false,
-  "notes": "PLACEHOLDER runtime CANDIDATE only. runtimeMayConsume is intentionally false. This bootstrap never promotes to real Runtime and never modifies any existing Runtime artifact.",
+  "notes": "REAL offline deterministic Runtime Promotion Engine (P1-H). Consumes frozen_candidate_artifact only (read from disk per P0-7C). No AI / Qwen / Qwen-VL / OCR. Transforms frozen candidates into runtime CANDIDATES without modifying them. This stage produces a real runtime candidate artifact only; it does NOT authorize Runtime consumption. runtimeConsumable and payload.runtimeMayConsume both remain false.",
   "payload": {
+    "runtimeCandidateCount": 126,
+    "runtimeCandidates": [
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000001",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000001",
+        "sourceReviewId": "tbbt-s12e01-review-000001",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000001",
+        "type": "vocabulary",
+        "subtitleIndex": 0,
+        "timestamp": {
+          "startTime": "2.0",
+          "endTime": "6.0"
+        },
+        "source_en": "Previously on The Big Bang Theory...",
+        "source_zh": "《生活大爆炸》前情提要",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "previously",
+        "surfaceForm": "Previously"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000002",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000002",
+        "sourceReviewId": "tbbt-s12e01-review-000002",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000002",
+        "type": "vocabulary",
+        "subtitleIndex": 0,
+        "timestamp": {
+          "startTime": "2.0",
+          "endTime": "6.0"
+        },
+        "source_en": "Previously on The Big Bang Theory...",
+        "source_zh": "《生活大爆炸》前情提要",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "big",
+        "surfaceForm": "Big"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000003",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000003",
+        "sourceReviewId": "tbbt-s12e01-review-000003",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000003",
+        "type": "vocabulary",
+        "subtitleIndex": 0,
+        "timestamp": {
+          "startTime": "2.0",
+          "endTime": "6.0"
+        },
+        "source_en": "Previously on The Big Bang Theory...",
+        "source_zh": "《生活大爆炸》前情提要",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "bang",
+        "surfaceForm": "Bang"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000004",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000004",
+        "sourceReviewId": "tbbt-s12e01-review-000004",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000004",
+        "type": "vocabulary",
+        "subtitleIndex": 0,
+        "timestamp": {
+          "startTime": "2.0",
+          "endTime": "6.0"
+        },
+        "source_en": "Previously on The Big Bang Theory...",
+        "source_zh": "《生活大爆炸》前情提要",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "theory",
+        "surfaceForm": "Theory..."
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000005",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000005",
+        "sourceReviewId": "tbbt-s12e01-review-000005",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000005",
+        "type": "vocabulary",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "can",
+        "surfaceForm": "Can"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000006",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000006",
+        "sourceReviewId": "tbbt-s12e01-review-000006",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000006",
+        "type": "vocabulary",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "believe",
+        "surfaceForm": "believe"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000007",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000007",
+        "sourceReviewId": "tbbt-s12e01-review-000007",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000007",
+        "type": "vocabulary",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "little",
+        "surfaceForm": "little"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000008",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000008",
+        "sourceReviewId": "tbbt-s12e01-review-000008",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000008",
+        "type": "vocabulary",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "lamb",
+        "surfaceForm": "lamb"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000009",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000009",
+        "sourceReviewId": "tbbt-s12e01-review-000009",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000009",
+        "type": "vocabulary",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "finally",
+        "surfaceForm": "finally"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000010",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000010",
+        "sourceReviewId": "tbbt-s12e01-review-000010",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000010",
+        "type": "vocabulary",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "getting",
+        "surfaceForm": "getting"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000011",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000011",
+        "sourceReviewId": "tbbt-s12e01-review-000011",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000011",
+        "type": "vocabulary",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "married",
+        "surfaceForm": "married?"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000012",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000012",
+        "sourceReviewId": "tbbt-s12e01-review-000012",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000012",
+        "type": "vocabulary",
+        "subtitleIndex": 2,
+        "timestamp": {
+          "startTime": "10.0",
+          "endTime": "12.0"
+        },
+        "source_en": "He can't believe it.",
+        "source_zh": "他肯定不信",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "can't",
+        "surfaceForm": "can't"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000013",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000013",
+        "sourceReviewId": "tbbt-s12e01-review-000013",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000013",
+        "type": "vocabulary",
+        "subtitleIndex": 3,
+        "timestamp": {
+          "startTime": "12.0",
+          "endTime": "15.5"
+        },
+        "source_en": "And neither can I.",
+        "source_zh": "我也不敢相信",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "neither",
+        "surfaceForm": "neither"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000014",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000014",
+        "sourceReviewId": "tbbt-s12e01-review-000014",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000014",
+        "type": "vocabulary",
+        "subtitleIndex": 4,
+        "timestamp": {
+          "startTime": "15.5",
+          "endTime": "20.5"
+        },
+        "source_en": "Hi, Dad. How you doing?",
+        "source_zh": "爸 你还好吗",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "dad",
+        "surfaceForm": "Dad."
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000015",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000015",
+        "sourceReviewId": "tbbt-s12e01-review-000015",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000015",
+        "type": "vocabulary",
+        "subtitleIndex": 4,
+        "timestamp": {
+          "startTime": "15.5",
+          "endTime": "20.5"
+        },
+        "source_en": "Hi, Dad. How you doing?",
+        "source_zh": "爸 你还好吗",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "how",
+        "surfaceForm": "How"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000016",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000016",
+        "sourceReviewId": "tbbt-s12e01-review-000016",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000016",
+        "type": "vocabulary",
+        "subtitleIndex": 4,
+        "timestamp": {
+          "startTime": "15.5",
+          "endTime": "20.5"
+        },
+        "source_en": "Hi, Dad. How you doing?",
+        "source_zh": "爸 你还好吗",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "doing",
+        "surfaceForm": "doing?"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000017",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000017",
+        "sourceReviewId": "tbbt-s12e01-review-000017",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000017",
+        "type": "vocabulary",
+        "subtitleIndex": 5,
+        "timestamp": {
+          "startTime": "20.5",
+          "endTime": "23.0"
+        },
+        "source_en": "Then by the power vested in me...",
+        "source_zh": "我以\"连你都能证婚网\"",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "then",
+        "surfaceForm": "Then"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000018",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000018",
+        "sourceReviewId": "tbbt-s12e01-review-000018",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000018",
+        "type": "vocabulary",
+        "subtitleIndex": 5,
+        "timestamp": {
+          "startTime": "20.5",
+          "endTime": "23.0"
+        },
+        "source_en": "Then by the power vested in me...",
+        "source_zh": "我以\"连你都能证婚网\"",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "power",
+        "surfaceForm": "power"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000019",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000019",
+        "sourceReviewId": "tbbt-s12e01-review-000019",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000019",
+        "type": "vocabulary",
+        "subtitleIndex": 5,
+        "timestamp": {
+          "startTime": "20.5",
+          "endTime": "23.0"
+        },
+        "source_en": "Then by the power vested in me...",
+        "source_zh": "我以\"连你都能证婚网\"",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "vested",
+        "surfaceForm": "vested"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000020",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000020",
+        "sourceReviewId": "tbbt-s12e01-review-000020",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000020",
+        "type": "vocabulary",
+        "subtitleIndex": 6,
+        "timestamp": {
+          "startTime": "23.0",
+          "endTime": "28.5"
+        },
+        "source_en": "by EvenYouCanPerformWeddings.Com...",
+        "source_zh": "所赋予我的合法权利",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "evenyoucanperformweddings.com",
+        "surfaceForm": "EvenYouCanPerformWeddings.Com..."
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000021",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000021",
+        "sourceReviewId": "tbbt-s12e01-review-000021",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000021",
+        "type": "vocabulary",
+        "subtitleIndex": 7,
+        "timestamp": {
+          "startTime": "28.5",
+          "endTime": "30.5"
+        },
+        "source_en": "...I now pronounce you husband and wife.",
+        "source_zh": "我现在宣布你们正式结为合法夫妻",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "now",
+        "surfaceForm": "now"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000022",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000022",
+        "sourceReviewId": "tbbt-s12e01-review-000022",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000022",
+        "type": "vocabulary",
+        "subtitleIndex": 7,
+        "timestamp": {
+          "startTime": "28.5",
+          "endTime": "30.5"
+        },
+        "source_en": "...I now pronounce you husband and wife.",
+        "source_zh": "我现在宣布你们正式结为合法夫妻",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "pronounce",
+        "surfaceForm": "pronounce"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000023",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000023",
+        "sourceReviewId": "tbbt-s12e01-review-000023",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000023",
+        "type": "vocabulary",
+        "subtitleIndex": 7,
+        "timestamp": {
+          "startTime": "28.5",
+          "endTime": "30.5"
+        },
+        "source_en": "...I now pronounce you husband and wife.",
+        "source_zh": "我现在宣布你们正式结为合法夫妻",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "husband",
+        "surfaceForm": "husband"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000024",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000024",
+        "sourceReviewId": "tbbt-s12e01-review-000024",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000024",
+        "type": "vocabulary",
+        "subtitleIndex": 7,
+        "timestamp": {
+          "startTime": "28.5",
+          "endTime": "30.5"
+        },
+        "source_en": "...I now pronounce you husband and wife.",
+        "source_zh": "我现在宣布你们正式结为合法夫妻",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "wife",
+        "surfaceForm": "wife."
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000025",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000025",
+        "sourceReviewId": "tbbt-s12e01-review-000025",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000025",
+        "type": "vocabulary",
+        "subtitleIndex": 8,
+        "timestamp": {
+          "startTime": "30.5",
+          "endTime": "36.5"
+        },
+        "source_en": "You may kiss the bride.",
+        "source_zh": "你可以吻新娘了",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "may",
+        "surfaceForm": "may"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000026",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000026",
+        "sourceReviewId": "tbbt-s12e01-review-000026",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000026",
+        "type": "vocabulary",
+        "subtitleIndex": 8,
+        "timestamp": {
+          "startTime": "30.5",
+          "endTime": "36.5"
+        },
+        "source_en": "You may kiss the bride.",
+        "source_zh": "你可以吻新娘了",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "kiss",
+        "surfaceForm": "kiss"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000027",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000027",
+        "sourceReviewId": "tbbt-s12e01-review-000027",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000027",
+        "type": "vocabulary",
+        "subtitleIndex": 8,
+        "timestamp": {
+          "startTime": "30.5",
+          "endTime": "36.5"
+        },
+        "source_en": "You may kiss the bride.",
+        "source_zh": "你可以吻新娘了",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "bride",
+        "surfaceForm": "bride."
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000028",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000028",
+        "sourceReviewId": "tbbt-s12e01-review-000028",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000028",
+        "type": "vocabulary",
+        "subtitleIndex": 10,
+        "timestamp": {
+          "startTime": "40.5",
+          "endTime": "44.5"
+        },
+        "source_en": "Good morning, wife.",
+        "source_zh": "早安啊 老婆",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "good",
+        "surfaceForm": "Good"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000029",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000029",
+        "sourceReviewId": "tbbt-s12e01-review-000029",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000029",
+        "type": "vocabulary",
+        "subtitleIndex": 10,
+        "timestamp": {
+          "startTime": "40.5",
+          "endTime": "44.5"
+        },
+        "source_en": "Good morning, wife.",
+        "source_zh": "早安啊 老婆",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "morning",
+        "surfaceForm": "morning,"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000030",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000030",
+        "sourceReviewId": "tbbt-s12e01-review-000030",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000030",
+        "type": "vocabulary",
+        "subtitleIndex": 12,
+        "timestamp": {
+          "startTime": "47.5",
+          "endTime": "49.5"
+        },
+        "source_en": "I can't believe we're actually married.",
+        "source_zh": "真不敢相信我们真的结婚了",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "we're",
+        "surfaceForm": "we're"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000031",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000031",
+        "sourceReviewId": "tbbt-s12e01-review-000031",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000031",
+        "type": "vocabulary",
+        "subtitleIndex": 12,
+        "timestamp": {
+          "startTime": "47.5",
+          "endTime": "49.5"
+        },
+        "source_en": "I can't believe we're actually married.",
+        "source_zh": "真不敢相信我们真的结婚了",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "actually",
+        "surfaceForm": "actually"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000032",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000032",
+        "sourceReviewId": "tbbt-s12e01-review-000032",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000032",
+        "type": "vocabulary",
+        "subtitleIndex": 13,
+        "timestamp": {
+          "startTime": "49.5",
+          "endTime": "51.5"
+        },
+        "source_en": "It's official. According to tradition,",
+        "source_zh": "正式完婚了 根据传统",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "it's",
+        "surfaceForm": "It's"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000033",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000033",
+        "sourceReviewId": "tbbt-s12e01-review-000033",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000033",
+        "type": "vocabulary",
+        "subtitleIndex": 13,
+        "timestamp": {
+          "startTime": "49.5",
+          "endTime": "51.5"
+        },
+        "source_en": "It's official. According to tradition,",
+        "source_zh": "正式完婚了 根据传统",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "official",
+        "surfaceForm": "official."
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000034",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000034",
+        "sourceReviewId": "tbbt-s12e01-review-000034",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000034",
+        "type": "vocabulary",
+        "subtitleIndex": 13,
+        "timestamp": {
+          "startTime": "49.5",
+          "endTime": "51.5"
+        },
+        "source_en": "It's official. According to tradition,",
+        "source_zh": "正式完婚了 根据传统",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "according",
+        "surfaceForm": "According"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000035",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000035",
+        "sourceReviewId": "tbbt-s12e01-review-000035",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000035",
+        "type": "vocabulary",
+        "subtitleIndex": 13,
+        "timestamp": {
+          "startTime": "49.5",
+          "endTime": "51.5"
+        },
+        "source_en": "It's official. According to tradition,",
+        "source_zh": "正式完婚了 根据传统",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "tradition",
+        "surfaceForm": "tradition,"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000036",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000036",
+        "sourceReviewId": "tbbt-s12e01-review-000036",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000036",
+        "type": "vocabulary",
+        "subtitleIndex": 14,
+        "timestamp": {
+          "startTime": "51.5",
+          "endTime": "53.0"
+        },
+        "source_en": "we should hang the bedsheets outside",
+        "source_zh": "我们应该把床单挂在外面",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "should",
+        "surfaceForm": "should"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000037",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000037",
+        "sourceReviewId": "tbbt-s12e01-review-000037",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000037",
+        "type": "vocabulary",
+        "subtitleIndex": 14,
+        "timestamp": {
+          "startTime": "51.5",
+          "endTime": "53.0"
+        },
+        "source_en": "we should hang the bedsheets outside",
+        "source_zh": "我们应该把床单挂在外面",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "hang",
+        "surfaceForm": "hang"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000038",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000038",
+        "sourceReviewId": "tbbt-s12e01-review-000038",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000038",
+        "type": "vocabulary",
+        "subtitleIndex": 14,
+        "timestamp": {
+          "startTime": "51.5",
+          "endTime": "53.0"
+        },
+        "source_en": "we should hang the bedsheets outside",
+        "source_zh": "我们应该把床单挂在外面",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "bedsheets",
+        "surfaceForm": "bedsheets"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000039",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000039",
+        "sourceReviewId": "tbbt-s12e01-review-000039",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000039",
+        "type": "vocabulary",
+        "subtitleIndex": 14,
+        "timestamp": {
+          "startTime": "51.5",
+          "endTime": "53.0"
+        },
+        "source_en": "we should hang the bedsheets outside",
+        "source_zh": "我们应该把床单挂在外面",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "outside",
+        "surfaceForm": "outside"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000040",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000040",
+        "sourceReviewId": "tbbt-s12e01-review-000040",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000040",
+        "type": "vocabulary",
+        "subtitleIndex": 15,
+        "timestamp": {
+          "startTime": "53.0",
+          "endTime": "58.0"
+        },
+        "source_en": "so the villagers can see that we consummated.",
+        "source_zh": "这样其他村民就能知道我们行过房了",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "villagers",
+        "surfaceForm": "villagers"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000041",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000041",
+        "sourceReviewId": "tbbt-s12e01-review-000041",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000041",
+        "type": "vocabulary",
+        "subtitleIndex": 15,
+        "timestamp": {
+          "startTime": "53.0",
+          "endTime": "58.0"
+        },
+        "source_en": "so the villagers can see that we consummated.",
+        "source_zh": "这样其他村民就能知道我们行过房了",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "see",
+        "surfaceForm": "see"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000042",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000042",
+        "sourceReviewId": "tbbt-s12e01-review-000042",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000042",
+        "type": "vocabulary",
+        "subtitleIndex": 15,
+        "timestamp": {
+          "startTime": "53.0",
+          "endTime": "58.0"
+        },
+        "source_en": "so the villagers can see that we consummated.",
+        "source_zh": "这样其他村民就能知道我们行过房了",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "consummated",
+        "surfaceForm": "consummated."
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000043",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000043",
+        "sourceReviewId": "tbbt-s12e01-review-000043",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000043",
+        "type": "vocabulary",
+        "subtitleIndex": 16,
+        "timestamp": {
+          "startTime": "58.0",
+          "endTime": "60.5"
+        },
+        "source_en": "considering where we're starting our honeymoon.",
+        "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "considering",
+        "surfaceForm": "considering"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000044",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000044",
+        "sourceReviewId": "tbbt-s12e01-review-000044",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000044",
+        "type": "vocabulary",
+        "subtitleIndex": 16,
+        "timestamp": {
+          "startTime": "58.0",
+          "endTime": "60.5"
+        },
+        "source_en": "considering where we're starting our honeymoon.",
+        "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "where",
+        "surfaceForm": "where"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000045",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000045",
+        "sourceReviewId": "tbbt-s12e01-review-000045",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000045",
+        "type": "vocabulary",
+        "subtitleIndex": 16,
+        "timestamp": {
+          "startTime": "58.0",
+          "endTime": "60.5"
+        },
+        "source_en": "considering where we're starting our honeymoon.",
+        "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "starting",
+        "surfaceForm": "starting"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000046",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000046",
+        "sourceReviewId": "tbbt-s12e01-review-000046",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000046",
+        "type": "vocabulary",
+        "subtitleIndex": 16,
+        "timestamp": {
+          "startTime": "58.0",
+          "endTime": "60.5"
+        },
+        "source_en": "considering where we're starting our honeymoon.",
+        "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "honeymoon",
+        "surfaceForm": "honeymoon."
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000047",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000047",
+        "sourceReviewId": "tbbt-s12e01-review-000047",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000047",
+        "type": "vocabulary",
+        "subtitleIndex": 17,
+        "timestamp": {
+          "startTime": "60.5",
+          "endTime": "67.0"
+        },
+        "source_en": "Well, I suppose you're right.",
+        "source_zh": "你说的有道理",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "well",
+        "surfaceForm": "Well,"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000048",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000048",
+        "sourceReviewId": "tbbt-s12e01-review-000048",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000048",
+        "type": "vocabulary",
+        "subtitleIndex": 17,
+        "timestamp": {
+          "startTime": "60.5",
+          "endTime": "67.0"
+        },
+        "source_en": "Well, I suppose you're right.",
+        "source_zh": "你说的有道理",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "suppose",
+        "surfaceForm": "suppose"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000049",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000049",
+        "sourceReviewId": "tbbt-s12e01-review-000049",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000049",
+        "type": "vocabulary",
+        "subtitleIndex": 17,
+        "timestamp": {
+          "startTime": "60.5",
+          "endTime": "67.0"
+        },
+        "source_en": "Well, I suppose you're right.",
+        "source_zh": "你说的有道理",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "you're",
+        "surfaceForm": "you're"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000050",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000050",
+        "sourceReviewId": "tbbt-s12e01-review-000050",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000050",
+        "type": "vocabulary",
+        "subtitleIndex": 17,
+        "timestamp": {
+          "startTime": "60.5",
+          "endTime": "67.0"
+        },
+        "source_en": "Well, I suppose you're right.",
+        "source_zh": "你说的有道理",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "right",
+        "surfaceForm": "right."
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000051",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000051",
+        "sourceReviewId": "tbbt-s12e01-review-000051",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000051",
+        "type": "vocabulary",
+        "subtitleIndex": 18,
+        "timestamp": {
+          "startTime": "67.0",
+          "endTime": "70.0"
+        },
+        "source_en": "Lego is the perfect metaphor for marital congress.",
+        "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "lego",
+        "surfaceForm": "Lego"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000052",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000052",
+        "sourceReviewId": "tbbt-s12e01-review-000052",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000052",
+        "type": "vocabulary",
+        "subtitleIndex": 18,
+        "timestamp": {
+          "startTime": "67.0",
+          "endTime": "70.0"
+        },
+        "source_en": "Lego is the perfect metaphor for marital congress.",
+        "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "perfect",
+        "surfaceForm": "perfect"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000053",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000053",
+        "sourceReviewId": "tbbt-s12e01-review-000053",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000053",
+        "type": "vocabulary",
+        "subtitleIndex": 18,
+        "timestamp": {
+          "startTime": "67.0",
+          "endTime": "70.0"
+        },
+        "source_en": "Lego is the perfect metaphor for marital congress.",
+        "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "metaphor",
+        "surfaceForm": "metaphor"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000054",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000054",
+        "sourceReviewId": "tbbt-s12e01-review-000054",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000054",
+        "type": "vocabulary",
+        "subtitleIndex": 18,
+        "timestamp": {
+          "startTime": "67.0",
+          "endTime": "70.0"
+        },
+        "source_en": "Lego is the perfect metaphor for marital congress.",
+        "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "marital",
+        "surfaceForm": "marital"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000055",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000055",
+        "sourceReviewId": "tbbt-s12e01-review-000055",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000055",
+        "type": "vocabulary",
+        "subtitleIndex": 18,
+        "timestamp": {
+          "startTime": "67.0",
+          "endTime": "70.0"
+        },
+        "source_en": "Lego is the perfect metaphor for marital congress.",
+        "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "congress",
+        "surfaceForm": "congress."
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000056",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000056",
+        "sourceReviewId": "tbbt-s12e01-review-000056",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000056",
+        "type": "vocabulary",
+        "subtitleIndex": 19,
+        "timestamp": {
+          "startTime": "70.0",
+          "endTime": "79.5"
+        },
+        "source_en": "Two pieces that interlock with a satisfying snap.",
+        "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "two",
+        "surfaceForm": "Two"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000057",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000057",
+        "sourceReviewId": "tbbt-s12e01-review-000057",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000057",
+        "type": "vocabulary",
+        "subtitleIndex": 19,
+        "timestamp": {
+          "startTime": "70.0",
+          "endTime": "79.5"
+        },
+        "source_en": "Two pieces that interlock with a satisfying snap.",
+        "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "pieces",
+        "surfaceForm": "pieces"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000058",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000058",
+        "sourceReviewId": "tbbt-s12e01-review-000058",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000058",
+        "type": "vocabulary",
+        "subtitleIndex": 19,
+        "timestamp": {
+          "startTime": "70.0",
+          "endTime": "79.5"
+        },
+        "source_en": "Two pieces that interlock with a satisfying snap.",
+        "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "interlock",
+        "surfaceForm": "interlock"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000059",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000059",
+        "sourceReviewId": "tbbt-s12e01-review-000059",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000059",
+        "type": "vocabulary",
+        "subtitleIndex": 19,
+        "timestamp": {
+          "startTime": "70.0",
+          "endTime": "79.5"
+        },
+        "source_en": "Two pieces that interlock with a satisfying snap.",
+        "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "satisfying",
+        "surfaceForm": "satisfying"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000060",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000060",
+        "sourceReviewId": "tbbt-s12e01-review-000060",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000060",
+        "type": "vocabulary",
+        "subtitleIndex": 19,
+        "timestamp": {
+          "startTime": "70.0",
+          "endTime": "79.5"
+        },
+        "source_en": "Two pieces that interlock with a satisfying snap.",
+        "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "snap",
+        "surfaceForm": "snap."
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000061",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000061",
+        "sourceReviewId": "tbbt-s12e01-review-000061",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000061",
+        "type": "vocabulary",
+        "subtitleIndex": 20,
+        "timestamp": {
+          "startTime": "79.5",
+          "endTime": "80.5"
+        },
+        "source_en": "Oh, I almost forgot.",
+        "source_zh": "我差点就忘了",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "almost",
+        "surfaceForm": "almost"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000062",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000062",
+        "sourceReviewId": "tbbt-s12e01-review-000062",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000062",
+        "type": "vocabulary",
+        "subtitleIndex": 20,
+        "timestamp": {
+          "startTime": "79.5",
+          "endTime": "80.5"
+        },
+        "source_en": "Oh, I almost forgot.",
+        "source_zh": "我差点就忘了",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "forgot",
+        "surfaceForm": "forgot."
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000063",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000063",
+        "sourceReviewId": "tbbt-s12e01-review-000063",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000063",
+        "type": "vocabulary",
+        "subtitleIndex": 21,
+        "timestamp": {
+          "startTime": "80.5",
+          "endTime": "83.5"
+        },
+        "source_en": "While you were sleeping, I ordered room service.",
+        "source_zh": "在你睡觉的时候 我点了客房送餐",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "while",
+        "surfaceForm": "While"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000064",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000064",
+        "sourceReviewId": "tbbt-s12e01-review-000064",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000064",
+        "type": "vocabulary",
+        "subtitleIndex": 21,
+        "timestamp": {
+          "startTime": "80.5",
+          "endTime": "83.5"
+        },
+        "source_en": "While you were sleeping, I ordered room service.",
+        "source_zh": "在你睡觉的时候 我点了客房送餐",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "sleeping",
+        "surfaceForm": "sleeping,"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000065",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000065",
+        "sourceReviewId": "tbbt-s12e01-review-000065",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000065",
+        "type": "vocabulary",
+        "subtitleIndex": 21,
+        "timestamp": {
+          "startTime": "80.5",
+          "endTime": "83.5"
+        },
+        "source_en": "While you were sleeping, I ordered room service.",
+        "source_zh": "在你睡觉的时候 我点了客房送餐",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "ordered",
+        "surfaceForm": "ordered"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000066",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000066",
+        "sourceReviewId": "tbbt-s12e01-review-000066",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000066",
+        "type": "vocabulary",
+        "subtitleIndex": 21,
+        "timestamp": {
+          "startTime": "80.5",
+          "endTime": "83.5"
+        },
+        "source_en": "While you were sleeping, I ordered room service.",
+        "source_zh": "在你睡觉的时候 我点了客房送餐",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "room",
+        "surfaceForm": "room"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000067",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000067",
+        "sourceReviewId": "tbbt-s12e01-review-000067",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000067",
+        "type": "vocabulary",
+        "subtitleIndex": 21,
+        "timestamp": {
+          "startTime": "80.5",
+          "endTime": "83.5"
+        },
+        "source_en": "While you were sleeping, I ordered room service.",
+        "source_zh": "在你睡觉的时候 我点了客房送餐",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "service",
+        "surfaceForm": "service."
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000068",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000068",
+        "sourceReviewId": "tbbt-s12e01-review-000068",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000068",
+        "type": "vocabulary",
+        "subtitleIndex": 22,
+        "timestamp": {
+          "startTime": "83.5",
+          "endTime": "85.5"
+        },
+        "source_en": "Really?",
+        "source_zh": "真的吗",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "really",
+        "surfaceForm": "Really?"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000069",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000069",
+        "sourceReviewId": "tbbt-s12e01-review-000069",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000069",
+        "type": "vocabulary",
+        "subtitleIndex": 23,
+        "timestamp": {
+          "startTime": "85.5",
+          "endTime": "88.5"
+        },
+        "source_en": "Voila!",
+        "source_zh": "请看",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "voila",
+        "surfaceForm": "Voila!"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000070",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000070",
+        "sourceReviewId": "tbbt-s12e01-review-000070",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000070",
+        "type": "vocabulary",
+        "subtitleIndex": 24,
+        "timestamp": {
+          "startTime": "88.5",
+          "endTime": "92.0"
+        },
+        "source_en": "You thought it was going to be food, didn't you?",
+        "source_zh": "你本来还以为是食物 对吧",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "thought",
+        "surfaceForm": "thought"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000071",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000071",
+        "sourceReviewId": "tbbt-s12e01-review-000071",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000071",
+        "type": "vocabulary",
+        "subtitleIndex": 24,
+        "timestamp": {
+          "startTime": "88.5",
+          "endTime": "92.0"
+        },
+        "source_en": "You thought it was going to be food, didn't you?",
+        "source_zh": "你本来还以为是食物 对吧",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "going",
+        "surfaceForm": "going"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000072",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000072",
+        "sourceReviewId": "tbbt-s12e01-review-000072",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000072",
+        "type": "vocabulary",
+        "subtitleIndex": 24,
+        "timestamp": {
+          "startTime": "88.5",
+          "endTime": "92.0"
+        },
+        "source_en": "You thought it was going to be food, didn't you?",
+        "source_zh": "你本来还以为是食物 对吧",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "food",
+        "surfaceForm": "food,"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000073",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000073",
+        "sourceReviewId": "tbbt-s12e01-review-000073",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000073",
+        "type": "vocabulary",
+        "subtitleIndex": 24,
+        "timestamp": {
+          "startTime": "88.5",
+          "endTime": "92.0"
+        },
+        "source_en": "You thought it was going to be food, didn't you?",
+        "source_zh": "你本来还以为是食物 对吧",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "didn't",
+        "surfaceForm": "didn't"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000074",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000074",
+        "sourceReviewId": "tbbt-s12e01-review-000074",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000074",
+        "type": "vocabulary",
+        "subtitleIndex": 25,
+        "timestamp": {
+          "startTime": "92.0",
+          "endTime": "95.0"
+        },
+        "source_en": "Our whole universe was in a hot, dense state",
+        "source_zh": "我们的宇宙曾经超热又超密",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "whole",
+        "surfaceForm": "whole"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000075",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000075",
+        "sourceReviewId": "tbbt-s12e01-review-000075",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000075",
+        "type": "vocabulary",
+        "subtitleIndex": 25,
+        "timestamp": {
+          "startTime": "92.0",
+          "endTime": "95.0"
+        },
+        "source_en": "Our whole universe was in a hot, dense state",
+        "source_zh": "我们的宇宙曾经超热又超密",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "universe",
+        "surfaceForm": "universe"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000076",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000076",
+        "sourceReviewId": "tbbt-s12e01-review-000076",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000076",
+        "type": "vocabulary",
+        "subtitleIndex": 25,
+        "timestamp": {
+          "startTime": "92.0",
+          "endTime": "95.0"
+        },
+        "source_en": "Our whole universe was in a hot, dense state",
+        "source_zh": "我们的宇宙曾经超热又超密",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "hot",
+        "surfaceForm": "hot,"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000077",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000077",
+        "sourceReviewId": "tbbt-s12e01-review-000077",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000077",
+        "type": "vocabulary",
+        "subtitleIndex": 25,
+        "timestamp": {
+          "startTime": "92.0",
+          "endTime": "95.0"
+        },
+        "source_en": "Our whole universe was in a hot, dense state",
+        "source_zh": "我们的宇宙曾经超热又超密",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "dense",
+        "surfaceForm": "dense"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000078",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000078",
+        "sourceReviewId": "tbbt-s12e01-review-000078",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000078",
+        "type": "vocabulary",
+        "subtitleIndex": 25,
+        "timestamp": {
+          "startTime": "92.0",
+          "endTime": "95.0"
+        },
+        "source_en": "Our whole universe was in a hot, dense state",
+        "source_zh": "我们的宇宙曾经超热又超密",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "state",
+        "surfaceForm": "state"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000079",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000079",
+        "sourceReviewId": "tbbt-s12e01-review-000079",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000079",
+        "type": "vocabulary",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "nearly",
+        "surfaceForm": "nearly"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000080",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000080",
+        "sourceReviewId": "tbbt-s12e01-review-000080",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000080",
+        "type": "vocabulary",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "billion",
+        "surfaceForm": "billion"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000081",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000081",
+        "sourceReviewId": "tbbt-s12e01-review-000081",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000081",
+        "type": "vocabulary",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "years",
+        "surfaceForm": "years"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000082",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000082",
+        "sourceReviewId": "tbbt-s12e01-review-000082",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000082",
+        "type": "vocabulary",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "ago",
+        "surfaceForm": "ago"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000083",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000083",
+        "sourceReviewId": "tbbt-s12e01-review-000083",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000083",
+        "type": "vocabulary",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "expansion",
+        "surfaceForm": "expansion"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000084",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000084",
+        "sourceReviewId": "tbbt-s12e01-review-000084",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000084",
+        "type": "vocabulary",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "started",
+        "surfaceForm": "started..."
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000085",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000085",
+        "sourceReviewId": "tbbt-s12e01-review-000085",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000085",
+        "type": "vocabulary",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "wait",
+        "surfaceForm": "Wait!"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000086",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000086",
+        "sourceReviewId": "tbbt-s12e01-review-000086",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000086",
+        "type": "vocabulary",
+        "subtitleIndex": 27,
+        "timestamp": {
+          "startTime": "99.0",
+          "endTime": "101.0"
+        },
+        "source_en": "The Earth began to cool",
+        "source_zh": "地球开始冷却",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "earth",
+        "surfaceForm": "Earth"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000087",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000087",
+        "sourceReviewId": "tbbt-s12e01-review-000087",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000087",
+        "type": "vocabulary",
+        "subtitleIndex": 27,
+        "timestamp": {
+          "startTime": "99.0",
+          "endTime": "101.0"
+        },
+        "source_en": "The Earth began to cool",
+        "source_zh": "地球开始冷却",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "began",
+        "surfaceForm": "began"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000088",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000088",
+        "sourceReviewId": "tbbt-s12e01-review-000088",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000088",
+        "type": "vocabulary",
+        "subtitleIndex": 27,
+        "timestamp": {
+          "startTime": "99.0",
+          "endTime": "101.0"
+        },
+        "source_en": "The Earth began to cool",
+        "source_zh": "地球开始冷却",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "cool",
+        "surfaceForm": "cool"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000089",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000089",
+        "sourceReviewId": "tbbt-s12e01-review-000089",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000089",
+        "type": "vocabulary",
+        "subtitleIndex": 28,
+        "timestamp": {
+          "startTime": "101.0",
+          "endTime": "104.0"
+        },
+        "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+        "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "autotrophs",
+        "surfaceForm": "autotrophs"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000090",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000090",
+        "sourceReviewId": "tbbt-s12e01-review-000090",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000090",
+        "type": "vocabulary",
+        "subtitleIndex": 28,
+        "timestamp": {
+          "startTime": "101.0",
+          "endTime": "104.0"
+        },
+        "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+        "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "drool",
+        "surfaceForm": "drool,"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000091",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000091",
+        "sourceReviewId": "tbbt-s12e01-review-000091",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000091",
+        "type": "vocabulary",
+        "subtitleIndex": 28,
+        "timestamp": {
+          "startTime": "101.0",
+          "endTime": "104.0"
+        },
+        "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+        "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "neanderthals",
+        "surfaceForm": "Neanderthals"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000092",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000092",
+        "sourceReviewId": "tbbt-s12e01-review-000092",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000092",
+        "type": "vocabulary",
+        "subtitleIndex": 28,
+        "timestamp": {
+          "startTime": "101.0",
+          "endTime": "104.0"
+        },
+        "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+        "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "developed",
+        "surfaceForm": "developed"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000093",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000093",
+        "sourceReviewId": "tbbt-s12e01-review-000093",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000093",
+        "type": "vocabulary",
+        "subtitleIndex": 28,
+        "timestamp": {
+          "startTime": "101.0",
+          "endTime": "104.0"
+        },
+        "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+        "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "tools",
+        "surfaceForm": "tools?"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000094",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000094",
+        "sourceReviewId": "tbbt-s12e01-review-000094",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000094",
+        "type": "vocabulary",
+        "subtitleIndex": 29,
+        "timestamp": {
+          "startTime": "104.0",
+          "endTime": "105.0"
+        },
+        "source_en": "We built the Wall We built the pyramids",
+        "source_zh": "我们建了长城 我们建了金字塔",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "built",
+        "surfaceForm": "built"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000095",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000095",
+        "sourceReviewId": "tbbt-s12e01-review-000095",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000095",
+        "type": "vocabulary",
+        "subtitleIndex": 29,
+        "timestamp": {
+          "startTime": "104.0",
+          "endTime": "105.0"
+        },
+        "source_en": "We built the Wall We built the pyramids",
+        "source_zh": "我们建了长城 我们建了金字塔",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "wall",
+        "surfaceForm": "Wall"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000096",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000096",
+        "sourceReviewId": "tbbt-s12e01-review-000096",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000096",
+        "type": "vocabulary",
+        "subtitleIndex": 29,
+        "timestamp": {
+          "startTime": "104.0",
+          "endTime": "105.0"
+        },
+        "source_en": "We built the Wall We built the pyramids",
+        "source_zh": "我们建了长城 我们建了金字塔",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false,
+        "normalizedForm": "pyramids",
+        "surfaceForm": "pyramids"
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000097",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000097",
+        "sourceReviewId": "tbbt-s12e01-review-000097",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000097",
+        "type": "comprehension",
+        "subtitleIndex": 0,
+        "timestamp": {
+          "startTime": "2.0",
+          "endTime": "6.0"
+        },
+        "source_en": "Previously on The Big Bang Theory...",
+        "source_zh": "《生活大爆炸》前情提要",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000098",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000098",
+        "sourceReviewId": "tbbt-s12e01-review-000098",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000098",
+        "type": "comprehension",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000099",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000099",
+        "sourceReviewId": "tbbt-s12e01-review-000099",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000099",
+        "type": "comprehension",
+        "subtitleIndex": 2,
+        "timestamp": {
+          "startTime": "10.0",
+          "endTime": "12.0"
+        },
+        "source_en": "He can't believe it.",
+        "source_zh": "他肯定不信",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000100",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000100",
+        "sourceReviewId": "tbbt-s12e01-review-000100",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000100",
+        "type": "comprehension",
+        "subtitleIndex": 3,
+        "timestamp": {
+          "startTime": "12.0",
+          "endTime": "15.5"
+        },
+        "source_en": "And neither can I.",
+        "source_zh": "我也不敢相信",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000101",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000101",
+        "sourceReviewId": "tbbt-s12e01-review-000101",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000101",
+        "type": "comprehension",
+        "subtitleIndex": 4,
+        "timestamp": {
+          "startTime": "15.5",
+          "endTime": "20.5"
+        },
+        "source_en": "Hi, Dad. How you doing?",
+        "source_zh": "爸 你还好吗",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000102",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000102",
+        "sourceReviewId": "tbbt-s12e01-review-000102",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000102",
+        "type": "comprehension",
+        "subtitleIndex": 5,
+        "timestamp": {
+          "startTime": "20.5",
+          "endTime": "23.0"
+        },
+        "source_en": "Then by the power vested in me...",
+        "source_zh": "我以\"连你都能证婚网\"",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000103",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000103",
+        "sourceReviewId": "tbbt-s12e01-review-000103",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000103",
+        "type": "comprehension",
+        "subtitleIndex": 6,
+        "timestamp": {
+          "startTime": "23.0",
+          "endTime": "28.5"
+        },
+        "source_en": "by EvenYouCanPerformWeddings.Com...",
+        "source_zh": "所赋予我的合法权利",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000104",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000104",
+        "sourceReviewId": "tbbt-s12e01-review-000104",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000104",
+        "type": "comprehension",
+        "subtitleIndex": 7,
+        "timestamp": {
+          "startTime": "28.5",
+          "endTime": "30.5"
+        },
+        "source_en": "...I now pronounce you husband and wife.",
+        "source_zh": "我现在宣布你们正式结为合法夫妻",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000105",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000105",
+        "sourceReviewId": "tbbt-s12e01-review-000105",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000105",
+        "type": "comprehension",
+        "subtitleIndex": 8,
+        "timestamp": {
+          "startTime": "30.5",
+          "endTime": "36.5"
+        },
+        "source_en": "You may kiss the bride.",
+        "source_zh": "你可以吻新娘了",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000106",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000106",
+        "sourceReviewId": "tbbt-s12e01-review-000106",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000106",
+        "type": "comprehension",
+        "subtitleIndex": 9,
+        "timestamp": {
+          "startTime": "36.5",
+          "endTime": "40.5"
+        },
+        "source_en": "and now...",
+        "source_zh": "时至今日",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000107",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000107",
+        "sourceReviewId": "tbbt-s12e01-review-000107",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000107",
+        "type": "comprehension",
+        "subtitleIndex": 10,
+        "timestamp": {
+          "startTime": "40.5",
+          "endTime": "44.5"
+        },
+        "source_en": "Good morning, wife.",
+        "source_zh": "早安啊 老婆",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000108",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000108",
+        "sourceReviewId": "tbbt-s12e01-review-000108",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000108",
+        "type": "comprehension",
+        "subtitleIndex": 11,
+        "timestamp": {
+          "startTime": "44.5",
+          "endTime": "47.5"
+        },
+        "source_en": "Good morning, husband.",
+        "source_zh": "早安啊 老公",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000109",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000109",
+        "sourceReviewId": "tbbt-s12e01-review-000109",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000109",
+        "type": "comprehension",
+        "subtitleIndex": 12,
+        "timestamp": {
+          "startTime": "47.5",
+          "endTime": "49.5"
+        },
+        "source_en": "I can't believe we're actually married.",
+        "source_zh": "真不敢相信我们真的结婚了",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000110",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000110",
+        "sourceReviewId": "tbbt-s12e01-review-000110",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000110",
+        "type": "comprehension",
+        "subtitleIndex": 13,
+        "timestamp": {
+          "startTime": "49.5",
+          "endTime": "51.5"
+        },
+        "source_en": "It's official. According to tradition,",
+        "source_zh": "正式完婚了 根据传统",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000111",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000111",
+        "sourceReviewId": "tbbt-s12e01-review-000111",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000111",
+        "type": "comprehension",
+        "subtitleIndex": 14,
+        "timestamp": {
+          "startTime": "51.5",
+          "endTime": "53.0"
+        },
+        "source_en": "we should hang the bedsheets outside",
+        "source_zh": "我们应该把床单挂在外面",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000112",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000112",
+        "sourceReviewId": "tbbt-s12e01-review-000112",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000112",
+        "type": "comprehension",
+        "subtitleIndex": 15,
+        "timestamp": {
+          "startTime": "53.0",
+          "endTime": "58.0"
+        },
+        "source_en": "so the villagers can see that we consummated.",
+        "source_zh": "这样其他村民就能知道我们行过房了",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000113",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000113",
+        "sourceReviewId": "tbbt-s12e01-review-000113",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000113",
+        "type": "comprehension",
+        "subtitleIndex": 16,
+        "timestamp": {
+          "startTime": "58.0",
+          "endTime": "60.5"
+        },
+        "source_en": "considering where we're starting our honeymoon.",
+        "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000114",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000114",
+        "sourceReviewId": "tbbt-s12e01-review-000114",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000114",
+        "type": "comprehension",
+        "subtitleIndex": 17,
+        "timestamp": {
+          "startTime": "60.5",
+          "endTime": "67.0"
+        },
+        "source_en": "Well, I suppose you're right.",
+        "source_zh": "你说的有道理",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000115",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000115",
+        "sourceReviewId": "tbbt-s12e01-review-000115",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000115",
+        "type": "comprehension",
+        "subtitleIndex": 18,
+        "timestamp": {
+          "startTime": "67.0",
+          "endTime": "70.0"
+        },
+        "source_en": "Lego is the perfect metaphor for marital congress.",
+        "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000116",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000116",
+        "sourceReviewId": "tbbt-s12e01-review-000116",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000116",
+        "type": "comprehension",
+        "subtitleIndex": 19,
+        "timestamp": {
+          "startTime": "70.0",
+          "endTime": "79.5"
+        },
+        "source_en": "Two pieces that interlock with a satisfying snap.",
+        "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000117",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000117",
+        "sourceReviewId": "tbbt-s12e01-review-000117",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000117",
+        "type": "comprehension",
+        "subtitleIndex": 20,
+        "timestamp": {
+          "startTime": "79.5",
+          "endTime": "80.5"
+        },
+        "source_en": "Oh, I almost forgot.",
+        "source_zh": "我差点就忘了",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000118",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000118",
+        "sourceReviewId": "tbbt-s12e01-review-000118",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000118",
+        "type": "comprehension",
+        "subtitleIndex": 21,
+        "timestamp": {
+          "startTime": "80.5",
+          "endTime": "83.5"
+        },
+        "source_en": "While you were sleeping, I ordered room service.",
+        "source_zh": "在你睡觉的时候 我点了客房送餐",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000119",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000119",
+        "sourceReviewId": "tbbt-s12e01-review-000119",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000119",
+        "type": "comprehension",
+        "subtitleIndex": 22,
+        "timestamp": {
+          "startTime": "83.5",
+          "endTime": "85.5"
+        },
+        "source_en": "Really?",
+        "source_zh": "真的吗",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000120",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000120",
+        "sourceReviewId": "tbbt-s12e01-review-000120",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000120",
+        "type": "comprehension",
+        "subtitleIndex": 23,
+        "timestamp": {
+          "startTime": "85.5",
+          "endTime": "88.5"
+        },
+        "source_en": "Voila!",
+        "source_zh": "请看",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000121",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000121",
+        "sourceReviewId": "tbbt-s12e01-review-000121",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000121",
+        "type": "comprehension",
+        "subtitleIndex": 24,
+        "timestamp": {
+          "startTime": "88.5",
+          "endTime": "92.0"
+        },
+        "source_en": "You thought it was going to be food, didn't you?",
+        "source_zh": "你本来还以为是食物 对吧",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000122",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000122",
+        "sourceReviewId": "tbbt-s12e01-review-000122",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000122",
+        "type": "comprehension",
+        "subtitleIndex": 25,
+        "timestamp": {
+          "startTime": "92.0",
+          "endTime": "95.0"
+        },
+        "source_en": "Our whole universe was in a hot, dense state",
+        "source_zh": "我们的宇宙曾经超热又超密",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000123",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000123",
+        "sourceReviewId": "tbbt-s12e01-review-000123",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000123",
+        "type": "comprehension",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000124",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000124",
+        "sourceReviewId": "tbbt-s12e01-review-000124",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000124",
+        "type": "comprehension",
+        "subtitleIndex": 27,
+        "timestamp": {
+          "startTime": "99.0",
+          "endTime": "101.0"
+        },
+        "source_en": "The Earth began to cool",
+        "source_zh": "地球开始冷却",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000125",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000125",
+        "sourceReviewId": "tbbt-s12e01-review-000125",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000125",
+        "type": "comprehension",
+        "subtitleIndex": 28,
+        "timestamp": {
+          "startTime": "101.0",
+          "endTime": "104.0"
+        },
+        "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+        "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000126",
+        "sourceFrozenCandidateId": "tbbt-s12e01-frozen-candidate-000126",
+        "sourceReviewId": "tbbt-s12e01-review-000126",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000126",
+        "type": "comprehension",
+        "subtitleIndex": 29,
+        "timestamp": {
+          "startTime": "104.0",
+          "endTime": "105.0"
+        },
+        "source_en": "We built the Wall We built the pyramids",
+        "source_zh": "我们建了长城 我们建了金字塔",
+        "runtimeStatus": "runtime_candidate",
+        "promotionReason": "deterministic-runtime-candidate-from-frozen-candidate",
+        "placeholder": false
+      }
+    ],
     "runtimeMayConsume": false,
-    "runtimeObstacles": [],
-    "placeholder": true
+    "promotionSummary": {
+      "sourceFrozenCandidateCount": 126,
+      "promotedRuntimeCandidateCount": 126,
+      "runtimeMayConsume": false
+    },
+    "promotionRules": {
+      "transform": "one runtime candidate per frozen candidate",
+      "modification": "frozen candidates are not modified",
+      "status": "each item is a runtime_candidate; Runtime consumption is NOT authorized at this stage",
+      "authorization": "runtimeMayConsume must remain false until a separate reviewed decision enables it",
+      "ordering": "runtime candidates preserve frozen candidate order; runtimeCandidateId sequence follows that order",
+      "note": "Deterministic promotion only. No AI. Runtime remains read-only and untouched."
+    }
   }
 }
