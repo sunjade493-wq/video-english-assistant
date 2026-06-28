@@ -1295,6 +1295,70 @@ function runRuntimePromotionEngine(frozenCandidateArtifact) {
  * separate future step.
  * ---------------------------------------------------------------------- */
 
+
+/* -------------------------------------------------------------------------
+ * P2-A Runtime Data Adapter Probe (inspection-only, deterministic)
+ *
+ * This adapter reads ONLY the passed Runtime Candidate Artifact object and
+ * transforms payload.runtimeCandidates into an existing-runtime-like obstacle
+ * model shape for inspection. It does NOT authorize Runtime consumption, does
+ * NOT generate marker/UI/player state, and does NOT write an artifact.
+ * ---------------------------------------------------------------------- */
+
+function requireRuntimeCandidateField(candidate, fieldName, position) {
+  if (!Object.prototype.hasOwnProperty.call(candidate, fieldName)) {
+    fail(`Runtime Data Adapter candidate ${position} is missing required field: ${fieldName}`);
+  }
+  const value = candidate[fieldName];
+  if (value === null || value === undefined || value === '') {
+    fail(`Runtime Data Adapter candidate ${position} has empty required field: ${fieldName}`);
+  }
+  return value;
+}
+
+function adaptRuntimeCandidatesForExistingRuntimeModel(runtimeCandidateArtifact) {
+  if (!runtimeCandidateArtifact || typeof runtimeCandidateArtifact !== 'object') {
+    fail('Runtime Data Adapter received an invalid Runtime Candidate Artifact object');
+  }
+  if (!runtimeCandidateArtifact.payload || typeof runtimeCandidateArtifact.payload !== 'object') {
+    fail('Runtime Data Adapter received a Runtime Candidate Artifact without payload');
+  }
+  if (!Array.isArray(runtimeCandidateArtifact.payload.runtimeCandidates)) {
+    fail('Runtime Data Adapter requires payload.runtimeCandidates to be an array');
+  }
+
+  return runtimeCandidateArtifact.payload.runtimeCandidates.map((candidate, position) => {
+    if (!candidate || typeof candidate !== 'object' || Array.isArray(candidate)) {
+      fail(`Runtime Data Adapter candidate ${position} must be an object`);
+    }
+
+    const adapted = {
+      adapterStatus: 'inspection_only',
+      runtimeConsumable: false,
+      runtimeMayConsume: false,
+      obstacleId: requireRuntimeCandidateField(candidate, 'runtimeCandidateId', position),
+      sourceRuntimeCandidateId: requireRuntimeCandidateField(candidate, 'runtimeCandidateId', position),
+      sourceFrozenCandidateId: requireRuntimeCandidateField(candidate, 'sourceFrozenCandidateId', position),
+      sourceReviewId: requireRuntimeCandidateField(candidate, 'sourceReviewId', position),
+      sourceDraftObstacleId: requireRuntimeCandidateField(candidate, 'sourceDraftObstacleId', position),
+      type: requireRuntimeCandidateField(candidate, 'type', position),
+      subtitleIndex: requireRuntimeCandidateField(candidate, 'subtitleIndex', position),
+      timestamp: requireRuntimeCandidateField(candidate, 'timestamp', position),
+      source_en: requireRuntimeCandidateField(candidate, 'source_en', position),
+      source_zh: requireRuntimeCandidateField(candidate, 'source_zh', position),
+    };
+
+    if (Object.prototype.hasOwnProperty.call(candidate, 'normalizedForm')) {
+      adapted.normalizedForm = candidate.normalizedForm;
+    }
+    if (Object.prototype.hasOwnProperty.call(candidate, 'surfaceForm')) {
+      adapted.surfaceForm = candidate.surfaceForm;
+    }
+
+    return adapted;
+  });
+}
+
 function runRuntimeConsumptionReviewGate(runtimeCandidateArtifact) {
   const runtimeCandidates = runtimeCandidateArtifact
     && runtimeCandidateArtifact.payload
@@ -1529,6 +1593,15 @@ function main() {
     (candidate, position) => candidate.runtimeCandidateId === `${EPISODE_ID}-runtime-candidate-${String(position + 1).padStart(6, '0')}`,
   );
 
+  const runtimeAdapterInputSnapshot = JSON.stringify(runtimeCandidateArtifact);
+  const runtimeAdapterInspectionModel = adaptRuntimeCandidatesForExistingRuntimeModel(
+    runtimeCandidateArtifact,
+  );
+  const runtimeAdapterPureProbe = JSON.stringify(runtimeCandidateArtifact)
+    === runtimeAdapterInputSnapshot;
+  const runtimeAdapterCandidateCount = runtimeAdapterInspectionModel.length;
+  const runtimeAdapterInputCountMatches = runtimeAdapterCandidateCount === runtimeCandidateCount;
+
   const report = {
     schemaVersion: 'p1-a-pipeline-bootstrap-report.v1',
     stage: STAGE,
@@ -1579,6 +1652,15 @@ function main() {
       runtimePromotionReal: true,
       runtimeCandidateCount,
       runtimeCandidateIdsSequential,
+      runtimeAdapterProbe: true,
+      runtimeAdapterCandidateCount,
+      runtimeAdapterInputCountMatches,
+      runtimeAdapterPureProbe,
+      runtimeAdapterInspectionOnly: runtimeAdapterInspectionModel.every(
+        (candidate) => candidate.adapterStatus === 'inspection_only'
+          && candidate.runtimeConsumable === false
+          && candidate.runtimeMayConsume === false,
+      ),
       runtimeCandidateStillNotConsumable: true,
       runtimeMayConsume: false,
       runtimeConsumptionReviewReal: true,
