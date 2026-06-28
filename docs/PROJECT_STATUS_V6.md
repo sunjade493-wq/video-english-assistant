@@ -2067,3 +2067,61 @@ Summary:
 - No production Runtime or Frozen files were modified.
 - runtimeMayConsume remains false.
 - P1-A validates forward-only Artifact flow from Subtitle to Runtime Candidate.
+
+---
+
+## P1-C Real Evidence Engine
+
+Status: FROZEN ✅
+
+Git Tag: `p1-c-real-evidence-engine`
+
+Source: `scripts/p1_a_analyze_pipeline_bootstrap.js`
+
+Output: `output_text/p1_a/evidence_artifact.json`
+
+Summary:
+
+- Evidence Engine is now REAL.
+- Offline deterministic implementation.
+- Consumes only:
+  - `subtitle_artifact.json`
+  - `scene_meaning_artifact.json`
+- Produces:
+  - `evidence_artifact.json`
+- Collects evidence only.
+- Does NOT make Vocabulary decisions.
+- Does NOT make Comprehension decisions.
+- Runtime remains read-only.
+- Artifact forward-only architecture preserved.
+- `contentMode`: real
+- `runtimeConsumable`: false
+
+Current pipeline status:
+
+```text
+Subtitle
+    │
+    ▼
+Scene Meaning      ✅ REAL
+    │
+    ▼
+Evidence           ✅ REAL
+    │
+    ▼
+Vocabulary         Placeholder
+    │
+    ▼
+Comprehension      Placeholder
+    │
+    ▼
+Review
+    │
+    ▼
+Frozen
+    │
+    ▼
+Runtime
+```
+
+Next Milestone: P1-D Real Vocabulary Engine
