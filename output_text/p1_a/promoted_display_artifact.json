@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "p3-g-promoted-display-artifact.v1",
+  "stage": "P3-G-1",
+  "runtimeMayConsume": false,
+  "runtimeDisplayMayConsume": false,
+  "sourceArtifact": "pipeline_bootstrap_report",
+  "payload": {
+    "promotedDisplays": [
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000001",
+        "promotedDisplayId": "tbbt-s12e01-runtime-candidate-000001-promoted-display-v1",
+        "promotedFromDraftId": "tbbt-s12e01-runtime-candidate-000001",
+        "type": "vocabulary",
+        "generatedFields": {
+          "word": "previously",
+          "phonetic": "ˈpriːviəsli",
+          "partOfSpeech": "adv.",
+          "sentenceMeaning": "先前，之前"
+        },
+        "promotionStatus": "promoted",
+        "promotionVersion": 1,
+        "runtimeDisplayMayConsume": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000002",
+        "promotedDisplayId": "tbbt-s12e01-runtime-candidate-000002-promoted-display-v1",
+        "promotedFromDraftId": "tbbt-s12e01-runtime-candidate-000002",
+        "type": "vocabulary",
+        "generatedFields": {
+          "word": "on",
+          "phonetic": "ɒn",
+          "partOfSpeech": "prep.",
+          "sentenceMeaning": "关于，有关（用于引出节目名称）"
+        },
+        "promotionStatus": "promoted",
+        "promotionVersion": 1,
+        "runtimeDisplayMayConsume": false
+      }
+    ]
+  }
+}

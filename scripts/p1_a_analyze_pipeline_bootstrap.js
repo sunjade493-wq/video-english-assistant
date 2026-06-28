@@ -2868,6 +2868,40 @@ async function main() {
     runtimeDisplayMayConsume: display.runtimeDisplayMayConsume,
   }));
 
+  // P3-G-1 Promoted Display Artifact.
+  // Offline artifact that Runtime will LATER read. Not wired to Runtime yet and
+  // not runtime-consumable: runtimeMayConsume and runtimeDisplayMayConsume stay
+  // false. generatedFields are preserved exactly from P3-F promoted displays.
+  const promotedDisplayArtifact = {
+    schemaVersion: 'p3-g-promoted-display-artifact.v1',
+    stage: 'P3-G-1',
+    runtimeMayConsume: false,
+    runtimeDisplayMayConsume: false,
+    sourceArtifact: 'pipeline_bootstrap_report',
+    payload: {
+      promotedDisplays: p3fPromotion.promotedDisplays.map((display) => ({
+        runtimeCandidateId: display.runtimeCandidateId,
+        promotedDisplayId: display.promotedDisplayId,
+        promotedFromDraftId: display.promotedFromDraftId,
+        type: display.type,
+        generatedFields: display.generatedFields,
+        promotionStatus: display.promotionStatus,
+        promotionVersion: display.promotionVersion,
+        runtimeDisplayMayConsume: false,
+      })),
+    },
+  };
+  const p3gPromotedDisplayArtifactPath = writeArtifact('promoted_display_artifact.json', promotedDisplayArtifact);
+  const p3gSafePromotedDisplaySample = promotedDisplayArtifact.payload.promotedDisplays.slice(0, 1).map((display) => ({
+    runtimeCandidateId: display.runtimeCandidateId,
+    promotedDisplayId: display.promotedDisplayId,
+    type: display.type,
+    generatedFieldKeys: Object.keys(display.generatedFields || {}),
+    promotionStatus: display.promotionStatus,
+    promotionVersion: display.promotionVersion,
+    runtimeDisplayMayConsume: display.runtimeDisplayMayConsume,
+  }));
+
   const report = {
     schemaVersion: 'p1-a-pipeline-bootstrap-report.v1',
     stage: STAGE,
@@ -3032,6 +3066,16 @@ async function main() {
       p3fRuntimeMayConsumeStillFalse: runtimeCandidateArtifact.payload.runtimeMayConsume === false,
       p3fExpectedNextStep: p3fPromotion.expectedNextStep,
       p3fSafePromotionSample,
+      p3gPromotedDisplayArtifact: true,
+      p3gPromotedDisplayArtifactPath,
+      p3gPromotedDisplayCount: promotedDisplayArtifact.payload.promotedDisplays.length,
+      p3gRuntimeDisplayMayConsume: false,
+      p3gRuntimeMayConsumeStillFalse: runtimeCandidateArtifact.payload.runtimeMayConsume === false,
+      p3gRuntimeCandidateStillNotConsumable: runtimeCandidateArtifact.runtimeConsumable === false,
+      p3gExpectedNextStep:
+        'a future, separately authorized runtime display-consumption review must approve before Runtime '
+        + 'reads promoted_display_artifact.json; this stage only prepares the offline artifact',
+      p3gSafePromotedDisplaySample,
       downstreamStillPlaceholder: false,
       noOcrCalled: true,
       noInternetSubtitleFetch: true,
