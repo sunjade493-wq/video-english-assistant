@@ -334,6 +334,189 @@ function runSceneMeaningEngine(subtitleArtifact) {
   });
 }
 
+/* -------------------------------------------------------------------------
+ * P1-C Evidence Engine (REAL, offline, deterministic)
+ *
+ * Per P0-7C the Evidence Engine consumes ONLY upstream frozen Artifacts
+ * (subtitle_artifact + scene_meaning_artifact, read from disk) and produces
+ * the Evidence Artifact. It is fully offline and deterministic:
+ *   - no AI API calls
+ *   - no Qwen / Qwen-VL
+ *   - no OCR
+ *   - no video analysis
+ *   - no Internet subtitle fetch
+ *
+ * Per P0-6A the Evidence Engine COLLECTS evidence only. It never decides
+ * vocabulary or comprehension obstacles, never approves/rejects, never
+ * generates drafts, and never promotes. It is never runtime consumable.
+ * ---------------------------------------------------------------------- */
+
+function countTokens(text) {
+  const trimmed = String(text || '').trim();
+  if (!trimmed) {
+    return 0;
+  }
+  return trimmed.split(/\s+/).filter(Boolean).length;
+}
+
+function collectPunctuationSignals(text) {
+  const value = String(text || '');
+  return {
+    question: value.includes('?'),
+    exclamation: value.includes('!'),
+    ellipsis: value.includes('...'),
+    comma: value.includes(','),
+    musicNote: value.includes('♪'),
+  };
+}
+
+function deriveLineTypeSignal(text) {
+  const value = String(text || '').trim();
+  if (!value) return 'empty';
+  if (/^previously on/i.test(value)) return 'recap-marker';
+  if (value.includes('♪')) return 'lyric';
+  if (value.endsWith('?')) return 'question';
+  if (value.endsWith('!')) return 'exclamation';
+  return 'statement';
+}
+
+function runEvidenceEngine(subtitleArtifact, sceneMeaningArtifact) {
+  const subtitles = subtitleArtifact
+    && subtitleArtifact.payload
+    && Array.isArray(subtitleArtifact.payload.subtitles)
+    ? subtitleArtifact.payload.subtitles
+    : null;
+
+  const sceneMeanings = sceneMeaningArtifact
+    && sceneMeaningArtifact.payload
+    && Array.isArray(sceneMeaningArtifact.payload.sceneMeanings)
+    ? sceneMeaningArtifact.payload.sceneMeanings
+    : null;
+
+  if (!subtitles || subtitles.length === 0) {
+    fail('Evidence Engine received an empty or invalid Subtitle Artifact');
+  }
+  if (!sceneMeanings || sceneMeanings.length === 0) {
+    fail('Evidence Engine received an empty or invalid Scene Meaning Artifact');
+  }
+  if (subtitles.length !== sceneMeanings.length) {
+    fail('Evidence Engine: subtitle count does not match Scene Meaning count');
+  }
+
+  const sceneByIndex = new Map();
+  sceneMeanings.forEach((scene) => {
+    sceneByIndex.set(scene.subtitleIndex, scene);
+  });
+
+  const evidenceChains = subtitles.map((row) => {
+    const scene = sceneByIndex.get(row.subtitleIndex);
+    if (!scene) {
+      fail(`Evidence Engine: no Scene Meaning found for subtitleIndex ${row.subtitleIndex}`);
+    }
+
+    const hasEn = typeof row.source_en === 'string' && row.source_en.trim().length > 0;
+    const hasZh = typeof row.source_zh === 'string' && row.source_zh.trim().length > 0;
+
+    const englishSubtitle = {
+      availability: hasEn ? 'available' : 'not-available',
+      source_en: row.source_en,
+      characterLength: hasEn ? row.source_en.length : 0,
+      tokenCount: countTokens(row.source_en),
+      punctuationSignals: collectPunctuationSignals(row.source_en),
+      lineTypeSignal: deriveLineTypeSignal(row.source_en),
+    };
+
+    const chineseSubtitle = {
+      availability: hasZh ? 'available' : 'not-available',
+      source_zh: hasZh ? row.source_zh : null,
+      characterLength: hasZh ? row.source_zh.length : 0,
+    };
+
+    const sceneMeaningEvidence = {
+      subtitleIndex: scene.subtitleIndex,
+      sceneMeaning: scene.sceneMeaning,
+      dialogueFunction: scene.dialogueFunction,
+      speakerIntent: scene.speakerIntent,
+      ambiguity: scene.ambiguity,
+      evidenceSource: scene.evidenceSource,
+      confidence: scene.confidence,
+    };
+
+    const contextBefore = Array.isArray(scene.contextBefore) ? scene.contextBefore : [];
+    const contextAfter = Array.isArray(scene.contextAfter) ? scene.contextAfter : [];
+    const dialogueContext = {
+      contextBefore,
+      contextAfter,
+      contextBeforeCount: contextBefore.length,
+      contextAfterCount: contextAfter.length,
+    };
+
+    // Future extension placeholders (evidence not yet collected by P1-C).
+    const grammarEvidence = 'not-collected-yet';
+    const cultureEvidence = 'not-collected-yet';
+    const vocabularyResourceEvidence = 'not-collected-yet';
+
+    const evidenceSource = ['englishSubtitle', 'sceneMeaning'];
+    if (hasZh) evidenceSource.push('chineseSubtitle');
+    if (dialogueContext.contextBeforeCount > 0 || dialogueContext.contextAfterCount > 0) {
+      evidenceSource.push('dialogueContext');
+    }
+
+    const missingEvidence = [];
+    if (!hasZh) missingEvidence.push('chineseSubtitle');
+    missingEvidence.push('grammarEvidence');
+    missingEvidence.push('cultureEvidence');
+    missingEvidence.push('vocabularyResourceEvidence');
+
+    const collectedCount = evidenceSource.length;
+    const totalTrackedSources = 7; // en, zh, scene, context, grammar, culture, vocabResource
+    const evidenceCompleteness = {
+      collectedSources: collectedCount,
+      totalTrackedSources,
+      ratio: Number((collectedCount / totalTrackedSources).toFixed(2)),
+      note: 'Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C.',
+    };
+
+    return {
+      subtitleIndex: row.subtitleIndex,
+      timestamp: { startTime: row.startTime, endTime: row.endTime },
+      evidenceChain: {
+        englishSubtitle,
+        chineseSubtitle,
+        sceneMeaning: sceneMeaningEvidence,
+        dialogueContext,
+        grammarEvidence,
+        cultureEvidence,
+        vocabularyResourceEvidence,
+      },
+      evidenceCompleteness,
+      missingEvidence,
+      evidenceSource,
+      placeholder: false,
+    };
+  });
+
+  return artifactEnvelope({
+    schemaVersion: 'p1-c-evidence-artifact.v1',
+    artifactName: 'evidence_artifact',
+    producerStage: 'Evidence Engine',
+    consumerStage: 'Vocabulary Engine + Comprehension Engine',
+    inputArtifact: 'subtitle_artifact + scene_meaning_artifact',
+    artifactStatus: 'produced',
+    contentMode: 'real',
+    runtimeConsumable: false,
+    notes: 'REAL offline deterministic Evidence Engine (P1-C). Consumes subtitle_artifact + '
+      + 'scene_meaning_artifact (read from disk per P0-7C) and collects evidence only. '
+      + 'No AI / Qwen / Qwen-VL / OCR / video analysis / Internet subtitle fetch. '
+      + 'Per P0-6A it never decides obstacles, never approves/rejects, never generates drafts, '
+      + 'and never promotes. Future-extension evidence sources are marked not-collected-yet. '
+      + 'Never runtime consumable.',
+  }, {
+    evidenceChainCount: evidenceChains.length,
+    evidenceChains,
+  });
+}
+
 function main() {
   const sourceRows = readSubtitleSource();
   const scoped = buildScopedSubtitles(sourceRows);
@@ -377,33 +560,15 @@ function main() {
   const sceneMeaningArtifact = runSceneMeaningEngine(subtitleArtifactForScene);
   createdFiles.push(writeArtifact('scene_meaning_artifact.json', sceneMeaningArtifact));
 
-  // 3. Evidence Artifact (placeholder Evidence Chain — P0-6A owns real collection)
-  const evidenceArtifact = artifactEnvelope({
-    schemaVersion: 'p1-a-evidence-artifact.v1',
-    artifactName: 'evidence_artifact',
-    producerStage: 'Evidence Engine',
-    consumerStage: 'Vocabulary Engine + Comprehension Engine',
-    inputArtifact: 'subtitle_artifact + scene_meaning_artifact',
-    artifactStatus: 'produced',
-    contentMode: 'placeholder',
-    runtimeConsumable: false,
-    notes: 'PLACEHOLDER Evidence Chain. Real evidence collection/prioritization is owned by P0-6A and not performed in this bootstrap.',
-  }, {
-    evidenceChains: scoped.map((row) => ({
-      subtitleIndex: row.subtitleIndex,
-      evidenceChain: {
-        frozenContract: 'not-available',
-        dictionary: 'not-available',
-        pos: 'not-available',
-        grammar: 'not-available',
-        englishSubtitle: 'checked',
-        chineseSubtitle: row.source_zh ? 'checked' : 'not-available',
-        sceneMeaning: 'checked',
-        dialogueContext: 'not-available',
-      },
-      placeholder: true,
-    })),
-  });
+  // 3. Evidence Artifact (REAL — P1-C Evidence Engine, offline/deterministic)
+  // Per P0-7C, the engine consumes the upstream Subtitle + Scene Meaning Artifacts
+  // through the frozen artifacts on disk, not in-memory state.
+  const subtitleArtifactForEvidence = readArtifact('subtitle_artifact.json');
+  const sceneMeaningArtifactForEvidence = readArtifact('scene_meaning_artifact.json');
+  const evidenceArtifact = runEvidenceEngine(
+    subtitleArtifactForEvidence,
+    sceneMeaningArtifactForEvidence,
+  );
   createdFiles.push(writeArtifact('evidence_artifact.json', evidenceArtifact));
 
   // 4. Draft Obstacle Artifact (placeholder — no real Vocabulary/Comprehension analysis)
@@ -516,11 +681,17 @@ function main() {
       noProductionFilesModified: true,
       noAiApiCalled: true,
       runtimeConsumable: false,
+      sceneMeaningReal: true,
+      evidenceReal: true,
+      downstreamStillPlaceholder: true,
+      noOcrCalled: true,
+      noInternetSubtitleFetch: true,
     },
     bootstrapCompleted: true,
     nextRecommendedStep:
-      'P1-C: replace the placeholder Evidence stage with a real offline Evidence Engine that consumes '
-      + 'the real Scene Meaning Artifact, preserving the Runtime read-only boundary and the forward-only Artifact chain.',
+      'P1-D: replace the placeholder Draft Obstacle stage with real offline Vocabulary + Comprehension '
+      + 'engines that consume the real Evidence Artifact, preserving the Runtime read-only boundary '
+      + 'and the forward-only Artifact chain.',
   };
   createdFiles.push(writeArtifact('pipeline_bootstrap_report.json', report));
 

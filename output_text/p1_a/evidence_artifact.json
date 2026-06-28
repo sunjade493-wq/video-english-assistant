@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "p1-a-evidence-artifact.v1",
+  "schemaVersion": "p1-c-evidence-artifact.v1",
   "stage": "P1-A",
   "artifactName": "evidence_artifact",
   "episodeId": "tbbt-s12e01",
@@ -9,430 +9,2769 @@
   "inputArtifact": "subtitle_artifact + scene_meaning_artifact",
   "outputArtifact": "evidence_artifact",
   "artifactStatus": "produced",
-  "contentMode": "placeholder",
+  "contentMode": "real",
   "runtimeConsumable": false,
-  "notes": "PLACEHOLDER Evidence Chain. Real evidence collection/prioritization is owned by P0-6A and not performed in this bootstrap.",
+  "notes": "REAL offline deterministic Evidence Engine (P1-C). Consumes subtitle_artifact + scene_meaning_artifact (read from disk per P0-7C) and collects evidence only. No AI / Qwen / Qwen-VL / OCR / video analysis / Internet subtitle fetch. Per P0-6A it never decides obstacles, never approves/rejects, never generates drafts, and never promotes. Future-extension evidence sources are marked not-collected-yet. Never runtime consumable.",
   "payload": {
+    "evidenceChainCount": 30,
     "evidenceChains": [
       {
         "subtitleIndex": 0,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "2.0",
+          "endTime": "6.0"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "Previously on The Big Bang Theory...",
+            "characterLength": 36,
+            "tokenCount": 6,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": false,
+              "ellipsis": true,
+              "comma": false,
+              "musicNote": false
+            },
+            "lineTypeSignal": "recap-marker"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "《生活大爆炸》前情提要",
+            "characterLength": 11
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 0,
+            "sceneMeaning": "Functions as a recap-marker intended to orient the viewer to prior events. Contextual meaning (from bilingual subtitle evidence): 《生活大爆炸》前情提要",
+            "dialogueFunction": "recap-marker",
+            "speakerIntent": "orient the viewer to prior events",
+            "ambiguity": {
+              "hasAmbiguity": true,
+              "note": "Line trails off or continues; meaning may depend on adjacent dialogue."
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [],
+            "contextAfter": [
+              {
+                "subtitleIndex": 1,
+                "source_en": "Can you believe our little lamb is finally getting married?",
+                "source_zh": "你能相信我们的小羊羔终于要嫁人了吗"
+              },
+              {
+                "subtitleIndex": 2,
+                "source_en": "He can't believe it.",
+                "source_zh": "他肯定不信"
+              }
+            ],
+            "contextBeforeCount": 0,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 1,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "Can you believe our little lamb is finally getting married?",
+            "characterLength": 59,
+            "tokenCount": 10,
+            "punctuationSignals": {
+              "question": true,
+              "exclamation": false,
+              "ellipsis": false,
+              "comma": false,
+              "musicNote": false
+            },
+            "lineTypeSignal": "question"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+            "characterLength": 17
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 1,
+            "sceneMeaning": "Functions as a question intended to seek information, confirmation, or a response. Contextual meaning (from bilingual subtitle evidence): 你能相信我们的小羊羔终于要嫁人了吗",
+            "dialogueFunction": "question",
+            "speakerIntent": "seek information, confirmation, or a response",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 0,
+                "source_en": "Previously on The Big Bang Theory...",
+                "source_zh": "《生活大爆炸》前情提要"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 2,
+                "source_en": "He can't believe it.",
+                "source_zh": "他肯定不信"
+              },
+              {
+                "subtitleIndex": 3,
+                "source_en": "And neither can I.",
+                "source_zh": "我也不敢相信"
+              }
+            ],
+            "contextBeforeCount": 1,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 2,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "10.0",
+          "endTime": "12.0"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "He can't believe it.",
+            "characterLength": 20,
+            "tokenCount": 4,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": false,
+              "ellipsis": false,
+              "comma": false,
+              "musicNote": false
+            },
+            "lineTypeSignal": "statement"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "他肯定不信",
+            "characterLength": 5
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 2,
+            "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 他肯定不信",
+            "dialogueFunction": "statement",
+            "speakerIntent": "convey information or advance the dialogue",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 0,
+                "source_en": "Previously on The Big Bang Theory...",
+                "source_zh": "《生活大爆炸》前情提要"
+              },
+              {
+                "subtitleIndex": 1,
+                "source_en": "Can you believe our little lamb is finally getting married?",
+                "source_zh": "你能相信我们的小羊羔终于要嫁人了吗"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 3,
+                "source_en": "And neither can I.",
+                "source_zh": "我也不敢相信"
+              },
+              {
+                "subtitleIndex": 4,
+                "source_en": "Hi, Dad. How you doing?",
+                "source_zh": "爸 你还好吗"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 3,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "12.0",
+          "endTime": "15.5"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "And neither can I.",
+            "characterLength": 18,
+            "tokenCount": 4,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": false,
+              "ellipsis": false,
+              "comma": false,
+              "musicNote": false
+            },
+            "lineTypeSignal": "statement"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "我也不敢相信",
+            "characterLength": 6
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 3,
+            "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 我也不敢相信",
+            "dialogueFunction": "statement",
+            "speakerIntent": "convey information or advance the dialogue",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 1,
+                "source_en": "Can you believe our little lamb is finally getting married?",
+                "source_zh": "你能相信我们的小羊羔终于要嫁人了吗"
+              },
+              {
+                "subtitleIndex": 2,
+                "source_en": "He can't believe it.",
+                "source_zh": "他肯定不信"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 4,
+                "source_en": "Hi, Dad. How you doing?",
+                "source_zh": "爸 你还好吗"
+              },
+              {
+                "subtitleIndex": 5,
+                "source_en": "Then by the power vested in me...",
+                "source_zh": "我以\"连你都能证婚网\""
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 4,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "15.5",
+          "endTime": "20.5"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "Hi, Dad. How you doing?",
+            "characterLength": 23,
+            "tokenCount": 5,
+            "punctuationSignals": {
+              "question": true,
+              "exclamation": false,
+              "ellipsis": false,
+              "comma": true,
+              "musicNote": false
+            },
+            "lineTypeSignal": "question"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "爸 你还好吗",
+            "characterLength": 6
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 4,
+            "sceneMeaning": "Functions as a question intended to seek information, confirmation, or a response. Contextual meaning (from bilingual subtitle evidence): 爸 你还好吗",
+            "dialogueFunction": "question",
+            "speakerIntent": "seek information, confirmation, or a response",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 2,
+                "source_en": "He can't believe it.",
+                "source_zh": "他肯定不信"
+              },
+              {
+                "subtitleIndex": 3,
+                "source_en": "And neither can I.",
+                "source_zh": "我也不敢相信"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 5,
+                "source_en": "Then by the power vested in me...",
+                "source_zh": "我以\"连你都能证婚网\""
+              },
+              {
+                "subtitleIndex": 6,
+                "source_en": "by EvenYouCanPerformWeddings.Com...",
+                "source_zh": "所赋予我的合法权利"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 5,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "20.5",
+          "endTime": "23.0"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "Then by the power vested in me...",
+            "characterLength": 33,
+            "tokenCount": 7,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": false,
+              "ellipsis": true,
+              "comma": false,
+              "musicNote": false
+            },
+            "lineTypeSignal": "statement"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "我以\"连你都能证婚网\"",
+            "characterLength": 11
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 5,
+            "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 我以\"连你都能证婚网\"",
+            "dialogueFunction": "statement",
+            "speakerIntent": "convey information or advance the dialogue",
+            "ambiguity": {
+              "hasAmbiguity": true,
+              "note": "Line trails off or continues; meaning may depend on adjacent dialogue."
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 3,
+                "source_en": "And neither can I.",
+                "source_zh": "我也不敢相信"
+              },
+              {
+                "subtitleIndex": 4,
+                "source_en": "Hi, Dad. How you doing?",
+                "source_zh": "爸 你还好吗"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 6,
+                "source_en": "by EvenYouCanPerformWeddings.Com...",
+                "source_zh": "所赋予我的合法权利"
+              },
+              {
+                "subtitleIndex": 7,
+                "source_en": "...I now pronounce you husband and wife.",
+                "source_zh": "我现在宣布你们正式结为合法夫妻"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 6,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "23.0",
+          "endTime": "28.5"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "by EvenYouCanPerformWeddings.Com...",
+            "characterLength": 35,
+            "tokenCount": 2,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": false,
+              "ellipsis": true,
+              "comma": false,
+              "musicNote": false
+            },
+            "lineTypeSignal": "statement"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "所赋予我的合法权利",
+            "characterLength": 9
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 6,
+            "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 所赋予我的合法权利",
+            "dialogueFunction": "statement",
+            "speakerIntent": "convey information or advance the dialogue",
+            "ambiguity": {
+              "hasAmbiguity": true,
+              "note": "Line trails off or continues; meaning may depend on adjacent dialogue."
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 4,
+                "source_en": "Hi, Dad. How you doing?",
+                "source_zh": "爸 你还好吗"
+              },
+              {
+                "subtitleIndex": 5,
+                "source_en": "Then by the power vested in me...",
+                "source_zh": "我以\"连你都能证婚网\""
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 7,
+                "source_en": "...I now pronounce you husband and wife.",
+                "source_zh": "我现在宣布你们正式结为合法夫妻"
+              },
+              {
+                "subtitleIndex": 8,
+                "source_en": "You may kiss the bride.",
+                "source_zh": "你可以吻新娘了"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 7,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "28.5",
+          "endTime": "30.5"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "...I now pronounce you husband and wife.",
+            "characterLength": 40,
+            "tokenCount": 7,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": false,
+              "ellipsis": true,
+              "comma": false,
+              "musicNote": false
+            },
+            "lineTypeSignal": "statement"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "我现在宣布你们正式结为合法夫妻",
+            "characterLength": 15
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 7,
+            "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 我现在宣布你们正式结为合法夫妻",
+            "dialogueFunction": "statement",
+            "speakerIntent": "convey information or advance the dialogue",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 5,
+                "source_en": "Then by the power vested in me...",
+                "source_zh": "我以\"连你都能证婚网\""
+              },
+              {
+                "subtitleIndex": 6,
+                "source_en": "by EvenYouCanPerformWeddings.Com...",
+                "source_zh": "所赋予我的合法权利"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 8,
+                "source_en": "You may kiss the bride.",
+                "source_zh": "你可以吻新娘了"
+              },
+              {
+                "subtitleIndex": 9,
+                "source_en": "and now...",
+                "source_zh": "时至今日"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 8,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "30.5",
+          "endTime": "36.5"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "You may kiss the bride.",
+            "characterLength": 23,
+            "tokenCount": 5,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": false,
+              "ellipsis": false,
+              "comma": false,
+              "musicNote": false
+            },
+            "lineTypeSignal": "statement"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "你可以吻新娘了",
+            "characterLength": 7
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 8,
+            "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 你可以吻新娘了",
+            "dialogueFunction": "statement",
+            "speakerIntent": "convey information or advance the dialogue",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 6,
+                "source_en": "by EvenYouCanPerformWeddings.Com...",
+                "source_zh": "所赋予我的合法权利"
+              },
+              {
+                "subtitleIndex": 7,
+                "source_en": "...I now pronounce you husband and wife.",
+                "source_zh": "我现在宣布你们正式结为合法夫妻"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 9,
+                "source_en": "and now...",
+                "source_zh": "时至今日"
+              },
+              {
+                "subtitleIndex": 10,
+                "source_en": "Good morning, wife.",
+                "source_zh": "早安啊 老婆"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 9,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "36.5",
+          "endTime": "40.5"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "and now...",
+            "characterLength": 10,
+            "tokenCount": 2,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": false,
+              "ellipsis": true,
+              "comma": false,
+              "musicNote": false
+            },
+            "lineTypeSignal": "statement"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "时至今日",
+            "characterLength": 4
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 9,
+            "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 时至今日",
+            "dialogueFunction": "statement",
+            "speakerIntent": "convey information or advance the dialogue",
+            "ambiguity": {
+              "hasAmbiguity": true,
+              "note": "Line trails off or continues; meaning may depend on adjacent dialogue."
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 7,
+                "source_en": "...I now pronounce you husband and wife.",
+                "source_zh": "我现在宣布你们正式结为合法夫妻"
+              },
+              {
+                "subtitleIndex": 8,
+                "source_en": "You may kiss the bride.",
+                "source_zh": "你可以吻新娘了"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 10,
+                "source_en": "Good morning, wife.",
+                "source_zh": "早安啊 老婆"
+              },
+              {
+                "subtitleIndex": 11,
+                "source_en": "Good morning, husband.",
+                "source_zh": "早安啊 老公"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 10,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "40.5",
+          "endTime": "44.5"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "Good morning, wife.",
+            "characterLength": 19,
+            "tokenCount": 3,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": false,
+              "ellipsis": false,
+              "comma": true,
+              "musicNote": false
+            },
+            "lineTypeSignal": "statement"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "早安啊 老婆",
+            "characterLength": 6
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 10,
+            "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 早安啊 老婆",
+            "dialogueFunction": "statement",
+            "speakerIntent": "convey information or advance the dialogue",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 8,
+                "source_en": "You may kiss the bride.",
+                "source_zh": "你可以吻新娘了"
+              },
+              {
+                "subtitleIndex": 9,
+                "source_en": "and now...",
+                "source_zh": "时至今日"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 11,
+                "source_en": "Good morning, husband.",
+                "source_zh": "早安啊 老公"
+              },
+              {
+                "subtitleIndex": 12,
+                "source_en": "I can't believe we're actually married.",
+                "source_zh": "真不敢相信我们真的结婚了"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 11,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "44.5",
+          "endTime": "47.5"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "Good morning, husband.",
+            "characterLength": 22,
+            "tokenCount": 3,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": false,
+              "ellipsis": false,
+              "comma": true,
+              "musicNote": false
+            },
+            "lineTypeSignal": "statement"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "早安啊 老公",
+            "characterLength": 6
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 11,
+            "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 早安啊 老公",
+            "dialogueFunction": "statement",
+            "speakerIntent": "convey information or advance the dialogue",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 9,
+                "source_en": "and now...",
+                "source_zh": "时至今日"
+              },
+              {
+                "subtitleIndex": 10,
+                "source_en": "Good morning, wife.",
+                "source_zh": "早安啊 老婆"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 12,
+                "source_en": "I can't believe we're actually married.",
+                "source_zh": "真不敢相信我们真的结婚了"
+              },
+              {
+                "subtitleIndex": 13,
+                "source_en": "It's official. According to tradition,",
+                "source_zh": "正式完婚了 根据传统"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 12,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "47.5",
+          "endTime": "49.5"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "I can't believe we're actually married.",
+            "characterLength": 39,
+            "tokenCount": 6,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": false,
+              "ellipsis": false,
+              "comma": false,
+              "musicNote": false
+            },
+            "lineTypeSignal": "statement"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "真不敢相信我们真的结婚了",
+            "characterLength": 12
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 12,
+            "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 真不敢相信我们真的结婚了",
+            "dialogueFunction": "statement",
+            "speakerIntent": "convey information or advance the dialogue",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 10,
+                "source_en": "Good morning, wife.",
+                "source_zh": "早安啊 老婆"
+              },
+              {
+                "subtitleIndex": 11,
+                "source_en": "Good morning, husband.",
+                "source_zh": "早安啊 老公"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 13,
+                "source_en": "It's official. According to tradition,",
+                "source_zh": "正式完婚了 根据传统"
+              },
+              {
+                "subtitleIndex": 14,
+                "source_en": "we should hang the bedsheets outside",
+                "source_zh": "我们应该把床单挂在外面"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 13,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "49.5",
+          "endTime": "51.5"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "It's official. According to tradition,",
+            "characterLength": 38,
+            "tokenCount": 5,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": false,
+              "ellipsis": false,
+              "comma": true,
+              "musicNote": false
+            },
+            "lineTypeSignal": "statement"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "正式完婚了 根据传统",
+            "characterLength": 10
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 13,
+            "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 正式完婚了 根据传统",
+            "dialogueFunction": "statement",
+            "speakerIntent": "convey information or advance the dialogue",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 11,
+                "source_en": "Good morning, husband.",
+                "source_zh": "早安啊 老公"
+              },
+              {
+                "subtitleIndex": 12,
+                "source_en": "I can't believe we're actually married.",
+                "source_zh": "真不敢相信我们真的结婚了"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 14,
+                "source_en": "we should hang the bedsheets outside",
+                "source_zh": "我们应该把床单挂在外面"
+              },
+              {
+                "subtitleIndex": 15,
+                "source_en": "so the villagers can see that we consummated.",
+                "source_zh": "这样其他村民就能知道我们行过房了"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 14,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "51.5",
+          "endTime": "53.0"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "we should hang the bedsheets outside",
+            "characterLength": 36,
+            "tokenCount": 6,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": false,
+              "ellipsis": false,
+              "comma": false,
+              "musicNote": false
+            },
+            "lineTypeSignal": "statement"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "我们应该把床单挂在外面",
+            "characterLength": 11
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 14,
+            "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 我们应该把床单挂在外面",
+            "dialogueFunction": "statement",
+            "speakerIntent": "convey information or advance the dialogue",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 12,
+                "source_en": "I can't believe we're actually married.",
+                "source_zh": "真不敢相信我们真的结婚了"
+              },
+              {
+                "subtitleIndex": 13,
+                "source_en": "It's official. According to tradition,",
+                "source_zh": "正式完婚了 根据传统"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 15,
+                "source_en": "so the villagers can see that we consummated.",
+                "source_zh": "这样其他村民就能知道我们行过房了"
+              },
+              {
+                "subtitleIndex": 16,
+                "source_en": "considering where we're starting our honeymoon.",
+                "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 15,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "53.0",
+          "endTime": "58.0"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "so the villagers can see that we consummated.",
+            "characterLength": 45,
+            "tokenCount": 8,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": false,
+              "ellipsis": false,
+              "comma": false,
+              "musicNote": false
+            },
+            "lineTypeSignal": "statement"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "这样其他村民就能知道我们行过房了",
+            "characterLength": 16
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 15,
+            "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 这样其他村民就能知道我们行过房了",
+            "dialogueFunction": "statement",
+            "speakerIntent": "convey information or advance the dialogue",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 13,
+                "source_en": "It's official. According to tradition,",
+                "source_zh": "正式完婚了 根据传统"
+              },
+              {
+                "subtitleIndex": 14,
+                "source_en": "we should hang the bedsheets outside",
+                "source_zh": "我们应该把床单挂在外面"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 16,
+                "source_en": "considering where we're starting our honeymoon.",
+                "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅"
+              },
+              {
+                "subtitleIndex": 17,
+                "source_en": "Well, I suppose you're right.",
+                "source_zh": "你说的有道理"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 16,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "58.0",
+          "endTime": "60.5"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "considering where we're starting our honeymoon.",
+            "characterLength": 47,
+            "tokenCount": 6,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": false,
+              "ellipsis": false,
+              "comma": false,
+              "musicNote": false
+            },
+            "lineTypeSignal": "statement"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅",
+            "characterLength": 19
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 16,
+            "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 毕竟我们是在这种地方开始我们的蜜月之旅",
+            "dialogueFunction": "statement",
+            "speakerIntent": "convey information or advance the dialogue",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 14,
+                "source_en": "we should hang the bedsheets outside",
+                "source_zh": "我们应该把床单挂在外面"
+              },
+              {
+                "subtitleIndex": 15,
+                "source_en": "so the villagers can see that we consummated.",
+                "source_zh": "这样其他村民就能知道我们行过房了"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 17,
+                "source_en": "Well, I suppose you're right.",
+                "source_zh": "你说的有道理"
+              },
+              {
+                "subtitleIndex": 18,
+                "source_en": "Lego is the perfect metaphor for marital congress.",
+                "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 17,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "60.5",
+          "endTime": "67.0"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "Well, I suppose you're right.",
+            "characterLength": 29,
+            "tokenCount": 5,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": false,
+              "ellipsis": false,
+              "comma": true,
+              "musicNote": false
+            },
+            "lineTypeSignal": "statement"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "你说的有道理",
+            "characterLength": 6
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 17,
+            "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 你说的有道理",
+            "dialogueFunction": "statement",
+            "speakerIntent": "convey information or advance the dialogue",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 15,
+                "source_en": "so the villagers can see that we consummated.",
+                "source_zh": "这样其他村民就能知道我们行过房了"
+              },
+              {
+                "subtitleIndex": 16,
+                "source_en": "considering where we're starting our honeymoon.",
+                "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 18,
+                "source_en": "Lego is the perfect metaphor for marital congress.",
+                "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢"
+              },
+              {
+                "subtitleIndex": 19,
+                "source_en": "Two pieces that interlock with a satisfying snap.",
+                "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 18,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "67.0",
+          "endTime": "70.0"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "Lego is the perfect metaphor for marital congress.",
+            "characterLength": 50,
+            "tokenCount": 8,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": false,
+              "ellipsis": false,
+              "comma": false,
+              "musicNote": false
+            },
+            "lineTypeSignal": "statement"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+            "characterLength": 17
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 18,
+            "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 乐高有着形容夫妻房事的最完美隐喻呢",
+            "dialogueFunction": "statement",
+            "speakerIntent": "convey information or advance the dialogue",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 16,
+                "source_en": "considering where we're starting our honeymoon.",
+                "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅"
+              },
+              {
+                "subtitleIndex": 17,
+                "source_en": "Well, I suppose you're right.",
+                "source_zh": "你说的有道理"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 19,
+                "source_en": "Two pieces that interlock with a satisfying snap.",
+                "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声"
+              },
+              {
+                "subtitleIndex": 20,
+                "source_en": "Oh, I almost forgot.",
+                "source_zh": "我差点就忘了"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 19,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "70.0",
+          "endTime": "79.5"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "Two pieces that interlock with a satisfying snap.",
+            "characterLength": 49,
+            "tokenCount": 8,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": false,
+              "ellipsis": false,
+              "comma": false,
+              "musicNote": false
+            },
+            "lineTypeSignal": "statement"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+            "characterLength": 19
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 19,
+            "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 两片乐高\"合体\"并带有爽度十足的咔哒声",
+            "dialogueFunction": "statement",
+            "speakerIntent": "convey information or advance the dialogue",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 17,
+                "source_en": "Well, I suppose you're right.",
+                "source_zh": "你说的有道理"
+              },
+              {
+                "subtitleIndex": 18,
+                "source_en": "Lego is the perfect metaphor for marital congress.",
+                "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 20,
+                "source_en": "Oh, I almost forgot.",
+                "source_zh": "我差点就忘了"
+              },
+              {
+                "subtitleIndex": 21,
+                "source_en": "While you were sleeping, I ordered room service.",
+                "source_zh": "在你睡觉的时候 我点了客房送餐"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 20,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "79.5",
+          "endTime": "80.5"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "Oh, I almost forgot.",
+            "characterLength": 20,
+            "tokenCount": 4,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": false,
+              "ellipsis": false,
+              "comma": true,
+              "musicNote": false
+            },
+            "lineTypeSignal": "statement"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "我差点就忘了",
+            "characterLength": 6
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 20,
+            "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 我差点就忘了",
+            "dialogueFunction": "statement",
+            "speakerIntent": "convey information or advance the dialogue",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 18,
+                "source_en": "Lego is the perfect metaphor for marital congress.",
+                "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢"
+              },
+              {
+                "subtitleIndex": 19,
+                "source_en": "Two pieces that interlock with a satisfying snap.",
+                "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 21,
+                "source_en": "While you were sleeping, I ordered room service.",
+                "source_zh": "在你睡觉的时候 我点了客房送餐"
+              },
+              {
+                "subtitleIndex": 22,
+                "source_en": "Really?",
+                "source_zh": "真的吗"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 21,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "80.5",
+          "endTime": "83.5"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "While you were sleeping, I ordered room service.",
+            "characterLength": 48,
+            "tokenCount": 8,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": false,
+              "ellipsis": false,
+              "comma": true,
+              "musicNote": false
+            },
+            "lineTypeSignal": "statement"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "在你睡觉的时候 我点了客房送餐",
+            "characterLength": 15
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 21,
+            "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 在你睡觉的时候 我点了客房送餐",
+            "dialogueFunction": "statement",
+            "speakerIntent": "convey information or advance the dialogue",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 19,
+                "source_en": "Two pieces that interlock with a satisfying snap.",
+                "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声"
+              },
+              {
+                "subtitleIndex": 20,
+                "source_en": "Oh, I almost forgot.",
+                "source_zh": "我差点就忘了"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 22,
+                "source_en": "Really?",
+                "source_zh": "真的吗"
+              },
+              {
+                "subtitleIndex": 23,
+                "source_en": "Voila!",
+                "source_zh": "请看"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 22,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "83.5",
+          "endTime": "85.5"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "Really?",
+            "characterLength": 7,
+            "tokenCount": 1,
+            "punctuationSignals": {
+              "question": true,
+              "exclamation": false,
+              "ellipsis": false,
+              "comma": false,
+              "musicNote": false
+            },
+            "lineTypeSignal": "question"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "真的吗",
+            "characterLength": 3
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 22,
+            "sceneMeaning": "Functions as a question intended to seek information, confirmation, or a response. Contextual meaning (from bilingual subtitle evidence): 真的吗",
+            "dialogueFunction": "question",
+            "speakerIntent": "seek information, confirmation, or a response",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 20,
+                "source_en": "Oh, I almost forgot.",
+                "source_zh": "我差点就忘了"
+              },
+              {
+                "subtitleIndex": 21,
+                "source_en": "While you were sleeping, I ordered room service.",
+                "source_zh": "在你睡觉的时候 我点了客房送餐"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 23,
+                "source_en": "Voila!",
+                "source_zh": "请看"
+              },
+              {
+                "subtitleIndex": 24,
+                "source_en": "You thought it was going to be food, didn't you?",
+                "source_zh": "你本来还以为是食物 对吧"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 23,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "85.5",
+          "endTime": "88.5"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "Voila!",
+            "characterLength": 6,
+            "tokenCount": 1,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": true,
+              "ellipsis": false,
+              "comma": false,
+              "musicNote": false
+            },
+            "lineTypeSignal": "exclamation"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "请看",
+            "characterLength": 2
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 23,
+            "sceneMeaning": "Functions as a exclamation intended to express emphasis or strong emotion. Contextual meaning (from bilingual subtitle evidence): 请看",
+            "dialogueFunction": "exclamation",
+            "speakerIntent": "express emphasis or strong emotion",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 21,
+                "source_en": "While you were sleeping, I ordered room service.",
+                "source_zh": "在你睡觉的时候 我点了客房送餐"
+              },
+              {
+                "subtitleIndex": 22,
+                "source_en": "Really?",
+                "source_zh": "真的吗"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 24,
+                "source_en": "You thought it was going to be food, didn't you?",
+                "source_zh": "你本来还以为是食物 对吧"
+              },
+              {
+                "subtitleIndex": 25,
+                "source_en": "Our whole universe was in a hot, dense state",
+                "source_zh": "我们的宇宙曾经超热又超密"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 24,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "88.5",
+          "endTime": "92.0"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "You thought it was going to be food, didn't you?",
+            "characterLength": 48,
+            "tokenCount": 10,
+            "punctuationSignals": {
+              "question": true,
+              "exclamation": false,
+              "ellipsis": false,
+              "comma": true,
+              "musicNote": false
+            },
+            "lineTypeSignal": "question"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "你本来还以为是食物 对吧",
+            "characterLength": 12
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 24,
+            "sceneMeaning": "Functions as a question intended to seek information, confirmation, or a response. Contextual meaning (from bilingual subtitle evidence): 你本来还以为是食物 对吧",
+            "dialogueFunction": "question",
+            "speakerIntent": "seek information, confirmation, or a response",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 22,
+                "source_en": "Really?",
+                "source_zh": "真的吗"
+              },
+              {
+                "subtitleIndex": 23,
+                "source_en": "Voila!",
+                "source_zh": "请看"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 25,
+                "source_en": "Our whole universe was in a hot, dense state",
+                "source_zh": "我们的宇宙曾经超热又超密"
+              },
+              {
+                "subtitleIndex": 26,
+                "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+                "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 25,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "92.0",
+          "endTime": "95.0"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "Our whole universe was in a hot, dense state",
+            "characterLength": 44,
+            "tokenCount": 9,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": false,
+              "ellipsis": false,
+              "comma": true,
+              "musicNote": false
+            },
+            "lineTypeSignal": "statement"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "我们的宇宙曾经超热又超密",
+            "characterLength": 12
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 25,
+            "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 我们的宇宙曾经超热又超密",
+            "dialogueFunction": "statement",
+            "speakerIntent": "convey information or advance the dialogue",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 23,
+                "source_en": "Voila!",
+                "source_zh": "请看"
+              },
+              {
+                "subtitleIndex": 24,
+                "source_en": "You thought it was going to be food, didn't you?",
+                "source_zh": "你本来还以为是食物 对吧"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 26,
+                "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+                "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等"
+              },
+              {
+                "subtitleIndex": 27,
+                "source_en": "The Earth began to cool",
+                "source_zh": "地球开始冷却"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 26,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+            "characterLength": 59,
+            "tokenCount": 9,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": true,
+              "ellipsis": true,
+              "comma": false,
+              "musicNote": false
+            },
+            "lineTypeSignal": "exclamation"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+            "characterLength": 24
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 26,
+            "sceneMeaning": "Functions as a exclamation intended to express emphasis or strong emotion. Contextual meaning (from bilingual subtitle evidence): 直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+            "dialogueFunction": "exclamation",
+            "speakerIntent": "express emphasis or strong emotion",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 24,
+                "source_en": "You thought it was going to be food, didn't you?",
+                "source_zh": "你本来还以为是食物 对吧"
+              },
+              {
+                "subtitleIndex": 25,
+                "source_en": "Our whole universe was in a hot, dense state",
+                "source_zh": "我们的宇宙曾经超热又超密"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 27,
+                "source_en": "The Earth began to cool",
+                "source_zh": "地球开始冷却"
+              },
+              {
+                "subtitleIndex": 28,
+                "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+                "source_zh": "自养生物开始发育 尼安德塔人发明工具"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 27,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "99.0",
+          "endTime": "101.0"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "The Earth began to cool",
+            "characterLength": 23,
+            "tokenCount": 5,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": false,
+              "ellipsis": false,
+              "comma": false,
+              "musicNote": false
+            },
+            "lineTypeSignal": "statement"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "地球开始冷却",
+            "characterLength": 6
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 27,
+            "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 地球开始冷却",
+            "dialogueFunction": "statement",
+            "speakerIntent": "convey information or advance the dialogue",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 25,
+                "source_en": "Our whole universe was in a hot, dense state",
+                "source_zh": "我们的宇宙曾经超热又超密"
+              },
+              {
+                "subtitleIndex": 26,
+                "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+                "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 28,
+                "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+                "source_zh": "自养生物开始发育 尼安德塔人发明工具"
+              },
+              {
+                "subtitleIndex": 29,
+                "source_en": "We built the Wall We built the pyramids",
+                "source_zh": "我们建了长城 我们建了金字塔"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 2
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 28,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "101.0",
+          "endTime": "104.0"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+            "characterLength": 60,
+            "tokenCount": 8,
+            "punctuationSignals": {
+              "question": true,
+              "exclamation": false,
+              "ellipsis": false,
+              "comma": true,
+              "musicNote": false
+            },
+            "lineTypeSignal": "question"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+            "characterLength": 18
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 28,
+            "sceneMeaning": "Functions as a question intended to seek information, confirmation, or a response. Contextual meaning (from bilingual subtitle evidence): 自养生物开始发育 尼安德塔人发明工具",
+            "dialogueFunction": "question",
+            "speakerIntent": "seek information, confirmation, or a response",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 26,
+                "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+                "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等"
+              },
+              {
+                "subtitleIndex": 27,
+                "source_en": "The Earth began to cool",
+                "source_zh": "地球开始冷却"
+              }
+            ],
+            "contextAfter": [
+              {
+                "subtitleIndex": 29,
+                "source_en": "We built the Wall We built the pyramids",
+                "source_zh": "我们建了长城 我们建了金字塔"
+              }
+            ],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 1
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       },
       {
         "subtitleIndex": 29,
-        "evidenceChain": {
-          "frozenContract": "not-available",
-          "dictionary": "not-available",
-          "pos": "not-available",
-          "grammar": "not-available",
-          "englishSubtitle": "checked",
-          "chineseSubtitle": "checked",
-          "sceneMeaning": "checked",
-          "dialogueContext": "not-available"
+        "timestamp": {
+          "startTime": "104.0",
+          "endTime": "105.0"
         },
-        "placeholder": true
+        "evidenceChain": {
+          "englishSubtitle": {
+            "availability": "available",
+            "source_en": "We built the Wall We built the pyramids",
+            "characterLength": 39,
+            "tokenCount": 8,
+            "punctuationSignals": {
+              "question": false,
+              "exclamation": false,
+              "ellipsis": false,
+              "comma": false,
+              "musicNote": false
+            },
+            "lineTypeSignal": "statement"
+          },
+          "chineseSubtitle": {
+            "availability": "available",
+            "source_zh": "我们建了长城 我们建了金字塔",
+            "characterLength": 14
+          },
+          "sceneMeaning": {
+            "subtitleIndex": 29,
+            "sceneMeaning": "Functions as a statement intended to convey information or advance the dialogue. Contextual meaning (from bilingual subtitle evidence): 我们建了长城 我们建了金字塔",
+            "dialogueFunction": "statement",
+            "speakerIntent": "convey information or advance the dialogue",
+            "ambiguity": {
+              "hasAmbiguity": false,
+              "note": null
+            },
+            "evidenceSource": [
+              "englishSubtitle",
+              "chineseSubtitle",
+              "dialogueContext"
+            ],
+            "confidence": 1
+          },
+          "dialogueContext": {
+            "contextBefore": [
+              {
+                "subtitleIndex": 27,
+                "source_en": "The Earth began to cool",
+                "source_zh": "地球开始冷却"
+              },
+              {
+                "subtitleIndex": 28,
+                "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+                "source_zh": "自养生物开始发育 尼安德塔人发明工具"
+              }
+            ],
+            "contextAfter": [],
+            "contextBeforeCount": 2,
+            "contextAfterCount": 0
+          },
+          "grammarEvidence": "not-collected-yet",
+          "cultureEvidence": "not-collected-yet",
+          "vocabularyResourceEvidence": "not-collected-yet"
+        },
+        "evidenceCompleteness": {
+          "collectedSources": 4,
+          "totalTrackedSources": 7,
+          "ratio": 0.57,
+          "note": "Future-extension sources (grammar/culture/vocabularyResource) are intentionally not collected in P1-C."
+        },
+        "missingEvidence": [
+          "grammarEvidence",
+          "cultureEvidence",
+          "vocabularyResourceEvidence"
+        ],
+        "evidenceSource": [
+          "englishSubtitle",
+          "sceneMeaning",
+          "chineseSubtitle",
+          "dialogueContext"
+        ],
+        "placeholder": false
       }
     ]
   }

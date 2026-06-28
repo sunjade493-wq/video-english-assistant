@@ -40,8 +40,13 @@
     "noUiFilesModified": true,
     "noProductionFilesModified": true,
     "noAiApiCalled": true,
-    "runtimeConsumable": false
+    "runtimeConsumable": false,
+    "sceneMeaningReal": true,
+    "evidenceReal": true,
+    "downstreamStillPlaceholder": true,
+    "noOcrCalled": true,
+    "noInternetSubtitleFetch": true
   },
   "bootstrapCompleted": true,
-  "nextRecommendedStep": "P1-C: replace the placeholder Evidence stage with a real offline Evidence Engine that consumes the real Scene Meaning Artifact, preserving the Runtime read-only boundary and the forward-only Artifact chain."
+  "nextRecommendedStep": "P1-D: replace the placeholder Draft Obstacle stage with real offline Vocabulary + Comprehension engines that consume the real Evidence Artifact, preserving the Runtime read-only boundary and the forward-only Artifact chain."
 }
