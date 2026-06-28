@@ -25,6 +25,10 @@ function isRuntimeShadowOptInEnabled() {
   return new URLSearchParams(window.location.search).get('runtimeShadow') === '1';
 }
 
+function isRuntimeCandidateOptInEnabled() {
+  return new URLSearchParams(window.location.search).get('runtimeCandidate') === '1';
+}
+
 const SUPPORTED_PART_OF_SPEECH_FORMATS = new Set([
   'n.',
   'pron.',
@@ -879,6 +883,60 @@ async function runRuntimeShadowProbeIfEnabled() {
   }
 }
 
+function failClosedRuntimeCandidateOptIn(reason) {
+  console.warn(`P2-E runtime candidate opt-in unavailable; production flow retained: ${reason}`);
+  return false;
+}
+
+function validateRuntimeCandidateOptInArtifacts(candidateArtifact, reviewArtifact) {
+  const reviewPayload = reviewArtifact?.payload;
+  const candidatePayload = candidateArtifact?.payload;
+
+  if (reviewPayload?.runtimeConsumptionReviewDecision !== 'approved_for_p2_runtime_integration') {
+    throw new Error('runtime consumption review decision is not approved for P2 runtime integration');
+  }
+
+  if (reviewPayload?.runtimeMayConsumeDecision !== true) {
+    throw new Error('runtime consumption review does not explicitly approve runtimeMayConsumeDecision');
+  }
+
+  if (candidateArtifact?.runtimeConsumable !== true) {
+    throw new Error('runtime candidate artifact is not marked runtimeConsumable=true');
+  }
+
+  if (candidatePayload?.runtimeMayConsume !== true) {
+    throw new Error('runtime candidate payload is not marked runtimeMayConsume=true');
+  }
+
+  if (!Array.isArray(candidatePayload?.runtimeCandidates)) {
+    throw new Error('runtime candidate artifact payload.runtimeCandidates is not an array');
+  }
+
+  return {
+    approved: true,
+    candidates: candidatePayload.runtimeCandidates.map((candidate) => ({ ...candidate })),
+  };
+}
+
+async function activateRuntimeCandidateOptInIfEnabled() {
+  if (!isRuntimeCandidateOptInEnabled()) {
+    return false;
+  }
+
+  try {
+    const [candidateArtifact, reviewArtifact] = await Promise.all([
+      fetchJson(RUNTIME_SHADOW_CANDIDATE_ARTIFACT_URL),
+      fetchJson(RUNTIME_SHADOW_REVIEW_ARTIFACT_URL),
+    ]);
+    const candidateModel = validateRuntimeCandidateOptInArtifacts(candidateArtifact, reviewArtifact);
+
+    console.info(`P2-E runtime candidate opt-in active: ${candidateModel.candidates.length} candidates`);
+    return true;
+  } catch (error) {
+    return failClosedRuntimeCandidateOptIn(error?.message || error);
+  }
+}
+
 function getVisualMappingWordBoxes(payload) {
   const rootWordBoxes = Array.isArray(payload?.wordBoxes) ? payload.wordBoxes : [];
   const subtitleWordBoxes = Array.isArray(payload?.subtitles)
@@ -1347,6 +1405,7 @@ async function initApp() {
     logRuntimePilotReadOnlySelectionCandidatesAvailable();
     logRuntimePilotSelectionShadowComparison();
     await runRuntimeShadowProbeIfEnabled();
+    await activateRuntimeCandidateOptInIfEnabled();
     activateRuntimePilotOptInIfEnabled();
     logRuntimePilotExitIsolationVerification();
     return;
