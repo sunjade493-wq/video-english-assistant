@@ -1359,6 +1359,84 @@ function adaptRuntimeCandidatesForExistingRuntimeModel(runtimeCandidateArtifact)
   });
 }
 
+
+function loadRuntimeCandidatesForP2Probe() {
+  const runtimeCandidateArtifact = readArtifact('runtime_candidate_artifact.json');
+  const runtimeConsumptionReviewArtifact = readArtifact('runtime_consumption_review_artifact.json');
+
+  if (!runtimeCandidateArtifact || typeof runtimeCandidateArtifact !== 'object' || Array.isArray(runtimeCandidateArtifact)) {
+    fail('Runtime Loader Probe received an invalid Runtime Candidate Artifact object');
+  }
+  if (!runtimeCandidateArtifact.payload || typeof runtimeCandidateArtifact.payload !== 'object') {
+    fail('Runtime Loader Probe received a Runtime Candidate Artifact without payload');
+  }
+  if (!Array.isArray(runtimeCandidateArtifact.payload.runtimeCandidates)) {
+    fail('Runtime Loader Probe requires payload.runtimeCandidates to be an array');
+  }
+  if (runtimeCandidateArtifact.runtimeConsumable !== false) {
+    fail('Runtime Loader Probe requires runtime_candidate_artifact.runtimeConsumable to remain false');
+  }
+  if (runtimeCandidateArtifact.payload.runtimeMayConsume !== false) {
+    fail('Runtime Loader Probe requires runtime_candidate_artifact.payload.runtimeMayConsume to remain false');
+  }
+  if (runtimeCandidateArtifact.payload.runtimeCandidateCount !== runtimeCandidateArtifact.payload.runtimeCandidates.length) {
+    fail('Runtime Loader Probe runtime candidate count does not match payload.runtimeCandidates length');
+  }
+
+  if (!runtimeConsumptionReviewArtifact
+    || typeof runtimeConsumptionReviewArtifact !== 'object'
+    || Array.isArray(runtimeConsumptionReviewArtifact)) {
+    fail('Runtime Loader Probe received an invalid Runtime Consumption Review Artifact object');
+  }
+  if (!runtimeConsumptionReviewArtifact.payload || typeof runtimeConsumptionReviewArtifact.payload !== 'object') {
+    fail('Runtime Loader Probe received a Runtime Consumption Review Artifact without payload');
+  }
+  if (runtimeConsumptionReviewArtifact.payload.runtimeConsumptionReviewDecision
+    !== 'approved_for_p2_runtime_integration') {
+    fail('Runtime Loader Probe requires P1-I approval decision approved_for_p2_runtime_integration');
+  }
+  if (runtimeConsumptionReviewArtifact.payload.runtimeMayConsumeDecision !== true) {
+    fail('Runtime Loader Probe requires P1-I runtimeMayConsumeDecision to be true');
+  }
+  if (runtimeConsumptionReviewArtifact.payload.runtimeCandidateCount
+    !== runtimeCandidateArtifact.payload.runtimeCandidateCount) {
+    fail('Runtime Loader Probe review candidate count does not match runtime candidate artifact count');
+  }
+
+  const runtimeCandidateSnapshot = JSON.stringify(runtimeCandidateArtifact);
+  const inspectionModel = adaptRuntimeCandidatesForExistingRuntimeModel(runtimeCandidateArtifact);
+  const pureProbe = JSON.stringify(runtimeCandidateArtifact) === runtimeCandidateSnapshot;
+
+  if (!pureProbe) {
+    fail('Runtime Loader Probe mutated runtime_candidate_artifact while adapting');
+  }
+
+  const inspectionOnly = inspectionModel.every(
+    (candidate) => candidate.adapterStatus === 'inspection_only'
+      && candidate.runtimeConsumable === false
+      && candidate.runtimeMayConsume === false,
+  );
+  if (!inspectionOnly) {
+    fail('Runtime Loader Probe adapter output must be inspection-only and non-consumable');
+  }
+
+  return {
+    loaderStatus: 'inspection_only',
+    runtimeLoaderApprovedForP2: true,
+    runtimeLoaderCandidateCount: inspectionModel.length,
+    runtimeLoaderInputCountMatches:
+      inspectionModel.length === runtimeCandidateArtifact.payload.runtimeCandidateCount,
+    runtimeLoaderPureProbe: pureProbe,
+    runtimeLoaderInspectionOnly: inspectionOnly,
+    runtimeLoaderRuntimeStillNotConsumable:
+      runtimeCandidateArtifact.runtimeConsumable === false
+      && runtimeCandidateArtifact.payload.runtimeMayConsume === false
+      && inspectionModel.every((candidate) => candidate.runtimeConsumable === false
+        && candidate.runtimeMayConsume === false),
+    inspectionModel,
+  };
+}
+
 function runRuntimeConsumptionReviewGate(runtimeCandidateArtifact) {
   const runtimeCandidates = runtimeCandidateArtifact
     && runtimeCandidateArtifact.payload
@@ -1601,6 +1679,7 @@ function main() {
     === runtimeAdapterInputSnapshot;
   const runtimeAdapterCandidateCount = runtimeAdapterInspectionModel.length;
   const runtimeAdapterInputCountMatches = runtimeAdapterCandidateCount === runtimeCandidateCount;
+  const runtimeLoaderProbeResult = loadRuntimeCandidatesForP2Probe();
 
   const report = {
     schemaVersion: 'p1-a-pipeline-bootstrap-report.v1',
@@ -1661,6 +1740,14 @@ function main() {
           && candidate.runtimeConsumable === false
           && candidate.runtimeMayConsume === false,
       ),
+      runtimeLoaderProbe: true,
+      runtimeLoaderApprovedForP2: runtimeLoaderProbeResult.runtimeLoaderApprovedForP2,
+      runtimeLoaderCandidateCount: runtimeLoaderProbeResult.runtimeLoaderCandidateCount,
+      runtimeLoaderInputCountMatches: runtimeLoaderProbeResult.runtimeLoaderInputCountMatches,
+      runtimeLoaderPureProbe: runtimeLoaderProbeResult.runtimeLoaderPureProbe,
+      runtimeLoaderInspectionOnly: runtimeLoaderProbeResult.runtimeLoaderInspectionOnly,
+      runtimeLoaderRuntimeStillNotConsumable:
+        runtimeLoaderProbeResult.runtimeLoaderRuntimeStillNotConsumable,
       runtimeCandidateStillNotConsumable: true,
       runtimeMayConsume: false,
       runtimeConsumptionReviewReal: true,
