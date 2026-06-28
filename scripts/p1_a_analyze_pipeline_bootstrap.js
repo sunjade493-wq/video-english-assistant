@@ -1847,6 +1847,126 @@ function buildRuntimeDisplayFieldEngineProbe(runtimeCandidateArtifact, upstreamA
   };
 }
 
+/* -------------------------------------------------------------------------
+ * P2-I Offline AI Display Field Generator Probe (PURE) — PROBE ONLY
+ *
+ * This stage may call an existing approved offline AI/Qwen-compatible helper
+ * ONLY if such a helper already exists in this script or in project code
+ * already used by this pipeline. This pipeline imports only fs/path and has no
+ * such helper, so per the P2-I rules NO new network/API code is added. Instead
+ * this probe emits a deterministic generator CONTRACT/report stating that the
+ * generator cannot run until an approved offline AI helper is available.
+ *
+ * If an approved helper were available, it would generate draft display fields
+ * for a small bounded sample (max 5), require JSON output, run at temperature
+ * 0, fail closed on invalid JSON, and use subtitle context + upstream evidence
+ * (never source_en alone). It would never write into runtime_candidate_artifact.
+ *
+ * Drafts are draft-only: reviewStatus "pending_human_review",
+ * runtimeDisplayMayConsume false. No OCR / Qwen-VL / Runtime inference /
+ * Internet. runtimeMayConsume and runtimeConsumable stay false.
+ * ---------------------------------------------------------------------- */
+
+const OFFLINE_AI_DISPLAY_FIELD_SAMPLE_LIMIT = 5;
+
+function detectApprovedOfflineAiHelper() {
+  // An approved offline AI helper must already be present in this pipeline.
+  // This script requires only fs/path; no such helper is wired in. We do not
+  // add one here (rule: do not add new network/API code).
+  return { available: false, name: null };
+}
+
+function buildOfflineAiDisplayFieldGeneratorProbe(runtimeCandidateArtifact, upstreamArtifacts) {
+  const runtimeCandidates = runtimeCandidateArtifact
+    && runtimeCandidateArtifact.payload
+    && Array.isArray(runtimeCandidateArtifact.payload.runtimeCandidates)
+    ? runtimeCandidateArtifact.payload.runtimeCandidates
+    : null;
+
+  if (!runtimeCandidates) {
+    fail('Offline AI Display Field Generator Probe: payload.runtimeCandidates is not an array');
+  }
+
+  const helper = detectApprovedOfflineAiHelper();
+
+  if (!helper.available) {
+    return {
+      offlineAiHelperAvailable: false,
+      offlineAiHelperName: null,
+      sampleLimit: OFFLINE_AI_DISPLAY_FIELD_SAMPLE_LIMIT,
+      displayFieldDrafts: [],
+      generatedVocabularyDisplayDraftCount: 0,
+      generatedComprehensionDisplayDraftCount: 0,
+      generatedDisplayDraftCount: 0,
+      requiresHumanReview: true,
+      runtimeDisplayMayConsume: false,
+      expectedNextStep:
+        'introduce and approve an offline AI display-field helper (deterministic, JSON-only, temperature 0, '
+        + 'fail-closed, no network at runtime) before this generator can produce vocabulary/comprehension '
+        + 'display-field drafts; until then no drafts are generated and no fields are fabricated',
+    };
+  }
+
+  // (Unreachable in this pipeline: no approved helper is wired in.) If a helper
+  // were available, generation would be bounded to a small sample and validated
+  // per type. Kept as an explicit contract; never fabricates fields.
+  const lookups = indexUpstreamObstaclesById(upstreamArtifacts || {});
+  const sample = runtimeCandidates.slice(0, OFFLINE_AI_DISPLAY_FIELD_SAMPLE_LIMIT);
+  const displayFieldDrafts = [];
+  let generatedVocabularyDisplayDraftCount = 0;
+  let generatedComprehensionDisplayDraftCount = 0;
+
+  sample.forEach((candidate) => {
+    const derived = deriveDisplayFieldsFromUpstream(candidate, lookups);
+    const requiredByType = candidate.type === 'vocabulary'
+      ? ['word', 'phonetic', 'partOfSpeech', 'sentenceMeaning']
+      : ['literal', 'actual', 'grammar'];
+    const generatedFields = {};
+    requiredByType.forEach((field) => {
+      if (isPresentDisplayField(derived[field])) {
+        generatedFields[field] = derived[field];
+      }
+    });
+    if (candidate.type === 'comprehension') {
+      ['prototype', 'phrase', 'text'].forEach((field) => {
+        if (isPresentDisplayField(derived[field])) generatedFields[field] = derived[field];
+      });
+    }
+    const hasAllRequired = requiredByType.every((field) => isPresentDisplayField(generatedFields[field]));
+    if (!hasAllRequired) {
+      return; // fail closed: incomplete required fields -> no draft
+    }
+    if (candidate.type === 'vocabulary') generatedVocabularyDisplayDraftCount += 1;
+    else generatedComprehensionDisplayDraftCount += 1;
+    displayFieldDrafts.push({
+      runtimeCandidateId: candidate.runtimeCandidateId,
+      sourceDraftObstacleId: candidate.sourceDraftObstacleId || null,
+      subtitleIndex: candidate.subtitleIndex,
+      source_en: candidate.source_en,
+      source_zh: Object.prototype.hasOwnProperty.call(candidate, 'source_zh') ? candidate.source_zh : null,
+      type: candidate.type,
+      generatedFields,
+      generationSource: helper.name,
+      confidence: 1,
+      reviewStatus: 'pending_human_review',
+      runtimeDisplayMayConsume: false,
+    });
+  });
+
+  return {
+    offlineAiHelperAvailable: true,
+    offlineAiHelperName: helper.name,
+    sampleLimit: OFFLINE_AI_DISPLAY_FIELD_SAMPLE_LIMIT,
+    displayFieldDrafts,
+    generatedVocabularyDisplayDraftCount,
+    generatedComprehensionDisplayDraftCount,
+    generatedDisplayDraftCount: displayFieldDrafts.length,
+    requiresHumanReview: true,
+    runtimeDisplayMayConsume: false,
+    expectedNextStep: 'human review of generated display-field drafts before any review-gated display promotion',
+  };
+}
+
 function main() {
   const sourceRows = readSubtitleSource();
   const scoped = buildScopedSubtitles(sourceRows);
@@ -2071,6 +2191,31 @@ function main() {
     expectedNextStep: runtimeDisplayFieldEngine.expectedNextStep,
   };
 
+  // P2-I Offline AI Display Field Generator Probe — PROBE ONLY.
+  // Emits a deterministic generator contract; runs no AI because no approved
+  // offline helper is wired into this pipeline. Generates no fabricated fields.
+  const offlineAiDisplayFieldGenerator = buildOfflineAiDisplayFieldGeneratorProbe(runtimeCandidateArtifact, {
+    frozenCandidateArtifact,
+    reviewArtifact,
+    draftObstacleArtifact,
+    vocabularyDecisionArtifact,
+    vocabularyCandidateArtifact,
+    evidenceArtifact,
+    sceneMeaningArtifact,
+    subtitleArtifact,
+  });
+  const offlineAiDisplayFieldGeneratorSummary = {
+    offlineAiHelperAvailable: offlineAiDisplayFieldGenerator.offlineAiHelperAvailable,
+    offlineAiHelperName: offlineAiDisplayFieldGenerator.offlineAiHelperName,
+    sampleLimit: offlineAiDisplayFieldGenerator.sampleLimit,
+    generatedDisplayDraftCount: offlineAiDisplayFieldGenerator.generatedDisplayDraftCount,
+    generatedVocabularyDisplayDraftCount: offlineAiDisplayFieldGenerator.generatedVocabularyDisplayDraftCount,
+    generatedComprehensionDisplayDraftCount: offlineAiDisplayFieldGenerator.generatedComprehensionDisplayDraftCount,
+    requiresHumanReview: offlineAiDisplayFieldGenerator.requiresHumanReview,
+    runtimeDisplayMayConsume: offlineAiDisplayFieldGenerator.runtimeDisplayMayConsume,
+    expectedNextStep: offlineAiDisplayFieldGenerator.expectedNextStep,
+  };
+
   const report = {
     schemaVersion: 'p1-a-pipeline-bootstrap-report.v1',
     stage: STAGE,
@@ -2170,6 +2315,15 @@ function main() {
       runtimeDisplayFieldEngineRuntimeDisplayMayConsume: false,
       runtimeDisplayFieldEngineExpectedNextStep: runtimeDisplayFieldEngine.expectedNextStep,
       runtimeDisplayFieldEngineSummary,
+      offlineAiDisplayFieldGeneratorProbe: true,
+      offlineAiDisplayFieldGeneratorHelperAvailable: offlineAiDisplayFieldGenerator.offlineAiHelperAvailable,
+      offlineAiDisplayFieldGeneratorDraftCount: offlineAiDisplayFieldGenerator.generatedDisplayDraftCount,
+      offlineAiDisplayFieldGeneratorVocabularyDraftCount: offlineAiDisplayFieldGenerator.generatedVocabularyDisplayDraftCount,
+      offlineAiDisplayFieldGeneratorComprehensionDraftCount: offlineAiDisplayFieldGenerator.generatedComprehensionDisplayDraftCount,
+      offlineAiDisplayFieldGeneratorRequiresHumanReview: offlineAiDisplayFieldGenerator.requiresHumanReview,
+      offlineAiDisplayFieldGeneratorRuntimeDisplayMayConsume: false,
+      offlineAiDisplayFieldGeneratorExpectedNextStep: offlineAiDisplayFieldGenerator.expectedNextStep,
+      offlineAiDisplayFieldGeneratorSummary,
       downstreamStillPlaceholder: false,
       noOcrCalled: true,
       noInternetSubtitleFetch: true,
