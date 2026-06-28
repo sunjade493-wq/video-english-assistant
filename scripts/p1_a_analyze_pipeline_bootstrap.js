@@ -791,6 +791,85 @@ function runVocabularyDecisionEngine(vocabularyCandidateArtifact) {
   });
 }
 
+/* -------------------------------------------------------------------------
+ * P1-DC Draft Assembly Engine (REAL, offline, deterministic)
+ *
+ * Per P0-7C this engine consumes ONLY the upstream Vocabulary Decision
+ * Artifact (vocabulary_decision_artifact.json, read from disk). It does NOT
+ * read the subtitle source, Scene Meaning, Evidence, or Vocabulary Candidate
+ * artifacts directly.
+ *
+ * It is fully offline and deterministic: no AI / Qwen / Qwen-VL / OCR.
+ *
+ * It only CONVERTS accepted vocabulary decisions into draft obstacles. It does
+ * NOT make new Vocabulary decisions, does NOT make Comprehension decisions,
+ * does NOT review, does NOT promote, and is never runtime consumable.
+ * ---------------------------------------------------------------------- */
+
+function runDraftAssemblyEngine(vocabularyDecisionArtifact) {
+  const vocabularyObstacles = vocabularyDecisionArtifact
+    && vocabularyDecisionArtifact.payload
+    && Array.isArray(vocabularyDecisionArtifact.payload.vocabularyObstacles)
+    ? vocabularyDecisionArtifact.payload.vocabularyObstacles
+    : null;
+
+  if (!vocabularyObstacles) {
+    fail('Draft Assembly Engine received an invalid Vocabulary Decision Artifact');
+  }
+
+  // Preserve decision ordering exactly; one draft obstacle per vocabulary obstacle.
+  const draftObstacles = vocabularyObstacles.map((obstacle, position) => {
+    const sequence = String(position + 1).padStart(6, '0');
+    return {
+      draftObstacleId: `${EPISODE_ID}-draft-obstacle-${sequence}`,
+      sourceObstacleId: obstacle.obstacleId,
+      sourceCandidateId: obstacle.candidateId,
+      type: 'vocabulary',
+      subtitleIndex: obstacle.subtitleIndex,
+      timestamp: obstacle.timestamp,
+      tokenStart: obstacle.tokenStart,
+      tokenEnd: obstacle.tokenEnd,
+      surfaceForm: obstacle.surfaceForm,
+      normalizedForm: obstacle.normalizedForm,
+      source_en: obstacle.source_en,
+      source_zh: obstacle.source_zh,
+      evidenceSource: obstacle.evidenceSource,
+      decisionReason: obstacle.decisionReason,
+      draftAssemblyReason: 'assembled-deterministic: one draft obstacle per accepted vocabulary decision, ordering preserved',
+      placeholder: false,
+    };
+  });
+
+  return artifactEnvelope({
+    schemaVersion: 'p1-dc-draft-obstacle-artifact.v1',
+    artifactName: 'draft_obstacle_artifact',
+    producerStage: 'Draft Obstacle Assembly',
+    consumerStage: 'AI Review',
+    inputArtifact: 'vocabulary_decision_artifact',
+    artifactStatus: 'produced',
+    contentMode: 'real',
+    runtimeConsumable: false,
+    notes: 'REAL offline deterministic Draft Assembly Engine (P1-DC). Consumes '
+      + 'vocabulary_decision_artifact only (read from disk per P0-7C). No AI / Qwen / Qwen-VL / OCR. '
+      + 'Converts accepted vocabulary decisions into draft obstacles only — it makes no new Vocabulary '
+      + 'decisions, no Comprehension decisions, no review, and no promotion. Never runtime consumable.',
+  }, {
+    draftObstacleCount: draftObstacles.length,
+    draftObstacles,
+    assemblySummary: {
+      sourceVocabularyDecisionCount: vocabularyObstacles.length,
+      assembledDraftObstacleCount: draftObstacles.length,
+      comprehensionDraftObstacleCount: 0,
+    },
+    assemblyRules: {
+      conversion: 'one draft obstacle per accepted vocabulary decision',
+      orderingPreserved: 'vocabulary decision order is preserved exactly',
+      comprehension: 'not assembled at this stage',
+      note: 'Deterministic assembly only. No new decisions, no AI, no comprehension.',
+    },
+  });
+}
+
 function main() {
   const sourceRows = readSubtitleSource();
   const scoped = buildScopedSubtitles(sourceRows);
@@ -858,24 +937,10 @@ function main() {
   const vocabularyDecisionArtifact = runVocabularyDecisionEngine(vocabularyCandidateArtifactForDecision);
   createdFiles.push(writeArtifact('vocabulary_decision_artifact.json', vocabularyDecisionArtifact));
 
-  // 4. Draft Obstacle Artifact (placeholder — no real Vocabulary/Comprehension analysis)
-  const draftObstacleArtifact = artifactEnvelope({
-    schemaVersion: 'p1-a-draft-obstacle-artifact.v1',
-    artifactName: 'draft_obstacle_artifact',
-    producerStage: 'Draft Obstacle Assembly (Vocabulary Engine + Comprehension Engine)',
-    consumerStage: 'AI Review',
-    inputArtifact: 'evidence_artifact + scene_meaning_artifact + vocabulary_candidate_artifact + vocabulary_decision_artifact',
-    artifactStatus: 'produced',
-    contentMode: 'placeholder',
-    runtimeConsumable: false,
-    notes: 'PLACEHOLDER. Vocabulary candidates and decisions are available upstream but no real '
-      + 'Draft assembly or Comprehension obstacle decision is performed in this bootstrap. '
-      + 'Empty obstacle set is intentional.',
-  }, {
-    draftObstacles: [],
-    candidateCount: 0,
-    placeholder: true,
-  });
+  // 4. Draft Obstacle Artifact (REAL — P1-DC Draft Assembly Engine)
+  // Per P0-7C, consumes the Vocabulary Decision Artifact from disk only.
+  const vocabularyDecisionArtifactForDraft = readArtifact('vocabulary_decision_artifact.json');
+  const draftObstacleArtifact = runDraftAssemblyEngine(vocabularyDecisionArtifactForDraft);
   createdFiles.push(writeArtifact('draft_obstacle_artifact.json', draftObstacleArtifact));
 
   // 5. Review Artifact (placeholder — P0-6A AI Review owns real decisions)
@@ -954,6 +1019,11 @@ function main() {
     (id, position) => id === `${EPISODE_ID}-vocab-obstacle-${String(position + 1).padStart(6, '0')}`,
   );
 
+  const draftObstacleCount = draftObstacleArtifact.payload.draftObstacleCount;
+  const draftObstacleIdsSequential = draftObstacleArtifact.payload.draftObstacles.every(
+    (obstacle, position) => obstacle.draftObstacleId === `${EPISODE_ID}-draft-obstacle-${String(position + 1).padStart(6, '0')}`,
+  );
+
   const report = {
     schemaVersion: 'p1-a-pipeline-bootstrap-report.v1',
     stage: STAGE,
@@ -988,14 +1058,17 @@ function main() {
       vocabularyDecisionReal: true,
       vocabularyDecisionCount,
       vocabularyObstacleIdsSequential,
+      draftAssemblyReal: true,
+      draftObstacleCount,
+      draftObstacleIdsSequential,
       downstreamStillPlaceholder: true,
       noOcrCalled: true,
       noInternetSubtitleFetch: true,
     },
     bootstrapCompleted: true,
     nextRecommendedStep:
-      'P1-E: add a real offline Comprehension obstacle stage that consumes the upstream evidence and '
-      + 'vocabulary decision artifacts, preserving the Runtime read-only boundary and the '
+      'P1-E: add a real offline Comprehension obstacle stage and connect the AI Review stage that '
+      + 'consumes the real draft_obstacle_artifact, preserving the Runtime read-only boundary and the '
       + 'forward-only Artifact chain.',
   };
   createdFiles.push(writeArtifact('pipeline_bootstrap_report.json', report));

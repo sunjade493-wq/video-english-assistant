@@ -52,10 +52,13 @@
     "vocabularyDecisionReal": true,
     "vocabularyDecisionCount": 96,
     "vocabularyObstacleIdsSequential": true,
+    "draftAssemblyReal": true,
+    "draftObstacleCount": 96,
+    "draftObstacleIdsSequential": true,
     "downstreamStillPlaceholder": true,
     "noOcrCalled": true,
     "noInternetSubtitleFetch": true
   },
   "bootstrapCompleted": true,
-  "nextRecommendedStep": "P1-E: add a real offline Comprehension obstacle stage that consumes the upstream evidence and vocabulary decision artifacts, preserving the Runtime read-only boundary and the forward-only Artifact chain."
+  "nextRecommendedStep": "P1-E: add a real offline Comprehension obstacle stage and connect the AI Review stage that consumes the real draft_obstacle_artifact, preserving the Runtime read-only boundary and the forward-only Artifact chain."
 }
