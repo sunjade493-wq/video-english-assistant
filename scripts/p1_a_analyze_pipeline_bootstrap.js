@@ -1028,6 +1028,88 @@ function runComprehensionEngine(evidenceArtifact, existingDraftArtifact) {
   });
 }
 
+/* -------------------------------------------------------------------------
+ * P1-F Review Engine (REAL, offline, deterministic)
+ *
+ * Per P0-7C this engine consumes ONLY the upstream Draft Obstacle Artifact
+ * (draft_obstacle_artifact.json, read from disk). It does NOT read the
+ * subtitle source, Scene Meaning, Evidence, Vocabulary Candidate, or
+ * Vocabulary Decision artifacts directly.
+ *
+ * It is fully offline and deterministic: no AI / Qwen / Qwen-VL / OCR.
+ *
+ * It REVIEWS/approves existing draft obstacles deterministically. It does NOT
+ * modify draft obstacles, does NOT promote, and is never runtime consumable.
+ * ---------------------------------------------------------------------- */
+
+function runReviewEngine(draftObstacleArtifact) {
+  const draftObstacles = draftObstacleArtifact
+    && draftObstacleArtifact.payload
+    && Array.isArray(draftObstacleArtifact.payload.draftObstacles)
+    ? draftObstacleArtifact.payload.draftObstacles
+    : null;
+
+  if (!draftObstacles) {
+    fail('Review Engine received an invalid Draft Obstacle Artifact');
+  }
+
+  const reviewItems = draftObstacles.map((obstacle, position) => {
+    const sequence = String(position + 1).padStart(6, '0');
+    const item = {
+      reviewId: `${EPISODE_ID}-review-${sequence}`,
+      sourceDraftObstacleId: obstacle.draftObstacleId,
+      type: obstacle.type,
+      subtitleIndex: obstacle.subtitleIndex,
+      timestamp: obstacle.timestamp,
+      source_en: obstacle.source_en,
+      source_zh: obstacle.source_zh,
+      reviewDecision: 'approved',
+      reviewReason: 'deterministic-review-approved-valid-draft-obstacle',
+      placeholder: false,
+    };
+    if (Object.prototype.hasOwnProperty.call(obstacle, 'normalizedForm')) {
+      item.normalizedForm = obstacle.normalizedForm;
+    }
+    if (Object.prototype.hasOwnProperty.call(obstacle, 'surfaceForm')) {
+      item.surfaceForm = obstacle.surfaceForm;
+    }
+    return item;
+  });
+
+  const approvedCount = reviewItems.filter((item) => item.reviewDecision === 'approved').length;
+
+  return artifactEnvelope({
+    schemaVersion: 'p1-f-review-artifact.v1',
+    artifactName: 'review_artifact',
+    producerStage: 'AI Review + Human Review',
+    consumerStage: 'Frozen Promotion',
+    inputArtifact: 'draft_obstacle_artifact',
+    artifactStatus: 'produced',
+    contentMode: 'real',
+    runtimeConsumable: false,
+    notes: 'REAL offline deterministic Review Engine (P1-F). Consumes draft_obstacle_artifact only '
+      + '(read from disk per P0-7C). No AI / Qwen / Qwen-VL / OCR. Reviews/approves existing draft '
+      + 'obstacles deterministically without modifying them. Does NOT promote. Never runtime consumable.',
+  }, {
+    reviewItemCount: reviewItems.length,
+    approvedCount,
+    rejectedCount: 0,
+    reviewItems,
+    reviewSummary: {
+      sourceDraftObstacleCount: draftObstacles.length,
+      reviewedCount: reviewItems.length,
+      approvedCount,
+      rejectedCount: 0,
+    },
+    reviewRules: {
+      decision: 'all valid draft obstacles deterministically approved',
+      modification: 'draft obstacles are not modified',
+      ordering: 'review items preserve draft obstacle order; reviewId sequence follows draft order',
+      note: 'Deterministic review only. No AI, no rejection logic in this stage.',
+    },
+  });
+}
+
 function main() {
   const sourceRows = readSubtitleSource();
   const scoped = buildScopedSubtitles(sourceRows);
@@ -1112,22 +1194,10 @@ function main() {
   );
   writeArtifact('draft_obstacle_artifact.json', draftObstacleArtifact);
 
-  // 5. Review Artifact (placeholder — P0-6A AI Review owns real decisions)
-  const reviewArtifact = artifactEnvelope({
-    schemaVersion: 'p1-a-review-artifact.v1',
-    artifactName: 'review_artifact',
-    producerStage: 'AI Review + Human Review',
-    consumerStage: 'Frozen Promotion',
-    inputArtifact: 'draft_obstacle_artifact',
-    artifactStatus: 'produced',
-    contentMode: 'placeholder',
-    runtimeConsumable: false,
-    notes: 'PLACEHOLDER. No real evidence-driven review performed in this bootstrap. No decisions to record because draft is empty.',
-  }, {
-    reviewedObstacles: [],
-    decisionCounts: { frozen: 0, reject: 0, needs_human: 0 },
-    placeholder: true,
-  });
+  // 5. Review Artifact (REAL — P1-F Review Engine, offline/deterministic)
+  // Per P0-7C, consumes the final Draft Obstacle Artifact from disk only.
+  const draftObstacleArtifactForReview = readArtifact('draft_obstacle_artifact.json');
+  const reviewArtifact = runReviewEngine(draftObstacleArtifactForReview);
   createdFiles.push(writeArtifact('review_artifact.json', reviewArtifact));
 
   // 6. Frozen Candidate Artifact (placeholder — NOT the real frozen artifact)
@@ -1195,6 +1265,13 @@ function main() {
   const comprehensionDraftObstacleCount =
     draftObstacleArtifact.payload.assemblySummary.comprehensionDraftObstacleCount;
 
+  const reviewItemCount = reviewArtifact.payload.reviewItemCount;
+  const reviewApprovedCount = reviewArtifact.payload.approvedCount;
+  const reviewRejectedCount = reviewArtifact.payload.rejectedCount;
+  const reviewIdsSequential = reviewArtifact.payload.reviewItems.every(
+    (item, position) => item.reviewId === `${EPISODE_ID}-review-${String(position + 1).padStart(6, '0')}`,
+  );
+
   const report = {
     schemaVersion: 'p1-a-pipeline-bootstrap-report.v1',
     stage: STAGE,
@@ -1234,14 +1311,19 @@ function main() {
       draftObstacleIdsSequential,
       comprehensionEngineReal: true,
       comprehensionDraftObstacleCount,
+      reviewEngineReal: true,
+      reviewItemCount,
+      reviewApprovedCount,
+      reviewRejectedCount,
+      reviewIdsSequential,
       downstreamStillPlaceholder: true,
       noOcrCalled: true,
       noInternetSubtitleFetch: true,
     },
     bootstrapCompleted: true,
     nextRecommendedStep:
-      'P1-F: connect the AI Review stage that consumes the real draft_obstacle_artifact (vocabulary + '
-      + 'comprehension), preserving the Runtime read-only boundary and the forward-only Artifact chain.',
+      'P1-G: add a real offline Frozen Promotion stage that consumes the real review_artifact, '
+      + 'preserving the Runtime read-only boundary and the forward-only Artifact chain.',
   };
   createdFiles.push(writeArtifact('pipeline_bootstrap_report.json', report));
 

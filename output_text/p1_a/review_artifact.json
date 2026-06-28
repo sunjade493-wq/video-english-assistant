@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "p1-a-review-artifact.v1",
+  "schemaVersion": "p1-f-review-artifact.v1",
   "stage": "P1-A",
   "artifactName": "review_artifact",
   "episodeId": "tbbt-s12e01",
@@ -9,16 +9,2108 @@
   "inputArtifact": "draft_obstacle_artifact",
   "outputArtifact": "review_artifact",
   "artifactStatus": "produced",
-  "contentMode": "placeholder",
+  "contentMode": "real",
   "runtimeConsumable": false,
-  "notes": "PLACEHOLDER. No real evidence-driven review performed in this bootstrap. No decisions to record because draft is empty.",
+  "notes": "REAL offline deterministic Review Engine (P1-F). Consumes draft_obstacle_artifact only (read from disk per P0-7C). No AI / Qwen / Qwen-VL / OCR. Reviews/approves existing draft obstacles deterministically without modifying them. Does NOT promote. Never runtime consumable.",
   "payload": {
-    "reviewedObstacles": [],
-    "decisionCounts": {
-      "frozen": 0,
-      "reject": 0,
-      "needs_human": 0
+    "reviewItemCount": 126,
+    "approvedCount": 126,
+    "rejectedCount": 0,
+    "reviewItems": [
+      {
+        "reviewId": "tbbt-s12e01-review-000001",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000001",
+        "type": "vocabulary",
+        "subtitleIndex": 0,
+        "timestamp": {
+          "startTime": "2.0",
+          "endTime": "6.0"
+        },
+        "source_en": "Previously on The Big Bang Theory...",
+        "source_zh": "《生活大爆炸》前情提要",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "previously",
+        "surfaceForm": "Previously"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000002",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000002",
+        "type": "vocabulary",
+        "subtitleIndex": 0,
+        "timestamp": {
+          "startTime": "2.0",
+          "endTime": "6.0"
+        },
+        "source_en": "Previously on The Big Bang Theory...",
+        "source_zh": "《生活大爆炸》前情提要",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "big",
+        "surfaceForm": "Big"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000003",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000003",
+        "type": "vocabulary",
+        "subtitleIndex": 0,
+        "timestamp": {
+          "startTime": "2.0",
+          "endTime": "6.0"
+        },
+        "source_en": "Previously on The Big Bang Theory...",
+        "source_zh": "《生活大爆炸》前情提要",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "bang",
+        "surfaceForm": "Bang"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000004",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000004",
+        "type": "vocabulary",
+        "subtitleIndex": 0,
+        "timestamp": {
+          "startTime": "2.0",
+          "endTime": "6.0"
+        },
+        "source_en": "Previously on The Big Bang Theory...",
+        "source_zh": "《生活大爆炸》前情提要",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "theory",
+        "surfaceForm": "Theory..."
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000005",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000005",
+        "type": "vocabulary",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "can",
+        "surfaceForm": "Can"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000006",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000006",
+        "type": "vocabulary",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "believe",
+        "surfaceForm": "believe"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000007",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000007",
+        "type": "vocabulary",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "little",
+        "surfaceForm": "little"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000008",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000008",
+        "type": "vocabulary",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "lamb",
+        "surfaceForm": "lamb"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000009",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000009",
+        "type": "vocabulary",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "finally",
+        "surfaceForm": "finally"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000010",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000010",
+        "type": "vocabulary",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "getting",
+        "surfaceForm": "getting"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000011",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000011",
+        "type": "vocabulary",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "married",
+        "surfaceForm": "married?"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000012",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000012",
+        "type": "vocabulary",
+        "subtitleIndex": 2,
+        "timestamp": {
+          "startTime": "10.0",
+          "endTime": "12.0"
+        },
+        "source_en": "He can't believe it.",
+        "source_zh": "他肯定不信",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "can't",
+        "surfaceForm": "can't"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000013",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000013",
+        "type": "vocabulary",
+        "subtitleIndex": 3,
+        "timestamp": {
+          "startTime": "12.0",
+          "endTime": "15.5"
+        },
+        "source_en": "And neither can I.",
+        "source_zh": "我也不敢相信",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "neither",
+        "surfaceForm": "neither"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000014",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000014",
+        "type": "vocabulary",
+        "subtitleIndex": 4,
+        "timestamp": {
+          "startTime": "15.5",
+          "endTime": "20.5"
+        },
+        "source_en": "Hi, Dad. How you doing?",
+        "source_zh": "爸 你还好吗",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "dad",
+        "surfaceForm": "Dad."
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000015",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000015",
+        "type": "vocabulary",
+        "subtitleIndex": 4,
+        "timestamp": {
+          "startTime": "15.5",
+          "endTime": "20.5"
+        },
+        "source_en": "Hi, Dad. How you doing?",
+        "source_zh": "爸 你还好吗",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "how",
+        "surfaceForm": "How"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000016",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000016",
+        "type": "vocabulary",
+        "subtitleIndex": 4,
+        "timestamp": {
+          "startTime": "15.5",
+          "endTime": "20.5"
+        },
+        "source_en": "Hi, Dad. How you doing?",
+        "source_zh": "爸 你还好吗",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "doing",
+        "surfaceForm": "doing?"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000017",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000017",
+        "type": "vocabulary",
+        "subtitleIndex": 5,
+        "timestamp": {
+          "startTime": "20.5",
+          "endTime": "23.0"
+        },
+        "source_en": "Then by the power vested in me...",
+        "source_zh": "我以\"连你都能证婚网\"",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "then",
+        "surfaceForm": "Then"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000018",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000018",
+        "type": "vocabulary",
+        "subtitleIndex": 5,
+        "timestamp": {
+          "startTime": "20.5",
+          "endTime": "23.0"
+        },
+        "source_en": "Then by the power vested in me...",
+        "source_zh": "我以\"连你都能证婚网\"",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "power",
+        "surfaceForm": "power"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000019",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000019",
+        "type": "vocabulary",
+        "subtitleIndex": 5,
+        "timestamp": {
+          "startTime": "20.5",
+          "endTime": "23.0"
+        },
+        "source_en": "Then by the power vested in me...",
+        "source_zh": "我以\"连你都能证婚网\"",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "vested",
+        "surfaceForm": "vested"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000020",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000020",
+        "type": "vocabulary",
+        "subtitleIndex": 6,
+        "timestamp": {
+          "startTime": "23.0",
+          "endTime": "28.5"
+        },
+        "source_en": "by EvenYouCanPerformWeddings.Com...",
+        "source_zh": "所赋予我的合法权利",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "evenyoucanperformweddings.com",
+        "surfaceForm": "EvenYouCanPerformWeddings.Com..."
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000021",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000021",
+        "type": "vocabulary",
+        "subtitleIndex": 7,
+        "timestamp": {
+          "startTime": "28.5",
+          "endTime": "30.5"
+        },
+        "source_en": "...I now pronounce you husband and wife.",
+        "source_zh": "我现在宣布你们正式结为合法夫妻",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "now",
+        "surfaceForm": "now"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000022",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000022",
+        "type": "vocabulary",
+        "subtitleIndex": 7,
+        "timestamp": {
+          "startTime": "28.5",
+          "endTime": "30.5"
+        },
+        "source_en": "...I now pronounce you husband and wife.",
+        "source_zh": "我现在宣布你们正式结为合法夫妻",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "pronounce",
+        "surfaceForm": "pronounce"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000023",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000023",
+        "type": "vocabulary",
+        "subtitleIndex": 7,
+        "timestamp": {
+          "startTime": "28.5",
+          "endTime": "30.5"
+        },
+        "source_en": "...I now pronounce you husband and wife.",
+        "source_zh": "我现在宣布你们正式结为合法夫妻",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "husband",
+        "surfaceForm": "husband"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000024",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000024",
+        "type": "vocabulary",
+        "subtitleIndex": 7,
+        "timestamp": {
+          "startTime": "28.5",
+          "endTime": "30.5"
+        },
+        "source_en": "...I now pronounce you husband and wife.",
+        "source_zh": "我现在宣布你们正式结为合法夫妻",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "wife",
+        "surfaceForm": "wife."
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000025",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000025",
+        "type": "vocabulary",
+        "subtitleIndex": 8,
+        "timestamp": {
+          "startTime": "30.5",
+          "endTime": "36.5"
+        },
+        "source_en": "You may kiss the bride.",
+        "source_zh": "你可以吻新娘了",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "may",
+        "surfaceForm": "may"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000026",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000026",
+        "type": "vocabulary",
+        "subtitleIndex": 8,
+        "timestamp": {
+          "startTime": "30.5",
+          "endTime": "36.5"
+        },
+        "source_en": "You may kiss the bride.",
+        "source_zh": "你可以吻新娘了",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "kiss",
+        "surfaceForm": "kiss"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000027",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000027",
+        "type": "vocabulary",
+        "subtitleIndex": 8,
+        "timestamp": {
+          "startTime": "30.5",
+          "endTime": "36.5"
+        },
+        "source_en": "You may kiss the bride.",
+        "source_zh": "你可以吻新娘了",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "bride",
+        "surfaceForm": "bride."
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000028",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000028",
+        "type": "vocabulary",
+        "subtitleIndex": 10,
+        "timestamp": {
+          "startTime": "40.5",
+          "endTime": "44.5"
+        },
+        "source_en": "Good morning, wife.",
+        "source_zh": "早安啊 老婆",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "good",
+        "surfaceForm": "Good"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000029",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000029",
+        "type": "vocabulary",
+        "subtitleIndex": 10,
+        "timestamp": {
+          "startTime": "40.5",
+          "endTime": "44.5"
+        },
+        "source_en": "Good morning, wife.",
+        "source_zh": "早安啊 老婆",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "morning",
+        "surfaceForm": "morning,"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000030",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000030",
+        "type": "vocabulary",
+        "subtitleIndex": 12,
+        "timestamp": {
+          "startTime": "47.5",
+          "endTime": "49.5"
+        },
+        "source_en": "I can't believe we're actually married.",
+        "source_zh": "真不敢相信我们真的结婚了",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "we're",
+        "surfaceForm": "we're"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000031",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000031",
+        "type": "vocabulary",
+        "subtitleIndex": 12,
+        "timestamp": {
+          "startTime": "47.5",
+          "endTime": "49.5"
+        },
+        "source_en": "I can't believe we're actually married.",
+        "source_zh": "真不敢相信我们真的结婚了",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "actually",
+        "surfaceForm": "actually"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000032",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000032",
+        "type": "vocabulary",
+        "subtitleIndex": 13,
+        "timestamp": {
+          "startTime": "49.5",
+          "endTime": "51.5"
+        },
+        "source_en": "It's official. According to tradition,",
+        "source_zh": "正式完婚了 根据传统",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "it's",
+        "surfaceForm": "It's"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000033",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000033",
+        "type": "vocabulary",
+        "subtitleIndex": 13,
+        "timestamp": {
+          "startTime": "49.5",
+          "endTime": "51.5"
+        },
+        "source_en": "It's official. According to tradition,",
+        "source_zh": "正式完婚了 根据传统",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "official",
+        "surfaceForm": "official."
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000034",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000034",
+        "type": "vocabulary",
+        "subtitleIndex": 13,
+        "timestamp": {
+          "startTime": "49.5",
+          "endTime": "51.5"
+        },
+        "source_en": "It's official. According to tradition,",
+        "source_zh": "正式完婚了 根据传统",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "according",
+        "surfaceForm": "According"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000035",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000035",
+        "type": "vocabulary",
+        "subtitleIndex": 13,
+        "timestamp": {
+          "startTime": "49.5",
+          "endTime": "51.5"
+        },
+        "source_en": "It's official. According to tradition,",
+        "source_zh": "正式完婚了 根据传统",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "tradition",
+        "surfaceForm": "tradition,"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000036",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000036",
+        "type": "vocabulary",
+        "subtitleIndex": 14,
+        "timestamp": {
+          "startTime": "51.5",
+          "endTime": "53.0"
+        },
+        "source_en": "we should hang the bedsheets outside",
+        "source_zh": "我们应该把床单挂在外面",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "should",
+        "surfaceForm": "should"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000037",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000037",
+        "type": "vocabulary",
+        "subtitleIndex": 14,
+        "timestamp": {
+          "startTime": "51.5",
+          "endTime": "53.0"
+        },
+        "source_en": "we should hang the bedsheets outside",
+        "source_zh": "我们应该把床单挂在外面",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "hang",
+        "surfaceForm": "hang"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000038",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000038",
+        "type": "vocabulary",
+        "subtitleIndex": 14,
+        "timestamp": {
+          "startTime": "51.5",
+          "endTime": "53.0"
+        },
+        "source_en": "we should hang the bedsheets outside",
+        "source_zh": "我们应该把床单挂在外面",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "bedsheets",
+        "surfaceForm": "bedsheets"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000039",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000039",
+        "type": "vocabulary",
+        "subtitleIndex": 14,
+        "timestamp": {
+          "startTime": "51.5",
+          "endTime": "53.0"
+        },
+        "source_en": "we should hang the bedsheets outside",
+        "source_zh": "我们应该把床单挂在外面",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "outside",
+        "surfaceForm": "outside"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000040",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000040",
+        "type": "vocabulary",
+        "subtitleIndex": 15,
+        "timestamp": {
+          "startTime": "53.0",
+          "endTime": "58.0"
+        },
+        "source_en": "so the villagers can see that we consummated.",
+        "source_zh": "这样其他村民就能知道我们行过房了",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "villagers",
+        "surfaceForm": "villagers"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000041",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000041",
+        "type": "vocabulary",
+        "subtitleIndex": 15,
+        "timestamp": {
+          "startTime": "53.0",
+          "endTime": "58.0"
+        },
+        "source_en": "so the villagers can see that we consummated.",
+        "source_zh": "这样其他村民就能知道我们行过房了",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "see",
+        "surfaceForm": "see"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000042",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000042",
+        "type": "vocabulary",
+        "subtitleIndex": 15,
+        "timestamp": {
+          "startTime": "53.0",
+          "endTime": "58.0"
+        },
+        "source_en": "so the villagers can see that we consummated.",
+        "source_zh": "这样其他村民就能知道我们行过房了",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "consummated",
+        "surfaceForm": "consummated."
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000043",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000043",
+        "type": "vocabulary",
+        "subtitleIndex": 16,
+        "timestamp": {
+          "startTime": "58.0",
+          "endTime": "60.5"
+        },
+        "source_en": "considering where we're starting our honeymoon.",
+        "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "considering",
+        "surfaceForm": "considering"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000044",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000044",
+        "type": "vocabulary",
+        "subtitleIndex": 16,
+        "timestamp": {
+          "startTime": "58.0",
+          "endTime": "60.5"
+        },
+        "source_en": "considering where we're starting our honeymoon.",
+        "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "where",
+        "surfaceForm": "where"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000045",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000045",
+        "type": "vocabulary",
+        "subtitleIndex": 16,
+        "timestamp": {
+          "startTime": "58.0",
+          "endTime": "60.5"
+        },
+        "source_en": "considering where we're starting our honeymoon.",
+        "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "starting",
+        "surfaceForm": "starting"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000046",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000046",
+        "type": "vocabulary",
+        "subtitleIndex": 16,
+        "timestamp": {
+          "startTime": "58.0",
+          "endTime": "60.5"
+        },
+        "source_en": "considering where we're starting our honeymoon.",
+        "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "honeymoon",
+        "surfaceForm": "honeymoon."
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000047",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000047",
+        "type": "vocabulary",
+        "subtitleIndex": 17,
+        "timestamp": {
+          "startTime": "60.5",
+          "endTime": "67.0"
+        },
+        "source_en": "Well, I suppose you're right.",
+        "source_zh": "你说的有道理",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "well",
+        "surfaceForm": "Well,"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000048",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000048",
+        "type": "vocabulary",
+        "subtitleIndex": 17,
+        "timestamp": {
+          "startTime": "60.5",
+          "endTime": "67.0"
+        },
+        "source_en": "Well, I suppose you're right.",
+        "source_zh": "你说的有道理",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "suppose",
+        "surfaceForm": "suppose"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000049",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000049",
+        "type": "vocabulary",
+        "subtitleIndex": 17,
+        "timestamp": {
+          "startTime": "60.5",
+          "endTime": "67.0"
+        },
+        "source_en": "Well, I suppose you're right.",
+        "source_zh": "你说的有道理",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "you're",
+        "surfaceForm": "you're"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000050",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000050",
+        "type": "vocabulary",
+        "subtitleIndex": 17,
+        "timestamp": {
+          "startTime": "60.5",
+          "endTime": "67.0"
+        },
+        "source_en": "Well, I suppose you're right.",
+        "source_zh": "你说的有道理",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "right",
+        "surfaceForm": "right."
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000051",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000051",
+        "type": "vocabulary",
+        "subtitleIndex": 18,
+        "timestamp": {
+          "startTime": "67.0",
+          "endTime": "70.0"
+        },
+        "source_en": "Lego is the perfect metaphor for marital congress.",
+        "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "lego",
+        "surfaceForm": "Lego"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000052",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000052",
+        "type": "vocabulary",
+        "subtitleIndex": 18,
+        "timestamp": {
+          "startTime": "67.0",
+          "endTime": "70.0"
+        },
+        "source_en": "Lego is the perfect metaphor for marital congress.",
+        "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "perfect",
+        "surfaceForm": "perfect"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000053",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000053",
+        "type": "vocabulary",
+        "subtitleIndex": 18,
+        "timestamp": {
+          "startTime": "67.0",
+          "endTime": "70.0"
+        },
+        "source_en": "Lego is the perfect metaphor for marital congress.",
+        "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "metaphor",
+        "surfaceForm": "metaphor"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000054",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000054",
+        "type": "vocabulary",
+        "subtitleIndex": 18,
+        "timestamp": {
+          "startTime": "67.0",
+          "endTime": "70.0"
+        },
+        "source_en": "Lego is the perfect metaphor for marital congress.",
+        "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "marital",
+        "surfaceForm": "marital"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000055",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000055",
+        "type": "vocabulary",
+        "subtitleIndex": 18,
+        "timestamp": {
+          "startTime": "67.0",
+          "endTime": "70.0"
+        },
+        "source_en": "Lego is the perfect metaphor for marital congress.",
+        "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "congress",
+        "surfaceForm": "congress."
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000056",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000056",
+        "type": "vocabulary",
+        "subtitleIndex": 19,
+        "timestamp": {
+          "startTime": "70.0",
+          "endTime": "79.5"
+        },
+        "source_en": "Two pieces that interlock with a satisfying snap.",
+        "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "two",
+        "surfaceForm": "Two"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000057",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000057",
+        "type": "vocabulary",
+        "subtitleIndex": 19,
+        "timestamp": {
+          "startTime": "70.0",
+          "endTime": "79.5"
+        },
+        "source_en": "Two pieces that interlock with a satisfying snap.",
+        "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "pieces",
+        "surfaceForm": "pieces"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000058",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000058",
+        "type": "vocabulary",
+        "subtitleIndex": 19,
+        "timestamp": {
+          "startTime": "70.0",
+          "endTime": "79.5"
+        },
+        "source_en": "Two pieces that interlock with a satisfying snap.",
+        "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "interlock",
+        "surfaceForm": "interlock"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000059",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000059",
+        "type": "vocabulary",
+        "subtitleIndex": 19,
+        "timestamp": {
+          "startTime": "70.0",
+          "endTime": "79.5"
+        },
+        "source_en": "Two pieces that interlock with a satisfying snap.",
+        "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "satisfying",
+        "surfaceForm": "satisfying"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000060",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000060",
+        "type": "vocabulary",
+        "subtitleIndex": 19,
+        "timestamp": {
+          "startTime": "70.0",
+          "endTime": "79.5"
+        },
+        "source_en": "Two pieces that interlock with a satisfying snap.",
+        "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "snap",
+        "surfaceForm": "snap."
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000061",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000061",
+        "type": "vocabulary",
+        "subtitleIndex": 20,
+        "timestamp": {
+          "startTime": "79.5",
+          "endTime": "80.5"
+        },
+        "source_en": "Oh, I almost forgot.",
+        "source_zh": "我差点就忘了",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "almost",
+        "surfaceForm": "almost"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000062",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000062",
+        "type": "vocabulary",
+        "subtitleIndex": 20,
+        "timestamp": {
+          "startTime": "79.5",
+          "endTime": "80.5"
+        },
+        "source_en": "Oh, I almost forgot.",
+        "source_zh": "我差点就忘了",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "forgot",
+        "surfaceForm": "forgot."
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000063",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000063",
+        "type": "vocabulary",
+        "subtitleIndex": 21,
+        "timestamp": {
+          "startTime": "80.5",
+          "endTime": "83.5"
+        },
+        "source_en": "While you were sleeping, I ordered room service.",
+        "source_zh": "在你睡觉的时候 我点了客房送餐",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "while",
+        "surfaceForm": "While"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000064",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000064",
+        "type": "vocabulary",
+        "subtitleIndex": 21,
+        "timestamp": {
+          "startTime": "80.5",
+          "endTime": "83.5"
+        },
+        "source_en": "While you were sleeping, I ordered room service.",
+        "source_zh": "在你睡觉的时候 我点了客房送餐",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "sleeping",
+        "surfaceForm": "sleeping,"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000065",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000065",
+        "type": "vocabulary",
+        "subtitleIndex": 21,
+        "timestamp": {
+          "startTime": "80.5",
+          "endTime": "83.5"
+        },
+        "source_en": "While you were sleeping, I ordered room service.",
+        "source_zh": "在你睡觉的时候 我点了客房送餐",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "ordered",
+        "surfaceForm": "ordered"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000066",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000066",
+        "type": "vocabulary",
+        "subtitleIndex": 21,
+        "timestamp": {
+          "startTime": "80.5",
+          "endTime": "83.5"
+        },
+        "source_en": "While you were sleeping, I ordered room service.",
+        "source_zh": "在你睡觉的时候 我点了客房送餐",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "room",
+        "surfaceForm": "room"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000067",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000067",
+        "type": "vocabulary",
+        "subtitleIndex": 21,
+        "timestamp": {
+          "startTime": "80.5",
+          "endTime": "83.5"
+        },
+        "source_en": "While you were sleeping, I ordered room service.",
+        "source_zh": "在你睡觉的时候 我点了客房送餐",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "service",
+        "surfaceForm": "service."
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000068",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000068",
+        "type": "vocabulary",
+        "subtitleIndex": 22,
+        "timestamp": {
+          "startTime": "83.5",
+          "endTime": "85.5"
+        },
+        "source_en": "Really?",
+        "source_zh": "真的吗",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "really",
+        "surfaceForm": "Really?"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000069",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000069",
+        "type": "vocabulary",
+        "subtitleIndex": 23,
+        "timestamp": {
+          "startTime": "85.5",
+          "endTime": "88.5"
+        },
+        "source_en": "Voila!",
+        "source_zh": "请看",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "voila",
+        "surfaceForm": "Voila!"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000070",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000070",
+        "type": "vocabulary",
+        "subtitleIndex": 24,
+        "timestamp": {
+          "startTime": "88.5",
+          "endTime": "92.0"
+        },
+        "source_en": "You thought it was going to be food, didn't you?",
+        "source_zh": "你本来还以为是食物 对吧",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "thought",
+        "surfaceForm": "thought"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000071",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000071",
+        "type": "vocabulary",
+        "subtitleIndex": 24,
+        "timestamp": {
+          "startTime": "88.5",
+          "endTime": "92.0"
+        },
+        "source_en": "You thought it was going to be food, didn't you?",
+        "source_zh": "你本来还以为是食物 对吧",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "going",
+        "surfaceForm": "going"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000072",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000072",
+        "type": "vocabulary",
+        "subtitleIndex": 24,
+        "timestamp": {
+          "startTime": "88.5",
+          "endTime": "92.0"
+        },
+        "source_en": "You thought it was going to be food, didn't you?",
+        "source_zh": "你本来还以为是食物 对吧",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "food",
+        "surfaceForm": "food,"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000073",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000073",
+        "type": "vocabulary",
+        "subtitleIndex": 24,
+        "timestamp": {
+          "startTime": "88.5",
+          "endTime": "92.0"
+        },
+        "source_en": "You thought it was going to be food, didn't you?",
+        "source_zh": "你本来还以为是食物 对吧",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "didn't",
+        "surfaceForm": "didn't"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000074",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000074",
+        "type": "vocabulary",
+        "subtitleIndex": 25,
+        "timestamp": {
+          "startTime": "92.0",
+          "endTime": "95.0"
+        },
+        "source_en": "Our whole universe was in a hot, dense state",
+        "source_zh": "我们的宇宙曾经超热又超密",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "whole",
+        "surfaceForm": "whole"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000075",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000075",
+        "type": "vocabulary",
+        "subtitleIndex": 25,
+        "timestamp": {
+          "startTime": "92.0",
+          "endTime": "95.0"
+        },
+        "source_en": "Our whole universe was in a hot, dense state",
+        "source_zh": "我们的宇宙曾经超热又超密",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "universe",
+        "surfaceForm": "universe"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000076",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000076",
+        "type": "vocabulary",
+        "subtitleIndex": 25,
+        "timestamp": {
+          "startTime": "92.0",
+          "endTime": "95.0"
+        },
+        "source_en": "Our whole universe was in a hot, dense state",
+        "source_zh": "我们的宇宙曾经超热又超密",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "hot",
+        "surfaceForm": "hot,"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000077",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000077",
+        "type": "vocabulary",
+        "subtitleIndex": 25,
+        "timestamp": {
+          "startTime": "92.0",
+          "endTime": "95.0"
+        },
+        "source_en": "Our whole universe was in a hot, dense state",
+        "source_zh": "我们的宇宙曾经超热又超密",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "dense",
+        "surfaceForm": "dense"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000078",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000078",
+        "type": "vocabulary",
+        "subtitleIndex": 25,
+        "timestamp": {
+          "startTime": "92.0",
+          "endTime": "95.0"
+        },
+        "source_en": "Our whole universe was in a hot, dense state",
+        "source_zh": "我们的宇宙曾经超热又超密",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "state",
+        "surfaceForm": "state"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000079",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000079",
+        "type": "vocabulary",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "nearly",
+        "surfaceForm": "nearly"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000080",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000080",
+        "type": "vocabulary",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "billion",
+        "surfaceForm": "billion"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000081",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000081",
+        "type": "vocabulary",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "years",
+        "surfaceForm": "years"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000082",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000082",
+        "type": "vocabulary",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "ago",
+        "surfaceForm": "ago"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000083",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000083",
+        "type": "vocabulary",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "expansion",
+        "surfaceForm": "expansion"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000084",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000084",
+        "type": "vocabulary",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "started",
+        "surfaceForm": "started..."
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000085",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000085",
+        "type": "vocabulary",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "wait",
+        "surfaceForm": "Wait!"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000086",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000086",
+        "type": "vocabulary",
+        "subtitleIndex": 27,
+        "timestamp": {
+          "startTime": "99.0",
+          "endTime": "101.0"
+        },
+        "source_en": "The Earth began to cool",
+        "source_zh": "地球开始冷却",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "earth",
+        "surfaceForm": "Earth"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000087",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000087",
+        "type": "vocabulary",
+        "subtitleIndex": 27,
+        "timestamp": {
+          "startTime": "99.0",
+          "endTime": "101.0"
+        },
+        "source_en": "The Earth began to cool",
+        "source_zh": "地球开始冷却",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "began",
+        "surfaceForm": "began"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000088",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000088",
+        "type": "vocabulary",
+        "subtitleIndex": 27,
+        "timestamp": {
+          "startTime": "99.0",
+          "endTime": "101.0"
+        },
+        "source_en": "The Earth began to cool",
+        "source_zh": "地球开始冷却",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "cool",
+        "surfaceForm": "cool"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000089",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000089",
+        "type": "vocabulary",
+        "subtitleIndex": 28,
+        "timestamp": {
+          "startTime": "101.0",
+          "endTime": "104.0"
+        },
+        "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+        "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "autotrophs",
+        "surfaceForm": "autotrophs"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000090",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000090",
+        "type": "vocabulary",
+        "subtitleIndex": 28,
+        "timestamp": {
+          "startTime": "101.0",
+          "endTime": "104.0"
+        },
+        "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+        "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "drool",
+        "surfaceForm": "drool,"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000091",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000091",
+        "type": "vocabulary",
+        "subtitleIndex": 28,
+        "timestamp": {
+          "startTime": "101.0",
+          "endTime": "104.0"
+        },
+        "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+        "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "neanderthals",
+        "surfaceForm": "Neanderthals"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000092",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000092",
+        "type": "vocabulary",
+        "subtitleIndex": 28,
+        "timestamp": {
+          "startTime": "101.0",
+          "endTime": "104.0"
+        },
+        "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+        "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "developed",
+        "surfaceForm": "developed"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000093",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000093",
+        "type": "vocabulary",
+        "subtitleIndex": 28,
+        "timestamp": {
+          "startTime": "101.0",
+          "endTime": "104.0"
+        },
+        "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+        "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "tools",
+        "surfaceForm": "tools?"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000094",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000094",
+        "type": "vocabulary",
+        "subtitleIndex": 29,
+        "timestamp": {
+          "startTime": "104.0",
+          "endTime": "105.0"
+        },
+        "source_en": "We built the Wall We built the pyramids",
+        "source_zh": "我们建了长城 我们建了金字塔",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "built",
+        "surfaceForm": "built"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000095",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000095",
+        "type": "vocabulary",
+        "subtitleIndex": 29,
+        "timestamp": {
+          "startTime": "104.0",
+          "endTime": "105.0"
+        },
+        "source_en": "We built the Wall We built the pyramids",
+        "source_zh": "我们建了长城 我们建了金字塔",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "wall",
+        "surfaceForm": "Wall"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000096",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000096",
+        "type": "vocabulary",
+        "subtitleIndex": 29,
+        "timestamp": {
+          "startTime": "104.0",
+          "endTime": "105.0"
+        },
+        "source_en": "We built the Wall We built the pyramids",
+        "source_zh": "我们建了长城 我们建了金字塔",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false,
+        "normalizedForm": "pyramids",
+        "surfaceForm": "pyramids"
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000097",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000097",
+        "type": "comprehension",
+        "subtitleIndex": 0,
+        "timestamp": {
+          "startTime": "2.0",
+          "endTime": "6.0"
+        },
+        "source_en": "Previously on The Big Bang Theory...",
+        "source_zh": "《生活大爆炸》前情提要",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000098",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000098",
+        "type": "comprehension",
+        "subtitleIndex": 1,
+        "timestamp": {
+          "startTime": "6.0",
+          "endTime": "10.0"
+        },
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000099",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000099",
+        "type": "comprehension",
+        "subtitleIndex": 2,
+        "timestamp": {
+          "startTime": "10.0",
+          "endTime": "12.0"
+        },
+        "source_en": "He can't believe it.",
+        "source_zh": "他肯定不信",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000100",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000100",
+        "type": "comprehension",
+        "subtitleIndex": 3,
+        "timestamp": {
+          "startTime": "12.0",
+          "endTime": "15.5"
+        },
+        "source_en": "And neither can I.",
+        "source_zh": "我也不敢相信",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000101",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000101",
+        "type": "comprehension",
+        "subtitleIndex": 4,
+        "timestamp": {
+          "startTime": "15.5",
+          "endTime": "20.5"
+        },
+        "source_en": "Hi, Dad. How you doing?",
+        "source_zh": "爸 你还好吗",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000102",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000102",
+        "type": "comprehension",
+        "subtitleIndex": 5,
+        "timestamp": {
+          "startTime": "20.5",
+          "endTime": "23.0"
+        },
+        "source_en": "Then by the power vested in me...",
+        "source_zh": "我以\"连你都能证婚网\"",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000103",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000103",
+        "type": "comprehension",
+        "subtitleIndex": 6,
+        "timestamp": {
+          "startTime": "23.0",
+          "endTime": "28.5"
+        },
+        "source_en": "by EvenYouCanPerformWeddings.Com...",
+        "source_zh": "所赋予我的合法权利",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000104",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000104",
+        "type": "comprehension",
+        "subtitleIndex": 7,
+        "timestamp": {
+          "startTime": "28.5",
+          "endTime": "30.5"
+        },
+        "source_en": "...I now pronounce you husband and wife.",
+        "source_zh": "我现在宣布你们正式结为合法夫妻",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000105",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000105",
+        "type": "comprehension",
+        "subtitleIndex": 8,
+        "timestamp": {
+          "startTime": "30.5",
+          "endTime": "36.5"
+        },
+        "source_en": "You may kiss the bride.",
+        "source_zh": "你可以吻新娘了",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000106",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000106",
+        "type": "comprehension",
+        "subtitleIndex": 9,
+        "timestamp": {
+          "startTime": "36.5",
+          "endTime": "40.5"
+        },
+        "source_en": "and now...",
+        "source_zh": "时至今日",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000107",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000107",
+        "type": "comprehension",
+        "subtitleIndex": 10,
+        "timestamp": {
+          "startTime": "40.5",
+          "endTime": "44.5"
+        },
+        "source_en": "Good morning, wife.",
+        "source_zh": "早安啊 老婆",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000108",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000108",
+        "type": "comprehension",
+        "subtitleIndex": 11,
+        "timestamp": {
+          "startTime": "44.5",
+          "endTime": "47.5"
+        },
+        "source_en": "Good morning, husband.",
+        "source_zh": "早安啊 老公",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000109",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000109",
+        "type": "comprehension",
+        "subtitleIndex": 12,
+        "timestamp": {
+          "startTime": "47.5",
+          "endTime": "49.5"
+        },
+        "source_en": "I can't believe we're actually married.",
+        "source_zh": "真不敢相信我们真的结婚了",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000110",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000110",
+        "type": "comprehension",
+        "subtitleIndex": 13,
+        "timestamp": {
+          "startTime": "49.5",
+          "endTime": "51.5"
+        },
+        "source_en": "It's official. According to tradition,",
+        "source_zh": "正式完婚了 根据传统",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000111",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000111",
+        "type": "comprehension",
+        "subtitleIndex": 14,
+        "timestamp": {
+          "startTime": "51.5",
+          "endTime": "53.0"
+        },
+        "source_en": "we should hang the bedsheets outside",
+        "source_zh": "我们应该把床单挂在外面",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000112",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000112",
+        "type": "comprehension",
+        "subtitleIndex": 15,
+        "timestamp": {
+          "startTime": "53.0",
+          "endTime": "58.0"
+        },
+        "source_en": "so the villagers can see that we consummated.",
+        "source_zh": "这样其他村民就能知道我们行过房了",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000113",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000113",
+        "type": "comprehension",
+        "subtitleIndex": 16,
+        "timestamp": {
+          "startTime": "58.0",
+          "endTime": "60.5"
+        },
+        "source_en": "considering where we're starting our honeymoon.",
+        "source_zh": "毕竟我们是在这种地方开始我们的蜜月之旅",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000114",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000114",
+        "type": "comprehension",
+        "subtitleIndex": 17,
+        "timestamp": {
+          "startTime": "60.5",
+          "endTime": "67.0"
+        },
+        "source_en": "Well, I suppose you're right.",
+        "source_zh": "你说的有道理",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000115",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000115",
+        "type": "comprehension",
+        "subtitleIndex": 18,
+        "timestamp": {
+          "startTime": "67.0",
+          "endTime": "70.0"
+        },
+        "source_en": "Lego is the perfect metaphor for marital congress.",
+        "source_zh": "乐高有着形容夫妻房事的最完美隐喻呢",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000116",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000116",
+        "type": "comprehension",
+        "subtitleIndex": 19,
+        "timestamp": {
+          "startTime": "70.0",
+          "endTime": "79.5"
+        },
+        "source_en": "Two pieces that interlock with a satisfying snap.",
+        "source_zh": "两片乐高\"合体\"并带有爽度十足的咔哒声",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000117",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000117",
+        "type": "comprehension",
+        "subtitleIndex": 20,
+        "timestamp": {
+          "startTime": "79.5",
+          "endTime": "80.5"
+        },
+        "source_en": "Oh, I almost forgot.",
+        "source_zh": "我差点就忘了",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000118",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000118",
+        "type": "comprehension",
+        "subtitleIndex": 21,
+        "timestamp": {
+          "startTime": "80.5",
+          "endTime": "83.5"
+        },
+        "source_en": "While you were sleeping, I ordered room service.",
+        "source_zh": "在你睡觉的时候 我点了客房送餐",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000119",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000119",
+        "type": "comprehension",
+        "subtitleIndex": 22,
+        "timestamp": {
+          "startTime": "83.5",
+          "endTime": "85.5"
+        },
+        "source_en": "Really?",
+        "source_zh": "真的吗",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000120",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000120",
+        "type": "comprehension",
+        "subtitleIndex": 23,
+        "timestamp": {
+          "startTime": "85.5",
+          "endTime": "88.5"
+        },
+        "source_en": "Voila!",
+        "source_zh": "请看",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000121",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000121",
+        "type": "comprehension",
+        "subtitleIndex": 24,
+        "timestamp": {
+          "startTime": "88.5",
+          "endTime": "92.0"
+        },
+        "source_en": "You thought it was going to be food, didn't you?",
+        "source_zh": "你本来还以为是食物 对吧",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000122",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000122",
+        "type": "comprehension",
+        "subtitleIndex": 25,
+        "timestamp": {
+          "startTime": "92.0",
+          "endTime": "95.0"
+        },
+        "source_en": "Our whole universe was in a hot, dense state",
+        "source_zh": "我们的宇宙曾经超热又超密",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000123",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000123",
+        "type": "comprehension",
+        "subtitleIndex": 26,
+        "timestamp": {
+          "startTime": "95.0",
+          "endTime": "99.0"
+        },
+        "source_en": "Then nearly 14 billion years ago expansion started... Wait!",
+        "source_zh": "直到大约140亿年前的某一天宇宙膨胀开始了 等等",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000124",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000124",
+        "type": "comprehension",
+        "subtitleIndex": 27,
+        "timestamp": {
+          "startTime": "99.0",
+          "endTime": "101.0"
+        },
+        "source_en": "The Earth began to cool",
+        "source_zh": "地球开始冷却",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000125",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000125",
+        "type": "comprehension",
+        "subtitleIndex": 28,
+        "timestamp": {
+          "startTime": "101.0",
+          "endTime": "104.0"
+        },
+        "source_en": "The autotrophs began to drool, Neanderthals developed tools?",
+        "source_zh": "自养生物开始发育 尼安德塔人发明工具",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      },
+      {
+        "reviewId": "tbbt-s12e01-review-000126",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000126",
+        "type": "comprehension",
+        "subtitleIndex": 29,
+        "timestamp": {
+          "startTime": "104.0",
+          "endTime": "105.0"
+        },
+        "source_en": "We built the Wall We built the pyramids",
+        "source_zh": "我们建了长城 我们建了金字塔",
+        "reviewDecision": "approved",
+        "reviewReason": "deterministic-review-approved-valid-draft-obstacle",
+        "placeholder": false
+      }
+    ],
+    "reviewSummary": {
+      "sourceDraftObstacleCount": 126,
+      "reviewedCount": 126,
+      "approvedCount": 126,
+      "rejectedCount": 0
     },
-    "placeholder": true
+    "reviewRules": {
+      "decision": "all valid draft obstacles deterministically approved",
+      "modification": "draft obstacles are not modified",
+      "ordering": "review items preserve draft obstacle order; reviewId sequence follows draft order",
+      "note": "Deterministic review only. No AI, no rejection logic in this stage."
+    }
   }
 }

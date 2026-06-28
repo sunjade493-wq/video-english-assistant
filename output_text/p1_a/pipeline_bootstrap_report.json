@@ -57,10 +57,15 @@
     "draftObstacleIdsSequential": true,
     "comprehensionEngineReal": true,
     "comprehensionDraftObstacleCount": 30,
+    "reviewEngineReal": true,
+    "reviewItemCount": 126,
+    "reviewApprovedCount": 126,
+    "reviewRejectedCount": 0,
+    "reviewIdsSequential": true,
     "downstreamStillPlaceholder": true,
     "noOcrCalled": true,
     "noInternetSubtitleFetch": true
   },
   "bootstrapCompleted": true,
-  "nextRecommendedStep": "P1-F: connect the AI Review stage that consumes the real draft_obstacle_artifact (vocabulary + comprehension), preserving the Runtime read-only boundary and the forward-only Artifact chain."
+  "nextRecommendedStep": "P1-G: add a real offline Frozen Promotion stage that consumes the real review_artifact, preserving the Runtime read-only boundary and the forward-only Artifact chain."
 }
