@@ -1631,6 +1631,222 @@ function buildRuntimeCandidateDisplayReadinessProbe(runtimeCandidateArtifact) {
   };
 }
 
+/* -------------------------------------------------------------------------
+ * P2-G Runtime Candidate Display Model Producer (PURE, offline) — PROBE ONLY
+ *
+ * Produces an in-memory display-modeled copy of the runtime candidates by
+ * adding display fields ONLY when they can be deterministically derived from
+ * existing upstream artifact evidence. It never mutates input candidates,
+ * never fabricates language-intelligence content, and never uses placeholder
+ * values. The official runtime_candidate_artifact payload is NOT replaced;
+ * the display-modeled candidates are inspection-only.
+ *
+ * Allowed upstream sources (deterministic): frozen candidate, review, draft
+ * obstacle, vocabulary decision, vocabulary candidate, evidence, scene
+ * meaning, subtitle artifacts.
+ *
+ * No AI / OCR / Qwen / Qwen-VL / Internet. Runtime stays read-only;
+ * runtimeConsumable and payload.runtimeMayConsume stay false.
+ * ---------------------------------------------------------------------- */
+
+function indexUpstreamObstaclesById(upstreamArtifacts) {
+  // Build lineage lookups keyed by the obstacle ids carried through the chain.
+  const byDraftObstacleId = new Map();
+  const draft = upstreamArtifacts.draftObstacleArtifact;
+  const draftObstacles = draft && draft.payload && Array.isArray(draft.payload.draftObstacles)
+    ? draft.payload.draftObstacles
+    : [];
+  draftObstacles.forEach((obstacle) => {
+    if (obstacle && typeof obstacle.draftObstacleId === 'string') {
+      byDraftObstacleId.set(obstacle.draftObstacleId, obstacle);
+    }
+  });
+  return { byDraftObstacleId };
+}
+
+function deriveDisplayFieldsFromUpstream(candidate, lookups) {
+  // Step 1: exact id lineage match (runtime candidate -> draft obstacle).
+  let match = null;
+  if (typeof candidate.sourceDraftObstacleId === 'string') {
+    match = lookups.byDraftObstacleId.get(candidate.sourceDraftObstacleId) || null;
+  }
+
+  // Step 2: fall back to exact subtitleIndex + type + source_en match.
+  if (!match) {
+    for (const obstacle of lookups.byDraftObstacleId.values()) {
+      if (obstacle.subtitleIndex === candidate.subtitleIndex
+        && obstacle.type === candidate.type
+        && obstacle.source_en === candidate.source_en) {
+        match = obstacle;
+        break;
+      }
+    }
+  }
+
+  if (!match) {
+    return {};
+  }
+
+  const derived = {};
+  const copyIfPresent = (field) => {
+    if (typeof match[field] === 'string' && match[field].trim() !== '') {
+      derived[field] = match[field];
+    }
+  };
+
+  if (candidate.type === 'vocabulary') {
+    // Only copy fields that actually exist on the upstream obstacle.
+    copyIfPresent('word');
+    copyIfPresent('phonetic');
+    copyIfPresent('partOfSpeech');
+    copyIfPresent('sentenceMeaning');
+  } else if (candidate.type === 'comprehension') {
+    copyIfPresent('prototype');
+    copyIfPresent('phrase');
+    copyIfPresent('text');
+    copyIfPresent('literal');
+    copyIfPresent('actual');
+    copyIfPresent('grammar');
+  }
+
+  return derived;
+}
+
+function buildRuntimeCandidateDisplayModel(runtimeCandidateArtifact, upstreamArtifacts) {
+  const runtimeCandidates = runtimeCandidateArtifact
+    && runtimeCandidateArtifact.payload
+    && Array.isArray(runtimeCandidateArtifact.payload.runtimeCandidates)
+    ? runtimeCandidateArtifact.payload.runtimeCandidates
+    : null;
+
+  if (!runtimeCandidates) {
+    fail('Runtime Candidate Display Model Producer: payload.runtimeCandidates is not an array');
+  }
+
+  const lookups = indexUpstreamObstaclesById(upstreamArtifacts || {});
+
+  const displayModeledCandidates = runtimeCandidates.map((candidate) => {
+    const derived = deriveDisplayFieldsFromUpstream(candidate, lookups);
+    // Preserve original candidate fields; add derived display fields only when
+    // not already present on the candidate. Never overwrite existing values.
+    const merged = { ...candidate };
+    Object.keys(derived).forEach((field) => {
+      if (!isPresentDisplayField(merged[field])) {
+        merged[field] = derived[field];
+      }
+    });
+    return merged;
+  });
+
+  return {
+    payload: { runtimeCandidates: displayModeledCandidates },
+  };
+}
+
+/* -------------------------------------------------------------------------
+ * P2-H Runtime Display Field Engine Probe (PURE, offline) — PROBE ONLY
+ *
+ * Attempts to build draft display fields for runtime candidates ONLY from safe
+ * existing evidence. The required vocabulary/comprehension language-intelligence
+ * fields (phonetic, partOfSpeech, sentenceMeaning, literal, actual, grammar) do
+ * not exist anywhere upstream, and no offline AI helper exists in this script,
+ * so this probe fabricates nothing. Per the P2-H rules, when no safe AI helper
+ * exists we do NOT add network/API code; we report deterministically that real
+ * display-field generation requires a future AI-backed engine.
+ *
+ * Any draft fields that ARE safely derivable carry full evidence and are marked
+ * reviewStatus: "pending_human_review" and runtimeDisplayMayConsume: false.
+ *
+ * It never modifies runtime_candidate_artifact, never writes a new artifact,
+ * never sets runtimeMayConsume/runtimeConsumable true, and makes no
+ * AI / OCR / Qwen / Qwen-VL / Internet calls.
+ * ---------------------------------------------------------------------- */
+
+function buildRuntimeDisplayFieldEngineProbe(runtimeCandidateArtifact, upstreamArtifacts) {
+  const runtimeCandidates = runtimeCandidateArtifact
+    && runtimeCandidateArtifact.payload
+    && Array.isArray(runtimeCandidateArtifact.payload.runtimeCandidates)
+    ? runtimeCandidateArtifact.payload.runtimeCandidates
+    : null;
+
+  if (!runtimeCandidates) {
+    fail('Runtime Display Field Engine Probe: payload.runtimeCandidates is not an array');
+  }
+
+  // No offline AI generation helper exists in this script (only fs/path are
+  // required). Per rule 13 we do not add network/API code.
+  const offlineAiHelperAvailable = false;
+
+  const lookups = indexUpstreamObstaclesById(upstreamArtifacts || {});
+
+  const displayFieldDrafts = [];
+  let generatedVocabularyDisplayDraftCount = 0;
+  let generatedComprehensionDisplayDraftCount = 0;
+
+  runtimeCandidates.forEach((candidate) => {
+    // Only safe deterministic evidence is allowed. Derive whatever required
+    // display fields genuinely exist upstream; never fabricate the rest.
+    const derived = deriveDisplayFieldsFromUpstream(candidate, lookups);
+
+    const draftFields = {};
+    if (candidate.type === 'vocabulary') {
+      ['word', 'phonetic', 'partOfSpeech', 'sentenceMeaning'].forEach((field) => {
+        if (isPresentDisplayField(derived[field])) {
+          draftFields[field] = derived[field];
+        }
+      });
+    } else if (candidate.type === 'comprehension') {
+      ['prototype', 'phrase', 'text', 'literal', 'actual', 'grammar'].forEach((field) => {
+        if (isPresentDisplayField(derived[field])) {
+          draftFields[field] = derived[field];
+        }
+      });
+    }
+
+    if (Object.keys(draftFields).length === 0) {
+      return; // no safe evidence -> no draft (no fabrication)
+    }
+
+    if (candidate.type === 'vocabulary') {
+      generatedVocabularyDisplayDraftCount += 1;
+    } else if (candidate.type === 'comprehension') {
+      generatedComprehensionDisplayDraftCount += 1;
+    }
+
+    displayFieldDrafts.push({
+      runtimeCandidateId: candidate.runtimeCandidateId,
+      sourceDraftObstacleId: candidate.sourceDraftObstacleId || null,
+      subtitleIndex: candidate.subtitleIndex,
+      source_en: candidate.source_en,
+      source_zh: Object.prototype.hasOwnProperty.call(candidate, 'source_zh') ? candidate.source_zh : null,
+      type: candidate.type,
+      draftFields,
+      generationSource: 'deterministic-upstream-artifact-evidence',
+      confidence: 1,
+      reviewStatus: 'pending_human_review',
+      runtimeDisplayMayConsume: false,
+    });
+  });
+
+  const generatedDisplayDraftCount = displayFieldDrafts.length;
+  const expectedNextStep = generatedDisplayDraftCount > 0
+    ? 'human review of generated display-field drafts, then a future review-gated display promotion'
+    : 'introduce a future offline AI-backed Runtime Display Field Engine (deterministic, JSON-only, temperature 0, '
+      + 'fail-closed) to generate vocabulary/comprehension display fields, because no upstream artifact currently '
+      + 'carries phonetic/partOfSpeech/sentenceMeaning or literal/actual/grammar';
+
+  return {
+    offlineAiHelperAvailable,
+    displayFieldDrafts,
+    generatedVocabularyDisplayDraftCount,
+    generatedComprehensionDisplayDraftCount,
+    generatedDisplayDraftCount,
+    requiresHumanReview: true,
+    runtimeDisplayMayConsume: false,
+    expectedNextStep,
+  };
+}
+
 function main() {
   const sourceRows = readSubtitleSource();
   const scoped = buildScopedSubtitles(sourceRows);
@@ -1805,6 +2021,56 @@ function main() {
   const runtimeCandidateDisplayReadiness =
     buildRuntimeCandidateDisplayReadinessProbe(runtimeCandidateArtifact);
 
+  // P2-G Runtime Candidate Display Model Producer — PROBE ONLY.
+  // Derives display fields from upstream artifact evidence (no fabrication) and
+  // measures before/after display readiness. Does NOT replace the official
+  // runtime_candidate_artifact payload and does NOT enable Runtime consumption.
+  const runtimeCandidateDisplayModel = buildRuntimeCandidateDisplayModel(runtimeCandidateArtifact, {
+    frozenCandidateArtifact,
+    reviewArtifact,
+    draftObstacleArtifact,
+    vocabularyDecisionArtifact,
+    vocabularyCandidateArtifact,
+    evidenceArtifact,
+    sceneMeaningArtifact,
+    subtitleArtifact,
+  });
+  const runtimeCandidateDisplayModelReadiness =
+    buildRuntimeCandidateDisplayReadinessProbe(runtimeCandidateDisplayModel);
+  const p2gBeforeReadyCount = runtimeCandidateDisplayReadiness.displayReadyCandidateCount;
+  const p2gAfterReadyCount = runtimeCandidateDisplayModelReadiness.displayReadyCandidateCount;
+  const runtimeCandidateDisplayModelSummary = {
+    beforeDisplayReadyCount: p2gBeforeReadyCount,
+    afterDisplayReadyCount: p2gAfterReadyCount,
+    displayReadyAddedCount: p2gAfterReadyCount - p2gBeforeReadyCount,
+    beforeDisplayReadyRatio: runtimeCandidateDisplayReadiness.displayReadyRatio,
+    afterDisplayReadyRatio: runtimeCandidateDisplayModelReadiness.displayReadyRatio,
+    expectedP2EOutcomeAfterDisplayModel: p2gAfterReadyCount > 0 ? 'activate' : 'fail_closed',
+  };
+
+  // P2-H Runtime Display Field Engine Probe — PROBE ONLY.
+  // Builds draft display fields only from safe upstream evidence (no fabrication,
+  // no AI/network). Drafts are pending human review and not runtime consumable.
+  const runtimeDisplayFieldEngine = buildRuntimeDisplayFieldEngineProbe(runtimeCandidateArtifact, {
+    frozenCandidateArtifact,
+    reviewArtifact,
+    draftObstacleArtifact,
+    vocabularyDecisionArtifact,
+    vocabularyCandidateArtifact,
+    evidenceArtifact,
+    sceneMeaningArtifact,
+    subtitleArtifact,
+  });
+  const runtimeDisplayFieldEngineSummary = {
+    offlineAiHelperAvailable: runtimeDisplayFieldEngine.offlineAiHelperAvailable,
+    generatedDisplayDraftCount: runtimeDisplayFieldEngine.generatedDisplayDraftCount,
+    generatedVocabularyDisplayDraftCount: runtimeDisplayFieldEngine.generatedVocabularyDisplayDraftCount,
+    generatedComprehensionDisplayDraftCount: runtimeDisplayFieldEngine.generatedComprehensionDisplayDraftCount,
+    requiresHumanReview: runtimeDisplayFieldEngine.requiresHumanReview,
+    runtimeDisplayMayConsume: runtimeDisplayFieldEngine.runtimeDisplayMayConsume,
+    expectedNextStep: runtimeDisplayFieldEngine.expectedNextStep,
+  };
+
   const report = {
     schemaVersion: 'p1-a-pipeline-bootstrap-report.v1',
     stage: STAGE,
@@ -1887,6 +2153,23 @@ function main() {
       runtimeCandidateDisplayReadyRatio: runtimeCandidateDisplayReadiness.displayReadyRatio,
       runtimeCandidateExpectedP2EOutcome: runtimeCandidateDisplayReadiness.expectedP2EOutcome,
       runtimeCandidateDisplayReadinessSummary: runtimeCandidateDisplayReadiness.summary,
+      runtimeCandidateDisplayModelProducerProbe: true,
+      runtimeCandidateDisplayModelBeforeReadyCount: runtimeCandidateDisplayModelSummary.beforeDisplayReadyCount,
+      runtimeCandidateDisplayModelAfterReadyCount: runtimeCandidateDisplayModelSummary.afterDisplayReadyCount,
+      runtimeCandidateDisplayModelAddedReadyCount: runtimeCandidateDisplayModelSummary.displayReadyAddedCount,
+      runtimeCandidateDisplayModelBeforeReadyRatio: runtimeCandidateDisplayModelSummary.beforeDisplayReadyRatio,
+      runtimeCandidateDisplayModelAfterReadyRatio: runtimeCandidateDisplayModelSummary.afterDisplayReadyRatio,
+      runtimeCandidateExpectedP2EOutcomeAfterDisplayModel: runtimeCandidateDisplayModelSummary.expectedP2EOutcomeAfterDisplayModel,
+      runtimeCandidateDisplayModelSummary,
+      runtimeCandidateDisplayModelRuntimeStillNotConsumable: true,
+      runtimeDisplayFieldEngineProbe: true,
+      runtimeDisplayFieldEngineDraftCount: runtimeDisplayFieldEngine.generatedDisplayDraftCount,
+      runtimeDisplayFieldEngineVocabularyDraftCount: runtimeDisplayFieldEngine.generatedVocabularyDisplayDraftCount,
+      runtimeDisplayFieldEngineComprehensionDraftCount: runtimeDisplayFieldEngine.generatedComprehensionDisplayDraftCount,
+      runtimeDisplayFieldEngineRequiresHumanReview: runtimeDisplayFieldEngine.requiresHumanReview,
+      runtimeDisplayFieldEngineRuntimeDisplayMayConsume: false,
+      runtimeDisplayFieldEngineExpectedNextStep: runtimeDisplayFieldEngine.expectedNextStep,
+      runtimeDisplayFieldEngineSummary,
       downstreamStillPlaceholder: false,
       noOcrCalled: true,
       noInternetSubtitleFetch: true,
