@@ -2268,6 +2268,61 @@ async function runP3CDisplayFieldGeneration(runtimeCandidateArtifact, upstreamAr
   };
 }
 
+/* -------------------------------------------------------------------------
+ * P3-D Display Draft Human Review Gate
+ *
+ * Records review decisions for P3-C VALID display drafts only. It does NOT
+ * promote display drafts and does NOT make Runtime Candidate consumable. For
+ * this stage the decisions are DETERMINISTIC PLACEHOLDERS (reviewer
+ * "human-placeholder") used to verify the review gate wiring — this is NOT a
+ * claim that real human review occurred. Output is inspection/report-only.
+ *
+ * Runtime stays read-only; runtimeMayConsume / runtimeConsumable stay false and
+ * every decision carries runtimeDisplayMayConsume false.
+ * ---------------------------------------------------------------------- */
+
+const P3D_PLACEHOLDER_REVIEWED_AT = 'P3-D-placeholder-review';
+
+function buildP3DDisplayDraftHumanReviewGate(p3cGeneration) {
+  const validDrafts = p3cGeneration && Array.isArray(p3cGeneration.validDrafts)
+    ? p3cGeneration.validDrafts
+    : [];
+
+  // Placeholder approval for every valid P3-C draft (deterministic, not a real
+  // human review). Review targets are restricted to P3-C valid drafts only.
+  const reviewDecisions = validDrafts.map((draft) => ({
+    runtimeCandidateId: draft.runtimeCandidateId,
+    reviewDecision: 'approved',
+    reviewer: 'human-placeholder',
+    reviewedAt: P3D_PLACEHOLDER_REVIEWED_AT,
+    reason: 'placeholder approval for P3-D review gate verification',
+    runtimeDisplayMayConsume: false,
+  }));
+
+  // Invariant: no decision may enable display consumption.
+  const allDisplayConsumeFalse = reviewDecisions.every(
+    (decision) => decision.runtimeDisplayMayConsume === false,
+  );
+  if (!allDisplayConsumeFalse) {
+    fail('P3-D review gate produced a decision with runtimeDisplayMayConsume !== false');
+  }
+
+  const approvedDraftCount = reviewDecisions.filter((d) => d.reviewDecision === 'approved').length;
+  const rejectedDraftCount = reviewDecisions.filter((d) => d.reviewDecision === 'rejected').length;
+
+  return {
+    reviewGateStatus: validDrafts.length > 0 ? 'reviewed_placeholder' : 'no_valid_drafts_to_review',
+    reviewedDraftCount: reviewDecisions.length,
+    approvedDraftCount,
+    rejectedDraftCount,
+    reviewDecisions,
+    runtimeDisplayMayConsume: false,
+    expectedNextStep:
+      'replace placeholder approvals with real human review decisions; a future review-gated promotion '
+      + 'stage may then promote only approved display drafts before Runtime consumption is considered',
+  };
+}
+
 async function main() {
   const sourceRows = readSubtitleSource();
   const scoped = buildScopedSubtitles(sourceRows);
@@ -2566,6 +2621,17 @@ async function main() {
     runtimeDisplayMayConsume: draft.runtimeDisplayMayConsume,
   }));
 
+  // P3-D Display Draft Human Review Gate.
+  // Records placeholder review decisions for P3-C valid drafts only. Does not
+  // promote drafts and does not enable Runtime consumption.
+  const p3dReviewGate = buildP3DDisplayDraftHumanReviewGate(p3cGeneration);
+  const p3dSafeReviewSample = p3dReviewGate.reviewDecisions.slice(0, 1).map((decision) => ({
+    runtimeCandidateId: decision.runtimeCandidateId,
+    reviewDecision: decision.reviewDecision,
+    reviewer: decision.reviewer,
+    runtimeDisplayMayConsume: decision.runtimeDisplayMayConsume,
+  }));
+
   const report = {
     schemaVersion: 'p1-a-pipeline-bootstrap-report.v1',
     stage: STAGE,
@@ -2700,6 +2766,16 @@ async function main() {
       p3cRuntimeMayConsumeStillFalse: runtimeCandidateArtifact.payload.runtimeMayConsume === false,
       p3cExpectedNextStep: p3cGeneration.expectedNextStep,
       p3cSafeDraftSample,
+      p3dDisplayDraftHumanReviewGate: true,
+      p3dReviewGateStatus: p3dReviewGate.reviewGateStatus,
+      p3dReviewedDraftCount: p3dReviewGate.reviewedDraftCount,
+      p3dApprovedDraftCount: p3dReviewGate.approvedDraftCount,
+      p3dRejectedDraftCount: p3dReviewGate.rejectedDraftCount,
+      p3dRuntimeDisplayMayConsume: false,
+      p3dRuntimeCandidateStillNotConsumable: runtimeCandidateArtifact.runtimeConsumable === false,
+      p3dRuntimeMayConsumeStillFalse: runtimeCandidateArtifact.payload.runtimeMayConsume === false,
+      p3dExpectedNextStep: p3dReviewGate.expectedNextStep,
+      p3dSafeReviewSample,
       downstreamStillPlaceholder: false,
       noOcrCalled: true,
       noInternetSubtitleFetch: true,
