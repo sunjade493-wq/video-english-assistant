@@ -4,6 +4,7 @@ const REAL_OBSTACLE_DATA_URL = 'output_text/v29a_obstacles.json';
 const RUNTIME_PILOT_OBSTACLE_DATA_URL = 'output_text/runtime/p0_5b_30_obstacle_runtime.json';
 const RUNTIME_SHADOW_CANDIDATE_ARTIFACT_URL = 'output_text/p1_a/runtime_candidate_artifact.json';
 const RUNTIME_SHADOW_REVIEW_ARTIFACT_URL = 'output_text/p1_a/runtime_consumption_review_artifact.json';
+const PROMOTED_DISPLAY_ARTIFACT_URL = 'output_text/p1_a/promoted_display_artifact.json';
 const REAL_VISUAL_MAPPING_DATA_URL = 'output_text/visual_mapping/TBBT_S12E01_word_boxes.json';
 const REAL_VIDEO_URL = 'assets/videos/TBBT_S12E01.mp4';
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
@@ -27,6 +28,10 @@ function isRuntimeShadowOptInEnabled() {
 
 function isRuntimeCandidateOptInEnabled() {
   return new URLSearchParams(window.location.search).get('runtimeCandidate') === '1';
+}
+
+function isRuntimeDisplayOptInEnabled() {
+  return new URLSearchParams(window.location.search).get('runtimeDisplay') === '1';
 }
 
 const SUPPORTED_PART_OF_SPEECH_FORMATS = new Set([
@@ -1176,6 +1181,10 @@ function getCurrentProgressKeyScope() {
     return 'runtime-candidate';
   }
 
+  if (activeDataSource === 'promoted-display') {
+    return 'promoted-display';
+  }
+
   if (activeDataSource === 'real') {
     return 'production';
   }
@@ -1248,6 +1257,109 @@ async function activateRuntimeCandidateOptInIfEnabled() {
   renderCards();
   syncPlaybackClock();
   console.log(`P2-E runtime candidate opt-in active: ${normalizedCandidateObstacles.length} obstacles`);
+  return true;
+}
+
+function failClosedRuntimeDisplayConsumption(reason) {
+  console.log(`P3-G Runtime Display Consumption unavailable; production display retained. (${reason})`);
+  return false;
+}
+
+function validatePromotedDisplayArtifact(artifact) {
+  if (!artifact || typeof artifact !== 'object') {
+    throw new Error('promoted display artifact is not an object');
+  }
+  if (typeof artifact.schemaVersion !== 'string' || artifact.schemaVersion.trim() === '') {
+    throw new Error('promoted display artifact schemaVersion is missing');
+  }
+  if (artifact.runtimeMayConsume !== false) {
+    throw new Error('promoted display artifact runtimeMayConsume is not false');
+  }
+  if (artifact.runtimeDisplayMayConsume !== false) {
+    throw new Error('promoted display artifact runtimeDisplayMayConsume is not false');
+  }
+  const promotedDisplays = artifact.payload && artifact.payload.promotedDisplays;
+  if (!Array.isArray(promotedDisplays)) {
+    throw new Error('promoted display artifact payload.promotedDisplays is missing');
+  }
+  promotedDisplays.forEach((display, index) => {
+    if (!display || typeof display !== 'object') {
+      throw new Error(`promoted display ${index} is not an object`);
+    }
+    if (typeof display.promotedDisplayId !== 'string' || display.promotedDisplayId.trim() === '') {
+      throw new Error(`promoted display ${index} promotedDisplayId is missing`);
+    }
+    if (!display.generatedFields || typeof display.generatedFields !== 'object') {
+      throw new Error(`promoted display ${index} generatedFields is missing`);
+    }
+  });
+  return promotedDisplays;
+}
+
+function promotedDisplayToObstacleRow(display) {
+  // Map a promoted display into a runtime obstacle row using ONLY its already
+  // generated fields. Runtime never generates, infers, or repairs fields.
+  const fields = display.generatedFields || {};
+  return {
+    id: display.promotedDisplayId,
+    type: display.type,
+    ...fields,
+  };
+}
+
+async function activateRuntimeDisplayOptInIfEnabled() {
+  if (!isRuntimeDisplayOptInEnabled()) {
+    return false;
+  }
+
+  let artifact;
+
+  try {
+    artifact = await fetchJson(PROMOTED_DISPLAY_ARTIFACT_URL);
+  } catch (error) {
+    return failClosedRuntimeDisplayConsumption(`promoted display artifact failed to load: ${error?.message || error}`);
+  }
+
+  let promotedDisplays;
+
+  try {
+    promotedDisplays = validatePromotedDisplayArtifact(artifact);
+  } catch (error) {
+    return failClosedRuntimeDisplayConsumption(error?.message || String(error));
+  }
+
+  console.log('P3-G promoted display artifact loaded');
+  console.log(`P3-G promoted display count: ${promotedDisplays.length}`);
+
+  let normalizedDisplayObstacles;
+
+  try {
+    normalizedDisplayObstacles = normalizeObstacles(promotedDisplays.map(promotedDisplayToObstacleRow));
+  } catch (error) {
+    return failClosedRuntimeDisplayConsumption(`promoted display normalization failed: ${error?.message || error}`);
+  }
+
+  if (!Array.isArray(normalizedDisplayObstacles) || normalizedDisplayObstacles.length === 0) {
+    return failClosedRuntimeDisplayConsumption('normalized promoted display obstacles are unavailable or empty');
+  }
+
+  console.log('P3-G promoted display validation passed');
+
+  obstacles = normalizedDisplayObstacles;
+  activeDataSource = 'promoted-display';
+  selectedObstacleId = null;
+  streamMode = 'dynamic';
+  currentEpisodeProgressKey = getEpisodeProgressKey(JSON.stringify({
+    source: 'promoted-display',
+    subtitles: subtitleSegments.map((segment) => segment.text),
+    obstacles: normalizedDisplayObstacles.map((obstacle) => obstacle.id),
+  }));
+  applyStoredEpisodeProgress(currentEpisodeProgressKey);
+  saveEpisodeProgress();
+  renderVideoState();
+  renderCards();
+  syncPlaybackClock();
+  console.log(`P3-G Runtime Display Consumption active: ${normalizedDisplayObstacles.length} promoted displays`);
   return true;
 }
 
@@ -1424,6 +1536,7 @@ async function initApp() {
     logRuntimePilotSelectionShadowComparison();
     await runRuntimeShadowProbeIfEnabled();
     await activateRuntimeCandidateOptInIfEnabled();
+    await activateRuntimeDisplayOptInIfEnabled();
     activateRuntimePilotOptInIfEnabled();
     logRuntimePilotExitIsolationVerification();
     return;
