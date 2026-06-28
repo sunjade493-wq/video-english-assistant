@@ -517,6 +517,170 @@ function runEvidenceEngine(subtitleArtifact, sceneMeaningArtifact) {
   });
 }
 
+/* -------------------------------------------------------------------------
+ * P1-DA Vocabulary Candidate Engine (REAL, offline, deterministic)
+ *
+ * Per P0-7C this engine consumes ONLY the upstream Evidence Artifact
+ * (evidence_artifact.json, read from disk). It must NOT directly read the
+ * Scene Meaning Artifact or the subtitle source; it reads subtitle text only
+ * through Evidence Artifact fields.
+ *
+ * It is fully offline and deterministic: no AI / Qwen / Qwen-VL / OCR /
+ * video analysis / Internet subtitle fetch.
+ *
+ * It COLLECTS vocabulary candidates only. It does NOT decide final vocabulary
+ * obstacles, does NOT decide comprehension obstacles, does NOT promote, and is
+ * never runtime consumable.
+ * ---------------------------------------------------------------------- */
+
+const VOCAB_STOPWORDS = new Set([
+  'a', 'an', 'the', 'i', 'you', 'he', 'she', 'it', 'we', 'they',
+  'am', 'is', 'are', 'was', 'were', 'be', 'been',
+  'do', 'does', 'did',
+  'to', 'of', 'in', 'on', 'at', 'for', 'with', 'by', 'from',
+  'and', 'or', 'but',
+  'my', 'your', 'his', 'her', 'our', 'their',
+  'this', 'that', 'these', 'those',
+]);
+
+function normalizeVocabToken(surface) {
+  // Strip leading/trailing punctuation while preserving internal apostrophes/hyphens.
+  const stripped = String(surface || '').replace(/^[^A-Za-z0-9']+/, '').replace(/[^A-Za-z0-9']+$/, '');
+  return stripped.toLowerCase();
+}
+
+function isPureNumber(value) {
+  return /^[0-9]+$/.test(value);
+}
+
+function runVocabularyCandidateEngine(evidenceArtifact) {
+  const evidenceChains = evidenceArtifact
+    && evidenceArtifact.payload
+    && Array.isArray(evidenceArtifact.payload.evidenceChains)
+    ? evidenceArtifact.payload.evidenceChains
+    : null;
+
+  if (!evidenceChains || evidenceChains.length === 0) {
+    fail('Vocabulary Candidate Engine received an empty or invalid Evidence Artifact');
+  }
+
+  const excludedTokenSummary = {
+    empty: 0,
+    pureNumber: 0,
+    musicSymbol: 0,
+    punctuationOnly: 0,
+    stopword: 0,
+  };
+
+  const collected = [];
+
+  evidenceChains.forEach((chain) => {
+    const english = chain.evidenceChain && chain.evidenceChain.englishSubtitle;
+    const chinese = chain.evidenceChain && chain.evidenceChain.chineseSubtitle;
+    const sourceEn = english && typeof english.source_en === 'string' ? english.source_en : '';
+    const sourceZh = chinese && typeof chinese.source_zh === 'string' ? chinese.source_zh : null;
+
+    // Deterministic tokenization on whitespace, preserving char offsets.
+    const tokenRegex = /\S+/g;
+    let match = tokenRegex.exec(sourceEn);
+    while (match !== null) {
+      const surfaceRaw = match[0];
+      const tokenStart = match.index;
+      const tokenEnd = match.index + surfaceRaw.length;
+      const normalizedForm = normalizeVocabToken(surfaceRaw);
+
+      if (!normalizedForm) {
+        if (/^[^A-Za-z0-9'♪]+$/.test(surfaceRaw)) {
+          excludedTokenSummary.punctuationOnly += 1;
+        } else if (surfaceRaw.includes('♪')) {
+          excludedTokenSummary.musicSymbol += 1;
+        } else {
+          excludedTokenSummary.empty += 1;
+        }
+      } else if (surfaceRaw.includes('♪')) {
+        excludedTokenSummary.musicSymbol += 1;
+      } else if (isPureNumber(normalizedForm)) {
+        excludedTokenSummary.pureNumber += 1;
+      } else if (VOCAB_STOPWORDS.has(normalizedForm)) {
+        excludedTokenSummary.stopword += 1;
+      } else {
+        const evidenceSource = ['englishSubtitle'];
+        if (sourceZh) evidenceSource.push('chineseSubtitle');
+        collected.push({
+          subtitleIndex: chain.subtitleIndex,
+          tokenStart,
+          tokenEnd,
+          surfaceForm: surfaceRaw,
+          normalizedForm,
+          timestamp: chain.timestamp,
+          source_en: sourceEn,
+          source_zh: sourceZh,
+          evidenceSource,
+        });
+      }
+
+      match = tokenRegex.exec(sourceEn);
+    }
+  });
+
+  // Stable ordering: subtitleIndex asc, then tokenStart asc, then normalizedForm asc.
+  collected.sort((a, b) => {
+    if (a.subtitleIndex !== b.subtitleIndex) return a.subtitleIndex - b.subtitleIndex;
+    if (a.tokenStart !== b.tokenStart) return a.tokenStart - b.tokenStart;
+    return a.normalizedForm.localeCompare(b.normalizedForm);
+  });
+
+  const vocabularyCandidates = collected.map((item, position) => {
+    const sequence = String(position + 1).padStart(6, '0');
+    return {
+      candidateId: `${EPISODE_ID}-vocab-candidate-${sequence}`,
+      subtitleIndex: item.subtitleIndex,
+      timestamp: item.timestamp,
+      tokenStart: item.tokenStart,
+      tokenEnd: item.tokenEnd,
+      surfaceForm: item.surfaceForm,
+      normalizedForm: item.normalizedForm,
+      source_en: item.source_en,
+      source_zh: item.source_zh,
+      evidenceSource: item.evidenceSource,
+      candidateReason: 'content-token-after-deterministic-stopword-and-symbol-exclusion',
+      placeholder: false,
+    };
+  });
+
+  return artifactEnvelope({
+    schemaVersion: 'p1-da-vocabulary-candidate-artifact.v1',
+    artifactName: 'vocabulary_candidate_artifact',
+    producerStage: 'Vocabulary Candidate Engine',
+    consumerStage: 'Draft Obstacle Assembly',
+    inputArtifact: 'evidence_artifact',
+    artifactStatus: 'produced',
+    contentMode: 'real',
+    runtimeConsumable: false,
+    notes: 'REAL offline deterministic Vocabulary Candidate Engine (P1-DA). Consumes evidence_artifact '
+      + 'only (read from disk per P0-7C); reads subtitle text solely through Evidence Artifact fields. '
+      + 'No AI / Qwen / Qwen-VL / OCR / video analysis / Internet subtitle fetch. '
+      + 'Collects vocabulary CANDIDATES only — it never decides final vocabulary obstacles, never '
+      + 'decides comprehension obstacles, and never promotes. Never runtime consumable.',
+  }, {
+    vocabularyCandidateCount: vocabularyCandidates.length,
+    vocabularyCandidates,
+    excludedTokenSummary,
+    candidateCollectionRules: {
+      tokenization: 'whitespace split on englishSubtitle.source_en with leading/trailing punctuation stripped',
+      normalization: 'lowercase, internal apostrophes and hyphens preserved',
+      excluded: [
+        'empty tokens',
+        'pure numbers',
+        'music symbols',
+        'punctuation-only tokens',
+        'common function words (deterministic stopword list)',
+      ],
+      note: 'Candidate collection only. Final vocabulary obstacle decisions are NOT made at this stage.',
+    },
+  });
+}
+
 function main() {
   const sourceRows = readSubtitleSource();
   const scoped = buildScopedSubtitles(sourceRows);
@@ -571,17 +735,25 @@ function main() {
   );
   createdFiles.push(writeArtifact('evidence_artifact.json', evidenceArtifact));
 
+  // 3b. Vocabulary Candidate Artifact (REAL — P1-DA Vocabulary Candidate Engine)
+  // Per P0-7C, consumes the Evidence Artifact from disk only; never reads the
+  // Scene Meaning Artifact or subtitle source directly.
+  const evidenceArtifactForVocab = readArtifact('evidence_artifact.json');
+  const vocabularyCandidateArtifact = runVocabularyCandidateEngine(evidenceArtifactForVocab);
+  createdFiles.push(writeArtifact('vocabulary_candidate_artifact.json', vocabularyCandidateArtifact));
+
   // 4. Draft Obstacle Artifact (placeholder — no real Vocabulary/Comprehension analysis)
   const draftObstacleArtifact = artifactEnvelope({
     schemaVersion: 'p1-a-draft-obstacle-artifact.v1',
     artifactName: 'draft_obstacle_artifact',
     producerStage: 'Draft Obstacle Assembly (Vocabulary Engine + Comprehension Engine)',
     consumerStage: 'AI Review',
-    inputArtifact: 'evidence_artifact + scene_meaning_artifact',
+    inputArtifact: 'evidence_artifact + scene_meaning_artifact + vocabulary_candidate_artifact',
     artifactStatus: 'produced',
     contentMode: 'placeholder',
     runtimeConsumable: false,
-    notes: 'PLACEHOLDER. No real Vocabulary or Comprehension analysis performed in this bootstrap. Empty candidate set is intentional.',
+    notes: 'PLACEHOLDER. Vocabulary candidates are available upstream but no real Vocabulary or '
+      + 'Comprehension obstacle decision is performed in this bootstrap. Empty obstacle set is intentional.',
   }, {
     draftObstacles: [],
     candidateCount: 0,
@@ -648,11 +820,14 @@ function main() {
     'subtitle_artifact',
     'scene_meaning_artifact',
     'evidence_artifact',
+    'vocabulary_candidate_artifact',
     'draft_obstacle_artifact',
     'review_artifact',
     'frozen_candidate_artifact',
     'runtime_candidate_artifact',
   ];
+
+  const vocabularyCandidateCount = vocabularyCandidateArtifact.payload.vocabularyCandidateCount;
 
   const report = {
     schemaVersion: 'p1-a-pipeline-bootstrap-report.v1',
@@ -683,15 +858,17 @@ function main() {
       runtimeConsumable: false,
       sceneMeaningReal: true,
       evidenceReal: true,
+      vocabularyCandidateReal: true,
+      vocabularyCandidateCount,
       downstreamStillPlaceholder: true,
       noOcrCalled: true,
       noInternetSubtitleFetch: true,
     },
     bootstrapCompleted: true,
     nextRecommendedStep:
-      'P1-D: replace the placeholder Draft Obstacle stage with real offline Vocabulary + Comprehension '
-      + 'engines that consume the real Evidence Artifact, preserving the Runtime read-only boundary '
-      + 'and the forward-only Artifact chain.',
+      'P1-DB: add a real offline Vocabulary Obstacle decision stage that consumes the '
+      + 'vocabulary_candidate_artifact, preserving the Runtime read-only boundary and the '
+      + 'forward-only Artifact chain.',
   };
   createdFiles.push(writeArtifact('pipeline_bootstrap_report.json', report));
 
