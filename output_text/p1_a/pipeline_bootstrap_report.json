@@ -62,10 +62,14 @@
     "reviewApprovedCount": 126,
     "reviewRejectedCount": 0,
     "reviewIdsSequential": true,
+    "frozenPromotionReal": true,
+    "frozenCandidateCount": 126,
+    "frozenCandidateIdsSequential": true,
+    "runtimeCandidateStillPlaceholder": true,
     "downstreamStillPlaceholder": true,
     "noOcrCalled": true,
     "noInternetSubtitleFetch": true
   },
   "bootstrapCompleted": true,
-  "nextRecommendedStep": "P1-G: add a real offline Frozen Promotion stage that consumes the real review_artifact, preserving the Runtime read-only boundary and the forward-only Artifact chain."
+  "nextRecommendedStep": "P1-H: add a real offline Runtime Promotion stage that consumes the real frozen_candidate_artifact. It must produce a runtime candidate explicitly, and any runtimeMayConsume change must be an explicit, separately reviewed step — the Runtime read-only boundary and forward-only Artifact chain must be preserved."
 }

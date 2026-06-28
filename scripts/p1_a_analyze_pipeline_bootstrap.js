@@ -1110,6 +1110,91 @@ function runReviewEngine(draftObstacleArtifact) {
   });
 }
 
+/* -------------------------------------------------------------------------
+ * P1-G Frozen Promotion Engine (REAL, offline, deterministic)
+ *
+ * Per P0-7C this engine consumes ONLY the upstream Review Artifact
+ * (review_artifact.json, read from disk). It does NOT read the subtitle
+ * source, Scene Meaning, Evidence, Vocabulary Candidate, Vocabulary Decision,
+ * or Draft artifacts directly.
+ *
+ * It is fully offline and deterministic: no AI / Qwen / Qwen-VL / OCR.
+ *
+ * It PROMOTES approved review items into frozen candidates deterministically.
+ * It does NOT modify review items, does NOT promote to Runtime, and is never
+ * runtime consumable. frozenStatus is "frozen_candidate", not "frozen".
+ * ---------------------------------------------------------------------- */
+
+function runFrozenPromotionEngine(reviewArtifact) {
+  const reviewItems = reviewArtifact
+    && reviewArtifact.payload
+    && Array.isArray(reviewArtifact.payload.reviewItems)
+    ? reviewArtifact.payload.reviewItems
+    : null;
+
+  if (!reviewItems) {
+    fail('Frozen Promotion Engine received an invalid Review Artifact');
+  }
+
+  const approvedItems = reviewItems.filter((item) => item.reviewDecision === 'approved');
+  const rejectedReviewItemCount = reviewItems.length - approvedItems.length;
+
+  const frozenCandidates = approvedItems.map((item, position) => {
+    const sequence = String(position + 1).padStart(6, '0');
+    const candidate = {
+      frozenCandidateId: `${EPISODE_ID}-frozen-candidate-${sequence}`,
+      sourceReviewId: item.reviewId,
+      sourceDraftObstacleId: item.sourceDraftObstacleId,
+      type: item.type,
+      subtitleIndex: item.subtitleIndex,
+      timestamp: item.timestamp,
+      source_en: item.source_en,
+      source_zh: item.source_zh,
+      frozenStatus: 'frozen_candidate',
+      promotionReason: 'deterministic-promotion-approved-review-item',
+      placeholder: false,
+    };
+    if (Object.prototype.hasOwnProperty.call(item, 'normalizedForm')) {
+      candidate.normalizedForm = item.normalizedForm;
+    }
+    if (Object.prototype.hasOwnProperty.call(item, 'surfaceForm')) {
+      candidate.surfaceForm = item.surfaceForm;
+    }
+    return candidate;
+  });
+
+  return artifactEnvelope({
+    schemaVersion: 'p1-g-frozen-candidate-artifact.v1',
+    artifactName: 'frozen_candidate_artifact',
+    producerStage: 'Frozen Promotion',
+    consumerStage: 'Runtime Promotion',
+    inputArtifact: 'review_artifact',
+    artifactStatus: 'produced',
+    contentMode: 'real',
+    runtimeConsumable: false,
+    notes: 'REAL offline deterministic Frozen Promotion Engine (P1-G). Consumes review_artifact only '
+      + '(read from disk per P0-7C). No AI / Qwen / Qwen-VL / OCR. Promotes approved review items into '
+      + 'frozen CANDIDATES (frozenStatus: frozen_candidate) without modifying review items. Does NOT '
+      + 'promote to Runtime. Never runtime consumable.',
+  }, {
+    frozenCandidateCount: frozenCandidates.length,
+    frozenCandidates,
+    promotionSummary: {
+      sourceReviewItemCount: reviewItems.length,
+      approvedReviewItemCount: approvedItems.length,
+      promotedFrozenCandidateCount: frozenCandidates.length,
+      rejectedReviewItemCount,
+    },
+    promotionRules: {
+      eligibility: 'only review items with reviewDecision === "approved" are promoted',
+      modification: 'review items are not modified',
+      status: 'each promoted item is a frozen_candidate, not a runtime-consumable frozen artifact',
+      ordering: 'frozen candidates preserve approved review order; frozenCandidateId sequence follows that order',
+      note: 'Deterministic promotion only. No AI, no runtime promotion at this stage.',
+    },
+  });
+}
+
 function main() {
   const sourceRows = readSubtitleSource();
   const scoped = buildScopedSubtitles(sourceRows);
@@ -1200,22 +1285,10 @@ function main() {
   const reviewArtifact = runReviewEngine(draftObstacleArtifactForReview);
   createdFiles.push(writeArtifact('review_artifact.json', reviewArtifact));
 
-  // 6. Frozen Candidate Artifact (placeholder — NOT the real frozen artifact)
-  const frozenCandidateArtifact = artifactEnvelope({
-    schemaVersion: 'p1-a-frozen-candidate-artifact.v1',
-    artifactName: 'frozen_candidate_artifact',
-    producerStage: 'Frozen Promotion',
-    consumerStage: 'Runtime Promotion',
-    inputArtifact: 'review_artifact',
-    artifactStatus: 'produced',
-    contentMode: 'placeholder',
-    runtimeConsumable: false,
-    notes: 'PLACEHOLDER frozen CANDIDATE only. This is a bootstrap wiring artifact and is NOT a real frozen artifact. reviewStatus is not set to frozen.',
-  }, {
-    reviewStatus: 'bootstrap-placeholder',
-    frozenObstacles: [],
-    placeholder: true,
-  });
+  // 6. Frozen Candidate Artifact (REAL — P1-G Frozen Promotion Engine)
+  // Per P0-7C, consumes the Review Artifact from disk only.
+  const reviewArtifactForFrozen = readArtifact('review_artifact.json');
+  const frozenCandidateArtifact = runFrozenPromotionEngine(reviewArtifactForFrozen);
   createdFiles.push(writeArtifact('frozen_candidate_artifact.json', frozenCandidateArtifact));
 
   // 7. Runtime Candidate Artifact (placeholder — explicitly NOT runtime consumable)
@@ -1272,6 +1345,11 @@ function main() {
     (item, position) => item.reviewId === `${EPISODE_ID}-review-${String(position + 1).padStart(6, '0')}`,
   );
 
+  const frozenCandidateCount = frozenCandidateArtifact.payload.frozenCandidateCount;
+  const frozenCandidateIdsSequential = frozenCandidateArtifact.payload.frozenCandidates.every(
+    (candidate, position) => candidate.frozenCandidateId === `${EPISODE_ID}-frozen-candidate-${String(position + 1).padStart(6, '0')}`,
+  );
+
   const report = {
     schemaVersion: 'p1-a-pipeline-bootstrap-report.v1',
     stage: STAGE,
@@ -1316,14 +1394,20 @@ function main() {
       reviewApprovedCount,
       reviewRejectedCount,
       reviewIdsSequential,
+      frozenPromotionReal: true,
+      frozenCandidateCount,
+      frozenCandidateIdsSequential,
+      runtimeCandidateStillPlaceholder: true,
       downstreamStillPlaceholder: true,
       noOcrCalled: true,
       noInternetSubtitleFetch: true,
     },
     bootstrapCompleted: true,
     nextRecommendedStep:
-      'P1-G: add a real offline Frozen Promotion stage that consumes the real review_artifact, '
-      + 'preserving the Runtime read-only boundary and the forward-only Artifact chain.',
+      'P1-H: add a real offline Runtime Promotion stage that consumes the real frozen_candidate_artifact. '
+      + 'It must produce a runtime candidate explicitly, and any runtimeMayConsume change must be an '
+      + 'explicit, separately reviewed step — the Runtime read-only boundary and forward-only Artifact '
+      + 'chain must be preserved.',
   };
   createdFiles.push(writeArtifact('pipeline_bootstrap_report.json', report));
 
