@@ -25,6 +25,10 @@ function isRuntimeShadowOptInEnabled() {
   return new URLSearchParams(window.location.search).get('runtimeShadow') === '1';
 }
 
+function isRuntimeCandidateOptInEnabled() {
+  return new URLSearchParams(window.location.search).get('runtimeCandidate') === '1';
+}
+
 const SUPPORTED_PART_OF_SPEECH_FORMATS = new Set([
   'n.',
   'pron.',
@@ -1168,11 +1172,83 @@ function getCurrentProgressKeyScope() {
     return 'runtime-pilot';
   }
 
+  if (activeDataSource === 'runtime-candidate') {
+    return 'runtime-candidate';
+  }
+
   if (activeDataSource === 'real') {
     return 'production';
   }
 
   return 'unknown';
+}
+
+function failClosedRuntimeCandidateOptIn(reason) {
+  console.log(`P2-E runtime candidate opt-in unavailable; production flow retained: ${reason}`);
+  return false;
+}
+
+async function activateRuntimeCandidateOptInIfEnabled() {
+  if (!isRuntimeCandidateOptInEnabled()) {
+    return false;
+  }
+
+  let candidateArtifact;
+  let reviewArtifact;
+
+  try {
+    [candidateArtifact, reviewArtifact] = await Promise.all([
+      fetchJson(RUNTIME_SHADOW_CANDIDATE_ARTIFACT_URL),
+      fetchJson(RUNTIME_SHADOW_REVIEW_ARTIFACT_URL),
+    ]);
+  } catch (error) {
+    return failClosedRuntimeCandidateOptIn(`runtime candidate artifacts failed to load: ${error?.message || error}`);
+  }
+
+  // Reuse the frozen P2-C false-guard + review-approval validation. This keeps
+  // the frozen guards intact: runtimeConsumable === false and
+  // payload.runtimeMayConsume === false must both still hold, and the P1-I
+  // review decision must approve P2 runtime integration.
+  let validatedModel;
+
+  try {
+    validatedModel = validateRuntimeShadowArtifacts(candidateArtifact, reviewArtifact);
+  } catch (error) {
+    return failClosedRuntimeCandidateOptIn(error?.message || String(error));
+  }
+
+  let normalizedCandidateObstacles;
+
+  try {
+    normalizedCandidateObstacles = normalizeObstacles(validatedModel.candidates);
+  } catch (error) {
+    return failClosedRuntimeCandidateOptIn(`runtime candidate normalization failed: ${error?.message || error}`);
+  }
+
+  if (!Array.isArray(normalizedCandidateObstacles) || normalizedCandidateObstacles.length === 0) {
+    return failClosedRuntimeCandidateOptIn('normalized runtime candidate obstacles are unavailable or empty');
+  }
+
+  if (!normalizedCandidateObstacles.every(hasUsableRuntimePilotCandidateId)) {
+    return failClosedRuntimeCandidateOptIn('normalized runtime candidate obstacles include unusable ids');
+  }
+
+  obstacles = normalizedCandidateObstacles;
+  activeDataSource = 'runtime-candidate';
+  selectedObstacleId = null;
+  streamMode = 'dynamic';
+  currentEpisodeProgressKey = getEpisodeProgressKey(JSON.stringify({
+    source: 'runtime-candidate',
+    subtitles: subtitleSegments.map((segment) => segment.text),
+    obstacles: normalizedCandidateObstacles.map((candidate) => candidate.id),
+  }));
+  applyStoredEpisodeProgress(currentEpisodeProgressKey);
+  saveEpisodeProgress();
+  renderVideoState();
+  renderCards();
+  syncPlaybackClock();
+  console.log(`P2-E runtime candidate opt-in active: ${normalizedCandidateObstacles.length} obstacles`);
+  return true;
 }
 
 function logRuntimePilotExitIsolationVerification() {
@@ -1347,6 +1423,7 @@ async function initApp() {
     logRuntimePilotReadOnlySelectionCandidatesAvailable();
     logRuntimePilotSelectionShadowComparison();
     await runRuntimeShadowProbeIfEnabled();
+    await activateRuntimeCandidateOptInIfEnabled();
     activateRuntimePilotOptInIfEnabled();
     logRuntimePilotExitIsolationVerification();
     return;
