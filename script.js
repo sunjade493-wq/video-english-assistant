@@ -25,6 +25,10 @@ function isRuntimeShadowOptInEnabled() {
   return new URLSearchParams(window.location.search).get('runtimeShadow') === '1';
 }
 
+function isRuntimeCandidateOptInEnabled() {
+  return new URLSearchParams(window.location.search).get('runtimeCandidate') === '1';
+}
+
 const SUPPORTED_PART_OF_SPEECH_FORMATS = new Set([
   'n.',
   'pron.',
@@ -856,6 +860,73 @@ function validateRuntimeShadowArtifacts(candidateArtifact, reviewArtifact) {
   };
 }
 
+
+function failClosedRuntimeCandidateOptIn(reason) {
+  console.warn(`P2-E runtime candidate opt-in unavailable; production flow retained: ${reason}`);
+  return false;
+}
+
+function hasUsableRuntimeCandidateId(candidate) {
+  return typeof candidate?.id === 'string' && candidate.id.trim() !== '';
+}
+
+async function activateRuntimeCandidateOptInIfEnabled() {
+  if (!isRuntimeCandidateOptInEnabled()) {
+    return false;
+  }
+
+  let candidateArtifact;
+  let reviewArtifact;
+  let shadowModel;
+  let normalizedRuntimeCandidates;
+
+  try {
+    [candidateArtifact, reviewArtifact] = await Promise.all([
+      fetchJson(RUNTIME_SHADOW_CANDIDATE_ARTIFACT_URL),
+      fetchJson(RUNTIME_SHADOW_REVIEW_ARTIFACT_URL),
+    ]);
+  } catch (error) {
+    return failClosedRuntimeCandidateOptIn(`runtime candidate artifacts could not be loaded: ${error?.message || error}`);
+  }
+
+  try {
+    shadowModel = validateRuntimeShadowArtifacts(candidateArtifact, reviewArtifact);
+  } catch (error) {
+    return failClosedRuntimeCandidateOptIn(error?.message || error);
+  }
+
+  try {
+    normalizedRuntimeCandidates = normalizeObstacles(shadowModel.candidates);
+  } catch (error) {
+    return failClosedRuntimeCandidateOptIn(`runtime candidate normalization failed: ${error?.message || error}`);
+  }
+
+  if (!Array.isArray(normalizedRuntimeCandidates) || normalizedRuntimeCandidates.length === 0) {
+    return failClosedRuntimeCandidateOptIn('normalized runtime candidates are unavailable or empty');
+  }
+
+  if (!normalizedRuntimeCandidates.every(hasUsableRuntimeCandidateId)) {
+    return failClosedRuntimeCandidateOptIn('normalized runtime candidates include unusable ids');
+  }
+
+  obstacles = normalizedRuntimeCandidates;
+  activeDataSource = 'runtime-candidate';
+  selectedObstacleId = null;
+  streamMode = 'dynamic';
+  currentEpisodeProgressKey = getEpisodeProgressKey(JSON.stringify({
+    source: 'runtime-candidate',
+    subtitles: subtitleSegments.map((segment) => segment.text),
+    obstacles: normalizedRuntimeCandidates.map((candidate) => candidate.id),
+  }));
+  applyStoredEpisodeProgress(currentEpisodeProgressKey);
+  saveEpisodeProgress();
+  renderVideoState();
+  renderCards();
+  syncPlaybackClock();
+  console.log(`P2-E runtime candidate opt-in active: ${normalizedRuntimeCandidates.length} obstacles`);
+  return true;
+}
+
 async function runRuntimeShadowProbeIfEnabled() {
   if (!isRuntimeShadowOptInEnabled()) {
     return null;
@@ -1347,6 +1418,7 @@ async function initApp() {
     logRuntimePilotReadOnlySelectionCandidatesAvailable();
     logRuntimePilotSelectionShadowComparison();
     await runRuntimeShadowProbeIfEnabled();
+    await activateRuntimeCandidateOptInIfEnabled();
     activateRuntimePilotOptInIfEnabled();
     logRuntimePilotExitIsolationVerification();
     return;
