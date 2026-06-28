@@ -25,6 +25,10 @@ function isRuntimeShadowOptInEnabled() {
   return new URLSearchParams(window.location.search).get('runtimeShadow') === '1';
 }
 
+function isRuntimeCandidateOptInEnabled() {
+  return new URLSearchParams(window.location.search).get('runtimeCandidate') === '1';
+}
+
 const SUPPORTED_PART_OF_SPEECH_FORMATS = new Set([
   'n.',
   'pron.',
@@ -856,6 +860,99 @@ function validateRuntimeShadowArtifacts(candidateArtifact, reviewArtifact) {
   };
 }
 
+
+function normalizeRuntimeCandidateRecord(candidate, candidateIndex = 0) {
+  const timestamp = candidate?.timestamp || {};
+  const surfaceForm = getRuntimeDisplayText(candidate?.surfaceForm);
+  const normalizedForm = getRuntimeDisplayText(candidate?.normalizedForm);
+  const displayText = surfaceForm || normalizedForm;
+  const type = normalizeObstacleType(candidate?.type);
+  const baseRecord = {
+    id: candidate?.runtimeCandidateId || candidate?.id || `runtime-candidate-${candidateIndex + 1}`,
+    type: candidate?.type,
+    subtitleIndex: candidate?.subtitleIndex,
+    source_en: candidate?.source_en,
+    source_zh: candidate?.source_zh,
+    start: timestamp.startTime,
+    end: timestamp.endTime,
+  };
+
+  if (type === 'vocab') {
+    return {
+      ...baseRecord,
+      word: displayText,
+      text: displayText,
+      baseForm: normalizedForm,
+      prototype: normalizedForm || displayText,
+      phonetic: candidate?.phonetic,
+      partOfSpeech: candidate?.partOfSpeech,
+      translation: candidate?.translation,
+      sentenceMeaning: candidate?.sentenceMeaning,
+    };
+  }
+
+  return {
+    ...baseRecord,
+    phrase: displayText || getRuntimeDisplayText(candidate?.phrase),
+    prototype: getRuntimeDisplayText(candidate?.prototype) || displayText,
+    text: displayText || getRuntimeDisplayText(candidate?.text),
+    literal: candidate?.literal,
+    actual: candidate?.actual,
+    grammar: candidate?.grammar,
+  };
+}
+
+function normalizeRuntimeCandidateRecords(candidates) {
+  if (!Array.isArray(candidates)) {
+    throw new Error('runtime candidate records are not an array');
+  }
+
+  return normalizeObstacles(candidates.map(normalizeRuntimeCandidateRecord));
+}
+
+function failClosedRuntimeCandidateOptIn(reason) {
+  console.warn(`P2-E runtime candidate opt-in unavailable; production flow retained: ${reason}`);
+  return false;
+}
+
+async function activateRuntimeCandidateOptInIfEnabled() {
+  if (!isRuntimeCandidateOptInEnabled()) {
+    return false;
+  }
+
+  try {
+    const [candidateArtifact, reviewArtifact] = await Promise.all([
+      fetchJson(RUNTIME_SHADOW_CANDIDATE_ARTIFACT_URL),
+      fetchJson(RUNTIME_SHADOW_REVIEW_ARTIFACT_URL),
+    ]);
+    const candidateModel = validateRuntimeShadowArtifacts(candidateArtifact, reviewArtifact);
+    const normalizedRuntimeCandidateObstacles = normalizeRuntimeCandidateRecords(candidateModel.candidates);
+
+    if (normalizedRuntimeCandidateObstacles.length === 0) {
+      return failClosedRuntimeCandidateOptIn('normalized runtime candidate obstacles are empty');
+    }
+
+    obstacles = normalizedRuntimeCandidateObstacles;
+    activeDataSource = 'runtime-candidate';
+    selectedObstacleId = null;
+    streamMode = 'dynamic';
+    currentEpisodeProgressKey = getEpisodeProgressKey(JSON.stringify({
+      source: 'runtime-candidate',
+      subtitles: subtitleSegments.map((segment) => segment.text),
+      obstacles: normalizedRuntimeCandidateObstacles.map((candidate) => candidate.id),
+    }));
+    applyStoredEpisodeProgress(currentEpisodeProgressKey);
+    saveEpisodeProgress();
+    renderVideoState();
+    renderCards();
+    syncPlaybackClock();
+    console.log(`P2-E runtime candidate opt-in active: ${normalizedRuntimeCandidateObstacles.length} obstacles`);
+    return true;
+  } catch (error) {
+    return failClosedRuntimeCandidateOptIn(error?.message || error);
+  }
+}
+
 async function runRuntimeShadowProbeIfEnabled() {
   if (!isRuntimeShadowOptInEnabled()) {
     return null;
@@ -1168,6 +1265,10 @@ function getCurrentProgressKeyScope() {
     return 'runtime-pilot';
   }
 
+  if (activeDataSource === 'runtime-candidate') {
+    return 'runtime-candidate';
+  }
+
   if (activeDataSource === 'real') {
     return 'production';
   }
@@ -1347,6 +1448,7 @@ async function initApp() {
     logRuntimePilotReadOnlySelectionCandidatesAvailable();
     logRuntimePilotSelectionShadowComparison();
     await runRuntimeShadowProbeIfEnabled();
+    await activateRuntimeCandidateOptInIfEnabled();
     activateRuntimePilotOptInIfEnabled();
     logRuntimePilotExitIsolationVerification();
     return;
