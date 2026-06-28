@@ -2192,3 +2192,79 @@ Runtime
 ```
 
 Next Milestone: P1-DB Real Vocabulary Decision Engine
+
+---
+
+## P1-E Real Comprehension Engine
+
+Status: FROZEN ✅
+
+Git Tag: `p1-e-real-comprehension-engine`
+
+Commit: `ff4416c`
+
+Source: `scripts/p1_a_analyze_pipeline_bootstrap.js`
+
+Generated outputs:
+
+- `output_text/p1_a/draft_obstacle_artifact.json`
+- `output_text/p1_a/pipeline_bootstrap_report.json`
+
+Summary:
+
+- Comprehension Engine is now REAL.
+- Offline deterministic implementation.
+- Consumes `evidence_artifact.json` and existing `draft_obstacle_artifact.json` from disk.
+- Does NOT directly read subtitle source.
+- Does NOT directly read `scene_meaning_artifact.json`.
+- Reads Scene Meaning signals only through Evidence Artifact fields.
+- Preserves existing vocabulary draft obstacles.
+- Appends comprehension draft obstacles after vocabulary draft obstacles.
+- Produces 126 total draft obstacles:
+  - 96 vocabulary
+  - 30 comprehension
+- `draft_obstacle_artifact` contentMode: real
+- `runtimeConsumable`: false
+- Review / Frozen Candidate / Runtime Candidate remain placeholder.
+- Runtime Candidate `runtimeMayConsume` remains false.
+- Runtime remains read-only.
+- Forward-only Artifact Chain preserved.
+- No AI / OCR / Internet calls.
+
+Current pipeline status:
+
+```text
+Subtitle
+    │
+    ▼
+Scene Meaning              ✅ REAL
+    │
+    ▼
+Evidence                   ✅ REAL
+    │
+    ▼
+Vocabulary Candidate       ✅ REAL
+    │
+    ▼
+Vocabulary Decision        ✅ REAL
+    │
+    ▼
+Draft Assembly             ✅ REAL
+    │
+    ▼
+Comprehension Engine       ✅ REAL
+    │
+    ▼
+Review                     Placeholder
+    │
+    ▼
+Frozen Candidate           Placeholder
+    │
+    ▼
+Runtime Candidate          Placeholder
+    │
+    ▼
+Runtime                    Read-only
+```
+
+Next Milestone: P1-F Real AI Review Engine
