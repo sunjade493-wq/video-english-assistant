@@ -21,7 +21,8 @@
     "draft_obstacle_artifact",
     "review_artifact",
     "frozen_candidate_artifact",
-    "runtime_candidate_artifact"
+    "runtime_candidate_artifact",
+    "runtime_consumption_review_artifact"
   ],
   "forwardOnlyOrderPreserved": true,
   "artifactsCreated": [
@@ -33,7 +34,8 @@
     "output_text/p1_a/draft_obstacle_artifact.json",
     "output_text/p1_a/review_artifact.json",
     "output_text/p1_a/frozen_candidate_artifact.json",
-    "output_text/p1_a/runtime_candidate_artifact.json"
+    "output_text/p1_a/runtime_candidate_artifact.json",
+    "output_text/p1_a/runtime_consumption_review_artifact.json"
   ],
   "verification": {
     "existingBilingualSubtitlesUsed": true,
@@ -70,10 +72,15 @@
     "runtimeCandidateIdsSequential": true,
     "runtimeCandidateStillNotConsumable": true,
     "runtimeMayConsume": false,
+    "runtimeConsumptionReviewReal": true,
+    "runtimeConsumptionReviewDecision": "approved_for_p2_runtime_integration",
+    "runtimeMayConsumeDecision": true,
+    "runtimeCandidateArtifactStillNotConsumable": true,
+    "runtimeCandidatePayloadRuntimeMayConsumeStillFalse": true,
     "downstreamStillPlaceholder": false,
     "noOcrCalled": true,
     "noInternetSubtitleFetch": true
   },
   "bootstrapCompleted": true,
-  "nextRecommendedStep": "P1-I: explicitly review whether Runtime may consume runtime_candidate_artifact. Do not enable runtimeMayConsume without a separate reviewed decision."
+  "nextRecommendedStep": "P2: wire Runtime to consume runtime_candidate_artifact only after checking runtime_consumption_review_artifact approval."
 }

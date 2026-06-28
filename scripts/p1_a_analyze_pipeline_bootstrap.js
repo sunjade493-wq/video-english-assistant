@@ -1281,6 +1281,96 @@ function runRuntimePromotionEngine(frozenCandidateArtifact) {
   });
 }
 
+/* -------------------------------------------------------------------------
+ * P1-I Runtime Consumption Review Gate (REAL, offline, deterministic)
+ *
+ * Per P0-7C this gate consumes ONLY the upstream Runtime Candidate Artifact
+ * (runtime_candidate_artifact.json, read from disk). It does NOT read any
+ * other artifact, does NOT call AI / Qwen / Qwen-VL / OCR, does NOT modify
+ * runtime candidates, and does NOT touch Runtime or UI.
+ *
+ * It records an explicit reviewed decision that Runtime consumption is
+ * approved for the next P2 integration stage. The runtime_candidate artifact's
+ * own payload.runtimeMayConsume stays false; actual Runtime wiring remains a
+ * separate future step.
+ * ---------------------------------------------------------------------- */
+
+function runRuntimeConsumptionReviewGate(runtimeCandidateArtifact) {
+  const runtimeCandidates = runtimeCandidateArtifact
+    && runtimeCandidateArtifact.payload
+    && Array.isArray(runtimeCandidateArtifact.payload.runtimeCandidates)
+    ? runtimeCandidateArtifact.payload.runtimeCandidates
+    : null;
+
+  if (!runtimeCandidates) {
+    fail('Runtime Consumption Review Gate received an invalid Runtime Candidate Artifact');
+  }
+
+  // Deterministic validation checks.
+  const contentModeReal = runtimeCandidateArtifact.contentMode === 'real';
+  const runtimeConsumableFalse = runtimeCandidateArtifact.runtimeConsumable === false;
+  const runtimeMayConsumeFalse = runtimeCandidateArtifact.payload.runtimeMayConsume === false;
+  const countMatches = runtimeCandidateArtifact.payload.runtimeCandidateCount === runtimeCandidates.length;
+  const idsSequential = runtimeCandidates.every(
+    (candidate, position) => candidate.runtimeCandidateId === `${EPISODE_ID}-runtime-candidate-${String(position + 1).padStart(6, '0')}`,
+  );
+  const noPlaceholder = runtimeCandidates.every((candidate) => candidate.placeholder === false);
+  const allRuntimeCandidateStatus = runtimeCandidates.every(
+    (candidate) => candidate.runtimeStatus === 'runtime_candidate',
+  );
+
+  const validationSummary = {
+    contentModeReal,
+    runtimeConsumableFalse,
+    runtimeMayConsumeFalse,
+    countMatches,
+    idsSequential,
+    noPlaceholder,
+    allRuntimeCandidateStatus,
+  };
+
+  const allValid = Object.values(validationSummary).every((value) => value === true);
+  if (!allValid) {
+    fail(`Runtime Consumption Review Gate validation failed: ${JSON.stringify(validationSummary)}`);
+  }
+
+  const reviewedRuntimeCandidateIds = runtimeCandidates.map(
+    (candidate) => candidate.runtimeCandidateId,
+  );
+
+  return artifactEnvelope({
+    schemaVersion: 'p1-i-runtime-consumption-review-artifact.v1',
+    artifactName: 'runtime_consumption_review_artifact',
+    producerStage: 'Runtime Consumption Review Gate',
+    consumerStage: 'P2 Runtime Integration (separate future step)',
+    inputArtifact: 'runtime_candidate_artifact',
+    artifactStatus: 'produced',
+    contentMode: 'real',
+    runtimeConsumable: false,
+    notes: 'REAL offline deterministic Runtime Consumption Review Gate (P1-I). Consumes '
+      + 'runtime_candidate_artifact only (read from disk per P0-7C). No AI / Qwen / Qwen-VL / OCR. '
+      + 'Records an explicit reviewed decision that Runtime consumption is approved for P2 integration. '
+      + 'The runtime_candidate artifact payload.runtimeMayConsume stays false; actual Runtime wiring is '
+      + 'a separate future step. Runtime and UI are untouched.',
+  }, {
+    runtimeConsumptionReviewDecision: 'approved_for_p2_runtime_integration',
+    runtimeMayConsumeDecision: true,
+    runtimeMayConsumeSource: 'P1-I explicit reviewed gate',
+    runtimeCandidateCount: runtimeCandidates.length,
+    reviewedRuntimeCandidateIds,
+    validationSummary,
+    reviewRules: {
+      input: 'runtime_candidate_artifact only',
+      validation: 'contentMode real, runtimeConsumable false, payload.runtimeMayConsume false, count matches, ids sequential, no placeholder, all runtime_candidate status',
+      decisionMeaning: 'consumption approved for P2; does NOT flip runtime_candidate payload.runtimeMayConsume',
+      boundary: 'this gate does not wire Runtime, does not modify the runtime candidate artifact, and does not touch Runtime or UI',
+      note: 'Deterministic review only. No AI. Actual Runtime integration is a separate P2 step.',
+    },
+    nextStage: 'P2 Runtime Integration',
+    placeholder: false,
+  });
+}
+
 function main() {
   const sourceRows = readSubtitleSource();
   const scoped = buildScopedSubtitles(sourceRows);
@@ -1384,6 +1474,14 @@ function main() {
   const runtimeCandidateArtifact = runRuntimePromotionEngine(frozenCandidateArtifactForRuntime);
   createdFiles.push(writeArtifact('runtime_candidate_artifact.json', runtimeCandidateArtifact));
 
+  // 7b. Runtime Consumption Review Gate (REAL — P1-I)
+  // Per P0-7C, consumes the Runtime Candidate Artifact from disk only. It records
+  // an explicit reviewed decision but does NOT rewrite runtime_candidate_artifact.json
+  // and does NOT touch Runtime.
+  const runtimeCandidateArtifactForGate = readArtifact('runtime_candidate_artifact.json');
+  const runtimeConsumptionReviewArtifact = runRuntimeConsumptionReviewGate(runtimeCandidateArtifactForGate);
+  createdFiles.push(writeArtifact('runtime_consumption_review_artifact.json', runtimeConsumptionReviewArtifact));
+
   // 8. Pipeline Bootstrap Report
   const expectedOrder = [
     'subtitle_artifact',
@@ -1395,6 +1493,7 @@ function main() {
     'review_artifact',
     'frozen_candidate_artifact',
     'runtime_candidate_artifact',
+    'runtime_consumption_review_artifact',
   ];
 
   const vocabularyCandidateCount = vocabularyCandidateArtifact.payload.vocabularyCandidateCount;
@@ -1482,14 +1581,21 @@ function main() {
       runtimeCandidateIdsSequential,
       runtimeCandidateStillNotConsumable: true,
       runtimeMayConsume: false,
+      runtimeConsumptionReviewReal: true,
+      runtimeConsumptionReviewDecision:
+        runtimeConsumptionReviewArtifact.payload.runtimeConsumptionReviewDecision,
+      runtimeMayConsumeDecision: runtimeConsumptionReviewArtifact.payload.runtimeMayConsumeDecision,
+      runtimeCandidateArtifactStillNotConsumable: runtimeCandidateArtifact.runtimeConsumable === false,
+      runtimeCandidatePayloadRuntimeMayConsumeStillFalse:
+        runtimeCandidateArtifact.payload.runtimeMayConsume === false,
       downstreamStillPlaceholder: false,
       noOcrCalled: true,
       noInternetSubtitleFetch: true,
     },
     bootstrapCompleted: true,
     nextRecommendedStep:
-      'P1-I: explicitly review whether Runtime may consume runtime_candidate_artifact. Do not enable '
-      + 'runtimeMayConsume without a separate reviewed decision.',
+      'P2: wire Runtime to consume runtime_candidate_artifact only after checking '
+      + 'runtime_consumption_review_artifact approval.',
   };
   createdFiles.push(writeArtifact('pipeline_bootstrap_report.json', report));
 
