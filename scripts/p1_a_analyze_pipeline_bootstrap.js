@@ -1513,6 +1513,124 @@ function runRuntimeConsumptionReviewGate(runtimeCandidateArtifact) {
   });
 }
 
+/* -------------------------------------------------------------------------
+ * P2-F Runtime Candidate Display Readiness Probe (PURE, offline) — PROBE ONLY
+ *
+ * Measures whether runtime candidates carry the display fields required by the
+ * existing Runtime obstacle card model. It ONLY measures and reports.
+ *
+ * It does NOT generate missing fields, does NOT invent display-card content,
+ * does NOT normalize/enrich candidates, does NOT change Runtime consumption,
+ * does NOT modify the runtime candidate artifact, and never sets
+ * runtimeMayConsume true. No AI / OCR / Qwen / Qwen-VL / Internet.
+ * ---------------------------------------------------------------------- */
+
+function isPresentDisplayField(value) {
+  return typeof value === 'string' && value.trim() !== '';
+}
+
+function hasComprehensionTitle(candidate) {
+  return isPresentDisplayField(candidate?.prototype)
+    || isPresentDisplayField(candidate?.phrase)
+    || isPresentDisplayField(candidate?.text);
+}
+
+function buildRuntimeCandidateDisplayReadinessProbe(runtimeCandidateArtifact) {
+  const runtimeCandidates = runtimeCandidateArtifact
+    && runtimeCandidateArtifact.payload
+    && Array.isArray(runtimeCandidateArtifact.payload.runtimeCandidates)
+    ? runtimeCandidateArtifact.payload.runtimeCandidates
+    : null;
+
+  if (!runtimeCandidates) {
+    fail('Runtime Candidate Display Readiness Probe: payload.runtimeCandidates is not an array');
+  }
+
+  const summary = {
+    totalCandidateCount: runtimeCandidates.length,
+    vocabularyCandidateCount: 0,
+    comprehensionCandidateCount: 0,
+    candidatesWithIdCount: 0,
+    candidatesWithTypeCount: 0,
+    candidatesWithSubtitleIndexCount: 0,
+    candidatesWithSourceEnCount: 0,
+    candidatesWithSourceZhCount: 0,
+    candidatesWithTimestampCount: 0,
+    candidatesWithMarkerBoundsCount: 0,
+    vocabularyDisplayReadyCount: 0,
+    vocabularyMissingWordCount: 0,
+    vocabularyMissingPhoneticCount: 0,
+    vocabularyMissingPartOfSpeechCount: 0,
+    vocabularyMissingSentenceMeaningCount: 0,
+    comprehensionDisplayReadyCount: 0,
+    comprehensionMissingTitleCount: 0,
+    comprehensionMissingLiteralCount: 0,
+    comprehensionMissingActualCount: 0,
+    comprehensionMissingGrammarCount: 0,
+    displayReadyCandidateCount: 0,
+  };
+
+  runtimeCandidates.forEach((candidate) => {
+    // Common structural presence.
+    if (isPresentDisplayField(candidate?.runtimeCandidateId)) summary.candidatesWithIdCount += 1;
+    if (isPresentDisplayField(candidate?.type)) summary.candidatesWithTypeCount += 1;
+    if (Number.isFinite(Number(candidate?.subtitleIndex))) summary.candidatesWithSubtitleIndexCount += 1;
+    if (isPresentDisplayField(candidate?.source_en)) summary.candidatesWithSourceEnCount += 1;
+    if (isPresentDisplayField(candidate?.source_zh)) summary.candidatesWithSourceZhCount += 1;
+    if (candidate?.timestamp
+      && (isPresentDisplayField(candidate.timestamp.startTime) || isPresentDisplayField(candidate.timestamp.endTime))) {
+      summary.candidatesWithTimestampCount += 1;
+    }
+    const hasMarkerStart = candidate?.markerStart !== null && candidate?.markerStart !== undefined && candidate?.markerStart !== '';
+    const hasMarkerEnd = candidate?.markerEnd !== null && candidate?.markerEnd !== undefined && candidate?.markerEnd !== '';
+    if (hasMarkerStart && hasMarkerEnd) summary.candidatesWithMarkerBoundsCount += 1;
+
+    if (candidate?.type === 'vocabulary') {
+      summary.vocabularyCandidateCount += 1;
+      const missingWord = !isPresentDisplayField(candidate?.word);
+      const missingPhonetic = !isPresentDisplayField(candidate?.phonetic);
+      const missingPartOfSpeech = !isPresentDisplayField(candidate?.partOfSpeech);
+      const missingSentenceMeaning = !isPresentDisplayField(candidate?.sentenceMeaning);
+      if (missingWord) summary.vocabularyMissingWordCount += 1;
+      if (missingPhonetic) summary.vocabularyMissingPhoneticCount += 1;
+      if (missingPartOfSpeech) summary.vocabularyMissingPartOfSpeechCount += 1;
+      if (missingSentenceMeaning) summary.vocabularyMissingSentenceMeaningCount += 1;
+      if (!missingWord && !missingPhonetic && !missingPartOfSpeech && !missingSentenceMeaning) {
+        summary.vocabularyDisplayReadyCount += 1;
+        summary.displayReadyCandidateCount += 1;
+      }
+    } else if (candidate?.type === 'comprehension') {
+      summary.comprehensionCandidateCount += 1;
+      const missingTitle = !hasComprehensionTitle(candidate);
+      const missingLiteral = !isPresentDisplayField(candidate?.literal);
+      const missingActual = !isPresentDisplayField(candidate?.actual);
+      const missingGrammar = !isPresentDisplayField(candidate?.grammar);
+      if (missingTitle) summary.comprehensionMissingTitleCount += 1;
+      if (missingLiteral) summary.comprehensionMissingLiteralCount += 1;
+      if (missingActual) summary.comprehensionMissingActualCount += 1;
+      if (missingGrammar) summary.comprehensionMissingGrammarCount += 1;
+      if (!missingTitle && !missingLiteral && !missingActual && !missingGrammar) {
+        summary.comprehensionDisplayReadyCount += 1;
+        summary.displayReadyCandidateCount += 1;
+      }
+    }
+  });
+
+  const displayReadyRatio = summary.totalCandidateCount > 0
+    ? Number((summary.displayReadyCandidateCount / summary.totalCandidateCount).toFixed(4))
+    : 0;
+  const runtimeCandidateDisplayReady = summary.displayReadyCandidateCount > 0;
+  const expectedP2EOutcome = runtimeCandidateDisplayReady ? 'activate' : 'fail_closed';
+
+  return {
+    runtimeCandidateDisplayReady,
+    displayReadyCandidateCount: summary.displayReadyCandidateCount,
+    displayReadyRatio,
+    expectedP2EOutcome,
+    summary,
+  };
+}
+
 function main() {
   const sourceRows = readSubtitleSource();
   const scoped = buildScopedSubtitles(sourceRows);
@@ -1681,6 +1799,12 @@ function main() {
   const runtimeAdapterInputCountMatches = runtimeAdapterCandidateCount === runtimeCandidateCount;
   const runtimeLoaderProbeResult = loadRuntimeCandidatesForP2Probe();
 
+  // P2-F Runtime Candidate Display Readiness Probe — PROBE ONLY.
+  // Measures whether runtime candidates carry the display fields the existing
+  // Runtime card model requires. It invents nothing and changes nothing.
+  const runtimeCandidateDisplayReadiness =
+    buildRuntimeCandidateDisplayReadinessProbe(runtimeCandidateArtifact);
+
   const report = {
     schemaVersion: 'p1-a-pipeline-bootstrap-report.v1',
     stage: STAGE,
@@ -1757,6 +1881,12 @@ function main() {
       runtimeCandidateArtifactStillNotConsumable: runtimeCandidateArtifact.runtimeConsumable === false,
       runtimeCandidatePayloadRuntimeMayConsumeStillFalse:
         runtimeCandidateArtifact.payload.runtimeMayConsume === false,
+      runtimeCandidateDisplayReadinessProbe: true,
+      runtimeCandidateDisplayReady: runtimeCandidateDisplayReadiness.runtimeCandidateDisplayReady,
+      runtimeCandidateDisplayReadyCount: runtimeCandidateDisplayReadiness.displayReadyCandidateCount,
+      runtimeCandidateDisplayReadyRatio: runtimeCandidateDisplayReadiness.displayReadyRatio,
+      runtimeCandidateExpectedP2EOutcome: runtimeCandidateDisplayReadiness.expectedP2EOutcome,
+      runtimeCandidateDisplayReadinessSummary: runtimeCandidateDisplayReadiness.summary,
       downstreamStillPlaceholder: false,
       noOcrCalled: true,
       noInternetSubtitleFetch: true,
