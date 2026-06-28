@@ -2125,3 +2125,70 @@ Runtime
 ```
 
 Next Milestone: P1-D Real Vocabulary Engine
+
+---
+
+## P1-DA Vocabulary Candidate Engine
+
+Status: FROZEN ✅
+
+Git Tag: `p1-da-vocabulary-candidate-engine`
+
+Source: `scripts/p1_a_analyze_pipeline_bootstrap.js`
+
+Output: `output_text/p1_a/vocabulary_candidate_artifact.json`
+
+Summary:
+
+- Vocabulary Candidate Engine is now REAL.
+- Offline deterministic implementation.
+- Consumes only:
+  - `evidence_artifact.json`
+- Does NOT directly read:
+  - `scene_meaning_artifact.json`
+  - `output_text/v28d_bilingual_subtitles.json`
+- Reads subtitle text only through Evidence Artifact fields.
+- Produces:
+  - `vocabulary_candidate_artifact.json`
+- Collects vocabulary candidates only.
+- Does NOT decide final Vocabulary obstacles.
+- Does NOT decide Comprehension obstacles.
+- Does NOT promote anything.
+- Runtime remains read-only.
+- Artifact forward-only architecture preserved.
+- `contentMode`: real
+- `runtimeConsumable`: false
+- Verified candidate count: 115
+- Draft / Review / Frozen Candidate / Runtime Candidate remain placeholder.
+
+Current pipeline status:
+
+```text
+Subtitle
+    │
+    ▼
+Scene Meaning            ✅ REAL
+    │
+    ▼
+Evidence                 ✅ REAL
+    │
+    ▼
+Vocabulary Candidate     ✅ REAL
+    │
+    ▼
+Vocabulary Decision      Placeholder
+    │
+    ▼
+Comprehension            Placeholder
+    │
+    ▼
+Review
+    │
+    ▼
+Frozen
+    │
+    ▼
+Runtime
+```
+
+Next Milestone: P1-DB Real Vocabulary Decision Engine
