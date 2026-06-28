@@ -2268,3 +2268,115 @@ Runtime                    Read-only
 ```
 
 Next Milestone: P1-F Real AI Review Engine
+
+---
+
+## P1-F Real Review Engine
+
+Status: FROZEN ✅
+
+Git Tag: `p1-f-real-review-engine`
+
+Commit: `d56f4f7`
+
+Source: `scripts/p1_a_analyze_pipeline_bootstrap.js`
+
+Generated outputs:
+
+- `output_text/p1_a/review_artifact.json`
+- `output_text/p1_a/pipeline_bootstrap_report.json`
+
+Summary:
+
+- Review Engine is now REAL (was placeholder).
+- Offline deterministic implementation.
+- Consumes only `draft_obstacle_artifact.json`, read from disk.
+- Does NOT directly read subtitle source, Scene Meaning, Evidence, Vocabulary Candidate, or Vocabulary Decision artifacts.
+- Reviews/approves existing draft obstacles deterministically without modifying them.
+- Produces `output_text/p1_a/review_artifact.json`.
+- 126 review items (matches 126 draft obstacles): 126 approved, 0 rejected.
+- `review_artifact` contentMode: real
+- `runtimeConsumable`: false
+- Frozen Candidate / Runtime Candidate remain placeholder.
+- Runtime Candidate `runtimeMayConsume` remains false.
+- Runtime remains read-only.
+- Forward-only Artifact Chain preserved.
+- No AI / OCR / Internet calls.
+
+Next Milestone: P1-G Real Frozen Promotion Engine
+
+---
+
+## P1-G Real Frozen Promotion Engine
+
+Status: FROZEN ✅
+
+Git Tag: `p1-g-real-frozen-promotion-engine`
+
+Commit: `622301a`
+
+Source: `scripts/p1_a_analyze_pipeline_bootstrap.js`
+
+Generated outputs:
+
+- `output_text/p1_a/frozen_candidate_artifact.json`
+- `output_text/p1_a/pipeline_bootstrap_report.json`
+
+Summary:
+
+- Frozen Promotion Engine is now REAL (was placeholder).
+- Offline deterministic implementation.
+- Consumes only `review_artifact.json`, read from disk.
+- Does NOT directly read subtitle source, Scene Meaning, Evidence, Vocabulary Candidate, Vocabulary Decision, or Draft artifacts.
+- Promotes approved review items into frozen candidates deterministically without modifying review items.
+- Produces `output_text/p1_a/frozen_candidate_artifact.json`.
+- 126 frozen candidates (matches 126 approved review items); each `frozenStatus`: frozen_candidate.
+- `frozen_candidate_artifact` contentMode: real
+- `runtimeConsumable`: false
+- Frozen candidates are NOT runtime-consumable frozen artifacts; they are frozen_candidate items.
+- Runtime Candidate remains placeholder.
+- Runtime Candidate `runtimeMayConsume` remains false.
+- Runtime remains read-only.
+- Forward-only Artifact Chain preserved.
+- No AI / OCR / Internet calls.
+
+Next Milestone: P1-H Real Runtime Promotion Engine
+
+---
+
+## P1-H Real Runtime Promotion Engine
+
+Status: FROZEN ✅
+
+Git Tag: `p1-h-real-runtime-promotion-engine`
+
+Commit: `9dce77a`
+
+Source: `scripts/p1_a_analyze_pipeline_bootstrap.js`
+
+Generated outputs:
+
+- `output_text/p1_a/runtime_candidate_artifact.json`
+- `output_text/p1_a/pipeline_bootstrap_report.json`
+
+Summary:
+
+- P1-H Real Runtime Promotion Engine is complete.
+- Runtime Candidate now has a REAL implementation (was placeholder).
+- Offline deterministic implementation.
+- Consumes only `frozen_candidate_artifact.json`, read from disk.
+- Does NOT directly read subtitle source, Scene Meaning, Evidence, Vocabulary Candidate, Vocabulary Decision, Draft, or Review artifacts.
+- Transforms frozen candidates into runtime candidates without modifying them.
+- Produces `output_text/p1_a/runtime_candidate_artifact.json`.
+- 126 runtime candidates (matches 126 frozen candidates).
+- `runtime_candidate_artifact` contentMode: real
+- `runtimeConsumable`: false
+- `payload.runtimeMayConsume`: false
+- This stage produces a real runtime candidate artifact only; it does NOT authorize Runtime consumption.
+- Runtime remains read-only and does NOT consume `runtime_candidate_artifact.json`.
+- Forward-only Artifact Chain preserved.
+- No AI / OCR / Internet calls.
+
+Pipeline note: the P1 offline Analyze Pipeline is now REAL end-to-end (Subtitle → Runtime Candidate). Every stage — Scene Meaning, Evidence, Vocabulary Candidate, Vocabulary Decision, Draft Assembly, Comprehension, Review, Frozen Promotion, Runtime Promotion — is a real offline deterministic engine. Runtime consumption stays unauthorized (`runtimeMayConsume` false) pending an explicit reviewed decision.
+
+Next Milestone: P1-I Explicit Runtime Consumption Review (do not enable `runtimeMayConsume` without a separate reviewed decision)
