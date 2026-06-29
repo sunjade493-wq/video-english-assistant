@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "p4-e-runtime-shadow-verification-artifact.v1",
+  "stage": "P4-E",
+  "episodeId": "tbbt-s12e01",
+  "learnerLevel": "CET-4",
+  "batch": 1,
+  "inputArtifact": "p4_d_batch1_promoted_display.json",
+  "shadowStatus": "passed",
+  "checkedDisplayCount": 3,
+  "failures": [],
+  "warnings": [],
+  "runtimeConsumable": false,
+  "runtimeDisplayMayConsume": false,
+  "runtimeShadowOnly": true,
+  "summary": {
+    "artifactLevelChecks": {
+      "runtimeConsumableFalse": true,
+      "runtimeDisplayMayConsumeFalse": true,
+      "countConsistent": true
+    },
+    "displayLevelChecks": {
+      "totalDisplays": 3,
+      "failureCount": 0,
+      "warningCount": 0
+    }
+  }
+}

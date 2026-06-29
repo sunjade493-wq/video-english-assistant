@@ -2537,6 +2537,171 @@ async function main() {
   const p4bBatch1Enabled = process.env.P4_B_BATCH1 === '1';
   const p4cBatch1QaEnabled = process.env.P4_C_BATCH1_QA === '1';
   const p4dBatch1PromoteEnabled = process.env.P4_D_BATCH1_PROMOTE === '1';
+  const p4eRuntimeShadowEnabled = process.env.P4_E_RUNTIME_SHADOW === '1';
+
+  // P4-E Runtime Shadow Verification (OPT-IN only when P4_E_RUNTIME_SHADOW=1)
+  // This path exits immediately after shadow verification to avoid entering any other paths.
+  if (p4eRuntimeShadowEnabled) {
+    process.stdout.write('\n--- P4-E Runtime Shadow Verification ---\n');
+    process.stdout.write('Opt-in flag detected: P4_E_RUNTIME_SHADOW=1\n');
+    process.stdout.write('P4-E isolated path: shadow verification only, will NOT make anything runtime-consumable\n\n');
+
+    fs.mkdirSync(path.resolve(OUTPUT_DIR), { recursive: true });
+
+    // Read P4-D batch 1 promoted display
+    const batch1PromotedPath = 'p4_d_batch1_promoted_display.json';
+    const batch1PromotedArtifact = readArtifact(batch1PromotedPath);
+
+    if (!batch1PromotedArtifact) {
+      fail('P4-E requires valid p4_d_batch1_promoted_display.json');
+    }
+
+    process.stdout.write(`Loaded promoted display artifact from ${batch1PromotedPath}\n`);
+    process.stdout.write('Running shadow verification checks...\n');
+
+    const failures = [];
+    const warnings = [];
+
+    // Check artifact-level flags
+    if (batch1PromotedArtifact.runtimeConsumable !== false) {
+      failures.push('Artifact runtimeConsumable is not false');
+    }
+    if (batch1PromotedArtifact.runtimeDisplayMayConsume !== false) {
+      failures.push('Artifact runtimeDisplayMayConsume is not false');
+    }
+
+    // Check payload structure
+    if (!batch1PromotedArtifact.payload || !Array.isArray(batch1PromotedArtifact.payload.promotedDisplays)) {
+      failures.push('Missing or invalid payload.promotedDisplays array');
+    }
+
+    const promotedDisplays = batch1PromotedArtifact.payload ? batch1PromotedArtifact.payload.promotedDisplays : [];
+    const declaredCount = batch1PromotedArtifact.promotedDisplayCount;
+
+    // Check count consistency
+    if (declaredCount !== promotedDisplays.length) {
+      failures.push(`Count mismatch: promotedDisplayCount (${declaredCount}) != promotedDisplays.length (${promotedDisplays.length})`);
+    }
+
+    // Check each promoted display
+    promotedDisplays.forEach((display, index) => {
+      const displayId = display.runtimeCandidateId || `display-${index}`;
+
+      // Check runtime consumption flags
+      if (display.runtimeDisplayMayConsume !== false) {
+        failures.push(`${displayId}: runtimeDisplayMayConsume is not false`);
+      }
+
+      // Check type
+      if (display.type !== 'vocabulary' && display.type !== 'comprehension') {
+        failures.push(`${displayId}: invalid type "${display.type}"`);
+      }
+
+      // Check generatedFields
+      if (!display.generatedFields || typeof display.generatedFields !== 'object') {
+        failures.push(`${displayId}: missing or invalid generatedFields`);
+      } else {
+        const fields = display.generatedFields;
+
+        // Type-specific field checks
+        if (display.type === 'vocabulary') {
+          if (!isPresentDisplayField(fields.word)) {
+            failures.push(`${displayId}: missing vocabulary field "word"`);
+          }
+          if (!isPresentDisplayField(fields.phonetic)) {
+            failures.push(`${displayId}: missing vocabulary field "phonetic"`);
+          }
+          if (!isPresentDisplayField(fields.partOfSpeech)) {
+            failures.push(`${displayId}: missing vocabulary field "partOfSpeech"`);
+          }
+          if (!isPresentDisplayField(fields.sentenceMeaning)) {
+            failures.push(`${displayId}: missing vocabulary field "sentenceMeaning"`);
+          }
+        } else if (display.type === 'comprehension') {
+          const hasTitle = isPresentDisplayField(fields.prototype)
+            || isPresentDisplayField(fields.phrase)
+            || isPresentDisplayField(fields.text);
+          if (!hasTitle) {
+            failures.push(`${displayId}: missing comprehension title field (prototype/phrase/text)`);
+          }
+          if (!isPresentDisplayField(fields.literal)) {
+            failures.push(`${displayId}: missing comprehension field "literal"`);
+          }
+          if (!isPresentDisplayField(fields.actual)) {
+            failures.push(`${displayId}: missing comprehension field "actual"`);
+          }
+          if (!isPresentDisplayField(fields.grammar)) {
+            failures.push(`${displayId}: missing comprehension field "grammar"`);
+          }
+        }
+      }
+
+      // Check marker bounds if present
+      if (display.markerStart !== undefined || display.markerEnd !== undefined) {
+        if (!Number.isFinite(display.markerStart)) {
+          warnings.push(`${displayId}: markerStart is not finite`);
+        }
+        if (!Number.isFinite(display.markerEnd)) {
+          warnings.push(`${displayId}: markerEnd is not finite`);
+        }
+        if (Number.isFinite(display.markerStart) && Number.isFinite(display.markerEnd) && display.markerEnd <= display.markerStart) {
+          warnings.push(`${displayId}: markerEnd (${display.markerEnd}) <= markerStart (${display.markerStart})`);
+        }
+      }
+    });
+
+    const shadowStatus = failures.length === 0 ? 'passed' : 'failed';
+    const checkedDisplayCount = promotedDisplays.length;
+
+    process.stdout.write(`Shadow status: ${shadowStatus}\n`);
+    process.stdout.write(`Checked displays: ${checkedDisplayCount}\n`);
+    process.stdout.write(`Failures: ${failures.length}\n`);
+    process.stdout.write(`Warnings: ${warnings.length}\n`);
+
+    // Write P4-E shadow verification output
+    const shadowVerificationArtifact = {
+      schemaVersion: 'p4-e-runtime-shadow-verification-artifact.v1',
+      stage: 'P4-E',
+      episodeId: EPISODE_ID,
+      learnerLevel: LEARNER_LEVEL,
+      batch: 1,
+      inputArtifact: batch1PromotedPath,
+      shadowStatus,
+      checkedDisplayCount,
+      failures,
+      warnings,
+      runtimeConsumable: false,
+      runtimeDisplayMayConsume: false,
+      runtimeShadowOnly: true,
+      summary: {
+        artifactLevelChecks: {
+          runtimeConsumableFalse: batch1PromotedArtifact.runtimeConsumable === false,
+          runtimeDisplayMayConsumeFalse: batch1PromotedArtifact.runtimeDisplayMayConsume === false,
+          countConsistent: declaredCount === promotedDisplays.length,
+        },
+        displayLevelChecks: {
+          totalDisplays: checkedDisplayCount,
+          failureCount: failures.length,
+          warningCount: warnings.length,
+        },
+      },
+    };
+
+    const shadowOutputPath = writeArtifact('p4_e_runtime_shadow_verification.json', shadowVerificationArtifact);
+    process.stdout.write(`Shadow verification output written: ${shadowOutputPath}\n`);
+
+    process.stdout.write('\n--- P4-E Runtime Shadow Verification Result ---\n');
+    process.stdout.write(`Status: ${shadowStatus.toUpperCase()}\n`);
+    process.stdout.write(`Checked Display Count: ${checkedDisplayCount}\n`);
+    process.stdout.write(`Failure Count: ${failures.length}\n`);
+    process.stdout.write(`Warning Count: ${warnings.length}\n`);
+    process.stdout.write(`Runtime Shadow Only: true\n`);
+    process.stdout.write(`Runtime Display May Consume: false\n`);
+    process.stdout.write(`Output File: ${shadowOutputPath}\n`);
+    process.stdout.write('\nP4-E isolated path completed successfully.\n');
+    process.stdout.write('Exiting without entering any other pipeline paths or touching Runtime/UI.\n');
+    return;
+  }
 
   // P4-D Batch 1 Promotion Expansion (OPT-IN only when P4_D_BATCH1_PROMOTE=1)
   // This path exits immediately after promotion to avoid entering P4-B, P4-C, P3-E/F, or Runtime.
