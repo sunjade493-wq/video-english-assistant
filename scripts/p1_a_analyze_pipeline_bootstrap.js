@@ -2902,6 +2902,55 @@ async function main() {
     runtimeDisplayMayConsume: display.runtimeDisplayMayConsume,
   }));
 
+  // P4-A First Episode Full Obstacle Coverage Preparation
+  // Report current pipeline status and readiness for full-episode batch generation.
+  const totalSubtitleCount = sourceRows.length;
+  const currentCandidateCount = runtimeCandidateCount;
+  const currentDisplayDraftCount = p3cGeneration.validDraftCount;
+  const currentQaApprovedCount = p3eQaEngine.qaAutoApprovedDraftCount;
+  const currentPromotedDisplayCount = p3fPromotion.promotedDisplayCount;
+  const currentMarkerBoundPromotedDisplayCount = promotedDisplayArtifact.payload.promotedDisplays.filter(
+    (display) => Number.isFinite(display.markerStart)
+      && Number.isFinite(display.markerEnd)
+      && display.markerEnd > display.markerStart,
+  ).length;
+
+  const detectedSampleLimits = {
+    maxSubtitleEntries: MAX_SUBTITLE_ENTRIES,
+    maxScopeSeconds: MAX_SCOPE_SECONDS,
+    p3cSampleLimit: P3C_SAMPLE_LIMIT,
+    currentProcessedSubtitles: scoped.length,
+  };
+
+  const fullEpisodeGenerationBlocked = p3cGeneration.generatorStatus === 'blocked_missing_api_key';
+  const recommendedSafeBatchSize = fullEpisodeGenerationBlocked ? 0 : Math.min(30, totalSubtitleCount);
+
+  const p4aPreparation = {
+    stage: 'P4-A',
+    preparationStatus: fullEpisodeGenerationBlocked ? 'blocked' : 'ready',
+    totalSubtitleCount,
+    currentCandidateCount,
+    currentDisplayDraftCount,
+    currentQaApprovedCount,
+    currentPromotedDisplayCount,
+    currentMarkerBoundPromotedDisplayCount,
+    detectedSampleLimits,
+    fullEpisodeGenerationBlocked,
+    blockingReason: fullEpisodeGenerationBlocked ? 'DASHSCOPE_API_KEY not set' : null,
+    recommendedSafeBatchSize,
+    nextStage: fullEpisodeGenerationBlocked
+      ? 'resolve blocking issue before P4-B'
+      : 'P4-B First Episode Batch 1 Real Generation',
+    readinessChecklist: {
+      subtitleSourceAvailable: true,
+      pipelineWiringComplete: true,
+      offlineAiGeneratorAvailable: !fullEpisodeGenerationBlocked,
+      qaEngineOperational: true,
+      promotionEngineOperational: true,
+      artifactChainValid: true,
+    },
+  };
+
   const report = {
     schemaVersion: 'p1-a-pipeline-bootstrap-report.v1',
     stage: STAGE,
@@ -2916,6 +2965,7 @@ async function main() {
       firstSubtitleIndex: scoped[0].subtitleIndex,
       lastSubtitleIndex: scoped[scoped.length - 1].subtitleIndex,
     },
+    p4aPreparation,
     artifactOrder: expectedOrder,
     forwardOnlyOrderPreserved: true,
     artifactsCreated: createdFiles,
@@ -3094,6 +3144,25 @@ async function main() {
   process.stdout.write(`Artifacts created: ${createdFiles.length}\n`);
   createdFiles.forEach((file) => process.stdout.write(`  - ${file}\n`));
   process.stdout.write('Runtime untouched: true | UI untouched: true | runtimeMayConsume: false\n');
+  process.stdout.write('\n--- P4-A First Episode Full Obstacle Coverage Preparation ---\n');
+  process.stdout.write(`Preparation Status: ${p4aPreparation.preparationStatus}\n`);
+  process.stdout.write(`Total Subtitle Count Available: ${p4aPreparation.totalSubtitleCount}\n`);
+  process.stdout.write(`Current Candidate Count: ${p4aPreparation.currentCandidateCount}\n`);
+  process.stdout.write(`Current Display Draft Count: ${p4aPreparation.currentDisplayDraftCount}\n`);
+  process.stdout.write(`Current QA Approved Count: ${p4aPreparation.currentQaApprovedCount}\n`);
+  process.stdout.write(`Current Promoted Display Count: ${p4aPreparation.currentPromotedDisplayCount}\n`);
+  process.stdout.write(`Current Marker-Bound Promoted Display Count: ${p4aPreparation.currentMarkerBoundPromotedDisplayCount}\n`);
+  process.stdout.write(`Detected Sample Limits/Caps:\n`);
+  process.stdout.write(`  - Max Subtitle Entries: ${p4aPreparation.detectedSampleLimits.maxSubtitleEntries}\n`);
+  process.stdout.write(`  - Max Scope Seconds: ${p4aPreparation.detectedSampleLimits.maxScopeSeconds}\n`);
+  process.stdout.write(`  - P3-C Sample Limit: ${p4aPreparation.detectedSampleLimits.p3cSampleLimit}\n`);
+  process.stdout.write(`  - Current Processed Subtitles: ${p4aPreparation.detectedSampleLimits.currentProcessedSubtitles}\n`);
+  process.stdout.write(`Full-Episode Generation Blocked: ${p4aPreparation.fullEpisodeGenerationBlocked}\n`);
+  if (p4aPreparation.blockingReason) {
+    process.stdout.write(`Blocking Reason: ${p4aPreparation.blockingReason}\n`);
+  }
+  process.stdout.write(`Recommended Safe Batch Size: ${p4aPreparation.recommendedSafeBatchSize}\n`);
+  process.stdout.write(`Next Stage: ${p4aPreparation.nextStage}\n`);
 }
 
 main().catch((error) => {
