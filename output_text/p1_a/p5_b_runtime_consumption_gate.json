@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "p5-b-runtime-consumption-gate-artifact.v1",
+  "stage": "P5-B",
+  "episodeId": "tbbt-s12e01",
+  "learnerLevel": "CET-4",
+  "batch": 1,
+  "inputArtifact": "p5_a_runtime_shadow_compare.json",
+  "comparisonPassed": true,
+  "runtimeContractPassed": true,
+  "markerContractPassed": true,
+  "fieldContractPassed": true,
+  "countMatched": false,
+  "gatePassed": true,
+  "gateReason": "All gate criteria passed: comparison OK, runtime contract preserved, markers valid, fields complete. Count mismatch (delta: 1) is allowed for Batch 1",
+  "warnings": [
+    "Count mismatch: delta is 1 (P4 Batch 1 vs stable). Allowed for Batch 1."
+  ],
+  "failures": [],
+  "runtimeConsumable": false,
+  "runtimeDisplayMayConsume": false,
+  "runtimeGateOnly": true,
+  "summary": {
+    "gateDecision": "PASS",
+    "countMismatchAllowedForBatch1": true,
+    "allCriteriaMet": true,
+    "comparisonStatus": "warning",
+    "countDelta": 1
+  }
+}

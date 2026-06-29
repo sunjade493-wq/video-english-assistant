@@ -2539,6 +2539,158 @@ async function main() {
   const p4dBatch1PromoteEnabled = process.env.P4_D_BATCH1_PROMOTE === '1';
   const p4eRuntimeShadowEnabled = process.env.P4_E_RUNTIME_SHADOW === '1';
   const p5aRuntimeShadowCompareEnabled = process.env.P5_A_RUNTIME_SHADOW_COMPARE === '1';
+  const p5bRuntimeGateEnabled = process.env.P5_B_RUNTIME_GATE === '1';
+
+  // P5-B Runtime Consumption Gate (OPT-IN only when P5_B_RUNTIME_GATE=1)
+  // This path exits immediately after gate decision to avoid entering any other paths.
+  if (p5bRuntimeGateEnabled) {
+    process.stdout.write('\n--- P5-B Runtime Consumption Gate ---\n');
+    process.stdout.write('Opt-in flag detected: P5_B_RUNTIME_GATE=1\n');
+    process.stdout.write('P5-B isolated path: gate decision only, will NOT switch Runtime data source\n\n');
+
+    fs.mkdirSync(path.resolve(OUTPUT_DIR), { recursive: true });
+
+    // Read P5-A shadow comparison
+    const shadowComparePath = 'p5_a_runtime_shadow_compare.json';
+    const shadowCompareArtifact = readArtifact(shadowComparePath);
+
+    if (!shadowCompareArtifact) {
+      fail('P5-B requires valid p5_a_runtime_shadow_compare.json');
+    }
+
+    process.stdout.write(`Loaded shadow comparison from ${shadowComparePath}\n`);
+    process.stdout.write('Evaluating gate criteria...\n');
+
+    const warnings = [];
+    const failures = [];
+
+    // Extract comparison results
+    const comparisonStatus = shadowCompareArtifact.comparisonStatus;
+    const countDelta = shadowCompareArtifact.countDelta || 0;
+    const runtimeContractChecks = shadowCompareArtifact.runtimeContractChecks || {};
+    const markerComparison = shadowCompareArtifact.markerComparison || {};
+    const fieldCompleteness = shadowCompareArtifact.fieldCompleteness || {};
+
+    // Gate criteria evaluation
+    const comparisonPassed = comparisonStatus === 'passed' || comparisonStatus === 'warning';
+
+    const runtimeContractPassed = runtimeContractChecks.p4RuntimeConsumableFalse === true
+      && runtimeContractChecks.p4RuntimeDisplayMayConsumeFalse === true
+      && (runtimeContractChecks.stableIsNonConsumable === true
+        || runtimeContractChecks.stableRuntimeConsumableFalse === true
+        || runtimeContractChecks.stableRuntimeMayConsumeFalse === true);
+
+    const p4Marker = markerComparison.p4 || {};
+    const markerContractPassed = (p4Marker.invalidMarkers || 0) === 0;
+
+    const p4Field = fieldCompleteness.p4 || {};
+    const fieldContractPassed = (p4Field.vocabularyMissingFields || 0) === 0
+      && (p4Field.comprehensionMissingFields || 0) === 0;
+
+    const countMatched = countDelta === 0;
+
+    // Gate decision
+    // For Batch 1, countMatched is NOT required for gate to pass
+    const gatePassed = comparisonPassed
+      && runtimeContractPassed
+      && markerContractPassed
+      && fieldContractPassed;
+
+    // Gate reason
+    let gateReason = '';
+    if (gatePassed) {
+      gateReason = 'All gate criteria passed: comparison OK, runtime contract preserved, markers valid, fields complete';
+      if (!countMatched) {
+        gateReason += `. Count mismatch (delta: ${countDelta}) is allowed for Batch 1`;
+      }
+    } else {
+      const failedCriteria = [];
+      if (!comparisonPassed) failedCriteria.push(`comparison status is ${comparisonStatus}`);
+      if (!runtimeContractPassed) failedCriteria.push('runtime contract violated');
+      if (!markerContractPassed) failedCriteria.push('marker contract violated');
+      if (!fieldContractPassed) failedCriteria.push('field contract violated');
+      gateReason = `Gate failed: ${failedCriteria.join(', ')}`;
+    }
+
+    // Warnings
+    if (!countMatched) {
+      warnings.push(`Count mismatch: delta is ${countDelta} (P4 Batch 1 vs stable). Allowed for Batch 1.`);
+    }
+
+    // Failures
+    if (!comparisonPassed) {
+      failures.push(`Comparison did not pass: status is ${comparisonStatus}`);
+    }
+    if (!runtimeContractPassed) {
+      failures.push('Runtime contract check failed');
+    }
+    if (!markerContractPassed) {
+      failures.push(`Marker contract check failed: ${p4Marker.invalidMarkers || 0} invalid markers`);
+    }
+    if (!fieldContractPassed) {
+      failures.push(`Field contract check failed: ${p4Field.vocabularyMissingFields || 0} vocabulary + ${p4Field.comprehensionMissingFields || 0} comprehension missing fields`);
+    }
+
+    process.stdout.write(`Gate passed: ${gatePassed}\n`);
+    process.stdout.write(`Gate reason: ${gateReason}\n`);
+    process.stdout.write(`Comparison passed: ${comparisonPassed}\n`);
+    process.stdout.write(`Runtime contract passed: ${runtimeContractPassed}\n`);
+    process.stdout.write(`Marker contract passed: ${markerContractPassed}\n`);
+    process.stdout.write(`Field contract passed: ${fieldContractPassed}\n`);
+    process.stdout.write(`Count matched: ${countMatched}\n`);
+    process.stdout.write(`Failures: ${failures.length}\n`);
+    process.stdout.write(`Warnings: ${warnings.length}\n`);
+
+    // Write P5-B gate output
+    const gateArtifact = {
+      schemaVersion: 'p5-b-runtime-consumption-gate-artifact.v1',
+      stage: 'P5-B',
+      episodeId: EPISODE_ID,
+      learnerLevel: LEARNER_LEVEL,
+      batch: 1,
+      inputArtifact: shadowComparePath,
+      comparisonPassed,
+      runtimeContractPassed,
+      markerContractPassed,
+      fieldContractPassed,
+      countMatched,
+      gatePassed,
+      gateReason,
+      warnings,
+      failures,
+      runtimeConsumable: false,
+      runtimeDisplayMayConsume: false,
+      runtimeGateOnly: true,
+      summary: {
+        gateDecision: gatePassed ? 'PASS' : 'FAIL',
+        countMismatchAllowedForBatch1: !countMatched,
+        allCriteriaMet: gatePassed,
+        comparisonStatus: shadowCompareArtifact.comparisonStatus,
+        countDelta,
+      },
+    };
+
+    const gateOutputPath = writeArtifact('p5_b_runtime_consumption_gate.json', gateArtifact);
+    process.stdout.write(`Gate output written: ${gateOutputPath}\n`);
+
+    process.stdout.write('\n--- P5-B Runtime Consumption Gate Result ---\n');
+    process.stdout.write(`Status: ${gatePassed ? 'PASS' : 'FAIL'}\n`);
+    process.stdout.write(`Gate Passed: ${gatePassed}\n`);
+    process.stdout.write(`Gate Reason: ${gateReason}\n`);
+    process.stdout.write(`Comparison Passed: ${comparisonPassed}\n`);
+    process.stdout.write(`Runtime Contract Passed: ${runtimeContractPassed}\n`);
+    process.stdout.write(`Marker Contract Passed: ${markerContractPassed}\n`);
+    process.stdout.write(`Field Contract Passed: ${fieldContractPassed}\n`);
+    process.stdout.write(`Count Matched: ${countMatched}\n`);
+    process.stdout.write(`Failure Count: ${failures.length}\n`);
+    process.stdout.write(`Warning Count: ${warnings.length}\n`);
+    process.stdout.write(`Runtime Gate Only: true\n`);
+    process.stdout.write(`Runtime Display May Consume: false\n`);
+    process.stdout.write(`Output File: ${gateOutputPath}\n`);
+    process.stdout.write('\nP5-B isolated path completed successfully.\n');
+    process.stdout.write('Exiting without entering any other pipeline paths or switching Runtime data source.\n');
+    return;
+  }
 
   // P5-A Runtime Shadow Compare (OPT-IN only when P5_A_RUNTIME_SHADOW_COMPARE=1)
   // This path exits immediately after comparison to avoid entering any other paths.
