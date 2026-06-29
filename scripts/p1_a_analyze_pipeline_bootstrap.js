@@ -1984,6 +1984,35 @@ function buildOfflineAiDisplayFieldGeneratorProbe(runtimeCandidateArtifact, upst
 
 const P3A_DISPLAY_FIELD_SAMPLE_LIMIT = 5;
 const P3A_PLACEHOLDER_VALUES = ['待补充', 'unknown', 'TODO'];
+const RUNTIME_SENTENCE_MEANING_FORBIDDEN_PATTERNS = ['在', '这里', '语境', '表示', '用来', '指', '说明', '意思是', '相当于'];
+const RUNTIME_SENTENCE_MEANING_MAX_CHINESE_CHARS = 12;
+const RUNTIME_SENTENCE_MEANING_REPAIR_PARENTHETICAL_PATTERNS = ['用于', '表示', '指', '说明', '意思是', '相当于'];
+
+function isRuntimeCompatibleSentenceMeaning(value) {
+  const sentenceMeaning = String(value || '').trim();
+  if (!sentenceMeaning) return false;
+  if (countChineseChars(sentenceMeaning) > RUNTIME_SENTENCE_MEANING_MAX_CHINESE_CHARS) return false;
+  return !RUNTIME_SENTENCE_MEANING_FORBIDDEN_PATTERNS.some((pattern) => sentenceMeaning.includes(pattern));
+}
+
+function repairRuntimeSentenceMeaning(value) {
+  let repaired = String(value || '').trim();
+  if (!repaired) return repaired;
+
+  const commaIndexCandidates = [repaired.indexOf('，'), repaired.indexOf(',')].filter((index) => index >= 0);
+  if (commaIndexCandidates.length > 0) {
+    const firstCommaIndex = Math.min(...commaIndexCandidates);
+    repaired = repaired.slice(0, firstCommaIndex).trim();
+  }
+
+  repaired = repaired.replace(/（([^）]*)）/g, (match, inner) => {
+    const innerText = String(inner || '').trim();
+    const shouldRemove = RUNTIME_SENTENCE_MEANING_REPAIR_PARENTHETICAL_PATTERNS.some((pattern) => innerText.includes(pattern));
+    return shouldRemove ? '' : match;
+  }).trim();
+
+  return repaired;
+}
 
 function buildP3ADisplayFieldGeneratorInput(runtimeCandidateArtifact, upstreamArtifacts, limit = P3A_DISPLAY_FIELD_SAMPLE_LIMIT) {
   const runtimeCandidates = runtimeCandidateArtifact
@@ -2042,6 +2071,14 @@ function validateP3ADisplayFieldDraft(draft) {
   if (draft.reviewStatus !== 'pending_human_review') return false;
   if (draft.runtimeDisplayMayConsume !== false) return false;
 
+  if (draft.type === 'vocabulary') {
+    const originalSentenceMeaning = draft.generatedFields.sentenceMeaning;
+    const repairedSentenceMeaning = repairRuntimeSentenceMeaning(originalSentenceMeaning);
+    if (repairedSentenceMeaning !== String(originalSentenceMeaning || '').trim()) {
+      draft.generatedFields.sentenceMeaning = repairedSentenceMeaning;
+    }
+  }
+
   const requiredByType = draft.type === 'vocabulary'
     ? ['word', 'phonetic', 'partOfSpeech', 'sentenceMeaning']
     : ['literal', 'actual', 'grammar'];
@@ -2050,6 +2087,10 @@ function validateP3ADisplayFieldDraft(draft) {
     const value = draft.generatedFields[field];
     if (!isPresentDisplayField(value)) return false;
     if (P3A_PLACEHOLDER_VALUES.includes(String(value).trim())) return false;
+  }
+
+  if (draft.type === 'vocabulary') {
+    if (!isRuntimeCompatibleSentenceMeaning(draft.generatedFields.sentenceMeaning)) return false;
   }
 
   if (draft.type === 'comprehension') {
@@ -2151,6 +2192,12 @@ function buildP3CDisplayFieldPrompt(inputItems) {
     '  - phonetic = phonetic transcription of that base form.',
     '  - partOfSpeech = concise dictionary POS such as n., vt., vi., adj., adv., prep., interj.',
     '  - sentenceMeaning = a SHORT Chinese meaning for the word in THIS sentence only.',
+    '  - sentenceMeaning MUST be directly displayable after "句中含义：".',
+    '  - sentenceMeaning MUST normally be a short word or short phrase; a very short contextual marker such as "（爱称）" is allowed.',
+    '  - sentenceMeaning MUST NOT contain any of these patterns: 在, 这里, 语境, 表示, 用来, 指, 说明, 意思是, 相当于.',
+    '  - sentenceMeaning MUST NOT include grammar explanations, usage notes, learner explanations, or long descriptions.',
+    '  - GOOD examples: "小羊羔", "（爱称）小羊羔", "也不", "相信", "开始".',
+    '  - BAD examples: "小羊羔，指被疼爱的年轻女性", "也不（用于否定句中，表示与前述情况相同）", "表示开始", "意思是……".',
     'For type "comprehension", generatedFields MUST include: prototype, literal, actual, grammar.',
     '  - prototype = the prototypical phrase form.',
     '  - literal = the surface meaning.',
