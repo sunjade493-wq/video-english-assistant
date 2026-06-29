@@ -5,6 +5,8 @@ const RUNTIME_PILOT_OBSTACLE_DATA_URL = 'output_text/runtime/p0_5b_30_obstacle_r
 const RUNTIME_SHADOW_CANDIDATE_ARTIFACT_URL = 'output_text/p1_a/runtime_candidate_artifact.json';
 const RUNTIME_SHADOW_REVIEW_ARTIFACT_URL = 'output_text/p1_a/runtime_consumption_review_artifact.json';
 const PROMOTED_DISPLAY_ARTIFACT_URL = 'output_text/p1_a/promoted_display_artifact.json';
+const BATCH1_DISPLAY_AUTHORIZATION_URL = 'output_text/p1_a/p6_a_display_consumption_authorization.json';
+const BATCH1_PROMOTED_DISPLAY_URL = 'output_text/p1_a/p4_d_batch1_promoted_display.json';
 const REAL_VISUAL_MAPPING_DATA_URL = 'output_text/visual_mapping/TBBT_S12E01_word_boxes.json';
 const REAL_VIDEO_URL = 'assets/videos/TBBT_S12E01.mp4';
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
@@ -30,8 +32,16 @@ function isRuntimeCandidateOptInEnabled() {
   return new URLSearchParams(window.location.search).get('runtimeCandidate') === '1';
 }
 
+function getRuntimeDisplayMode() {
+  return new URLSearchParams(window.location.search).get('runtimeDisplay') || null;
+}
+
 function isRuntimeDisplayOptInEnabled() {
-  return new URLSearchParams(window.location.search).get('runtimeDisplay') === '1';
+  return getRuntimeDisplayMode() === '1';
+}
+
+function isRuntimeBatch1DisplayOptInEnabled() {
+  return getRuntimeDisplayMode() === 'batch1';
 }
 
 const SUPPORTED_PART_OF_SPEECH_FORMATS = new Set([
@@ -1185,6 +1195,10 @@ function getCurrentProgressKeyScope() {
     return 'promoted-display';
   }
 
+  if (activeDataSource === 'batch1-display') {
+    return 'batch1-display';
+  }
+
   if (activeDataSource === 'real') {
     return 'production';
   }
@@ -1363,6 +1377,116 @@ async function activateRuntimeDisplayOptInIfEnabled() {
   return true;
 }
 
+function failClosedBatch1DisplayConsumption(reason) {
+  console.log(`P6-B Batch1 Display Consumption unavailable; production flow retained. (${reason})`);
+  return false;
+}
+
+function validateBatch1PromotedDisplayArtifact(artifact) {
+  if (!artifact || typeof artifact !== 'object') {
+    throw new Error('batch1 promoted display artifact is not an object');
+  }
+  if (typeof artifact.schemaVersion !== 'string' || artifact.schemaVersion.trim() === '') {
+    throw new Error('batch1 promoted display artifact schemaVersion is missing');
+  }
+  if (artifact.runtimeConsumable !== false) {
+    throw new Error('batch1 promoted display artifact runtimeConsumable is not false');
+  }
+  if (artifact.runtimeDisplayMayConsume !== false) {
+    throw new Error('batch1 promoted display artifact runtimeDisplayMayConsume is not false');
+  }
+  const promotedDisplays = artifact.payload && artifact.payload.promotedDisplays;
+  if (!Array.isArray(promotedDisplays) || promotedDisplays.length === 0) {
+    throw new Error('batch1 promoted display artifact payload.promotedDisplays is missing or empty');
+  }
+  promotedDisplays.forEach((display, index) => {
+    if (!display || typeof display !== 'object') {
+      throw new Error(`batch1 promoted display ${index} is not an object`);
+    }
+    if (typeof display.promotedDisplayId !== 'string' || display.promotedDisplayId.trim() === '') {
+      throw new Error(`batch1 promoted display ${index} promotedDisplayId is missing`);
+    }
+    if (!display.generatedFields || typeof display.generatedFields !== 'object') {
+      throw new Error(`batch1 promoted display ${index} generatedFields is missing`);
+    }
+  });
+  return promotedDisplays;
+}
+
+async function activateRuntimeBatch1DisplayIfEnabled() {
+  if (!isRuntimeBatch1DisplayOptInEnabled()) {
+    return false;
+  }
+
+  let authArtifact;
+
+  try {
+    authArtifact = await fetchJson(BATCH1_DISPLAY_AUTHORIZATION_URL);
+  } catch (error) {
+    return failClosedBatch1DisplayConsumption(`P6-A authorization artifact failed to load: ${error?.message || error}`);
+  }
+
+  if (!authArtifact || authArtifact.authorizationGranted !== true) {
+    return failClosedBatch1DisplayConsumption('P6-A authorization artifact does not grant authorization');
+  }
+
+  if (authArtifact.authorizedSourceArtifact !== 'p4_d_batch1_promoted_display.json') {
+    return failClosedBatch1DisplayConsumption(`P6-A authorization artifact names unexpected source: ${authArtifact.authorizedSourceArtifact}`);
+  }
+
+  console.log('P6-B P6-A authorization artifact loaded and verified');
+
+  let artifact;
+
+  try {
+    artifact = await fetchJson(BATCH1_PROMOTED_DISPLAY_URL);
+  } catch (error) {
+    return failClosedBatch1DisplayConsumption(`batch1 promoted display artifact failed to load: ${error?.message || error}`);
+  }
+
+  let promotedDisplays;
+
+  try {
+    promotedDisplays = validateBatch1PromotedDisplayArtifact(artifact);
+  } catch (error) {
+    return failClosedBatch1DisplayConsumption(error?.message || String(error));
+  }
+
+  console.log('P6-B batch1 promoted display artifact loaded');
+  console.log(`P6-B batch1 promoted display count: ${promotedDisplays.length}`);
+
+  let normalizedDisplayObstacles;
+
+  try {
+    normalizedDisplayObstacles = normalizeObstacles(promotedDisplays.map(promotedDisplayToObstacleRow));
+  } catch (error) {
+    return failClosedBatch1DisplayConsumption(`batch1 promoted display normalization failed: ${error?.message || error}`);
+  }
+
+  if (!Array.isArray(normalizedDisplayObstacles) || normalizedDisplayObstacles.length === 0) {
+    return failClosedBatch1DisplayConsumption('normalized batch1 promoted display obstacles are unavailable or empty');
+  }
+
+  console.log('P6-B batch1 promoted display validation passed');
+
+  obstacles = normalizedDisplayObstacles;
+  activeDataSource = 'batch1-display';
+  selectedObstacleId = null;
+  streamMode = 'dynamic';
+  currentEpisodeProgressKey = getEpisodeProgressKey(JSON.stringify({
+    source: 'batch1-display',
+    subtitles: subtitleSegments.map((segment) => segment.text),
+    obstacles: normalizedDisplayObstacles.map((obstacle) => obstacle.id),
+  }));
+  applyStoredEpisodeProgress(currentEpisodeProgressKey);
+  saveEpisodeProgress();
+  renderVideoState();
+  renderCards();
+  syncPlaybackClock();
+  console.log(`P6-B Batch1 Display Consumption active: ${normalizedDisplayObstacles.length} promoted displays`);
+  return true;
+}
+
 function logRuntimePilotExitIsolationVerification() {
   const progressCounts = getEpisodeProgressCounts();
   const hiddenObstacleIdsCount = hiddenObstacleIds instanceof Set ? hiddenObstacleIds.size : 0;
@@ -1537,6 +1661,7 @@ async function initApp() {
     await runRuntimeShadowProbeIfEnabled();
     await activateRuntimeCandidateOptInIfEnabled();
     await activateRuntimeDisplayOptInIfEnabled();
+    await activateRuntimeBatch1DisplayIfEnabled();
     activateRuntimePilotOptInIfEnabled();
     logRuntimePilotExitIsolationVerification();
     return;
@@ -3062,6 +3187,9 @@ function renderEmptyState() {
 }
 
 function getVisibleObstacles() {
+  if (activeDataSource === 'batch1-display') {
+    return getPendingObstacles();
+  }
   return getAutoSyncObstacles();
 }
 
