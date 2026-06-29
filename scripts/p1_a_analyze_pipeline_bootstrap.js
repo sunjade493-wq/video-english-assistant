@@ -2536,6 +2536,114 @@ async function main() {
   const sourceRows = readSubtitleSource();
   const p4bBatch1Enabled = process.env.P4_B_BATCH1 === '1';
   const p4cBatch1QaEnabled = process.env.P4_C_BATCH1_QA === '1';
+  const p4dBatch1PromoteEnabled = process.env.P4_D_BATCH1_PROMOTE === '1';
+
+  // P4-D Batch 1 Promotion Expansion (OPT-IN only when P4_D_BATCH1_PROMOTE=1)
+  // This path exits immediately after promotion to avoid entering P4-B, P4-C, P3-E/F, or Runtime.
+  if (p4dBatch1PromoteEnabled) {
+    process.stdout.write('\n--- P4-D Batch 1 Promotion Expansion ---\n');
+    process.stdout.write('Opt-in flag detected: P4_D_BATCH1_PROMOTE=1\n');
+    process.stdout.write('P4-D isolated path: will NOT call API, regenerate drafts, rerun QA, or modify existing promoted artifacts\n\n');
+
+    fs.mkdirSync(path.resolve(OUTPUT_DIR), { recursive: true });
+
+    // Read P4-C batch 1 display QA
+    const batch1QaPath = 'p4_b_batch1_display_qa.json';
+    const batch1QaArtifact = readArtifact(batch1QaPath);
+
+    if (!batch1QaArtifact || !batch1QaArtifact.payload || !Array.isArray(batch1QaArtifact.payload.qaResults)) {
+      fail('P4-D requires valid p4_b_batch1_display_qa.json with qaResults array');
+    }
+
+    const qaResults = batch1QaArtifact.payload.qaResults;
+    process.stdout.write(`Loaded ${qaResults.length} QA results from ${batch1QaPath}\n`);
+    process.stdout.write('Promoting only QA-passed display records...\n');
+
+    // Promote only QA-passed records
+    const promotedDisplays = [];
+    const rejectedReferences = [];
+
+    qaResults.forEach((result, index) => {
+      if (result.qaPassed === true && result.qaRejected === false) {
+        const promotedDisplay = {
+          runtimeCandidateId: result.runtimeCandidateId,
+          promotedDisplayId: `${result.runtimeCandidateId}-promoted-batch1-${String(index + 1).padStart(3, '0')}`,
+          promotedFromDraftId: result.runtimeCandidateId,
+          sourceDraftObstacleId: result.sourceDraftObstacleId,
+          type: result.type,
+          subtitleIndex: result.subtitleIndex,
+          source_en: result.source_en,
+          source_zh: result.source_zh,
+          generatedFields: result.generatedFields,
+          generationSource: result.generationSource,
+          confidence: result.confidence,
+          reviewStatus: result.reviewStatus,
+          qaStatus: {
+            qaPassed: result.qaPassed,
+            qaReason: result.qaReason,
+            qaChecks: result.qaChecks,
+          },
+          promotionStatus: 'promoted',
+          promotionSource: 'P4-D-batch1-promotion',
+          runtimeDisplayMayConsume: false,
+        };
+
+        // Preserve marker bounds if present
+        if (result.markerStart !== undefined) {
+          promotedDisplay.markerStart = result.markerStart;
+        }
+        if (result.markerEnd !== undefined) {
+          promotedDisplay.markerEnd = result.markerEnd;
+        }
+
+        promotedDisplays.push(promotedDisplay);
+      } else {
+        rejectedReferences.push({
+          runtimeCandidateId: result.runtimeCandidateId,
+          type: result.type,
+          qaRejected: result.qaRejected,
+          qaReason: result.qaReason,
+        });
+      }
+    });
+
+    const promotedCount = promotedDisplays.length;
+    const rejectedCount = rejectedReferences.length;
+
+    process.stdout.write(`Promoted: ${promotedCount}\n`);
+    process.stdout.write(`Rejected: ${rejectedCount}\n`);
+
+    // Write P4-D promotion output
+    const promotionOutputArtifact = {
+      schemaVersion: 'p4-d-batch1-promoted-display-artifact.v1',
+      stage: 'P4-D',
+      episodeId: EPISODE_ID,
+      learnerLevel: LEARNER_LEVEL,
+      batch: 1,
+      inputArtifact: batch1QaPath,
+      promotedDisplayCount: promotedCount,
+      rejectedCount,
+      runtimeConsumable: false,
+      runtimeDisplayMayConsume: false,
+      payload: {
+        promotedDisplays,
+        rejectedReferences,
+      },
+    };
+
+    const promotionOutputPath = writeArtifact('p4_d_batch1_promoted_display.json', promotionOutputArtifact);
+    process.stdout.write(`Promotion output written: ${promotionOutputPath}\n`);
+
+    process.stdout.write('\n--- P4-D Batch 1 Promotion Result ---\n');
+    process.stdout.write(`Status: COMPLETED\n`);
+    process.stdout.write(`Promoted Count: ${promotedCount}\n`);
+    process.stdout.write(`Rejected Count: ${rejectedCount}\n`);
+    process.stdout.write(`Runtime Display May Consume: false\n`);
+    process.stdout.write(`Output File: ${promotionOutputPath}\n`);
+    process.stdout.write('\nP4-D isolated path completed successfully.\n');
+    process.stdout.write('Exiting without entering P4-B, P4-C, P3-E/F, existing Promotion, or Runtime paths.\n');
+    return;
+  }
 
   // P4-C Batch 1 QA Expansion (OPT-IN only when P4_C_BATCH1_QA=1)
   // This path exits immediately after QA to avoid entering P4-B, P3-E/F, Promotion, or Runtime.

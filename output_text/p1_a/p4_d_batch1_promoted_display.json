@@ -1,0 +1,131 @@
+{
+  "schemaVersion": "p4-d-batch1-promoted-display-artifact.v1",
+  "stage": "P4-D",
+  "episodeId": "tbbt-s12e01",
+  "learnerLevel": "CET-4",
+  "batch": 1,
+  "inputArtifact": "p4_b_batch1_display_qa.json",
+  "promotedDisplayCount": 3,
+  "rejectedCount": 0,
+  "runtimeConsumable": false,
+  "runtimeDisplayMayConsume": false,
+  "payload": {
+    "promotedDisplays": [
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000005",
+        "promotedDisplayId": "tbbt-s12e01-runtime-candidate-000005-promoted-batch1-001",
+        "promotedFromDraftId": "tbbt-s12e01-runtime-candidate-000005",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000005",
+        "type": "vocabulary",
+        "subtitleIndex": 1,
+        "source_en": "Can you believe our little lamb is finally getting married?",
+        "source_zh": "你能相信我们的小羊羔终于要嫁人了吗",
+        "generatedFields": {
+          "word": "lamb",
+          "phonetic": "/læm/",
+          "partOfSpeech": "n.",
+          "sentenceMeaning": "（亲昵地）小羊羔，指被疼爱的年轻女性"
+        },
+        "generationSource": "qwen-plus-display-field-generator",
+        "confidence": 0.98,
+        "reviewStatus": "pending_human_review",
+        "qaStatus": {
+          "qaPassed": true,
+          "qaReason": "All QA checks passed",
+          "qaChecks": {
+            "hasRuntimeCandidateId": true,
+            "hasType": true,
+            "hasGeneratedFields": true,
+            "reviewStatusValid": true,
+            "runtimeDisplayMayConsumeFalse": true,
+            "hasWord": true,
+            "hasPhonetic": true,
+            "hasPartOfSpeech": true,
+            "hasSentenceMeaning": true,
+            "vocabularyFieldsValid": true
+          }
+        },
+        "promotionStatus": "promoted",
+        "promotionSource": "P4-D-batch1-promotion",
+        "runtimeDisplayMayConsume": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000012",
+        "promotedDisplayId": "tbbt-s12e01-runtime-candidate-000012-promoted-batch1-002",
+        "promotedFromDraftId": "tbbt-s12e01-runtime-candidate-000012",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000012",
+        "type": "vocabulary",
+        "subtitleIndex": 2,
+        "source_en": "He can't believe it.",
+        "source_zh": "他肯定不信",
+        "generatedFields": {
+          "word": "believe",
+          "phonetic": "/bɪˈliːv/",
+          "partOfSpeech": "v.",
+          "sentenceMeaning": "相信（某事真实或可能发生）"
+        },
+        "generationSource": "qwen-plus-display-field-generator",
+        "confidence": 0.99,
+        "reviewStatus": "pending_human_review",
+        "qaStatus": {
+          "qaPassed": true,
+          "qaReason": "All QA checks passed",
+          "qaChecks": {
+            "hasRuntimeCandidateId": true,
+            "hasType": true,
+            "hasGeneratedFields": true,
+            "reviewStatusValid": true,
+            "runtimeDisplayMayConsumeFalse": true,
+            "hasWord": true,
+            "hasPhonetic": true,
+            "hasPartOfSpeech": true,
+            "hasSentenceMeaning": true,
+            "vocabularyFieldsValid": true
+          }
+        },
+        "promotionStatus": "promoted",
+        "promotionSource": "P4-D-batch1-promotion",
+        "runtimeDisplayMayConsume": false
+      },
+      {
+        "runtimeCandidateId": "tbbt-s12e01-runtime-candidate-000013",
+        "promotedDisplayId": "tbbt-s12e01-runtime-candidate-000013-promoted-batch1-003",
+        "promotedFromDraftId": "tbbt-s12e01-runtime-candidate-000013",
+        "sourceDraftObstacleId": "tbbt-s12e01-draft-obstacle-000013",
+        "type": "vocabulary",
+        "subtitleIndex": 3,
+        "source_en": "And neither can I.",
+        "source_zh": "我也不敢相信",
+        "generatedFields": {
+          "word": "neither",
+          "phonetic": "/ˈnaɪðər/",
+          "partOfSpeech": "adv.",
+          "sentenceMeaning": "也不（用于否定句中，表示与前述情况相同）"
+        },
+        "generationSource": "qwen-plus-display-field-generator",
+        "confidence": 0.97,
+        "reviewStatus": "pending_human_review",
+        "qaStatus": {
+          "qaPassed": true,
+          "qaReason": "All QA checks passed",
+          "qaChecks": {
+            "hasRuntimeCandidateId": true,
+            "hasType": true,
+            "hasGeneratedFields": true,
+            "reviewStatusValid": true,
+            "runtimeDisplayMayConsumeFalse": true,
+            "hasWord": true,
+            "hasPhonetic": true,
+            "hasPartOfSpeech": true,
+            "hasSentenceMeaning": true,
+            "vocabularyFieldsValid": true
+          }
+        },
+        "promotionStatus": "promoted",
+        "promotionSource": "P4-D-batch1-promotion",
+        "runtimeDisplayMayConsume": false
+      }
+    ],
+    "rejectedReferences": []
+  }
+}
