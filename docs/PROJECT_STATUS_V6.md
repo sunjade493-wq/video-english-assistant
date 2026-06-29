@@ -2456,3 +2456,77 @@ Runtime                           Read-only (not wired; runtimeMayConsume false)
 ```
 
 Next Milestone: P2 Runtime Integration
+
+---
+
+## P6-A Display Consumption Authorization
+
+Status: FROZEN ✅
+
+Git Tag: `p1-p6a-display-consumption-authorization`
+
+Commit: `c0a8e8a`
+
+Source: `scripts/p1_a_analyze_pipeline_bootstrap.js`
+
+Generated output: `output_text/p1_a/p6_a_display_consumption_authorization.json`
+
+Summary:
+
+- P6-A is the Display Consumption Authorization stage.
+- Reads `p5_b_runtime_consumption_gate.json` and verifies `gatePassed: true`.
+- Reads `p4_d_batch1_promoted_display.json` to confirm `promotedDisplayCount`.
+- Produces `p6_a_display_consumption_authorization.json` — an authorization decision record only.
+- Does NOT duplicate display data. `p4_d_batch1_promoted_display.json` remains the single source of truth.
+- Authorization artifact carries no `runtimeConsumable` or `runtimeDisplayMayConsume` fields — it is a decision record, not a data artifact.
+- Opt-in flag: `P6_A_DISPLAY_GATE=1`. Isolated path exits immediately after writing the authorization artifact.
+- Runtime untouched. No data artifact modified.
+
+Frozen architecture decisions:
+
+- `p4_d_batch1_promoted_display.json` is the single source of truth for Batch 1 promoted display data.
+- `p6_a_display_consumption_authorization.json` is the single source of truth for the authorization decision.
+- Runtime must consult the authorization artifact as a key, then read display data from `p4_d_batch1_promoted_display.json` directly.
+- No display data is ever copied or duplicated by the authorization stage.
+
+Verification: `authorizationGranted: true`, `authorizedSourceArtifact: p4_d_batch1_promoted_display.json`, `authorizedDisplayCount: 3`.
+
+---
+
+## P6-B Runtime Batch1 Display Consumption
+
+Status: FROZEN ✅
+
+Git Tag: `p1-p6b-runtime-batch1-display-consumption`
+
+Commit: `99db30e`
+
+Source: `script.js`
+
+Summary:
+
+- P6-B wires the P6-A authorized Batch 1 promoted display data into Runtime under a developer opt-in.
+- Opt-in URL: `http://127.0.0.1:5500/?runtimeDisplay=batch1`
+- `getRuntimeDisplayMode()` dispatcher replaces the previous boolean `isRuntimeDisplayOptInEnabled()` check, evolving `?runtimeDisplay` from a boolean flag into a named mode selector.
+- Backward compatibility preserved: `?runtimeDisplay=1` continues to load `promoted_display_artifact.json` (P3-G, 2 displays) exactly as verified in P3-I.
+- `activateRuntimeBatch1DisplayIfEnabled()` verifies the P6-A authorization artifact (`authorizationGranted: true`, `authorizedSourceArtifact` check) before loading `p4_d_batch1_promoted_display.json`. Fail-closed to Production Flow on any failure.
+- `validateBatch1PromotedDisplayArtifact()` checks `runtimeConsumable: false`, `runtimeDisplayMayConsume: false`, and per-display `promotedDisplayId` + `generatedFields` presence.
+- `activeDataSource = 'batch1-display'` with isolated progress key scope `batch1-display`.
+- `getVisibleObstacles()` bypasses current-segment filtering for `batch1-display` mode so all 3 promoted displays are visible immediately regardless of video position (developer verification mode only).
+- Marker warning is expected and non-blocking: P4-D records carry no `markerStart`/`markerEnd`; marker binding is a future stage.
+- Production Flow (`/`) remains default: 48 obstacles, unchanged.
+- Runtime remains read-only throughout. No artifact modified.
+
+Frozen architecture decisions:
+
+- `?runtimeDisplay` is the single Runtime display opt-in entry point. New batches add new mode values (`batch1`, `batch2`, …) rather than new query parameters.
+- P6-A authorization artifact must be verified before any batch display data is loaded by Runtime.
+- `p4_d_batch1_promoted_display.json` is the only data source for Batch 1 display content in Runtime.
+- Progress, `hiddenObstacleIds`, and `dismissedObstacleHistory` are fully isolated per mode scope.
+
+Verification results:
+
+- `http://127.0.0.1:5500/` → Production Flow, 48 obstacles ✅
+- `http://127.0.0.1:5500/?runtimeDisplay=1` → P3-G stable path, 2 displays ✅
+- `http://127.0.0.1:5500/?runtimeDisplay=batch1` → Batch 1, 3 cards (lamb / believe / neither) rendered ✅
+- Exit isolation: removing opt-in restores Production Flow ✅
