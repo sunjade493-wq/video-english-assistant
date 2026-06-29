@@ -2534,6 +2534,158 @@ function buildP3FDisplayPromotion(p3eQaResult) {
 
 async function main() {
   const sourceRows = readSubtitleSource();
+  const p4bBatch1Enabled = process.env.P4_B_BATCH1 === '1';
+
+  // P4-B-1 First Episode Batch 1 Real Generation (OPT-IN only when P4_B_BATCH1=1)
+  // This path exits immediately after generation to avoid modifying promoted artifacts.
+  if (p4bBatch1Enabled) {
+    process.stdout.write('\n--- P4-B-1 First Episode Batch 1 Real Generation ---\n');
+    process.stdout.write('Opt-in flag detected: P4_B_BATCH1=1\n');
+    process.stdout.write('P4-B-1 isolated path: will NOT execute P3-C/D/E/F/G or modify promoted artifacts\n\n');
+
+    fs.mkdirSync(path.resolve(OUTPUT_DIR), { recursive: true });
+
+    const P4B_BATCH1_SIZE_CAP = 30;
+    const totalSubtitleCount = sourceRows.length;
+    const batch1SubtitleCount = Math.min(P4B_BATCH1_SIZE_CAP, totalSubtitleCount);
+    const batch1Subtitles = sourceRows.slice(0, batch1SubtitleCount);
+
+    process.stdout.write(`Total subtitles available: ${totalSubtitleCount}\n`);
+    process.stdout.write(`Batch 1 size cap: ${P4B_BATCH1_SIZE_CAP}\n`);
+    process.stdout.write(`Batch 1 subtitles to process: ${batch1SubtitleCount}\n`);
+
+    // Build batch 1 scoped subtitles
+    const batch1Scoped = [];
+    for (let index = 0; index < batch1Subtitles.length; index += 1) {
+      const row = batch1Subtitles[index];
+      const startRaw = pickField(row, START_FIELDS);
+      const endRaw = pickField(row, END_FIELDS);
+      const en = pickField(row, ENGLISH_FIELDS);
+      const zh = pickField(row, CHINESE_FIELDS);
+
+      if (typeof en !== 'string' || !en.trim()) {
+        fail(`P4-B-1 subtitle row ${index} is missing English text`);
+      }
+
+      const startSeconds = parseTimeToSeconds(startRaw, `P4-B-1 subtitle row ${index} start`);
+      const endSeconds = parseTimeToSeconds(endRaw, `P4-B-1 subtitle row ${index} end`);
+
+      batch1Scoped.push({
+        subtitleIndex: index,
+        startTime: String(startRaw),
+        endTime: String(endRaw),
+        startSeconds,
+        endSeconds,
+        source_en: en,
+        source_zh: typeof zh === 'string' ? zh : null,
+      });
+    }
+
+    process.stdout.write(`Batch 1 scoped subtitles built: ${batch1Scoped.length}\n`);
+
+    // Build temporary batch 1 subtitle artifact for generation input
+    const batch1SubtitleArtifact = {
+      payload: {
+        subtitles: batch1Scoped,
+      },
+    };
+
+    // Read existing runtime candidate artifact to build batch 1 input
+    const existingRuntimeCandidateArtifact = readArtifact('runtime_candidate_artifact.json');
+    const batch1RuntimeCandidates = existingRuntimeCandidateArtifact.payload.runtimeCandidates.slice(0, batch1SubtitleCount);
+    const batch1RuntimeCandidateArtifact = {
+      runtimeConsumable: false,
+      payload: {
+        runtimeMayConsume: false,
+        runtimeCandidateCount: batch1RuntimeCandidates.length,
+        runtimeCandidates: batch1RuntimeCandidates,
+      },
+    };
+
+    process.stdout.write(`Batch 1 runtime candidates prepared: ${batch1RuntimeCandidates.length}\n`);
+    process.stdout.write('Calling display field generation for batch 1...\n');
+
+    // Run display field generation for batch 1
+    const batch1InputItems = buildP3ADisplayFieldGeneratorInput(
+      batch1RuntimeCandidateArtifact,
+      { subtitleArtifact: batch1SubtitleArtifact },
+      batch1RuntimeCandidates.length,
+    );
+
+    const batch1GenerationResult = await callQwenDisplayFieldGenerator(batch1InputItems);
+
+    const batch1Summary = {
+      generatorStatus: batch1GenerationResult.status,
+      aiCalled: batch1GenerationResult.aiCalled,
+      model: P3C_MODEL,
+      inputCandidateCount: batch1InputItems.length,
+      generatedDraftCount: 0,
+      validDraftCount: 0,
+      invalidDraftCount: 0,
+      validDrafts: [],
+      requiresHumanReview: true,
+      runtimeDisplayMayConsume: false,
+    };
+
+    if (batch1GenerationResult.status !== 'generated') {
+      batch1Summary.blockingReason = batch1GenerationResult.reason || batch1GenerationResult.status;
+      process.stdout.write(`Generation failed: ${batch1Summary.blockingReason}\n`);
+      process.stdout.write('\nP4-B-1 Status: FAILED\n');
+      process.stdout.write(`Exit reason: ${batch1Summary.blockingReason}\n`);
+      process.exitCode = 1;
+      return;
+    }
+
+    const rawDrafts = batch1GenerationResult.drafts;
+    const validDrafts = rawDrafts.filter((draft) => validateP3ADisplayFieldDraft(draft));
+    const invalidDraftCount = rawDrafts.length - validDrafts.length;
+
+    batch1Summary.generatedDraftCount = rawDrafts.length;
+    batch1Summary.validDraftCount = validDrafts.length;
+    batch1Summary.invalidDraftCount = invalidDraftCount;
+    batch1Summary.validDrafts = validDrafts;
+
+    process.stdout.write(`Generated drafts: ${batch1Summary.generatedDraftCount}\n`);
+    process.stdout.write(`Valid drafts: ${batch1Summary.validDraftCount}\n`);
+    process.stdout.write(`Invalid drafts: ${batch1Summary.invalidDraftCount}\n`);
+
+    // Write batch 1 display draft artifact
+    const batch1DisplayDraftArtifact = {
+      schemaVersion: 'p4-b-1-batch1-display-draft-artifact.v1',
+      stage: 'P4-B-1',
+      episodeId: EPISODE_ID,
+      learnerLevel: LEARNER_LEVEL,
+      batch: 1,
+      batchSizeCap: P4B_BATCH1_SIZE_CAP,
+      batchSubtitleCount: batch1SubtitleCount,
+      runtimeConsumable: false,
+      runtimeDisplayMayConsume: false,
+      payload: {
+        displayDrafts: validDrafts,
+        displayDraftCount: validDrafts.length,
+      },
+      summary: batch1Summary,
+    };
+
+    const batch1OutputPath = writeArtifact('p4_b_batch1_display_draft.json', batch1DisplayDraftArtifact);
+    process.stdout.write(`Batch 1 display draft written: ${batch1OutputPath}\n`);
+
+    process.stdout.write('\n--- P4-B-1 Batch 1 Generation Result ---\n');
+    process.stdout.write(`Status: COMPLETED\n`);
+    process.stdout.write(`Batch 1 Subtitles Processed: ${batch1SubtitleCount}\n`);
+    process.stdout.write(`Display Drafts Generated: ${batch1Summary.generatedDraftCount}\n`);
+    process.stdout.write(`Valid Drafts: ${batch1Summary.validDraftCount}\n`);
+    process.stdout.write(`Invalid Drafts: ${batch1Summary.invalidDraftCount}\n`);
+    process.stdout.write(`AI Called: ${batch1Summary.aiCalled}\n`);
+    process.stdout.write(`Model: ${batch1Summary.model}\n`);
+    process.stdout.write(`Runtime Display May Consume: ${batch1Summary.runtimeDisplayMayConsume}\n`);
+    process.stdout.write(`Output File: ${batch1OutputPath}\n`);
+    process.stdout.write('\nP4-B-1 isolated path completed successfully.\n');
+    process.stdout.write('Exiting without executing P3-C/D/E/F/G or modifying promoted artifacts.\n');
+    return;
+  }
+
+  // Default bootstrap path (P4_B_BATCH1 not set)
   const scoped = buildScopedSubtitles(sourceRows);
 
   fs.mkdirSync(path.resolve(OUTPUT_DIR), { recursive: true });
@@ -3138,7 +3290,7 @@ async function main() {
   createdFiles.push(writeArtifact('pipeline_bootstrap_report.json', report));
 
   // Console summary
-  process.stdout.write(`${STAGE} bootstrap completed.\n`);
+  process.stdout.write(`\n${STAGE} bootstrap completed.\n`);
   process.stdout.write(`Subtitle source: ${SOURCE_PATH}\n`);
   process.stdout.write(`Subtitle entries processed: ${scoped.length}\n`);
   process.stdout.write(`Artifacts created: ${createdFiles.length}\n`);
