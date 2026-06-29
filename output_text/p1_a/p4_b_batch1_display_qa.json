@@ -20,7 +20,7 @@
           "word": "lamb",
           "phonetic": "/læm/",
           "partOfSpeech": "n.",
-          "sentenceMeaning": "（亲昵地）小羊羔，指被疼爱的年轻女性"
+          "sentenceMeaning": "小羊羔"
         },
         "generationSource": "qwen-plus-display-field-generator",
         "confidence": 0.98,
@@ -52,8 +52,8 @@
         "generatedFields": {
           "word": "believe",
           "phonetic": "/bɪˈliːv/",
-          "partOfSpeech": "v.",
-          "sentenceMeaning": "相信（某事真实或可能发生）"
+          "partOfSpeech": "vt.",
+          "sentenceMeaning": "相信"
         },
         "generationSource": "qwen-plus-display-field-generator",
         "confidence": 0.99,
@@ -86,7 +86,7 @@
           "word": "neither",
           "phonetic": "/ˈnaɪðər/",
           "partOfSpeech": "adv.",
-          "sentenceMeaning": "也不（用于否定句中，表示与前述情况相同）"
+          "sentenceMeaning": "也不"
         },
         "generationSource": "qwen-plus-display-field-generator",
         "confidence": 0.97,
