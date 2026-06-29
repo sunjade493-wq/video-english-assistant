@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "p6-a-display-consumption-authorization-artifact.v1",
+  "stage": "P6-A",
+  "episodeId": "tbbt-s12e01",
+  "learnerLevel": "CET-4",
+  "batch": 1,
+  "inputArtifact": "p5_b_runtime_consumption_gate.json",
+  "authorizedSourceArtifact": "p4_d_batch1_promoted_display.json",
+  "gateChainPassed": true,
+  "authorizationGranted": true,
+  "authorizedDisplayCount": 3,
+  "authorizationOnly": true,
+  "summary": {
+    "authorizationDecision": "GRANTED",
+    "gateDecision": "PASS",
+    "authorizedSourceArtifact": "p4_d_batch1_promoted_display.json",
+    "authorizedDisplayCount": 3,
+    "note": "p4_d_batch1_promoted_display.json is the single source of truth for authorized display data"
+  }
+}

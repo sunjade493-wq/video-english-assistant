@@ -2587,6 +2587,86 @@ async function main() {
   const p4eRuntimeShadowEnabled = process.env.P4_E_RUNTIME_SHADOW === '1';
   const p5aRuntimeShadowCompareEnabled = process.env.P5_A_RUNTIME_SHADOW_COMPARE === '1';
   const p5bRuntimeGateEnabled = process.env.P5_B_RUNTIME_GATE === '1';
+  const p6aDisplayGateEnabled = process.env.P6_A_DISPLAY_GATE === '1';
+
+  // P6-A Display Consumption Authorization (OPT-IN only when P6_A_DISPLAY_GATE=1)
+  // This path exits immediately after writing the authorization artifact.
+  if (p6aDisplayGateEnabled) {
+    process.stdout.write('\n--- P6-A Display Consumption Authorization ---\n');
+    process.stdout.write('Opt-in flag detected: P6_A_DISPLAY_GATE=1\n');
+    process.stdout.write('P6-A isolated path: authorization decision only, will NOT modify any data artifact\n\n');
+
+    fs.mkdirSync(path.resolve(OUTPUT_DIR), { recursive: true });
+
+    // Read P5-B gate artifact
+    const gateArtifactPath = 'p5_b_runtime_consumption_gate.json';
+    const gateArtifact = readArtifact(gateArtifactPath);
+
+    if (!gateArtifact) {
+      fail('P6-A requires valid p5_b_runtime_consumption_gate.json');
+    }
+
+    process.stdout.write(`Loaded gate artifact from ${gateArtifactPath}\n`);
+
+    if (gateArtifact.gatePassed !== true) {
+      fail(`P6-A authorization requires P5-B gate to have passed. Current gatePassed: ${gateArtifact.gatePassed}`);
+    }
+
+    // Read P4-D promoted display artifact to confirm authorized display count
+    const promotedDisplayPath = 'p4_d_batch1_promoted_display.json';
+    const promotedDisplayArtifact = readArtifact(promotedDisplayPath);
+
+    if (!promotedDisplayArtifact) {
+      fail('P6-A requires valid p4_d_batch1_promoted_display.json');
+    }
+
+    process.stdout.write(`Loaded promoted display artifact from ${promotedDisplayPath}\n`);
+
+    const authorizedDisplayCount = promotedDisplayArtifact.promotedDisplayCount;
+
+    if (typeof authorizedDisplayCount !== 'number' || authorizedDisplayCount < 1) {
+      fail(`P6-A: p4_d_batch1_promoted_display.json has invalid promotedDisplayCount: ${authorizedDisplayCount}`);
+    }
+
+    process.stdout.write(`Gate chain passed: true\n`);
+    process.stdout.write(`Authorized source artifact: ${promotedDisplayPath}\n`);
+    process.stdout.write(`Authorized display count: ${authorizedDisplayCount}\n`);
+
+    const authorizationArtifact = {
+      schemaVersion: 'p6-a-display-consumption-authorization-artifact.v1',
+      stage: 'P6-A',
+      episodeId: EPISODE_ID,
+      learnerLevel: LEARNER_LEVEL,
+      batch: 1,
+      inputArtifact: gateArtifactPath,
+      authorizedSourceArtifact: promotedDisplayPath,
+      gateChainPassed: true,
+      authorizationGranted: true,
+      authorizedDisplayCount,
+      authorizationOnly: true,
+      summary: {
+        authorizationDecision: 'GRANTED',
+        gateDecision: gateArtifact.summary && gateArtifact.summary.gateDecision,
+        authorizedSourceArtifact: promotedDisplayPath,
+        authorizedDisplayCount,
+        note: 'p4_d_batch1_promoted_display.json is the single source of truth for authorized display data',
+      },
+    };
+
+    const authOutputPath = writeArtifact('p6_a_display_consumption_authorization.json', authorizationArtifact);
+    process.stdout.write(`Authorization artifact written: ${authOutputPath}\n`);
+
+    process.stdout.write('\n--- P6-A Display Consumption Authorization Result ---\n');
+    process.stdout.write(`Authorization Granted: true\n`);
+    process.stdout.write(`Gate Chain Passed: true\n`);
+    process.stdout.write(`Authorized Source Artifact: ${promotedDisplayPath}\n`);
+    process.stdout.write(`Authorized Display Count: ${authorizedDisplayCount}\n`);
+    process.stdout.write(`Authorization Only: true\n`);
+    process.stdout.write(`Output File: ${authOutputPath}\n`);
+    process.stdout.write('\nP6-A isolated path completed successfully.\n');
+    process.stdout.write('Exiting without entering any other pipeline paths or modifying any data artifact.\n');
+    return;
+  }
 
   // P5-B Runtime Consumption Gate (OPT-IN only when P5_B_RUNTIME_GATE=1)
   // This path exits immediately after gate decision to avoid entering any other paths.
