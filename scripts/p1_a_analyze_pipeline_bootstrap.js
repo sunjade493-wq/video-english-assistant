@@ -2535,6 +2535,174 @@ function buildP3FDisplayPromotion(p3eQaResult) {
 async function main() {
   const sourceRows = readSubtitleSource();
   const p4bBatch1Enabled = process.env.P4_B_BATCH1 === '1';
+  const p4cBatch1QaEnabled = process.env.P4_C_BATCH1_QA === '1';
+
+  // P4-C Batch 1 QA Expansion (OPT-IN only when P4_C_BATCH1_QA=1)
+  // This path exits immediately after QA to avoid entering P4-B, P3-E/F, Promotion, or Runtime.
+  if (p4cBatch1QaEnabled) {
+    process.stdout.write('\n--- P4-C Batch 1 QA Expansion ---\n');
+    process.stdout.write('Opt-in flag detected: P4_C_BATCH1_QA=1\n');
+    process.stdout.write('P4-C isolated path: will NOT call API, regenerate drafts, promote, or modify promoted artifacts\n\n');
+
+    fs.mkdirSync(path.resolve(OUTPUT_DIR), { recursive: true });
+
+    // Read P4-B batch 1 display draft
+    const batch1DraftPath = 'p4_b_batch1_display_draft.json';
+    const batch1DraftArtifact = readArtifact(batch1DraftPath);
+
+    if (!batch1DraftArtifact || !batch1DraftArtifact.payload || !Array.isArray(batch1DraftArtifact.payload.displayDrafts)) {
+      fail('P4-C requires valid p4_b_batch1_display_draft.json with displayDrafts array');
+    }
+
+    const displayDrafts = batch1DraftArtifact.payload.displayDrafts;
+    process.stdout.write(`Loaded ${displayDrafts.length} display drafts from ${batch1DraftPath}\n`);
+    process.stdout.write('Running deterministic local QA checks...\n');
+
+    // Apply deterministic QA checks to each draft
+    const qaResults = displayDrafts.map((draft) => {
+      const qaChecks = {
+        hasRuntimeCandidateId: typeof draft.runtimeCandidateId === 'string' && draft.runtimeCandidateId.length > 0,
+        hasType: typeof draft.type === 'string' && (draft.type === 'vocabulary' || draft.type === 'comprehension'),
+        hasGeneratedFields: draft.generatedFields && typeof draft.generatedFields === 'object',
+        reviewStatusValid: draft.reviewStatus === 'pending_human_review',
+        runtimeDisplayMayConsumeFalse: draft.runtimeDisplayMayConsume === false,
+      };
+
+      // Type-specific checks
+      if (draft.type === 'vocabulary') {
+        const fields = draft.generatedFields || {};
+        qaChecks.hasWord = typeof fields.word === 'string' && fields.word.trim().length > 0;
+        qaChecks.hasPhonetic = typeof fields.phonetic === 'string' && fields.phonetic.trim().length > 0;
+        qaChecks.hasPartOfSpeech = typeof fields.partOfSpeech === 'string' && fields.partOfSpeech.trim().length > 0;
+        qaChecks.hasSentenceMeaning = typeof fields.sentenceMeaning === 'string' && fields.sentenceMeaning.trim().length > 0;
+        qaChecks.vocabularyFieldsValid = qaChecks.hasWord && qaChecks.hasPhonetic && qaChecks.hasPartOfSpeech && qaChecks.hasSentenceMeaning;
+      } else if (draft.type === 'comprehension') {
+        const fields = draft.generatedFields || {};
+        qaChecks.hasTitle = typeof fields.prototype === 'string' && fields.prototype.trim().length > 0
+          || typeof fields.phrase === 'string' && fields.phrase.trim().length > 0
+          || typeof fields.text === 'string' && fields.text.trim().length > 0;
+        qaChecks.hasLiteral = typeof fields.literal === 'string' && fields.literal.trim().length > 0;
+        qaChecks.hasActual = typeof fields.actual === 'string' && fields.actual.trim().length > 0;
+        qaChecks.hasGrammar = typeof fields.grammar === 'string' && fields.grammar.trim().length > 0;
+        qaChecks.comprehensionFieldsValid = qaChecks.hasTitle && qaChecks.hasLiteral && qaChecks.hasActual && qaChecks.hasGrammar;
+      }
+
+      // Marker bounds check (if present)
+      if (draft.markerStart !== undefined || draft.markerEnd !== undefined) {
+        qaChecks.markerStartFinite = Number.isFinite(draft.markerStart);
+        qaChecks.markerEndFinite = Number.isFinite(draft.markerEnd);
+        qaChecks.markerBoundsValid = qaChecks.markerStartFinite && qaChecks.markerEndFinite && draft.markerEnd > draft.markerStart;
+      }
+
+      // Determine overall QA result
+      const criticalChecksPassed = qaChecks.hasRuntimeCandidateId
+        && qaChecks.hasType
+        && qaChecks.hasGeneratedFields
+        && qaChecks.reviewStatusValid
+        && qaChecks.runtimeDisplayMayConsumeFalse;
+
+      const typeSpecificChecksPassed = draft.type === 'vocabulary'
+        ? qaChecks.vocabularyFieldsValid
+        : draft.type === 'comprehension'
+        ? qaChecks.comprehensionFieldsValid
+        : false;
+
+      const qaPassed = criticalChecksPassed && typeSpecificChecksPassed;
+      const qaRejected = !qaPassed;
+
+      let qaReason = '';
+      if (!criticalChecksPassed) {
+        qaReason = 'Critical checks failed: ';
+        const failed = [];
+        if (!qaChecks.hasRuntimeCandidateId) failed.push('missing runtimeCandidateId');
+        if (!qaChecks.hasType) failed.push('invalid type');
+        if (!qaChecks.hasGeneratedFields) failed.push('missing generatedFields');
+        if (!qaChecks.reviewStatusValid) failed.push('reviewStatus not pending_human_review');
+        if (!qaChecks.runtimeDisplayMayConsumeFalse) failed.push('runtimeDisplayMayConsume not false');
+        qaReason += failed.join(', ');
+      } else if (!typeSpecificChecksPassed) {
+        qaReason = draft.type === 'vocabulary'
+          ? 'Vocabulary fields incomplete or invalid'
+          : draft.type === 'comprehension'
+          ? 'Comprehension fields incomplete or invalid'
+          : 'Unknown type';
+      } else {
+        qaReason = 'All QA checks passed';
+      }
+
+      return {
+        runtimeCandidateId: draft.runtimeCandidateId,
+        sourceDraftObstacleId: draft.sourceDraftObstacleId,
+        type: draft.type,
+        subtitleIndex: draft.subtitleIndex,
+        source_en: draft.source_en,
+        source_zh: draft.source_zh,
+        generatedFields: draft.generatedFields,
+        generationSource: draft.generationSource,
+        confidence: draft.confidence,
+        reviewStatus: draft.reviewStatus,
+        runtimeDisplayMayConsume: draft.runtimeDisplayMayConsume,
+        qaPassed,
+        qaRejected,
+        qaReason,
+        qaChecks,
+      };
+    });
+
+    const totalDrafts = qaResults.length;
+    const qaPassedCount = qaResults.filter((r) => r.qaPassed).length;
+    const qaRejectedCount = qaResults.filter((r) => r.qaRejected).length;
+    const vocabularyCount = qaResults.filter((r) => r.type === 'vocabulary').length;
+    const comprehensionCount = qaResults.filter((r) => r.type === 'comprehension').length;
+    const invalidCount = qaResults.filter((r) => r.type !== 'vocabulary' && r.type !== 'comprehension').length;
+
+    process.stdout.write(`Total drafts QA processed: ${totalDrafts}\n`);
+    process.stdout.write(`QA passed: ${qaPassedCount}\n`);
+    process.stdout.write(`QA rejected: ${qaRejectedCount}\n`);
+    process.stdout.write(`Vocabulary drafts: ${vocabularyCount}\n`);
+    process.stdout.write(`Comprehension drafts: ${comprehensionCount}\n`);
+    process.stdout.write(`Invalid type: ${invalidCount}\n`);
+
+    // Write P4-C QA output
+    const qaOutputArtifact = {
+      schemaVersion: 'p4-c-batch1-display-qa-artifact.v1',
+      stage: 'P4-C',
+      episodeId: EPISODE_ID,
+      learnerLevel: LEARNER_LEVEL,
+      batch: 1,
+      inputArtifact: batch1DraftPath,
+      runtimeConsumable: false,
+      runtimeDisplayMayConsume: false,
+      payload: {
+        qaResults,
+        statistics: {
+          totalDrafts,
+          qaPassedCount,
+          qaRejectedCount,
+          vocabularyCount,
+          comprehensionCount,
+          invalidCount,
+        },
+      },
+    };
+
+    const qaOutputPath = writeArtifact('p4_b_batch1_display_qa.json', qaOutputArtifact);
+    process.stdout.write(`QA output written: ${qaOutputPath}\n`);
+
+    process.stdout.write('\n--- P4-C Batch 1 QA Result ---\n');
+    process.stdout.write(`Status: COMPLETED\n`);
+    process.stdout.write(`Total Drafts QA Processed: ${totalDrafts}\n`);
+    process.stdout.write(`QA Passed: ${qaPassedCount}\n`);
+    process.stdout.write(`QA Rejected: ${qaRejectedCount}\n`);
+    process.stdout.write(`Vocabulary Drafts: ${vocabularyCount}\n`);
+    process.stdout.write(`Comprehension Drafts: ${comprehensionCount}\n`);
+    process.stdout.write(`Invalid Type: ${invalidCount}\n`);
+    process.stdout.write(`Runtime Display May Consume: false\n`);
+    process.stdout.write(`Output File: ${qaOutputPath}\n`);
+    process.stdout.write('\nP4-C isolated path completed successfully.\n');
+    process.stdout.write('Exiting without entering P4-B, P3-E/F, Promotion, or Runtime paths.\n');
+    return;
+  }
 
   // P4-B-1 First Episode Batch 1 Real Generation (OPT-IN only when P4_B_BATCH1=1)
   // This path exits immediately after generation to avoid modifying promoted artifacts.
