@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "p5-a-runtime-shadow-compare-artifact.v1",
+  "stage": "P5-A",
+  "episodeId": "tbbt-s12e01",
+  "learnerLevel": "CET-4",
+  "batch": 1,
+  "comparisonStatus": "warning",
+  "stableInputArtifact": "promoted_display_artifact.json",
+  "p4InputArtifact": "p4_d_batch1_promoted_display.json",
+  "stableDisplayCount": 2,
+  "p4PromotedDisplayCount": 3,
+  "countDelta": 1,
+  "typeDistribution": {
+    "stable": {
+      "vocabulary": 2,
+      "comprehension": 0,
+      "other": 0
+    },
+    "p4": {
+      "vocabulary": 3,
+      "comprehension": 0,
+      "other": 0
+    }
+  },
+  "fieldCompleteness": {
+    "stable": {
+      "vocabularyWithAllFields": 2,
+      "vocabularyMissingFields": 0,
+      "comprehensionWithAllFields": 0,
+      "comprehensionMissingFields": 0
+    },
+    "p4": {
+      "vocabularyWithAllFields": 3,
+      "vocabularyMissingFields": 0,
+      "comprehensionWithAllFields": 0,
+      "comprehensionMissingFields": 0
+    }
+  },
+  "markerComparison": {
+    "stable": {
+      "withMarkers": 2,
+      "withoutMarkers": 0,
+      "invalidMarkers": 0
+    },
+    "p4": {
+      "withMarkers": 0,
+      "withoutMarkers": 3,
+      "invalidMarkers": 0
+    }
+  },
+  "runtimeContractChecks": {
+    "stableRuntimeConsumableFalse": false,
+    "stableRuntimeMayConsumeFalse": true,
+    "stableUsesLegacyField": true,
+    "stableIsNonConsumable": true,
+    "stableRuntimeDisplayMayConsumeFalse": true,
+    "p4RuntimeConsumableFalse": true,
+    "p4RuntimeDisplayMayConsumeFalse": true
+  },
+  "failures": [],
+  "warnings": [
+    "Display count delta: P4 has 1 more displays than stable (P4: 3, stable: 2)",
+    "Stable artifact uses legacy runtimeMayConsume field instead of runtimeConsumable"
+  ],
+  "runtimeConsumable": false,
+  "runtimeDisplayMayConsume": false,
+  "runtimeShadowOnly": true,
+  "summary": {
+    "comparisonResult": "warning",
+    "countDifferenceIsWarning": true,
+    "p4IsSubsetOfFull": false,
+    "runtimeContractPreserved": false,
+    "fieldCompletenessOk": true,
+    "markerValidityOk": true
+  }
+}

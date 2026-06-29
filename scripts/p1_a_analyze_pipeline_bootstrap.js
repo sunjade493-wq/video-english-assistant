@@ -2538,6 +2538,248 @@ async function main() {
   const p4cBatch1QaEnabled = process.env.P4_C_BATCH1_QA === '1';
   const p4dBatch1PromoteEnabled = process.env.P4_D_BATCH1_PROMOTE === '1';
   const p4eRuntimeShadowEnabled = process.env.P4_E_RUNTIME_SHADOW === '1';
+  const p5aRuntimeShadowCompareEnabled = process.env.P5_A_RUNTIME_SHADOW_COMPARE === '1';
+
+  // P5-A Runtime Shadow Compare (OPT-IN only when P5_A_RUNTIME_SHADOW_COMPARE=1)
+  // This path exits immediately after comparison to avoid entering any other paths.
+  if (p5aRuntimeShadowCompareEnabled) {
+    process.stdout.write('\n--- P5-A Runtime Shadow Compare ---\n');
+    process.stdout.write('Opt-in flag detected: P5_A_RUNTIME_SHADOW_COMPARE=1\n');
+    process.stdout.write('P5-A isolated path: shadow comparison only, will NOT change Runtime data source\n\n');
+
+    fs.mkdirSync(path.resolve(OUTPUT_DIR), { recursive: true });
+
+    // Read stable promoted display artifact
+    const stablePromotedPath = 'promoted_display_artifact.json';
+    const stablePromotedArtifact = readArtifact(stablePromotedPath);
+
+    if (!stablePromotedArtifact) {
+      fail('P5-A requires valid promoted_display_artifact.json (stable)');
+    }
+
+    // Read P4-D batch 1 promoted display
+    const p4PromotedPath = 'p4_d_batch1_promoted_display.json';
+    const p4PromotedArtifact = readArtifact(p4PromotedPath);
+
+    if (!p4PromotedArtifact) {
+      fail('P5-A requires valid p4_d_batch1_promoted_display.json');
+    }
+
+    process.stdout.write(`Loaded stable promoted artifact from ${stablePromotedPath}\n`);
+    process.stdout.write(`Loaded P4 promoted artifact from ${p4PromotedPath}\n`);
+    process.stdout.write('Running shadow comparison...\n');
+
+    const failures = [];
+    const warnings = [];
+
+    // Extract displays
+    const stableDisplays = stablePromotedArtifact.payload && Array.isArray(stablePromotedArtifact.payload.promotedDisplays)
+      ? stablePromotedArtifact.payload.promotedDisplays
+      : [];
+    const p4Displays = p4PromotedArtifact.payload && Array.isArray(p4PromotedArtifact.payload.promotedDisplays)
+      ? p4PromotedArtifact.payload.promotedDisplays
+      : [];
+
+    const stableDisplayCount = stableDisplays.length;
+    const p4PromotedDisplayCount = p4Displays.length;
+    const countDelta = p4PromotedDisplayCount - stableDisplayCount;
+
+    // Count difference is warning, not failure (P4 Batch 1 covers subset)
+    if (countDelta !== 0) {
+      warnings.push(`Display count delta: P4 has ${countDelta > 0 ? countDelta + ' more' : Math.abs(countDelta) + ' fewer'} displays than stable (P4: ${p4PromotedDisplayCount}, stable: ${stableDisplayCount})`);
+    }
+
+    // Check runtime contract flags (with legacy compatibility)
+    // Legacy artifacts may use runtimeMayConsume instead of runtimeConsumable
+    const stableUsesLegacyField = stablePromotedArtifact.runtimeConsumable === undefined
+      && stablePromotedArtifact.runtimeMayConsume !== undefined;
+
+    const stableIsNonConsumable = stablePromotedArtifact.runtimeConsumable === false
+      || stablePromotedArtifact.runtimeMayConsume === false;
+
+    const runtimeContractChecks = {
+      stableRuntimeConsumableFalse: stablePromotedArtifact.runtimeConsumable === false,
+      stableRuntimeMayConsumeFalse: stablePromotedArtifact.runtimeMayConsume === false,
+      stableUsesLegacyField,
+      stableIsNonConsumable,
+      stableRuntimeDisplayMayConsumeFalse: stablePromotedArtifact.runtimeDisplayMayConsume === false,
+      p4RuntimeConsumableFalse: p4PromotedArtifact.runtimeConsumable === false,
+      p4RuntimeDisplayMayConsumeFalse: p4PromotedArtifact.runtimeDisplayMayConsume === false,
+    };
+
+    // Check stable artifact (with legacy compatibility)
+    if (!stableIsNonConsumable) {
+      failures.push('Stable artifact: neither runtimeConsumable nor runtimeMayConsume is false');
+    } else if (stableUsesLegacyField) {
+      warnings.push('Stable artifact uses legacy runtimeMayConsume field instead of runtimeConsumable');
+    }
+
+    if (!runtimeContractChecks.stableRuntimeDisplayMayConsumeFalse) {
+      failures.push('Stable artifact: runtimeDisplayMayConsume is not false');
+    }
+
+    // Check P4 artifact (strict modern contract)
+    if (!runtimeContractChecks.p4RuntimeConsumableFalse) {
+      failures.push('P4 artifact: runtimeConsumable is not false');
+    }
+    if (!runtimeContractChecks.p4RuntimeDisplayMayConsumeFalse) {
+      failures.push('P4 artifact: runtimeDisplayMayConsume is not false');
+    }
+
+    // Type distribution
+    const stableTypeDistribution = {
+      vocabulary: stableDisplays.filter((d) => d.type === 'vocabulary').length,
+      comprehension: stableDisplays.filter((d) => d.type === 'comprehension').length,
+      other: stableDisplays.filter((d) => d.type !== 'vocabulary' && d.type !== 'comprehension').length,
+    };
+
+    const p4TypeDistribution = {
+      vocabulary: p4Displays.filter((d) => d.type === 'vocabulary').length,
+      comprehension: p4Displays.filter((d) => d.type === 'comprehension').length,
+      other: p4Displays.filter((d) => d.type !== 'vocabulary' && d.type !== 'comprehension').length,
+    };
+
+    // Field completeness
+    const checkFieldCompleteness = (displays, label) => {
+      let vocabularyWithAllFields = 0;
+      let vocabularyMissingFields = 0;
+      let comprehensionWithAllFields = 0;
+      let comprehensionMissingFields = 0;
+
+      displays.forEach((display) => {
+        if (display.type === 'vocabulary') {
+          const fields = display.generatedFields || {};
+          const hasAll = isPresentDisplayField(fields.word)
+            && isPresentDisplayField(fields.phonetic)
+            && isPresentDisplayField(fields.partOfSpeech)
+            && isPresentDisplayField(fields.sentenceMeaning);
+          if (hasAll) vocabularyWithAllFields += 1;
+          else vocabularyMissingFields += 1;
+        } else if (display.type === 'comprehension') {
+          const fields = display.generatedFields || {};
+          const hasTitle = isPresentDisplayField(fields.prototype)
+            || isPresentDisplayField(fields.phrase)
+            || isPresentDisplayField(fields.text);
+          const hasAll = hasTitle
+            && isPresentDisplayField(fields.literal)
+            && isPresentDisplayField(fields.actual)
+            && isPresentDisplayField(fields.grammar);
+          if (hasAll) comprehensionWithAllFields += 1;
+          else comprehensionMissingFields += 1;
+        }
+      });
+
+      return {
+        vocabularyWithAllFields,
+        vocabularyMissingFields,
+        comprehensionWithAllFields,
+        comprehensionMissingFields,
+      };
+    };
+
+    const stableFieldCompleteness = checkFieldCompleteness(stableDisplays, 'stable');
+    const p4FieldCompleteness = checkFieldCompleteness(p4Displays, 'P4');
+
+    // Marker comparison
+    const checkMarkerPresence = (displays) => {
+      let withMarkers = 0;
+      let withoutMarkers = 0;
+      let invalidMarkers = 0;
+
+      displays.forEach((display) => {
+        if (display.markerStart !== undefined && display.markerEnd !== undefined) {
+          if (Number.isFinite(display.markerStart) && Number.isFinite(display.markerEnd) && display.markerEnd > display.markerStart) {
+            withMarkers += 1;
+          } else {
+            invalidMarkers += 1;
+          }
+        } else {
+          withoutMarkers += 1;
+        }
+      });
+
+      return { withMarkers, withoutMarkers, invalidMarkers };
+    };
+
+    const stableMarkerComparison = checkMarkerPresence(stableDisplays);
+    const p4MarkerComparison = checkMarkerPresence(p4Displays);
+
+    // Check for P4 runtime-consumable flags
+    p4Displays.forEach((display) => {
+      if (display.runtimeDisplayMayConsume !== false) {
+        failures.push(`P4 display ${display.runtimeCandidateId || 'unknown'}: runtimeDisplayMayConsume is not false`);
+      }
+    });
+
+    const comparisonStatus = failures.length === 0
+      ? (warnings.length === 0 ? 'passed' : 'warning')
+      : 'failed';
+
+    process.stdout.write(`Comparison status: ${comparisonStatus}\n`);
+    process.stdout.write(`Stable display count: ${stableDisplayCount}\n`);
+    process.stdout.write(`P4 promoted display count: ${p4PromotedDisplayCount}\n`);
+    process.stdout.write(`Count delta: ${countDelta}\n`);
+    process.stdout.write(`Failures: ${failures.length}\n`);
+    process.stdout.write(`Warnings: ${warnings.length}\n`);
+
+    // Write P5-A shadow comparison output
+    const shadowCompareArtifact = {
+      schemaVersion: 'p5-a-runtime-shadow-compare-artifact.v1',
+      stage: 'P5-A',
+      episodeId: EPISODE_ID,
+      learnerLevel: LEARNER_LEVEL,
+      batch: 1,
+      comparisonStatus,
+      stableInputArtifact: stablePromotedPath,
+      p4InputArtifact: p4PromotedPath,
+      stableDisplayCount,
+      p4PromotedDisplayCount,
+      countDelta,
+      typeDistribution: {
+        stable: stableTypeDistribution,
+        p4: p4TypeDistribution,
+      },
+      fieldCompleteness: {
+        stable: stableFieldCompleteness,
+        p4: p4FieldCompleteness,
+      },
+      markerComparison: {
+        stable: stableMarkerComparison,
+        p4: p4MarkerComparison,
+      },
+      runtimeContractChecks,
+      failures,
+      warnings,
+      runtimeConsumable: false,
+      runtimeDisplayMayConsume: false,
+      runtimeShadowOnly: true,
+      summary: {
+        comparisonResult: comparisonStatus,
+        countDifferenceIsWarning: countDelta !== 0,
+        p4IsSubsetOfFull: p4PromotedDisplayCount <= stableDisplayCount,
+        runtimeContractPreserved: Object.values(runtimeContractChecks).every((v) => v === true),
+        fieldCompletenessOk: p4FieldCompleteness.vocabularyMissingFields === 0 && p4FieldCompleteness.comprehensionMissingFields === 0,
+        markerValidityOk: p4MarkerComparison.invalidMarkers === 0,
+      },
+    };
+
+    const shadowCompareOutputPath = writeArtifact('p5_a_runtime_shadow_compare.json', shadowCompareArtifact);
+    process.stdout.write(`Shadow comparison output written: ${shadowCompareOutputPath}\n`);
+
+    process.stdout.write('\n--- P5-A Runtime Shadow Compare Result ---\n');
+    process.stdout.write(`Status: ${comparisonStatus.toUpperCase()}\n`);
+    process.stdout.write(`Stable Display Count: ${stableDisplayCount}\n`);
+    process.stdout.write(`P4 Promoted Display Count: ${p4PromotedDisplayCount}\n`);
+    process.stdout.write(`Count Delta: ${countDelta}\n`);
+    process.stdout.write(`Failure Count: ${failures.length}\n`);
+    process.stdout.write(`Warning Count: ${warnings.length}\n`);
+    process.stdout.write(`Runtime Shadow Only: true\n`);
+    process.stdout.write(`Runtime Display May Consume: false\n`);
+    process.stdout.write(`Output File: ${shadowCompareOutputPath}\n`);
+    process.stdout.write('\nP5-A isolated path completed successfully.\n');
+    process.stdout.write('Exiting without entering any other pipeline paths or touching Runtime/UI.\n');
+    return;
+  }
 
   // P4-E Runtime Shadow Verification (OPT-IN only when P4_E_RUNTIME_SHADOW=1)
   // This path exits immediately after shadow verification to avoid entering any other paths.
