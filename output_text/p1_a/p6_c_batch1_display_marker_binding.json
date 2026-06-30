@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "p6-c-batch1-display-marker-binding-artifact.v1",
+  "stage": "P6-C",
+  "episodeId": "tbbt-s12e01",
+  "learnerLevel": "CET-4",
+  "batch": 1,
+  "inputArtifact": "p4_d_batch1_promoted_display.json",
+  "authorizedBy": "p6_a_display_consumption_authorization.json",
+  "markerBindingStatus": "all_bound",
+  "markerBoundCount": 3,
+  "markerUnboundCount": 0,
+  "markerBindings": [
+    {
+      "promotedDisplayId": "tbbt-s12e01-runtime-candidate-000005-promoted-batch1-001",
+      "subtitleIndex": 1,
+      "word": "lamb",
+      "markerStart": 27,
+      "markerEnd": 31,
+      "startTime": "6.0",
+      "endTime": "10.0",
+      "markerBindingSource": "subtitle-text-word-search",
+      "markerBindingStatus": "bound"
+    },
+    {
+      "promotedDisplayId": "tbbt-s12e01-runtime-candidate-000012-promoted-batch1-002",
+      "subtitleIndex": 2,
+      "word": "believe",
+      "markerStart": 9,
+      "markerEnd": 16,
+      "startTime": "10.0",
+      "endTime": "12.0",
+      "markerBindingSource": "subtitle-text-word-search",
+      "markerBindingStatus": "bound"
+    },
+    {
+      "promotedDisplayId": "tbbt-s12e01-runtime-candidate-000013-promoted-batch1-003",
+      "subtitleIndex": 3,
+      "word": "neither",
+      "markerStart": 4,
+      "markerEnd": 11,
+      "startTime": "12.0",
+      "endTime": "15.5",
+      "markerBindingSource": "subtitle-text-word-search",
+      "markerBindingStatus": "bound"
+    }
+  ]
+}

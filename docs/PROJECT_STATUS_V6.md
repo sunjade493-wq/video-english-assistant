@@ -2530,3 +2530,50 @@ Verification results:
 - `http://127.0.0.1:5500/?runtimeDisplay=1` → P3-G stable path, 2 displays ✅
 - `http://127.0.0.1:5500/?runtimeDisplay=batch1` → Batch 1, 3 cards (lamb / believe / neither) rendered ✅
 - Exit isolation: removing opt-in restores Production Flow ✅
+
+---
+
+## P7 — Offline Visual Marker Architecture
+
+Status: FROZEN ✅
+
+Completed:
+
+- Offline Visual Marker Architecture Freeze
+- Offline Visual Marker Data Contract Freeze
+- Offline Visual Mapping Workflow Freeze
+
+Sources:
+
+- `docs/P7_OFFLINE_VISUAL_MARKER_ARCHITECTURE_FREEZE.md`
+- `docs/P7_OFFLINE_VISUAL_MARKER_DATA_CONTRACT_FREEZE.md`
+- `docs/P7_OFFLINE_VISUAL_MAPPING_WORKFLOW_FREEZE.md`
+
+Architecture:
+
+```text
+Offline Analyze Engine
+↓
+Offline Visual Mapping Engine
+↓
+Frozen visualMarker JSON
+↓
+Runtime Renderer
+```
+
+Runtime Responsibilities:
+
+- Render frozen marker JSON only
+- No OCR
+- No AI inference
+- No measureText
+- No subtitle geometry estimation
+- No character-ratio positioning
+- No pixel mapping
+- No coordinate regeneration
+
+Future:
+
+Offline Visual Mapping Engine will generate all visualMarker coordinates offline.
+
+Runtime will consume frozen coordinates without modification.

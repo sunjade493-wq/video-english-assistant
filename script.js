@@ -7,6 +7,7 @@ const RUNTIME_SHADOW_REVIEW_ARTIFACT_URL = 'output_text/p1_a/runtime_consumption
 const PROMOTED_DISPLAY_ARTIFACT_URL = 'output_text/p1_a/promoted_display_artifact.json';
 const BATCH1_DISPLAY_AUTHORIZATION_URL = 'output_text/p1_a/p6_a_display_consumption_authorization.json';
 const BATCH1_PROMOTED_DISPLAY_URL = 'output_text/p1_a/p4_d_batch1_promoted_display.json';
+const BATCH1_MARKER_BINDING_URL = 'output_text/p1_a/p6_c_batch1_display_marker_binding.json';
 const REAL_VISUAL_MAPPING_DATA_URL = 'output_text/visual_mapping/TBBT_S12E01_word_boxes.json';
 const REAL_VIDEO_URL = 'assets/videos/TBBT_S12E01.mp4';
 const DEFAULT_VOCABULARY_LEVEL = 'junior';
@@ -1455,10 +1456,42 @@ async function activateRuntimeBatch1DisplayIfEnabled() {
   console.log('P6-B batch1 promoted display artifact loaded');
   console.log(`P6-B batch1 promoted display count: ${promotedDisplays.length}`);
 
+  // P6-C marker binding — fail-open: absent or invalid binding renders cards without markers
+  let markerBindingByPromotedDisplayId = {};
+  try {
+    const markerBindingArtifact = await fetchJson(BATCH1_MARKER_BINDING_URL);
+    if (
+      markerBindingArtifact &&
+      Array.isArray(markerBindingArtifact.markerBindings) &&
+      markerBindingArtifact.markerBindings.length > 0
+    ) {
+      markerBindingArtifact.markerBindings.forEach((binding) => {
+        if (binding && typeof binding.promotedDisplayId === 'string') {
+          markerBindingByPromotedDisplayId[binding.promotedDisplayId] = binding;
+        }
+      });
+      console.log(`P6-C marker binding loaded: ${Object.keys(markerBindingByPromotedDisplayId).length} bindings`);
+    } else {
+      console.warn('P6-C marker binding artifact missing or empty — cards will render without markers');
+    }
+  } catch (error) {
+    console.warn(`P6-C marker binding failed to load (fail-open): ${error?.message || error}`);
+  }
+
   let normalizedDisplayObstacles;
 
   try {
-    normalizedDisplayObstacles = normalizeObstacles(promotedDisplays.map(promotedDisplayToObstacleRow));
+    normalizedDisplayObstacles = normalizeObstacles(promotedDisplays.map((display) => {
+      const obstacleRow = promotedDisplayToObstacleRow(display);
+      const binding = markerBindingByPromotedDisplayId[display.promotedDisplayId];
+      if (binding) {
+        obstacleRow.markerStart = binding.markerStart;
+        obstacleRow.markerEnd = binding.markerEnd;
+        obstacleRow.start = binding.startTime;
+        obstacleRow.end = binding.endTime;
+      }
+      return obstacleRow;
+    }));
   } catch (error) {
     return failClosedBatch1DisplayConsumption(`batch1 promoted display normalization failed: ${error?.message || error}`);
   }
@@ -2090,10 +2123,24 @@ function renderRealSubtitleMarkers() {
   clearRealSubtitleMarkers();
 
   const segment = getActiveSubtitleSegmentForMarkers();
-  const ranges = segment ? getMarkerRangesForSegment(segment) : [];
+  let ranges = segment ? getMarkerRangesForSegment(segment) : [];
 
   if (!segment || !segment.text || ranges.length === 0) {
     return;
+  }
+
+  if (activeDataSource === 'batch1-display') {
+    ranges = ranges.filter((range) => {
+      const { timeMs, endTimeMs } = range.obstacle;
+      if (!Number.isFinite(timeMs) || !Number.isFinite(endTimeMs)) {
+        return true;
+      }
+      return currentTimeMs >= timeMs && currentTimeMs < endTimeMs;
+    });
+
+    if (ranges.length === 0) {
+      return;
+    }
   }
 
   const lineWidthPercent = BURNED_ENGLISH_LINE_WIDTH_RATIO * 100;
