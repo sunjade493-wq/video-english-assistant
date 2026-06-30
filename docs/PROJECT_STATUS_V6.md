@@ -2645,3 +2645,46 @@ Next stage:
 P8-C — Subtitle-driven Frame Extraction
 
 Replace hard-coded FRAME_TIMINGS with automatic subtitle-derived extraction timing.
+
+---
+
+## P8 Marker Visual Rules (Frozen)
+
+1. Vocabulary obstacle
+
+- Draw one solid yellow dot directly beneath the horizontal center of the target English word.
+- Highlight both the target English word and its corresponding Chinese translation in yellow.
+- The dot must not cover the subtitle text.
+
+2. Comprehension obstacle
+
+- Draw one yellow solid underline beneath only the comprehension-related subtitle span.
+- The marker is not required to cover the entire subtitle sentence.
+- If the comprehension obstacle is a phrase, clause, or short expression, underline only that specific span.
+
+3. Dot positioning
+
+- The yellow dot must be horizontally centered beneath the target English word.
+- Never align the dot to Chinese subtitles, actors, props, or background objects.
+
+4. Underline positioning
+
+- The underline must match only the comprehension span.
+- If the comprehension span is the full sentence, the underline may cover the full sentence.
+- If the comprehension span is shorter than the full sentence, underline only that shorter span.
+
+5. Runtime principle
+
+- Runtime consumes frozen visualMarker data only.
+- Runtime never performs OCR.
+- Runtime never calls AI.
+- Runtime never estimates subtitle geometry.
+- Runtime never corrects coordinates.
+- Runtime never regenerates coordinates.
+
+6. Offline Visual Mapping principle
+
+- Offline AI must locate only the rendered English burned subtitle text.
+- Offline AI must not locate Chinese subtitles, actors, props, background regions, logos, or semantic objects.
+- BoundingBox is the single source of truth for Runtime marker rendering.
+- visualMarker coordinates must be derived from Offline Visual Mapping output.
