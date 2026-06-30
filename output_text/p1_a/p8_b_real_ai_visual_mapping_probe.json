@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "p8-b-real-ai-visual-mapping-probe.v1",
+  "stage": "P8-B",
+  "status": "real-ai-probe",
+  "episodeId": "tbbt-s12e01",
+  "learnerLevel": "CET-4",
+  "batch": 1,
+  "generatedAt": "2026-06-30T14:23:03.554Z",
+  "model": "qwen-vl-plus",
+  "inputPaths": {
+    "videoAsset": "assets/videos/TBBT_S12E01.mp4",
+    "subtitleSource": "output_text/p1_a/subtitle_artifact.json",
+    "markerBindingSource": "output_text/p1_a/p6_c_batch1_display_marker_binding.json"
+  },
+  "pilotTargets": [
+    "lamb",
+    "believe",
+    "neither"
+  ],
+  "targets": [
+    {
+      "word": "lamb",
+      "visualMarker": {
+        "kind": "dot",
+        "centerX": 798,
+        "baselineY": 796,
+        "radius": 5,
+        "confidence": 0.95
+      },
+      "rawModelResponse": "```json\n{\n  \"kind\": \"dot\",\n  \"centerX\": 798,\n  \"baselineY\": 796,\n  \"radius\": 5,\n  \"confidence\": 0.95\n}\n```"
+    },
+    {
+      "word": "believe",
+      "visualMarker": {
+        "kind": "dot",
+        "centerX": 798,
+        "baselineY": 756,
+        "radius": 4,
+        "confidence": 0.95
+      },
+      "rawModelResponse": "```json\n{\n  \"kind\": \"dot\",\n  \"centerX\": 798,\n  \"baselineY\": 756,\n  \"radius\": 4,\n  \"confidence\": 0.95\n}\n```"
+    },
+    {
+      "word": "neither",
+      "visualMarker": {
+        "kind": "dot",
+        "centerX": 698,
+        "baselineY": 795,
+        "radius": 5,
+        "confidence": 0.95
+      },
+      "rawModelResponse": "```json\n{\n  \"kind\": \"dot\",\n  \"centerX\": 698,\n  \"baselineY\": 795,\n  \"radius\": 5,\n  \"confidence\": 0.95\n}\n```"
+    }
+  ]
+}

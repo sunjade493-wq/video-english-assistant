@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "p8-a-offline-visual-mapping-pilot-placeholder.v1",
+  "stage": "P8-A",
+  "episodeId": "tbbt-s12e01",
+  "learnerLevel": "CET-4",
+  "batch": 1,
+  "generatedAt": "2026-06-30T12:25:38.830Z",
+  "placeholder": true,
+  "productionReady": false,
+  "_warning": "All visualMarker coordinates are null placeholders. Real coordinates must be produced by Offline Visual Mapping Engine (Qwen-VL) in a later P8 stage. Runtime must never generate, estimate, or correct these values.",
+  "inputPaths": {
+    "videoAsset": "assets/tbbt-s12e01.mp4",
+    "subtitleSource": "output_text/p1_a/subtitle_artifact.json",
+    "markerBindingSource": "output_text/p1_a/p6_c_batch1_display_marker_binding.json"
+  },
+  "pilotTargets": [
+    "lamb",
+    "believe",
+    "neither"
+  ],
+  "pilotEntries": [
+    {
+      "word": "lamb",
+      "visualMarker": {
+        "kind": "dot",
+        "centerX": null,
+        "baselineY": null,
+        "radius": null,
+        "confidence": null,
+        "_placeholder": true,
+        "_note": "Real coordinates for \"lamb\" must come from vision AI (Qwen-VL) in a later P8 stage."
+      }
+    },
+    {
+      "word": "believe",
+      "visualMarker": {
+        "kind": "dot",
+        "centerX": null,
+        "baselineY": null,
+        "radius": null,
+        "confidence": null,
+        "_placeholder": true,
+        "_note": "Real coordinates for \"believe\" must come from vision AI (Qwen-VL) in a later P8 stage."
+      }
+    },
+    {
+      "word": "neither",
+      "visualMarker": {
+        "kind": "dot",
+        "centerX": null,
+        "baselineY": null,
+        "radius": null,
+        "confidence": null,
+        "_placeholder": true,
+        "_note": "Real coordinates for \"neither\" must come from vision AI (Qwen-VL) in a later P8 stage."
+      }
+    }
+  ]
+}
