@@ -2577,3 +2577,71 @@ Future:
 Offline Visual Mapping Engine will generate all visualMarker coordinates offline.
 
 Runtime will consume frozen coordinates without modification.
+
+---
+
+## P8 — Offline Visual Mapping Engine
+
+Status: IN PROGRESS ✅
+
+Completed:
+
+- P8 Offline Visual Mapping Engine Implementation Plan
+- P8-A Offline Visual Mapping Pilot Skeleton
+- P8-B Automatic MP4 Frame Extraction
+- P8-B DashScope / Qwen-VL Integration
+- P8-B Real AI Visual Marker Coordinate Generation
+- P8-B Temporary Frame Cache moved to tmp/
+
+Verified:
+
+- Input:
+  - MP4 video
+  - Subtitle artifact
+  - Batch1 Analyze output
+
+- Pipeline:
+
+  MP4
+    ↓
+  ffmpeg frame extraction
+    ↓
+  Qwen-VL
+    ↓
+  visualMarker JSON
+
+- Pilot targets verified:
+
+  - lamb
+  - believe
+  - neither
+
+Verified output:
+
+visualMarker
+
+```json
+{
+  "kind": "dot",
+  "centerX": ...,
+  "baselineY": ...,
+  "radius": ...
+}
+```
+
+Current Runtime principle:
+
+Runtime consumes frozen visualMarker data only.
+
+Runtime never:
+
+- performs OCR
+- estimates subtitle geometry
+- calls AI
+- regenerates coordinates
+
+Next stage:
+
+P8-C — Subtitle-driven Frame Extraction
+
+Replace hard-coded FRAME_TIMINGS with automatic subtitle-derived extraction timing.
