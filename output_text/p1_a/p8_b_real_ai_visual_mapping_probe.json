@@ -5,7 +5,7 @@
   "episodeId": "tbbt-s12e01",
   "learnerLevel": "CET-4",
   "batch": 1,
-  "generatedAt": "2026-06-30T14:23:03.554Z",
+  "generatedAt": "2026-06-30T14:40:48.756Z",
   "model": "qwen-vl-plus",
   "inputPaths": {
     "videoAsset": "assets/videos/TBBT_S12E01.mp4",
@@ -20,17 +20,19 @@
   "targets": [
     {
       "word": "lamb",
+      "frameTime": 8,
       "visualMarker": {
         "kind": "dot",
-        "centerX": 798,
-        "baselineY": 796,
+        "centerX": 836,
+        "baselineY": 792,
         "radius": 5,
         "confidence": 0.95
       },
-      "rawModelResponse": "```json\n{\n  \"kind\": \"dot\",\n  \"centerX\": 798,\n  \"baselineY\": 796,\n  \"radius\": 5,\n  \"confidence\": 0.95\n}\n```"
+      "rawModelResponse": "```json\n{\n  \"kind\": \"dot\",\n  \"centerX\": 836,\n  \"baselineY\": 792,\n  \"radius\": 5,\n  \"confidence\": 0.95\n}\n```"
     },
     {
       "word": "believe",
+      "frameTime": 11,
       "visualMarker": {
         "kind": "dot",
         "centerX": 798,
@@ -42,14 +44,15 @@
     },
     {
       "word": "neither",
+      "frameTime": 13.75,
       "visualMarker": {
         "kind": "dot",
-        "centerX": 698,
-        "baselineY": 795,
+        "centerX": 738,
+        "baselineY": 796,
         "radius": 5,
         "confidence": 0.95
       },
-      "rawModelResponse": "```json\n{\n  \"kind\": \"dot\",\n  \"centerX\": 698,\n  \"baselineY\": 795,\n  \"radius\": 5,\n  \"confidence\": 0.95\n}\n```"
+      "rawModelResponse": "```json\n{\n  \"kind\": \"dot\",\n  \"centerX\": 738,\n  \"baselineY\": 796,\n  \"radius\": 5,\n  \"confidence\": 0.95\n}\n```"
     }
   ]
 }

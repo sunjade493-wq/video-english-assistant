@@ -51,13 +51,6 @@ const VIDEO_ASSET_PATH = 'assets/videos/TBBT_S12E01.mp4';
 // Output directory for extracted frame images
 const FRAMES_DIR = path.join('tmp', 'p8_b_frames');
 
-// Subtitle-anchored extraction times for each Batch1 target (seconds)
-const FRAME_TIMINGS = {
-  lamb:    8.0,
-  believe: 11.0,
-  neither: 13.5,
-};
-
 // Subtitle source used for Batch1 marker binding
 const SUBTITLE_SOURCE_PATH = 'output_text/p1_a/subtitle_artifact.json';
 
@@ -233,15 +226,56 @@ function verifyFfmpeg(stage) {
 }
 
 // ---------------------------------------------------------------------------
+// loadSubtitleFrameTimings — reads p6_c_batch1_display_marker_binding.json
+// and returns a map of { word -> frameTime } where
+// frameTime = (startTime + endTime) / 2.
+// Fails fast if the binding file is missing or a target has no binding.
+// ---------------------------------------------------------------------------
+
+function loadSubtitleFrameTimings(stage) {
+  if (!fs.existsSync(MARKER_BINDING_SOURCE_PATH)) {
+    console.error(`[${stage}] FATAL: Marker binding file not found: ${MARKER_BINDING_SOURCE_PATH}`);
+    process.exit(1);
+  }
+
+  let bindingArtifact;
+  try {
+    bindingArtifact = JSON.parse(fs.readFileSync(MARKER_BINDING_SOURCE_PATH, 'utf8'));
+  } catch (e) {
+    console.error(`[${stage}] FATAL: Failed to parse marker binding file: ${e.message}`);
+    process.exit(1);
+  }
+
+  const bindings = bindingArtifact.markerBindings;
+  if (!Array.isArray(bindings)) {
+    console.error(`[${stage}] FATAL: markerBindings array missing in ${MARKER_BINDING_SOURCE_PATH}`);
+    process.exit(1);
+  }
+
+  const timingMap = {};
+  for (const entry of bindings) {
+    const startTime = parseFloat(entry.startTime);
+    const endTime = parseFloat(entry.endTime);
+    if (isNaN(startTime) || isNaN(endTime)) {
+      console.error(`[${stage}] FATAL: Invalid startTime/endTime for binding entry: ${JSON.stringify(entry)}`);
+      process.exit(1);
+    }
+    const frameTime = (startTime + endTime) / 2;
+    timingMap[entry.word] = { frameTime, startTime, endTime };
+  }
+
+  return timingMap;
+}
+
+// ---------------------------------------------------------------------------
 // extractFrame — uses ffmpeg to extract a single frame at the given timestamp.
 // Writes to FRAMES_DIR/frame_<word>.jpg and returns the output path.
 // Fails fast on any error — no fallbacks.
 // ---------------------------------------------------------------------------
 
-function extractFrame(stage, word) {
-  const timeSec = FRAME_TIMINGS[word];
-  if (timeSec === undefined) {
-    console.error(`[${stage}] FATAL: No timing defined for target word "${word}".`);
+function extractFrame(stage, word, timeSec) {
+  if (timeSec === undefined || timeSec === null) {
+    console.error(`[${stage}] FATAL: No timing provided for target word "${word}".`);
     process.exit(1);
   }
 
@@ -286,8 +320,8 @@ function extractFrame(stage, word) {
 // loadFrameBase64 — extracts the frame via ffmpeg and returns base64 + path.
 // ---------------------------------------------------------------------------
 
-function loadFrameBase64(stage, word) {
-  const outputPath = extractFrame(stage, word);
+function loadFrameBase64(stage, word, timeSec) {
+  const outputPath = extractFrame(stage, word, timeSec);
   const base64 = fs.readFileSync(outputPath).toString('base64');
   return { base64, usedPath: outputPath };
 }
@@ -320,13 +354,26 @@ async function runP8BRealAIProbe() {
 
   verifyFfmpeg(STAGE);
 
+  const frameTimings = loadSubtitleFrameTimings(STAGE);
+  console.log(`[${STAGE}] Loaded subtitle-driven frame timings:`);
+  for (const word of PILOT_TARGETS) {
+    if (!frameTimings[word]) {
+      console.error(`[${STAGE}] FATAL: No subtitle binding found for target word "${word}" in ${MARKER_BINDING_SOURCE_PATH}`);
+      process.exit(1);
+    }
+    const { frameTime, startTime, endTime } = frameTimings[word];
+    console.log(`[${STAGE}]   "${word}": startTime=${startTime}s endTime=${endTime}s frameTime=${frameTime}s`);
+  }
+  console.log('');
+
   const targets = [];
 
   for (const word of PILOT_TARGETS) {
     console.log(`[${STAGE}] Processing target: "${word}"`);
 
-    const frame = loadFrameBase64(STAGE, word);
-    console.log(`[${STAGE}]   Using frame: ${frame.usedPath}`);
+    const { frameTime } = frameTimings[word];
+    const frame = loadFrameBase64(STAGE, word, frameTime);
+    console.log(`[${STAGE}]   Using frame: ${frame.usedPath} (t=${frameTime}s)`);
     const prompt = buildDotPrompt(word);
 
     let rawModelResponse = null;
@@ -375,6 +422,7 @@ async function runP8BRealAIProbe() {
 
     targets.push({
       word,
+      frameTime,
       visualMarker,
       ...(rawModelResponse !== null ? { rawModelResponse } : {}),
       ...(parseError !== null ? { parseError } : {}),
