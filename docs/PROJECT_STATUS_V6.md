@@ -2687,4 +2687,81 @@ Replace hard-coded FRAME_TIMINGS with automatic subtitle-derived extraction timi
 - Offline AI must locate only the rendered English burned subtitle text.
 - Offline AI must not locate Chinese subtitles, actors, props, background regions, logos, or semantic objects.
 - BoundingBox is the single source of truth for Runtime marker rendering.
+
+---
+
+## P8-F — Word-level Visual Localization Accuracy
+
+Status: PLANNED
+
+Goal:
+
+Upgrade Offline Visual Mapping from subtitle-region recognition to OCR-level word localization.
+
+The core acceptance criterion is:
+
+BoundingBox must tightly wrap the exact rendered English target word.
+
+P8-F is NOT a Runtime stage.
+
+Runtime must not be changed to compensate for AI localization errors.
+
+Permanent principle:
+
+BoundingBox is the single source of truth.
+
+All Runtime marker rendering must be derived from BoundingBox:
+
+- Vocabulary yellow dot
+- Comprehension yellow underline
+- Hover hit area
+- Click hit area
+- Future visual marker variants
+
+centerX, baselineY, and radius are derived render values only.
+
+They are not the authoritative source of marker geometry.
+
+P8-F implementation direction:
+
+1. Dynamic subtitle ROI
+
+- Replace fixed lower-30-percent ROI with a tighter subtitle-region ROI.
+- The ROI should focus on the rendered English burned subtitle line.
+- The goal is to reduce background, actors, Chinese subtitles, and unrelated visual noise.
+
+2. OCR-level visual prompt
+
+- The model must locate the exact rendered letters of the target English word.
+- The model must not return the full sentence.
+- The model must not infer by sentence meaning.
+- The model must not locate Chinese subtitles, actors, objects, background, or semantic regions.
+
+3. Self-validation
+
+- subtitleText must contain the target word.
+- targetFound must be true.
+- boundingBox must exist.
+- boundingBox width and height must be reasonable for one word.
+- Invalid results must fail instead of generating fake coordinates.
+
+4. Development-only BoundingBox visualization
+
+- Add a development-only debug mode to render BoundingBox rectangles.
+- This is only for verifying whether AI localization is wrong or Runtime rendering is wrong.
+- It must not become product UI.
+
+P8-F does NOT do:
+
+- Runtime coordinate correction
+- Runtime OCR
+- Runtime AI
+- Runtime geometry estimation
+- Comprehension underline implementation
+- Whole-episode expansion
+- Marker visual rule redesign
+
+P8-F completion meaning:
+
+After P8-F passes, Offline Visual Mapping Engine V1 can be considered complete for word-level vocabulary dot localization.
 - visualMarker coordinates must be derived from Offline Visual Mapping output.
