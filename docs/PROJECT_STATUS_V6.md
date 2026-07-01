@@ -2765,3 +2765,62 @@ P8-F completion meaning:
 
 After P8-F passes, Offline Visual Mapping Engine V1 can be considered complete for word-level vocabulary dot localization.
 - visualMarker coordinates must be derived from Offline Visual Mapping output.
+
+---
+
+## P9-D — Windows venv Validation
+
+Status: COMPLETE ✅ (Validation Failed Inside Paddle Runtime)
+
+Environment:
+
+- Windows venv
+- PaddlePaddle 3.3.1
+- PaddleOCR 3.7.0
+
+Summary:
+
+- Runtime inference validation completed.
+- Validation failed inside Paddle runtime.
+- Windows venv environment confirmed not viable for PaddleOCR inference.
+
+---
+
+## P9-E — Official Conda Validation
+
+Status: COMPLETE ✅ (Validation Failed Inside Paddle Runtime)
+
+Environment:
+
+- Official Conda environment
+- PaddlePaddle 3.0.0
+- PaddleOCR 3.7.0
+
+Summary:
+
+- Runtime inference validation completed.
+- Validation failed inside Paddle runtime.
+- Official Conda environment confirmed not viable for PaddleOCR inference.
+
+---
+
+## P9-F — Official Docker Validation (Next)
+
+Status: PLANNED
+
+Goal:
+
+Validate the existing `scripts/p9d_verify_lamb.py` inside the official Paddle Docker Linux environment before continuing geometry extraction.
+
+Rationale:
+
+- P9-D (Windows venv) and P9-E (Official Conda) both failed inside the Paddle runtime.
+- Docker Linux environment is the next validation target to isolate whether the failure is environment-specific.
+
+Current roadmap position:
+
+```text
+P9-D Windows venv Validation         ✅ COMPLETE (failed inside Paddle runtime)
+P9-E Official Conda Validation        ✅ COMPLETE (failed inside Paddle runtime)
+P9-F Official Docker Validation       ← NEXT
+```
