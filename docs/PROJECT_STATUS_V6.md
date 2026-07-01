@@ -2804,9 +2804,9 @@ Summary:
 
 ---
 
-## P9-F — Official Docker Validation (Next)
+## P9-F — Official Docker Validation
 
-Status: PLANNED
+Status: COMPLETE ✅ (Docker Environment Verified)
 
 Goal:
 
@@ -2815,12 +2815,31 @@ Validate the existing `scripts/p9d_verify_lamb.py` inside the official Paddle Do
 Rationale:
 
 - P9-D (Windows venv) and P9-E (Official Conda) both failed inside the Paddle runtime.
-- Docker Linux environment is the next validation target to isolate whether the failure is environment-specific.
+- WSL2, Docker Desktop, and the official Paddle Docker image have been verified.
+- Docker Linux environment is confirmed as the next viable validation path for geometry extraction work.
 
 Current roadmap position:
 
 ```text
 P9-D Windows venv Validation         ✅ COMPLETE (failed inside Paddle runtime)
 P9-E Official Conda Validation        ✅ COMPLETE (failed inside Paddle runtime)
-P9-F Official Docker Validation       ← NEXT
+P9-F Official Docker Validation       ✅ COMPLETE (Docker environment verified)
+P9-G Docker Geometry Extraction        ← NEXT
 ```
+
+
+---
+
+## P9-G — Docker Geometry Extraction (Next)
+
+Status: PLANNED
+
+Goal:
+
+Run geometry extraction inside the verified official Paddle Docker Linux environment.
+
+Constraints:
+
+- Do not modify Runtime.
+- Keep changes limited to the Docker-based geometry extraction path.
+- Use the verified Docker environment before promoting any geometry output.
