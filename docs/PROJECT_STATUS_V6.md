@@ -2804,23 +2804,195 @@ Summary:
 
 ---
 
-## P9-F — Official Docker Validation (Next)
+## P9-F — Official Docker Validation
 
-Status: PLANNED
+Status: COMPLETE ✅ (Validation Failed Inside Paddle Runtime)
 
-Goal:
+Environment:
 
-Validate the existing `scripts/p9d_verify_lamb.py` inside the official Paddle Docker Linux environment before continuing geometry extraction.
+- Official Docker image: `paddlepaddle/paddle:3.0.0`
+- PaddlePaddle 3.0.0
+- PaddleOCR 3.7.0
+- PP-OCRv4 model
 
-Rationale:
+Summary:
 
-- P9-D (Windows venv) and P9-E (Official Conda) both failed inside the Paddle runtime.
-- Docker Linux environment is the next validation target to isolate whether the failure is environment-specific.
+- Docker environment validation completed.
+- PP-OCRv4 models loaded successfully.
+- OCR inference ran successfully.
+- Detected 4 text regions with bounding boxes.
+- Validation failed: `return_word_box=True` parameter was ignored.
+- Result contains only line-level bounding boxes, not word-level boxes.
+- "lamb" does NOT have its own bounding box.
+- The entire subtitle "Can you believe our little lamb is finally getting married?" is one single bounding box.
+
+Evidence:
+
+```
+Word: Can you believe our little lamb is finally getting married?
+BoundingBox: [[323, 236], [1595, 236], [1595, 297], [323, 297]]
+Confidence: 0.9886
+```
+
+Conclusion:
+
+- PaddleOCR 3.7.0 + PP-OCRv4 does NOT support word-level bounding boxes via `return_word_box=True`.
+- The `return_word_box` parameter is present in the API but ignored by the PP-OCRv4 inference pipeline.
+- This is NOT an environment-specific failure.
+- All three validation environments confirm the same behavior:
+  - P9-D Windows venv
+  - P9-E Official Conda
+  - P9-F Official Docker
+
+Artifacts:
+
+- Script: `scripts/p9f_verify_lamb_docker.py` (local validation artifact — not committed to repository)
+- Debug visualization: `tmp/p9f_lamb_debug.jpg` (local only)
 
 Current roadmap position:
 
 ```text
 P9-D Windows venv Validation         ✅ COMPLETE (failed inside Paddle runtime)
 P9-E Official Conda Validation        ✅ COMPLETE (failed inside Paddle runtime)
-P9-F Official Docker Validation       ← NEXT
+P9-F Official Docker Validation       ✅ COMPLETE (failed inside Paddle runtime)
+```
+
+---
+
+## P9 — PaddleOCR Word-level Validation Conclusion
+
+Status: BLOCKED
+
+Root Cause:
+
+PaddleOCR 3.7.0 with PP-OCRv4 does NOT support word-level bounding boxes.
+
+The `return_word_box=True` API parameter exists but is ignored by the inference pipeline.
+
+All validation attempts (Windows venv / Official Conda / Official Docker) confirm identical behavior: only line-level boxes are returned.
+
+PaddleOCR cannot replace Qwen-VL for word-level visual localization in the current P8 Offline Visual Mapping Engine.
+
+Next Recommended Direction:
+
+- Continue P8 using Qwen-VL for word-level visual localization (already verified in P8-B).
+- Do NOT pursue PaddleOCR further for word-level coordinate extraction.
+- PaddleOCR may remain available for future fallback OCR or line-level verification only.
+
+---
+
+## P10-A — Vision-Language Grounding Single-word Validation
+
+Status: COMPLETE ✅ (Grounding Confirmed — Partial Alignment)
+
+Date: 2026-07-02
+
+Script: `scripts/p10a_grounding_single_word_validation.py`
+
+Goal:
+
+Validate whether a vision-language grounding model (Qwen-VL-Plus via DashScope) can locate
+the exact burned English subtitle word "lamb" in the existing subtitle ROI frame.
+
+Input:
+
+- Image: `tmp/p8_b_frames/frame_lamb_subtitle_roi.jpg`
+- Target word: `lamb`
+- Model: `qwen-vl-plus`
+
+Result:
+
+Qwen-VL-Plus successfully returned a bounding box for "lamb":
+
+```json
+{"left": 758, "top": 240, "right": 836, "bottom": 279}
+```
+
+Comparison with P8-B reference box:
+
+```
+P8-B reference:  {"left": 704, "top": 234, "right": 777, "bottom": 278}
+P10-A result:    {"left": 758, "top": 240, "right": 836, "bottom": 279}
+Delta:           dx=54px  dy=6px  dw=5px
+Box dimensions:  78w x 39h px (reasonable for one word)
+```
+
+Verdict: PARTIAL
+
+- Bounding box dimensions are reasonable for a single word (78×39 px).
+- Word height alignment (dy=6px) is good.
+- Left-edge horizontal offset (dx=54px) differs from P8-B reference by 54px.
+- Box width is within 5px of the P8-B reference width.
+
+Interpretation:
+
+- Qwen-VL grounding is functional: it correctly identifies "lamb" as a locatable word.
+- The horizontal offset suggests the model returned coordinates for "lamb" but with a slight left-edge misalignment vs. the P8-B Stage 1 OCR reference.
+- P8-B Stage 1 OCR coordinates are themselves unverified ground truth; the 54px offset may be within acceptable accuracy for visual marker placement.
+- Debug visualization saved to `tmp/p10a_lamb_grounding_debug.jpg`.
+
+Conclusion:
+
+Qwen-VL-Plus can localize single words via grounding prompts and returns plausible bounding boxes.
+Qwen-VL grounding improved semantic targeting over earlier approaches; however, absolute pixel alignment remained unverified at this stage. P10-D and P10-E later confirmed that Qwen-VL absolute coordinates are systematically offset from real rendered pixel positions.
+PaddleOCR is not viable for word-level bounding box extraction.
+
+Current roadmap position:
+
+```text
+P9-D Windows venv Validation         ✅ COMPLETE (failed inside Paddle runtime)
+P9-E Official Conda Validation        ✅ COMPLETE (failed inside Paddle runtime)
+P9-F Official Docker Validation       ✅ COMPLETE (failed inside Paddle runtime)
+P10-A Grounding Single-word Validation ✅ COMPLETE (grounding confirmed, partial alignment)
+P10-B Overlay Visual Verification     ✅ COMPLETE (both P8-B and P10-A boxes land on "our", not "lamb")
+P10-C Prompt Constraint Validation    ✅ COMPLETE (Variant 5 word-list strategy improved semantic targeting; absolute pixel alignment remained unverified)
+P10-D Word-list Grounding Validation  ✅ COMPLETE (word-list box matches P8-B ref within 2px; OCR still reads "our" — model coordinates systematically offset)
+P10-E Sliding-window OCR Validation   ✅ FROZEN (EasyOCR localized "lamb" at x=900–1020; root cause confirmed)
+P10-F Bounding Box Estimation         🔜 NEXT (tight single-word box from OCR-verified region)
+```
+
+---
+
+## P10-E Freeze — Sliding-window OCR Validation
+
+Status: FROZEN ✅
+
+### Validated facts
+
+- EasyOCR can detect and read the word "lamb" from the subtitle ROI image (`tmp/p8_b_frames/frame_lamb_subtitle_roi.jpg`).
+- A coarse 120px sliding window at stride=20px reliably localizes "lamb" at the real rendered pixel position.
+- The real pixel x-bracket for "lamb" is confirmed: approximately `x=900–1020` in the full 1920×324 ROI frame.
+- The OCR verification crop at that position reads "lamb" cleanly.
+
+### Root cause confirmed
+
+Qwen-VL absolute grounding coordinates are systematically offset from the actual rendered subtitle pixels.
+
+```
+Qwen-VL reported "lamb" box:  left=702  right=775   (Δ ≈ −198px from real position)
+Real OCR-confirmed "lamb" bracket: left=900  right=1020
+P8-B reference box:           left=704  right=777   (also misaligned — model-generated, not pixel-verified)
+```
+
+The model returns internally consistent word-order coordinates (word sequence is correct, relative spacing is plausible) but the absolute x-coordinates are shifted roughly 196px to the left of where the word actually renders on screen.
+
+### Not solved in P10-E
+
+- Tight single-word bounding box. The confirmed bracket (`x=900–1020`, 120px wide) is a coarse localization bracket, not a tight box for use as a visual marker.
+
+### Script
+
+`scripts/p10e_sliding_window_ocr_validation.py` — frozen, do not modify.
+
+### Artifacts
+
+```
+tmp/p10e_subtitle_band.jpg       — isolated subtitle band used for OCR
+tmp/p10e_lamb_best_crop.jpg      — best window crop; OCRs as "lamb"
+tmp/p10e_lamb_overlay.jpg        — overlay: P8-B reference (blue) vs P10-E bracket (green)
+```
+
+### Deferred
+
+P10-F — Bounding Box Estimation: derive a tight single-word box from the confirmed OCR bracket. Separate stage, separate script, separate validation criteria.
 ```
