@@ -2996,3 +2996,56 @@ tmp/p10e_lamb_overlay.jpg        — overlay: P8-B reference (blue) vs P10-E bra
 
 P10-F — Bounding Box Estimation: derive a tight single-word box from the confirmed OCR bracket. Separate stage, separate script, separate validation criteria.
 ```
+
+---
+
+## P9-G — Docker Geometry Extraction (Upcoming)
+
+Status: PLANNED
+
+Prerequisite status:
+
+- P9-F Official Docker Validation is complete.
+- Docker environment is verified as the valid PaddleOCR execution environment.
+- P9-D Windows venv and P9-E Official Conda remain failed validation paths and should not be used for PaddleOCR geometry extraction.
+
+Goal:
+
+Run the next offline PaddleOCR geometry extraction stage inside the verified Docker Linux environment only.
+
+Scope:
+
+- Extract subtitle/word geometry needed by the Offline Visual Mapping Engine.
+- Use Docker as the execution boundary for PaddleOCR-dependent inference.
+- Treat extracted geometry as offline Analyze / Visual Mapping data.
+- Preserve Runtime as a read-only consumer of frozen visual marker data.
+
+Hard boundaries:
+
+- Do not modify Runtime as part of P9-G.
+- Do not modify `script.js` as part of P9-G.
+- Do not modify P1 implementation as part of P9-G.
+- Do not modify P8 implementation as part of P9-G unless a later explicit implementation task authorizes a narrowly scoped change.
+- Do not perform OCR, AI inference, geometry estimation, or coordinate correction in Runtime.
+- Do not promote extracted geometry to Runtime consumption until a later freeze/review/promotion step explicitly authorizes it.
+
+Expected future workflow:
+
+1. Run PaddleOCR geometry extraction inside the verified Docker environment.
+2. Produce offline geometry evidence/artifacts only.
+3. Validate that extracted boxes correspond to burned English subtitle text rather than Chinese subtitles, actors, props, logos, or background regions.
+4. Keep Runtime unchanged.
+5. Use a later explicit stage to review, freeze, and promote any visual marker data for Runtime consumption.
+
+Current roadmap position:
+
+```text
+P9-D Windows venv Validation          ✅ COMPLETE (failed inside Paddle runtime)
+P9-E Official Conda Validation         ✅ COMPLETE (failed inside Paddle runtime)
+P9-F Official Docker Validation        ✅ COMPLETE (Docker environment verified)
+P9-G Docker Geometry Extraction        ← NEXT
+```
+
+Merge gate:
+
+Yes, merge only if only `docs/PROJECT_STATUS_V6.md` changed, no code files changed, no `output_text` files changed, Runtime remains untouched, `script.js` remains untouched, and P1/P8 implementation files remain untouched.
