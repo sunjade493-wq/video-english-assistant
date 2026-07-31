@@ -1,5 +1,16 @@
 # Changelog
 
+## V2.7C Obstacle Recall Optimization
+
+- Updated `generate-obstacles.js` with a recall-focused AI prompt for the real episode content-production pipeline.
+- Prompt now explicitly scans every subtitle line and targets fixed expressions, phrasal verbs, idioms, slang, conversational chunks, multi-meaning expressions, context-dependent expressions, literal-vs-actual expressions, and common Chinese-learner confusion patterns.
+- Prompt now explicitly preserves multiple valid obstacles in the same subtitle and keeps subtitle order.
+- Prompt now explicitly avoids meaningless over-tagging of transparent literal phrases, ordinary grammar structures, ordinary verb + object combinations, and every noun/adjective phrase.
+- Added `sample-obstacles.json` for the V2.7B recall fixture with newly included `saved me a seat`, `grab coffee`, and `threw me off`.
+- Added `test-v2.7c-obstacle-recall.js` to validate prompt coverage, recall candidates, same-subtitle preservation, and V2.6E card-format constraints.
+- Added `ai-provider.js` for offline OpenAI-compatible content generation only; runtime still never calls AI.
+- Added `V2.7C_Obstacle_Recall_Optimization.md` as the implementation record.
+
 ## V2.6E Quality Validation Round 3
 
 Human review validation dataset generated from the original V2.6E Round 1 obstacle set.

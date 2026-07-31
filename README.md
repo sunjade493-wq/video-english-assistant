@@ -2,7 +2,7 @@
 
 一个纯 HTML/CSS/Vanilla JavaScript 实现的 Video English Assistant。
 
-当前版本：V2.6A Analyze Engine Mock Layer Frozen ✅ – Analyze Engine Mock Layer 已验收冻结，输入 subtitle items 与 user vocab level，输出 `vocab` / `comprehension` 两类 obstacle object，并保持 V2.4A Obstacle Timeline 与 V2.5A Comprehension Progress 冻结行为不变。V2.5C Learning Tips Layout Polish 与 V2.4B Learning Heatmap Polish 仍保持 Backlog（暂缓开发）。
+当前版本：V2.7C Obstacle Recall Optimization ✅ – 内容生产端 AI prompt 已针对理解障碍召回进行优化，明确扫描每一行字幕，主动识别 fixed expressions、phrasal verbs、conversational chunks、multi-meaning expressions 与 context-dependent expressions，同时禁止无学习价值的透明短语过度标注。Runtime 仍只读取冻结的 obstacle JSON，绝不调用 AI。
 
 V2.0 冻结学习流程逻辑：产品不追求让用户永久掌握所有单词、语法或考试能力，而是帮助用户扫除视频学习英语过程中的障碍，让用户越来越顺畅地听懂、看懂英语视频，并通过持续跨越障碍建立信心、提高效率、保持动力。
 
@@ -27,8 +27,13 @@ video-english-assistant/
 ├── index.html
 ├── styles.css
 ├── analyze-engine.js
+├── ai-provider.js
+├── generate-obstacles.js
+├── sample-obstacles.json
 ├── script.js
 ├── test-current-subtitle-sync.js
+├── test-v2.7c-obstacle-recall.js
+├── V2.7C_Obstacle_Recall_Optimization.md
 ├── CHANGELOG.md
 ├── preview-v1.5.svg
 ├── preview-v1.7.svg
@@ -56,6 +61,61 @@ video-english-assistant/
 - 点击右侧栏顶部「恢复全部」后，当前轮次已隐藏的生词提示和理解提示会重新显示，但仍然只限于当前播放字幕，且不改变当前播放 / 暂停状态。
 - 右侧提示流支持滚动。
 - 支持平板和手机响应式布局。
+
+
+## V2.7C Obstacle Recall Optimization — Frozen ✅
+
+状态：Frozen ✅。
+
+V2.7C 优化真实 AI episode pipeline 中的 comprehension obstacle recall。V2.7B 已证明“真实字幕 → Qwen/OpenAI-compatible AI → `sample-obstacles.json` → runtime 读取生成 JSON”的链路可行；V2.7C 解决 human review 发现的 AI 过于保守问题。
+
+### Recall Policy
+
+Prompt 现在明确要求模型：
+
+- 扫描每一行字幕。
+- 主动检测 fixed expressions、phrasal verbs、idioms、slang、spoken conversational chunks、multi-meaning simple expressions 与 context-dependent expressions。
+- 不因为单词简单就跳过表达。
+- 同一句字幕中存在多个有效理解障碍时全部保留。
+- 保持 subtitle order。
+- 优先 learner value，但不标注完全透明、无学习价值的短语。
+
+### V2.7C Recall Fixture
+
+新增 `test-v2.7c-obstacle-recall.js`，使用 V2.7B sample subtitle set 验证以下表达被视为有效候选：
+
+- `No worries`
+- `clear my head`
+- `bottle it up`
+- `threw me off`
+- `saved me a seat`
+- `grab coffee`
+
+### Card Format
+
+V2.6E 理解卡格式保持不变：
+
+```text
+Expression
+
+字面意思：
+
+实际意思：
+
+固定用法：
+
+表示：
+```
+
+不得新增：
+
+- Grammar Explanation
+- Usage Notes
+- Example Sentences
+
+### Runtime Boundary
+
+Runtime 不调用 AI；AI 只用于离线内容生产，生成并冻结 `sample-obstacles.json`。V2.7C 不改变 Timeline、Learning Tips、Progress、Bottom Sheet 或 Video Layout。
 
 ## V2.6A Analyze Engine Mock Layer — Frozen ✅
 

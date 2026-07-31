@@ -1,5 +1,31 @@
 # Freeze Summary
 
+## V2.7C Obstacle Recall Optimization
+
+Status: Frozen ✅
+
+V2.7C freezes the recall-optimized comprehension obstacle generation prompt for the offline AI episode pipeline.
+
+Frozen scope:
+
+* Content production AI must scan every subtitle line.
+* Detection must actively target fixed expressions, phrasal verbs, idioms, slang, spoken conversational chunks, multi-meaning expressions, context-dependent expressions, literal-vs-actual expressions, and common Chinese-learner confusion patterns.
+* Multiple valid obstacles in the same subtitle must all be preserved.
+* The prompt must not skip expressions merely because the words are simple.
+* The prompt must avoid meaningless over-tagging of transparent literal phrases and ordinary grammar.
+* V2.6E comprehension-card fields remain: Expression, 字面意思, 实际意思, 固定用法, 表示.
+* Grammar Explanation, Usage Notes, and Example Sentences remain forbidden in generated comprehension cards.
+* Runtime still never calls AI and only reads frozen JSON data.
+
+Validation fixture candidates:
+
+* No worries
+* clear my head
+* bottle it up
+* threw me off
+* saved me a seat
+* grab coffee
+
 ## V2.6B Analyze Engine Detection Pipeline
 
 Status: Frozen ✅
