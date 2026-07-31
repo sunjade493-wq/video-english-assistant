@@ -3269,6 +3269,44 @@ function renderCards() {
   return visibleObstacles;
 }
 
+
+function parseEpisodeNumberFromOption(option) {
+  const rawEpisodeNumber = option.dataset.episodeNumber || option.dataset.episode || option.textContent;
+  const match = String(rawEpisodeNumber || '').match(/(?:episode\s*)?(\d+)/i);
+
+  return match ? Number.parseInt(match[1], 10) : Number.NaN;
+}
+
+function applyEpisodeMemberBadges(root = document) {
+  const episodeOptions = root.querySelectorAll(
+    '.episode-grid button, .episode-grid [role="option"], .episodes-grid button, .episodes-grid [role="option"], [data-episode-number], [data-episode]',
+  );
+
+  episodeOptions.forEach((option) => {
+    const episodeNumber = parseEpisodeNumberFromOption(option);
+    const existingBadge = option.querySelector('.episode-member-badge');
+
+    if (!Number.isInteger(episodeNumber)) {
+      return;
+    }
+
+    if (episodeNumber === 1) {
+      existingBadge?.remove();
+      return;
+    }
+
+    if (episodeNumber < 2 || episodeNumber > 24 || existingBadge) {
+      return;
+    }
+
+    const badge = document.createElement('span');
+    badge.className = 'episode-member-badge';
+    badge.textContent = '会员';
+    badge.setAttribute('aria-label', '会员专享');
+    option.append(badge);
+  });
+}
+
 function setLearningTipsMode() {
   selectedObstacleId = null;
   streamMode = 'dynamic';
@@ -3365,6 +3403,7 @@ playbackSpeedButtons.forEach((button) => {
 });
 renderVocabularyLevelControls();
 renderPlaybackSpeedControls();
+applyEpisodeMemberBadges();
 initApp();
 
 window.ObstacleDetectionEngine = {
